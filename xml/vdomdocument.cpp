@@ -1,3 +1,24 @@
+/****************************************************************************
+ **
+ **  Copyright (C) 2013 Valentina project All Rights Reserved.
+ **
+ **  This file is part of Valentina.
+ **
+ **  Tox is free software: you can redistribute it and/or modify
+ **  it under the terms of the GNU General Public License as published by
+ **  the Free Software Foundation, either version 3 of the License, or
+ **  (at your option) any later version.
+ **
+ **  Tox is distributed in the hope that it will be useful,
+ **  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ **  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ **  GNU General Public License for more details.
+ **
+ **  You should have received a copy of the GNU General Public License
+ **  along with Valentina.  If not, see <http://www.gnu.org/licenses/>.
+ **
+ ****************************************************************************/
+
 #include "vdomdocument.h"
 #include <QDebug>
 #include "tools/drawTools/drawtools.h"
@@ -714,10 +735,10 @@ void VDomDocument::ParseSplineElement(VMainGraphicsScene *scene, const QDomEleme
             QDomElement element = nodeList.at(i).toElement();
             if(!element.isNull()){
                 if(element.tagName() == "pathPoint"){
-                    qint64 pSpline = GetParametrLongLong(domElement, "pSpline");
-                    qreal kAsm1 = GetParametrDouble(domElement, "kAsm1");
-                    qreal angle = GetParametrDouble(domElement, "angle");
-                    qreal kAsm2 = GetParametrDouble(domElement, "kAsm2");
+                    qreal kAsm1 = GetParametrDouble(element, "kAsm1");
+                    qreal angle = GetParametrDouble(element, "angle");
+                    qreal kAsm2 = GetParametrDouble(element, "kAsm2");
+                    qint64 pSpline = GetParametrLongLong(element, "pSpline");
                     VSplinePoint splPoint(pSpline, kAsm1, angle, kAsm2);
                     path.append(splPoint);
                 }
@@ -746,8 +767,13 @@ void VDomDocument::ParseSplineElement(VMainGraphicsScene *scene, const QDomEleme
         spl.setMode(typeObject);
         spl.setIdObject(idObject);
         data->UpdateModelingSpline(id, spl);
-        data->IncrementReferens(spl.GetP1(), Scene::Point, Draw::Modeling);
-        data->IncrementReferens(spl.GetP4(), Scene::Point, Draw::Modeling);
+        if(typeObject == Draw::Calculation){
+            data->IncrementReferens(spl.GetP1(), Scene::Point, Draw::Calculation);
+            data->IncrementReferens(spl.GetP4(), Scene::Point, Draw::Calculation);
+        } else {
+            data->IncrementReferens(spl.GetP1(), Scene::Point, Draw::Modeling);
+            data->IncrementReferens(spl.GetP4(), Scene::Point, Draw::Modeling);
+        }
         return;
     }
     if(type == "modelingPath"){
@@ -768,7 +794,11 @@ void VDomDocument::ParseSplineElement(VMainGraphicsScene *scene, const QDomEleme
         data->UpdateModelingSplinePath(id, path);
         const QVector<VSplinePoint> *points = path.GetPoint();
         for(qint32 i = 0; i<points->size(); ++i){
-            data->IncrementReferens(points->at(i).P(), Scene::Point, Draw::Modeling);
+            if(typeObject == Draw::Calculation){
+                data->IncrementReferens(points->at(i).P(), Scene::Point, Draw::Calculation);
+            } else {
+                data->IncrementReferens(points->at(i).P(), Scene::Point, Draw::Modeling);
+            }
         }
         return;
     }
