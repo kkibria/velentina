@@ -27,6 +27,7 @@
  *************************************************************************/
 
 #include "calculator.h"
+#include <QDebug>
 
 #define DELIMITER  1
 #define VARIABLE   2
@@ -43,12 +44,12 @@ qreal Calculator::eval(QString prog, QString *errorMsg)
     this->errorMsg->clear();
     debugFormula.clear();
     this->prog = prog;
-    //qDebug()<<"Формула: "<<prog;
+    //qDebug()<<"Formula: "<<prog;
     index = 0;
     qreal result = get_exp();
     QString str = QString(" = %1").arg(result, 0, 'f', 3);
     debugFormula.append(str);
-    //qDebug()<<"Результат:"<<debugFormula;
+    //qDebug()<<"Result:"<<debugFormula;
     return result;
 }
 
@@ -62,12 +63,11 @@ qreal Calculator::get_exp()
         return 0;
     }
     level2(&result);
-    putback(); /* возвращает последнюю считаную
-                  лексему обратно во входной поток */
+    putback();
     return result;
 }
 
-/* Сложение или вычитание двух термов */
+
 void Calculator::level2(qreal *result)
 {
     QChar op;
@@ -82,7 +82,6 @@ void Calculator::level2(qreal *result)
     }
 }
 
-/* Вычисление произведения или частного двух фвкторов */
 void Calculator::level3(qreal *result)
 {
     QChar op;
@@ -98,7 +97,6 @@ void Calculator::level3(qreal *result)
     }
 }
 
-/* Обработка степени числа (целочисленной) */
 void Calculator::level4(qreal *result)
 {
     qreal hold;
@@ -112,7 +110,6 @@ void Calculator::level4(qreal *result)
     }
 }
 
-/* Унарный + или - */
 void Calculator::level5(qreal *result)
 {
     QChar op;
@@ -130,7 +127,6 @@ void Calculator::level5(qreal *result)
     }
 }
 
-/* Обработка выражения в круглых скобках */
 void Calculator::level6(qreal *result)
 {
     if ((token[0] == '(') && (token_type == DELIMITER))
@@ -146,7 +142,6 @@ void Calculator::level6(qreal *result)
         primitive(result);
 }
 
-/* Определение значения переменной по ее имени */
 void Calculator::primitive(qreal *result)
 {
     QString str;
@@ -169,7 +164,6 @@ void Calculator::primitive(qreal *result)
     }
 }
 
-/* Выполнение специфицированной арифметики */
 void Calculator::arith(QChar o, qreal *r, qreal *h)
 {
     qreal  t;//, ex;
@@ -194,20 +188,12 @@ void Calculator::arith(QChar o, qreal *r, qreal *h)
             break;
         case '^':
             *r = pow(*r, *h);
-//            ex =*r;
-//            if(*h==0) {
-//                *r = 1;
-//                break;
-//            }
-//            for(t=*h-1; t>0; --t)
-//                *r = (*r) * ex;
             break;
         default:
             break;
     }
 }
 
-/* Изменение знака */
 void Calculator::unary(QChar o, qreal *r)
 {
     if (o=='-')
@@ -216,7 +202,6 @@ void Calculator::unary(QChar o, qreal *r)
     }
 }
 
-/* Поиск значения переменной */
 qreal Calculator::find_var(QString s)
 {
     bool ok = false;
@@ -224,13 +209,12 @@ qreal Calculator::find_var(QString s)
     if (ok == false)
     {
         qDebug()<<s;
-        serror(4); /* не переменная */
+        serror(4); /* don't variable */
         return 0;
     }
     return value;
 }
 
-/* выдать сообщение об ошибке */
 void Calculator::serror(qint32 error)
 {
     QString e[]=
@@ -246,29 +230,16 @@ void Calculator::serror(qint32 error)
     qDebug()<<e[error];
 }
 
-/* Поиск соответствия внутреннего формата для
-                текущей лексемы в таблице лексем.
-             */
 char Calculator::look_up(QString s)
 {
     QString p;
 
-    /* преобразование к нижнему регистру */
     p = s;
     p = p.toLower();
 
-    /* просматривается, если лексема обнаружена в
-       таблице */
-    /*
-     *у нас більше немає команд що потрібно опрацьовувати
-     */
-//    if(commands.contains(p)){
-//        return commands[p];
-//    }
-    return 0; /* нераспознанная команда */
+    return 0;
 }
 
-/* Возвращает "истину", если "c" разделитель */
 bool Calculator::isdelim(QChar c)
 {
     if (StrChr(" ;,+-<>/*%^=()", c) || c=='\n' || c=='\r' || c=='\0')
@@ -278,7 +249,6 @@ bool Calculator::isdelim(QChar c)
     return false;
 }
 
-/* Возвращает 1, если "с" пробел или табуляция */
 bool Calculator::iswhite(QChar c)
 {
     if (c==' ' || c=='\t')
@@ -300,7 +270,7 @@ void Calculator::get_token()
     temp=&token;
 
     if (prog[index]=='\0')
-    { /* Конец файла */
+    { /* end of file */
         token="\0";
         tok=FINISHED;
         token_type=DELIMITER;
@@ -309,7 +279,7 @@ void Calculator::get_token()
 
     while (iswhite(prog[index]))
     {
-        ++index;  /* пропуск пробелов */
+        ++index;  /* skip spaces */
     }
 
     if (prog[index]=='\r')
@@ -322,16 +292,16 @@ void Calculator::get_token()
     }
 
     if (StrChr("+-*^/%=;(),><", prog[index]))
-    { /* разделитель */
+    { /* delimiter */
         *temp=prog[index];
-        index++; /* переход на следующую позицию */
+        index++; /* jump to the next position */
         temp->append("\0");
         token_type=DELIMITER;
         debugFormula.append(token);
         return;
     }
     if (prog[index]=='"')
-    { /* строка в кавычках */
+    { /* quoted string */
         index++;
         while (prog[index] != '"' && prog[index] != '\r')
         {
@@ -347,7 +317,7 @@ void Calculator::get_token()
         return;
     }
     if (prog[index].isDigit())
-    { /* число */
+    { /* number */
         while (isdelim(prog[index]) == false)
         {
             temp->append(prog[index]);
@@ -359,7 +329,7 @@ void Calculator::get_token()
     }
 
     if (prog[index].isPrint())
-    { /* переменная или команда */
+    { /* variable or command */
         while (isdelim(prog[index]) == false)
         {
             temp->append(prog[index]);
@@ -369,18 +339,17 @@ void Calculator::get_token()
     }
     temp->append("\0");
 
-    /* Просматривается, если строка есть команда или переменная */
+    /* Seen if there is a command line or a variable */
     if (token_type==STRING)
     {
-        tok=look_up(token); /* преобразование во внутренний
-                                          формат */
+        tok=look_up(token);
         if (tok == false)
         {
             token_type = VARIABLE;
         }
         else
         {
-            token_type = COMMAND; /* это команда */
+            token_type = COMMAND; /* It is command */
         }
     }
     return;
@@ -391,7 +360,6 @@ bool Calculator::StrChr(QString string, QChar c)
     return string.contains(c, Qt::CaseInsensitive);
 }
 
-/*  Возвращает лексему обратно во входной поток */
 void Calculator::putback()
 {
     QString t;

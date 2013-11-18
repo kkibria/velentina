@@ -32,143 +32,155 @@
 #include "vcontainer.h"
 
 /**
- * @brief The Calculator клас калькулятора формул лекал. Виконує розрахунок формул з підставлянням
- * значеннь зміних.
+ * @brief The Calculator class calculate formulas of pattern. Support operation +,-,/,* and braces.
+ * Can replace name of variables her value.
  */
 class Calculator
 {
 public:
     /**
-     * @brief Calculator конструктор класу. Використовується при розрахунку лекала.
-     * @param data покажчик на контейнер змінних
+     * @brief Calculator class constructor.
+     * @param data pointer to a variable container.
      */
     explicit Calculator(const VContainer *data):errorMsg(0), token(QString()), tok(0), token_type(0), prog(QString()),
         index(0), data(data), debugFormula(QString()){}
     /**
-     * @brief eval виконує розрахунок формули.
-     * @param prog рядко в якому зберігається формула.
-     * @return значення формули.
+     * @brief eval calculate formula.
+     * @param prog string of formula.
+     * @return value of formula.
      */
     qreal       eval(QString prog, QString *errorMsg);
 private:
     Q_DISABLE_COPY(Calculator)
+    /**
+     * @brief errorMsg keeps error message of calculation.
+     */
     QString     *errorMsg;
     /**
      * @brief token теперішня лексема.
      */
     QString     token;
     /**
-     * @brief tok внутрішне представлення лексеми.
+     * @brief tok internal representation of token.
      */
     qint32      tok;
     /**
-     * @brief token_type тип лексеми.
+     * @brief token_type type of token.
      */
     qint32      token_type;
     /**
-     * @brief prog рядок в якому зберігається формула.
+     * @brief prog string where keeps formula.
      */
-    QString     prog; /* Содержит анализируемое выражение */
+    QString     prog;
     /**
-     * @brief index номер символу в рядку формули.
+     * @brief index number character in string of formula.
      */
-    qint32      index; /* Индекс символа в строке*/
+    qint32      index;
     /**
-     * @brief data контейнер усіх змінних.
+     * @brief data container of all variables.
      */
     const VContainer *data;
     /**
-     * @brief debugFormula рядок розшифрованої формули.
+     * @brief debugFormula decoded string of formula.
      */
     QString     debugFormula;
     /**
-     * @brief get_exp виконує розрахунок формули.
-     * @return значення формули.
+     * @brief get_exp calculate formula.
+     * @return value of formula.
      */
     qreal       get_exp();
     /**
-     * @brief get_token повертає наступну лексему.
+     * @brief get_token return next token.
      */
-    void        get_token();/* Получить лексему */
+    void        get_token();
     /**
-     * @brief StrChr перевіряє чи символ належить рядку.
-     * @param string рядок
-     * @param c символ.
-     * @return true - належить рядку, false - не належить рядку.
+     * @brief StrChr checks whether the character belongs to the line.
+     * @param string string with formula
+     * @param c character.
+     * @return true - belongs to the line, false - don't belongs to the line.
      */
     static bool StrChr(QString string, QChar c);
     /**
-     * @brief putback повертає зчитану лексему назад у потік.
+     * @brief putback returns the readout token back into the flow.
      */
     void        putback();
     /**
-     * @brief level2 метод додавання і віднімання двух термів.
-     * @param result результат операції.
+     * @brief level2 method of addition and subtraction of two terms.
+     * @param result result of operation.
      */
     void        level2(qreal *result);
     /**
-     * @brief level3 метод множення, ділення, знаходження процентів.
-     * @param result результат операції.
+     * @brief level3 method of multiplication, division, finding percent.
+     * @param result result of operation.
      */
     void        level3(qreal *result);
     /**
-     * @brief level4 метод знаходження степені двох чисел.
-     * @param result результат операції.
+     * @brief level4 method of degree two numbers.
+     * @param result result of operation.
      */
     void        level4(qreal *result);
     /**
-     * @brief level5 метод знаходження унарного плюса чи мінуса.
-     * @param result результат операції.
+     * @brief level5 method for finding unary plus or minus.
+     * @param result result of operation.
      */
     void        level5(qreal *result);
     /**
-     * @brief level6 метод обробки виразу в круглих лапках.
-     * @param result результат операції.
+     * @brief level6 processing method of the expression in brackets.
+     * @param result result of operation.
      */
     void        level6(qreal *result);
     /**
-     * @brief primitive метод визначення значення зміної по її імені.
-     * @param result результат операції.
+     * @brief primitive method of determining the value of a variable by its name.
+     * @param result result of operation.
      */
     void        primitive(qreal *result);
     /**
-     * @brief arith виконання специфікованої арифметики. Результат записується в перший елемент.
-     * @param o знак операції.
-     * @param r перший елемент.
-     * @param h другий елемент.
+     * @brief arith perform the specified arithmetic. The result is written to the first element.
+     * @param o sign of operation.
+     * @param r first element.
+     * @param h second element.
      */
     static void arith(QChar o, qreal *r, qreal *h);
     /**
-     * @brief unary метод зміни знаку.
-     * @param o символ знаку.
-     * @param r елемент.
+     * @brief unary method changes the sign.
+     * @param o sign of symbol.
+     * @param r element.
      */
     static void unary(QChar o, qreal *r);
     /**
-     * @brief find_var метод знаходить змінну за іменем.
-     * @param s ім'я змінної.
-     * @return значення зміної.
+     * @brief find_var method is finding variable by name.
+     * @param s name of variable.
+     * @return value of variable.
      */
     qreal       find_var(QString s);
+    /**
+     * @brief serror report an error
+     * @param error error code
+     */
     void        serror(qint32 error);
     /**
-     * @brief look_up пошук відповідного внутрішнього формату для теперішньої лексеми в таблиці лексем.
-     * @param s ім'я лексеми.
-     * @return внутрішній номер лексеми.
+     * @brief look_up finding the internal format for the current token in the token table.
+     * @param s name of token.
+     * @return internal number of token.
      */
     static char look_up(QString s);
     /**
-     * @brief isdelim повертає "істино", якщо с розділювач.
-     * @param c символ.
-     * @return розділювач, або ні.
+     * @brief isdelim return true if c delimiter.
+     * @param c character.
+     * @return true - delimiter, false - do not delimiter.
      */
     static bool isdelim(QChar c);
     /**
-     * @brief iswhite перевіряє чи с пробіл чи табуляція.
-     * @param c символ.
-     * @return так або ні.
+     * @brief isdelim return true if c delimiter.
+     * @param c character.
+     * @return true - delimiter, false - do not delimiter.
      */
     static bool iswhite(QChar c);
+    /**
+     * @brief iswhite checks whether c space or tab.
+     * @param c character.
+     * @return true - space or tab, false - don't space and don't tab.
+     */
 };
 
 #endif // CALCULATOR_H

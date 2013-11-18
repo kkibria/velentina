@@ -37,94 +37,117 @@
 #include "../widgets/vitem.h"
 
 /**
- * @brief The VContainer class
+ * @brief The VContainer class container of all variables.
  */
 class VContainer
 {
     Q_DECLARE_TR_FUNCTIONS(VContainer)
 public:
+                       /**
+                        * @brief VContainer create empty container
+                        */
+                        VContainer();
+                       /**
+                        * @brief operator = copy constructor
+                        * @param data container
+                        * @return copy container
+                        */
+                        VContainer &operator=(const VContainer &data);
+                       /**
+                        * @brief VContainer create container from another container
+                        * @param data container
+                        */
+                        VContainer(const VContainer &data);
+   /**
+    * @brief setData copy data from container
+    * @param data container
+    */
+    void                setData(const VContainer &data);
     /**
-                         * @brief VContainer
-                         */
-                       VContainer();
-                       VContainer &operator=(const VContainer &data);
-                       VContainer(const VContainer &data);
-                       void setData(const VContainer &data);
-                        /**
-     * @brief GetPoint
-     * @param id
+     * @brief GetPoint returns a point by id
+     * @param id id of point
+     * @return point
+     */
+    VPointF             GetPoint(qint64 id) const;
+    /**
+     * @brief GetModelingPoint return a modeling point by id
+     * @param id id of modeling point
+     * @return modeling point
+     */
+    VPointF             GetModelingPoint(qint64 id) const;
+    /**
+     * @brief GetStandartTableCell
+     * @param name
      * @return
      */
-    VPointF            GetPoint(qint64 id) const;
-    VPointF            GetModelingPoint(qint64 id) const;
-    VStandartTableCell GetStandartTableCell(const QString& name) const;
-    VIncrementTableRow GetIncrementTableRow(const QString& name) const;
-    qreal              GetLine(const QString &name) const;
-    qreal              GetLengthArc(const QString &name) const;
-    qreal              GetLengthSpline(const QString &name) const;
-    qreal              GetLineAngle(const QString &name) const;
-    VSpline            GetSpline(qint64 id) const;
-    VSpline            GetModelingSpline(qint64 id) const;
-    VArc               GetArc(qint64 id) const;
-    VArc               GetModelingArc(qint64 id) const;
-    VSplinePath        GetSplinePath(qint64 id) const;
-    VSplinePath        GetModelingSplinePath(qint64 id) const;
-    VDetail            GetDetail(qint64 id) const;
-    static qint64      getId() {return _id;}
-    qint64             AddPoint(const VPointF& point);
-    qint64             AddModelingPoint(const VPointF& point);
-    qint64             AddDetail(const VDetail& detail);
-    inline void        AddStandartTableCell(const QString& name, const VStandartTableCell& cell)
+    VStandartTableCell  GetStandartTableCell(const QString& name) const;
+    VIncrementTableRow  GetIncrementTableRow(const QString& name) const;
+    qreal               GetLine(const QString &name) const;
+    qreal               GetLengthArc(const QString &name) const;
+    qreal               GetLengthSpline(const QString &name) const;
+    qreal               GetLineAngle(const QString &name) const;
+    VSpline             GetSpline(qint64 id) const;
+    VSpline             GetModelingSpline(qint64 id) const;
+    VArc                GetArc(qint64 id) const;
+    VArc                GetModelingArc(qint64 id) const;
+    VSplinePath         GetSplinePath(qint64 id) const;
+    VSplinePath         GetModelingSplinePath(qint64 id) const;
+    VDetail             GetDetail(qint64 id) const;
+    static qint64       getId() {return _id;}
+    qint64              AddPoint(const VPointF& point);
+    qint64              AddModelingPoint(const VPointF& point);
+    qint64              AddDetail(const VDetail& detail);
+    inline void         AddStandartTableCell(const QString& name, const VStandartTableCell& cell)
     {standartTable[name] = cell;}
-    inline void        AddIncrementTableRow(const QString& name, const VIncrementTableRow &cell)
+    inline void         AddIncrementTableRow(const QString& name, const VIncrementTableRow &cell)
     {incrementTable[name] = cell;}
-    void               AddLengthLine(const QString &name, const qreal &value);
-    void               AddLengthSpline(const QString &name, const qreal &value);
-    void               AddLengthArc(const qint64 &id);
-    void               AddLengthArc(const QString &name, const qreal &value);
-    void               AddLineAngle(const QString &name, const qreal &value);
-    void               AddLine(const qint64 &firstPointId, const qint64 &secondPointId,
-                               const Draw::Draws &mode = Draw::Calculation);
-    qint64             AddSpline(const VSpline& spl);
-    qint64             AddModelingSpline(const VSpline& spl);
-    qint64             AddSplinePath(const VSplinePath& splPath);
-    qint64             AddModelingSplinePath(const VSplinePath& splPath);
-    qint64             AddArc(const VArc& arc);
-    qint64             AddModelingArc(const VArc& arc);
-    QString            GetNameLine(const qint64 &firstPoint, const qint64 &secondPoint,
-                                   const Draw::Draws &mode = Draw::Calculation) const;
-    QString            GetNameLineAngle(const qint64 &firstPoint, const qint64 &secondPoint,
-                                        const Draw::Draws &mode = Draw::Calculation) const;
-    void               UpdatePoint(qint64 id, const VPointF& point);
-    void               UpdateModelingPoint(qint64 id, const VPointF& point);
-    void               UpdateDetail(qint64 id, const VDetail& detail);
-    void               UpdateSpline(qint64 id, const VSpline& spl);
-    void               UpdateModelingSpline(qint64 id, const VSpline& spl);
-    void               UpdateSplinePath(qint64 id, const VSplinePath& splPath);
-    void               UpdateModelingSplinePath(qint64 id, const VSplinePath& splPath);
-    void               UpdateArc(qint64 id, const VArc& arc);
-    void               UpdateModelingArc(qint64 id, const VArc& arc);
-    inline void        UpdateStandartTableCell(const QString& name, const VStandartTableCell& cell)
+    void                AddLengthLine(const QString &name, const qreal &value);
+    void                AddLengthSpline(const QString &name, const qreal &value);
+    void                AddLengthArc(const qint64 &id);
+    void                AddLengthArc(const QString &name, const qreal &value);
+    void                AddLineAngle(const QString &name, const qreal &value);
+    void                AddLine(const qint64 &firstPointId, const qint64 &secondPointId,
+                                const Draw::Draws &mode = Draw::Calculation);
+    qint64              AddSpline(const VSpline& spl);
+    qint64              AddModelingSpline(const VSpline& spl);
+    qint64              AddSplinePath(const VSplinePath& splPath);
+    qint64              AddModelingSplinePath(const VSplinePath& splPath);
+    qint64              AddArc(const VArc& arc);
+    qint64              AddModelingArc(const VArc& arc);
+    QString             GetNameLine(const qint64 &firstPoint, const qint64 &secondPoint,
+                                    const Draw::Draws &mode = Draw::Calculation) const;
+    QString             GetNameLineAngle(const qint64 &firstPoint, const qint64 &secondPoint,
+                                         const Draw::Draws &mode = Draw::Calculation) const;
+    void                UpdatePoint(qint64 id, const VPointF& point);
+    void                UpdateModelingPoint(qint64 id, const VPointF& point);
+    void                UpdateDetail(qint64 id, const VDetail& detail);
+    void                UpdateSpline(qint64 id, const VSpline& spl);
+    void                UpdateModelingSpline(qint64 id, const VSpline& spl);
+    void                UpdateSplinePath(qint64 id, const VSplinePath& splPath);
+    void                UpdateModelingSplinePath(qint64 id, const VSplinePath& splPath);
+    void                UpdateArc(qint64 id, const VArc& arc);
+    void                UpdateModelingArc(qint64 id, const VArc& arc);
+    inline void         UpdateStandartTableCell(const QString& name, const VStandartTableCell& cell)
     {standartTable[name] = cell;}
-    inline void        UpdateIncrementTableRow(const QString& name, const VIncrementTableRow& cell)
+    inline void         UpdateIncrementTableRow(const QString& name, const VIncrementTableRow& cell)
     {incrementTable[name] = cell;}
-    qreal              GetValueStandartTableCell(const QString& name) const;
-    qreal              GetValueIncrementTableRow(const QString& name) const;
-    void               Clear();
-    void               ClearObject();
-    inline void        ClearIncrementTable() {incrementTable.clear();}
-    inline void        ClearLengthLines() {lengthLines.clear();}
-    inline void        ClearLengthSplines() {lengthSplines.clear();}
-    inline void        ClearLengthArcs() {lengthArcs.clear();}
-    inline void        ClearLineAngles() {lineAngles.clear();}
-    inline void        SetSize(qint32 size) {base["Сг"] = size;}
-    inline void        SetGrowth(qint32 growth) {base["Р"] = growth;}
-    inline qint32      size() const {return base.value("Сг");}
-    inline qint32      growth() const {return base.value("Р");}
-    qreal              FindVar(const QString& name, bool *ok)const;
-    inline bool        IncrementTableContains(const QString& name) {return incrementTable.contains(name);}
-    static qint64      getNextId();
-    inline void        RemoveIncrementTableRow(const QString& name) {incrementTable.remove(name);}
+    qreal               GetValueStandartTableCell(const QString& name) const;
+    qreal               GetValueIncrementTableRow(const QString& name) const;
+    void                Clear();
+    void                ClearObject();
+    inline void         ClearIncrementTable() {incrementTable.clear();}
+    inline void         ClearLengthLines() {lengthLines.clear();}
+    inline void         ClearLengthSplines() {lengthSplines.clear();}
+    inline void         ClearLengthArcs() {lengthArcs.clear();}
+    inline void         ClearLineAngles() {lineAngles.clear();}
+    inline void         SetSize(qint32 size) {base["Сг"] = size;}
+    inline void         SetGrowth(qint32 growth) {base["Р"] = growth;}
+    inline qint32       size() const {return base.value("Сг");}
+    inline qint32       growth() const {return base.value("Р");}
+    qreal               FindVar(const QString& name, bool *ok)const;
+    inline bool         IncrementTableContains(const QString& name) {return incrementTable.contains(name);}
+    static qint64       getNextId();
+    inline void         RemoveIncrementTableRow(const QString& name) {incrementTable.remove(name);}
     inline const QHash<qint64, VPointF> *DataPoints() const {return &points;}
     inline const QHash<qint64, VPointF> *DataModelingPoints() const {return &modelingPoints;}
     inline const QHash<qint64, VSpline> *DataSplines() const {return &splines;}
@@ -141,15 +164,15 @@ public:
     inline const QHash<qint64, VSplinePath> *DataSplinePaths() const {return &splinePaths;}
     inline const QHash<qint64, VSplinePath> *DataModelingSplinePaths() const {return &modelingSplinePaths;}
     inline const QHash<qint64, VDetail> *DataDetails() const {return &details;}
-    static void        UpdateId(qint64 newId);
-    QPainterPath       ContourPath(qint64 idDetail) const;
-    QVector<QPointF>   biasPoints(const QVector<QPointF> &points, const qreal &mx, const qreal &my) const;
-    QPainterPath       Equidistant(QVector<QPointF> points, const Detail::Equidistant &eqv, const qreal &width)const;
-    static QLineF      ParallelLine(const QLineF &line, qreal width );
-    static QPointF     SingleParallelPoint(const QLineF &line, const qreal &angle, const qreal &width);
-    QVector<QPointF>   EkvPoint(const QLineF &line1, const QLineF &line2, const qreal &width)const;
-    QVector<QPointF>   CheckLoops(const QVector<QPointF> &points) const;
-    void               PrepareDetails(QVector<VItem *> & list) const;
+    static void         UpdateId(qint64 newId);
+    QPainterPath        ContourPath(qint64 idDetail) const;
+    QVector<QPointF>    biasPoints(const QVector<QPointF> &points, const qreal &mx, const qreal &my) const;
+    QPainterPath        Equidistant(QVector<QPointF> points, const Detail::Equidistant &eqv, const qreal &width)const;
+    static QLineF       ParallelLine(const QLineF &line, qreal width );
+    static QPointF      SingleParallelPoint(const QLineF &line, const qreal &angle, const qreal &width);
+    QVector<QPointF>    EkvPoint(const QLineF &line1, const QLineF &line2, const qreal &width)const;
+    QVector<QPointF>    CheckLoops(const QVector<QPointF> &points) const;
+    void                PrepareDetails(QVector<VItem *> & list) const;
 private:
     static qint64          _id;
     QHash<QString, qint32> base;
