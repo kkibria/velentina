@@ -320,7 +320,7 @@ QPainterPath VContainer::Equidistant(QVector<QPointF> points, const Detail::Equi
     QVector<QPointF> ekvPoints;
     if ( points.size() < 3 )
     {
-        qDebug()<<"Not enough points for build equidistant.\n";
+        qDebug()<<"Not enough points for building the equidistant.\n";
         return ekv;
     }
     for (qint32 i = 0; i < points.size(); ++i )
@@ -346,6 +346,7 @@ QPainterPath VContainer::Equidistant(QVector<QPointF> points, const Detail::Equi
     }
     for (qint32 i = 0; i < points.size(); ++i )
     {
+        //TODO please translate comments into english
         if ( i == 0 && eqv == Detail::CloseEquidistant)
         {//перша точка, ламана замкнена
             ekvPoints<<EkvPoint(QLineF(points[points.size()-2], points[points.size()-1]), QLineF(points[1], points[0]),
