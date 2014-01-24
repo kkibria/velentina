@@ -62,7 +62,7 @@ class VDomDocument : public QObject, public QDomDocument
 public:
                    /**
                     * @brief VDomDocument
-                    * @param data
+                    * @param data container with variables
                     * @param comboBoxDraws
                     * @param mode
                     */
@@ -70,7 +70,7 @@ public:
                    /**
                     * @brief VDomDocument
                     * @param name
-                    * @param data
+                    * @param data container with variables
                     * @param comboBoxDraws
                     * @param mode
                     */
@@ -79,7 +79,7 @@ public:
                    /**
                     * @brief VDomDocument
                     * @param doc dom document containertype
-                    * @param data
+                    * @param data container with variables
                     * @param comboBoxDraws
                     * @param mode
                     */
@@ -100,7 +100,7 @@ public:
     /**
      * @brief ChangeActivDraw
      * @param name
-     * @param parse
+     * @param parse parser file mode.
      */
     void           ChangeActivDraw(const QString& name, const Document::Documents &parse = Document::FullParse);
     /**
@@ -146,7 +146,7 @@ public:
     bool           SetNameDraw(const QString& name);
     /**
      * @brief Parse
-     * @param parse
+     * @param parse parser file mode.
      * @param sceneDraw
      * @param sceneDetail
      */
@@ -186,7 +186,7 @@ public:
     /**
      * @brief UpdateToolData
      * @param id
-     * @param data
+     * @param data container with variables
      */
     void           UpdateToolData(const qint64 &id, VContainer *data);
     /**
@@ -228,18 +228,18 @@ public:
     qint64         SPointActiveDraw();
 signals:
     /**
-     * @brief ChangedActivDraw
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
      * @param newName
      */
     void           ChangedActivDraw(const QString &newName);
     /**
-     * @brief ChangedNameDraw
-     * @param oldName
-     * @param newName
+     * @brief ChangedNameDraw save new name active pattern peace.
+     * @param oldName old name.
+     * @param newName new name.
      */
     void           ChangedNameDraw(const QString &oldName, const QString &newName);
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     void           FullUpdateFromFile();
     /**
@@ -247,7 +247,7 @@ signals:
      */
     void           haveChange();
     /**
-     * @brief ShowTool
+     * @brief ShowTool  highlight tool.
      * @param id
      * @param color
      * @param enable
@@ -338,7 +338,7 @@ private:
      * @param sceneDraw
      * @param sceneDetail
      * @param node
-     * @param parse
+     * @param parse parser file mode.
      */
     void           ParseDrawElement(VMainGraphicsScene  *sceneDraw, VMainGraphicsScene *sceneDetail,
                                     const QDomNode& node, const Document::Documents &parse);
@@ -347,7 +347,7 @@ private:
      * @param sceneDraw
      * @param sceneDetail
      * @param node
-     * @param parse
+     * @param parse parser file mode.
      * @param mode
      */
     void           ParseDrawMode(VMainGraphicsScene  *sceneDraw, VMainGraphicsScene  *sceneDetail,
@@ -356,7 +356,7 @@ private:
      * @brief ParseDetailElement
      * @param sceneDetail
      * @param domElement
-     * @param parse
+     * @param parse parser file mode.
      */
     void           ParseDetailElement(VMainGraphicsScene  *sceneDetail, const QDomElement &domElement,
                                       const Document::Documents &parse);
@@ -364,7 +364,7 @@ private:
      * @brief ParseDetails
      * @param sceneDetail
      * @param domElement
-     * @param parse
+     * @param parse parser file mode.
      */
     void           ParseDetails(VMainGraphicsScene  *sceneDetail, const QDomElement &domElement,
                                 const Document::Documents &parse);
@@ -372,7 +372,7 @@ private:
      * @brief ParsePointElement
      * @param scene
      * @param domElement
-     * @param parse
+     * @param parse parser file mode.
      * @param type
      * @param mode
      */
@@ -382,7 +382,7 @@ private:
      * @brief ParseLineElement
      * @param scene
      * @param domElement
-     * @param parse
+     * @param parse parser file mode.
      * @param mode
      */
     void           ParseLineElement(VMainGraphicsScene *scene, const QDomElement& domElement,
@@ -391,7 +391,7 @@ private:
      * @brief ParseSplineElement
      * @param scene
      * @param domElement
-     * @param parse
+     * @param parse parser file mode.
      * @param type
      * @param mode
      */
@@ -401,7 +401,7 @@ private:
      * @brief ParseArcElement
      * @param scene
      * @param domElement
-     * @param parse
+     * @param parse parser file mode.
      * @param type
      * @param mode
      */

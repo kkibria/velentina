@@ -42,46 +42,46 @@ public:
                    /**
                     * @brief VToolTriangle
                     * @param doc dom document container
-                    * @param data
-                    * @param id
+                    * @param data container with variables
+                    * @param id object id in container
                     * @param axisP1Id
                     * @param axisP2Id
                     * @param firstPointId
                     * @param secondPointId
-                    * @param typeCreation
-                    * @param parent
+                    * @param typeCreation way we create this tool.
+                    * @param parent parent object
                     */
                    VToolTriangle(VDomDocument *doc, VContainer *data, const qint64 &id, const qint64 &axisP1Id,
                                  const qint64 &axisP2Id, const qint64 &firstPointId, const qint64 &secondPointId,
                                  const Tool::Sources &typeCreation, QGraphicsItem * parent = 0);
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void   setDialog();
     /**
-     * @brief Create
+     * @brief Create help create tool
      * @param dialog
-     * @param scene
+     * @param scene pointer to scene.
      * @param doc dom document container
-     * @param data
+     * @param data container with variables
      */
     static void    Create(QSharedPointer<DialogTriangle> &dialog, VMainGraphicsScene  *scene, VDomDocument *doc,
                           VContainer *data);
     /**
-     * @brief Create
-     * @param _id
-     * @param pointName
+     * @brief Create help create tool
+     * @param _id tool id, 0 if tool doesn't exist yet.
+     * @param pointName point name.
      * @param axisP1Id
      * @param axisP2Id
      * @param firstPointId
      * @param secondPointId
-     * @param mx
-     * @param my
-     * @param scene
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
+     * @param scene pointer to scene.
      * @param doc dom document container
-     * @param data
-     * @param parse
-     * @param typeCreation
+     * @param data container with variables
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
     static void    Create(const qint64 _id, const QString &pointName, const qint64 &axisP1Id, const qint64 &axisP2Id,
                           const qint64 &firstPointId, const qint64 &secondPointId, const qreal &mx, const qreal &my,
@@ -103,27 +103,27 @@ public:
     static const QString ToolType;
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void   FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
+     * @brief FullUpdateFromGui  refresh tool data from change options.
      * @param result
      */
     virtual void   FullUpdateFromGui(int result);
     virtual void   ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
 protected:
     /**
-     * @brief RemoveReferens
+     * @brief RemoveReferens decrement value of reference.
      */
     virtual void   RemoveReferens();
     /**
-     * @brief contextMenuEvent
+     * @brief contextMenuEvent handle context menu events.
      * @param event
      */
     virtual void   contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void   AddToFile();
     /**

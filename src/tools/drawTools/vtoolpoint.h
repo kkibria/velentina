@@ -42,9 +42,9 @@ public:
                             /**
                              * @brief VToolPoint
                              * @param doc dom document container
-                             * @param data
-                             * @param id
-                             * @param parent
+                             * @param data container with variables
+                             * @param id object id in container
+                             * @param parent parent object
                              */
                             VToolPoint(VDomDocument *doc, VContainer *data, qint64 id, QGraphicsItem * parent = 0);
     virtual                 ~VToolPoint(){}
@@ -59,25 +59,25 @@ public slots:
      */
     void                    NameChangePosition(const QPointF &pos);
     /**
-     * @brief ChangedActivDraw
-     * @param newName
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
+     * @param newName new name active pattern peace.
      */
     virtual void            ChangedActivDraw(const QString &newName);
     /**
-     * @brief FullUpdateFromGui
+     * @brief FullUpdateFromGui  refresh tool data from change options.
      * @param result
      */
     virtual void            FullUpdateFromGui(int result) = 0;
     /**
-     * @brief ShowTool
-     * @param id
+     * @brief ShowTool  highlight tool.
+     * @param id object id in container
      * @param color
      * @param enable
      */
     virtual void            ShowTool(qint64 id, Qt::GlobalColor color, bool enable);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void            SetFactor(qreal factor);
     virtual void            ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
@@ -96,22 +96,22 @@ protected:
     QGraphicsLineItem       *lineName;
     /**
      * @brief UpdateNamePosition
-     * @param mx
-     * @param my
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
      */
     virtual void            UpdateNamePosition(qreal mx, qreal my);
     /**
-     * @brief mouseReleaseEvent
+     * @brief mouseReleaseEvent  handle mouse release events.
      * @param event
      */
     virtual void            mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
     /**
-     * @brief hoverMoveEvent
+     * @brief hoverMoveEvent handle hover move events.
      * @param event
      */
     virtual void            hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief hoverLeaveEvent
+     * @brief hoverLeaveEvent handle hover leave events.
      * @param event
      */
     virtual void            hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );

@@ -42,23 +42,23 @@ public:
                  /**
                   * @brief VNodePoint
                   * @param doc dom document container
-                  * @param data
-                  * @param id
-                  * @param idPoint
-                  * @param typeCreation
-                  * @param parent
+                  * @param data container with variables
+                  * @param id object id in container
+                  * @param id object id in containerPoint
+                  * @param typeCreation way we create this tool.
+                  * @param parent parent object
                   */
                  VNodePoint(VDomDocument *doc, VContainer *data, qint64 id, qint64 idPoint,
                             const Tool::Sources &typeCreation, const qint64 &idTool = 0, QObject *qoParent = 0,
                             QGraphicsItem * parent = 0 );
     /**
-     * @brief Create
+     * @brief Create help create tool
      * @param doc dom document container
-     * @param data
-     * @param id
-     * @param idPoint
-     * @param parse
-     * @param typeCreation
+     * @param data container with variables
+     * @param id object id in container
+     * @param id object id in containerPoint
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
     static void  Create(VDomDocument *doc, VContainer *data, qint64 id, qint64 idPoint,
                         const Document::Documents &parse, const Tool::Sources &typeCreation, const qint64 &idTool = 0,
@@ -74,7 +74,7 @@ public:
     virtual void DeleteNode();
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void FullUpdateFromFile();
     /**
@@ -96,7 +96,7 @@ protected:
      */
     QGraphicsLineItem       *lineName;
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void AddToFile();
     /**
@@ -104,24 +104,24 @@ protected:
      */
     virtual void RefreshDataInFile();
     /**
-     * @brief mouseReleaseEvent
+     * @brief mouseReleaseEvent  handle mouse release events.
      * @param event
      */
     virtual void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
     /**
-     * @brief hoverMoveEvent
+     * @brief hoverMoveEvent handle hover move events.
      * @param event
      */
     virtual void hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief hoverLeaveEvent
+     * @brief hoverLeaveEvent handle hover leave events.
      * @param event
      */
     virtual void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
     /**
      * @brief UpdateNamePosition
-     * @param mx
-     * @param my
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
      */
     virtual void UpdateNamePosition(qreal mx, qreal my);
     /**

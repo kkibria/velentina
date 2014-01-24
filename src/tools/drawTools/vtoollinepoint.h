@@ -41,26 +41,26 @@ public:
                       /**
                        * @brief VToolLinePoint
                        * @param doc dom document container
-                       * @param data
-                       * @param id
-                       * @param typeLine
+                       * @param data container with variables
+                       * @param id object id in container
+                       * @param typeLine line type.
                        * @param formula
                        * @param basePointId
                        * @param angle
-                       * @param parent
+                       * @param parent parent object
                        */
                       VToolLinePoint(VDomDocument *doc, VContainer *data, const qint64 &id, const QString &typeLine,
                                      const QString &formula, const qint64 &basePointId, const qreal &angle,
                                      QGraphicsItem * parent = 0);
 public slots:
     /**
-     * @brief ChangedActivDraw
-     * @param newName
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
+     * @param newName new name active pattern peace.
      */
     virtual void      ChangedActivDraw(const QString &newName);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void      SetFactor(qreal factor);
 protected:
@@ -85,11 +85,11 @@ protected:
      */
     QGraphicsLineItem *mainLine;
     /**
-     * @brief RefreshGeometry
+     * @brief RefreshGeometry  refresh item on scene.
      */
     virtual void      RefreshGeometry();
     /**
-     * @brief RemoveReferens
+     * @brief RemoveReferens decrement value of reference.
      */
     virtual void      RemoveReferens() {doc->DecrementReferens(basePointId);}
 private:

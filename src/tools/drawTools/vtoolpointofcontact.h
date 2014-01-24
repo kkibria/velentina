@@ -41,21 +41,21 @@ public:
                    /**
                     * @brief VToolPointOfContact
                     * @param doc dom document container
-                    * @param data
-                    * @param id
+                    * @param data container with variables
+                    * @param id object id in container
                     * @param radius
                     * @param center
                     * @param firstPointId
                     * @param secondPointId
-                    * @param typeCreation
-                    * @param parent
+                    * @param typeCreation way we create this tool.
+                    * @param parent parent object
                     */
                    VToolPointOfContact(VDomDocument *doc, VContainer *data, const qint64 &id,
                                        const QString &radius, const qint64 &center,
                                        const qint64 &firstPointId, const qint64 &secondPointId,
                                        const Tool::Sources &typeCreation, QGraphicsItem * parent = 0);
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void   setDialog();
     /**
@@ -69,29 +69,29 @@ public:
     static QPointF FindPoint(const qreal &radius, const QPointF &center, const QPointF &firstPoint,
                              const QPointF &secondPoint);
     /**
-     * @brief Create
+     * @brief Create help create tool
      * @param dialog
-     * @param scene
+     * @param scene pointer to scene.
      * @param doc dom document container
-     * @param data
+     * @param data container with variables
      */
     static void    Create(QSharedPointer<DialogPointOfContact> &dialog, VMainGraphicsScene  *scene,
                           VDomDocument *doc, VContainer *data);
     /**
-     * @brief Create
-     * @param _id
+     * @brief Create help create tool
+     * @param _id tool id, 0 if tool doesn't exist yet.
      * @param radius
      * @param center
      * @param firstPointId
      * @param secondPointId
-     * @param pointName
-     * @param mx
-     * @param my
-     * @param scene
+     * @param pointName point name.
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
+     * @param scene pointer to scene.
      * @param doc dom document container
-     * @param data
-     * @param parse
-     * @param typeCreation
+     * @param data container with variables
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
     static void    Create(const qint64 _id, const QString &radius, const qint64 &center,
                           const qint64 &firstPointId, const qint64 &secondPointId, const QString &pointName,
@@ -103,28 +103,28 @@ public:
     static const QString ToolType;
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void   FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
+     * @brief FullUpdateFromGui  refresh tool data from change options.
      * @param result
      */
     virtual void   FullUpdateFromGui(int result);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void   SetFactor(qreal factor);
     virtual void   ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
 protected:
     /**
-     * @brief contextMenuEvent
+     * @brief contextMenuEvent handle context menu events.
      * @param event
      */
     virtual void   contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void   AddToFile();
     /**
@@ -132,7 +132,7 @@ protected:
      */
     virtual void RefreshDataInFile();
     /**
-     * @brief RemoveReferens
+     * @brief RemoveReferens decrement value of reference.
      */
     virtual void   RemoveReferens();
 private:

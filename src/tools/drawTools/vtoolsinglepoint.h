@@ -42,15 +42,15 @@ public:
                  /**
                   * @brief VToolSinglePoint
                   * @param doc dom document container
-                  * @param data
-                  * @param id
-                  * @param typeCreation
-                  * @param parent
+                  * @param data container with variables
+                  * @param id object id in container
+                  * @param typeCreation way we create this tool.
+                  * @param parent parent object
                   */
                  VToolSinglePoint (VDomDocument *doc, VContainer *data, qint64 id, const Tool::Sources &typeCreation,
                                    QGraphicsItem * parent = 0 );
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void setDialog();
     /**
@@ -59,22 +59,22 @@ public:
     static const QString ToolType;
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
+     * @brief FullUpdateFromGui  refresh tool data from change options.
      * @param result
      */
     virtual void FullUpdateFromGui(int result);
     /**
-     * @brief ChangedActivDraw
-     * @param newName
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
+     * @param newName new name active pattern peace.
      */
     virtual void ChangedActivDraw(const QString &newName);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void SetFactor(qreal factor);
     virtual void ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
@@ -85,12 +85,12 @@ signals:
     void         FullUpdateTree();
 protected:
     /**
-     * @brief contextMenuEvent
+     * @brief contextMenuEvent handle context menu events.
      * @param event
      */
     virtual void contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void AddToFile();
     /**
@@ -98,7 +98,7 @@ protected:
      */
     virtual void RefreshDataInFile();
     /**
-     * @brief itemChange
+     * @brief itemChange handle tool change.
      * @param change
      * @param value
      * @return

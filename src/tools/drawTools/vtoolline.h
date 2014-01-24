@@ -43,38 +43,38 @@ public:
                  /**
                   * @brief VToolLine
                   * @param doc dom document container
-                  * @param data
-                  * @param id
+                  * @param data container with variables
+                  * @param id object id in container
                   * @param firstPoint
                   * @param secondPoint
-                  * @param typeCreation
-                  * @param parent
+                  * @param typeCreation way we create this tool.
+                  * @param parent parent object
                   */
                  VToolLine(VDomDocument *doc, VContainer *data, qint64 id, qint64 firstPoint,
                            qint64 secondPoint, const Tool::Sources &typeCreation, QGraphicsItem * parent = 0);
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void setDialog();
     /**
-     * @brief Create
+     * @brief Create help create tool
      * @param dialog
-     * @param scene
+     * @param scene pointer to scene.
      * @param doc dom document container
-     * @param data
+     * @param data container with variables
      */
     static void  Create(QSharedPointer<DialogLine> &dialog, VMainGraphicsScene  *scene, VDomDocument *doc,
                         VContainer *data);
     /**
-     * @brief Create
-     * @param _id
+     * @brief Create help create tool
+     * @param _id tool id, 0 if tool doesn't exist yet.
      * @param firstPoint
      * @param secondPoint
-     * @param scene
+     * @param scene pointer to scene.
      * @param doc dom document container
-     * @param data
-     * @param parse
-     * @param typeCreation
+     * @param data container with variables
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
     static void  Create(const qint64 &_id, const qint64 &firstPoint, const qint64 &secondPoint,
                         VMainGraphicsScene  *scene, VDomDocument *doc, VContainer *data,
@@ -85,39 +85,39 @@ public:
     static const QString TagName;
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void     FullUpdateFromFile();
     /**
-     * @brief ChangedActivDraw
-     * @param newName
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
+     * @param newName new name active pattern peace.
      */
     virtual void     ChangedActivDraw(const QString &newName);
     /**
-     * @brief FullUpdateFromGui
+     * @brief FullUpdateFromGui  refresh tool data from change options.
      * @param result
      */
     virtual void     FullUpdateFromGui(int result);
     /**
-     * @brief ShowTool
-     * @param id
+     * @brief ShowTool  highlight tool.
+     * @param id object id in container
      * @param color
      * @param enable
      */
     virtual void     ShowTool(qint64 id, Qt::GlobalColor color, bool enable);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void     SetFactor(qreal factor);
 protected:
     /**
-     * @brief contextMenuEvent
+     * @brief contextMenuEvent handle context menu events.
      * @param event
      */
     virtual void     contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void     AddToFile();
     /**
@@ -125,17 +125,17 @@ protected:
      */
     virtual void     RefreshDataInFile();
     /**
-     * @brief hoverMoveEvent
+     * @brief hoverMoveEvent handle hover move events.
      * @param event
      */
     virtual void     hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief hoverLeaveEvent
+     * @brief hoverLeaveEvent handle hover leave events.
      * @param event
      */
     virtual void     hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief RemoveReferens
+     * @brief RemoveReferens decrement value of reference.
      */
     virtual void     RemoveReferens();
     virtual QVariant itemChange ( GraphicsItemChange change, const QVariant &value );
@@ -154,7 +154,7 @@ private:
      */
     QSharedPointer<DialogLine> dialogLine;
     /**
-     * @brief RefreshGeometry
+     * @brief RefreshGeometry  refresh item on scene.
      */
     void             RefreshGeometry();
 };

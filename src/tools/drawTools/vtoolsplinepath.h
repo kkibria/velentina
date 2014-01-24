@@ -44,35 +44,35 @@ public:
                   /**
                    * @brief VToolSplinePath
                    * @param doc dom document container
-                   * @param data
-                   * @param id
-                   * @param typeCreation
-                   * @param parent
+                   * @param data container with variables
+                   * @param id object id in container
+                   * @param typeCreation way we create this tool.
+                   * @param parent parent object
                    */
                   VToolSplinePath(VDomDocument *doc, VContainer *data, qint64 id, const Tool::Sources &typeCreation,
                                   QGraphicsItem * parent = 0);
      /**
-      * @brief setDialog
+      * @brief setDialog set dialog when user want change tool option.
       */
      virtual void    setDialog();
      /**
-      * @brief Create
+      * @brief Create help create tool
       * @param dialog
-      * @param scene
+      * @param scene pointer to scene.
       * @param doc dom document container
-      * @param data
+      * @param data container with variables
       */
      static void  Create(QSharedPointer<DialogSplinePath> &dialog, VMainGraphicsScene  *scene,
                          VDomDocument *doc, VContainer *data);
      /**
-      * @brief Create
-      * @param _id
+      * @brief Create help create tool
+      * @param _id tool id, 0 if tool doesn't exist yet.
       * @param path
-      * @param scene
+      * @param scene pointer to scene.
       * @param doc dom document container
-      * @param data
-      * @param parse
-      * @param typeCreation
+      * @param data container with variables
+      * @param parse parser file mode.
+      * @param typeCreation way we create this tool.
       */
      static void  Create(const qint64 _id, VSplinePath *path, VMainGraphicsScene  *scene,
                          VDomDocument *doc, VContainer *data, const Document::Documents &parse,
@@ -102,11 +102,11 @@ signals:
     void             setEnabledPoint(bool enable);
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void     FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
+     * @brief FullUpdateFromGui  refresh tool data from change options.
      * @param result
      */
     virtual void     FullUpdateFromGui(int result);
@@ -119,30 +119,30 @@ public slots:
     void             ControlPointChangePosition(const qint32 &indexSpline, const SplinePoint::Position &position,
                                                 const QPointF &pos);
     /**
-     * @brief ChangedActivDraw
-     * @param newName
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
+     * @param newName new name active pattern peace.
      */
     virtual void     ChangedActivDraw(const QString &newName);
     /**
-     * @brief ShowTool
-     * @param id
+     * @brief ShowTool  highlight tool.
+     * @param id object id in container
      * @param color
      * @param enable
      */
     virtual void     ShowTool(qint64 id, Qt::GlobalColor color, bool enable);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void     SetFactor(qreal factor);
 protected:
     /**
-     * @brief contextMenuEvent
+     * @brief contextMenuEvent handle context menu events.
      * @param event
      */
     virtual void     contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void     AddToFile();
     /**
@@ -150,22 +150,22 @@ protected:
      */
     virtual void     RefreshDataInFile();
     /**
-     * @brief mouseReleaseEvent
+     * @brief mouseReleaseEvent  handle mouse release events.
      * @param event
      */
     virtual void     mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
     /**
-     * @brief hoverMoveEvent
+     * @brief hoverMoveEvent handle hover move events.
      * @param event
      */
     virtual void     hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief hoverLeaveEvent
+     * @brief hoverLeaveEvent handle hover leave events.
      * @param event
      */
     virtual void     hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief RemoveReferens
+     * @brief RemoveReferens decrement value of reference.
      */
     virtual void     RemoveReferens();
     virtual QVariant itemChange ( GraphicsItemChange change, const QVariant &value );
@@ -180,7 +180,7 @@ private:
      */
     QVector<VControlPointSpline *>   controlPoints;
     /**
-     * @brief RefreshGeometry
+     * @brief RefreshGeometry  refresh item on scene.
      */
     void             RefreshGeometry();
     /**

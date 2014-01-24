@@ -33,101 +33,102 @@
 #include "../../dialogs/dialogbisector.h"
 
 /**
- * @brief The VToolBisector class
+ * @brief The VToolBisector class tool for creation bisector point.
  */
 class VToolBisector : public VToolLinePoint
 {
 public:
                    /**
-                    * @brief VToolBisector
-                    * @param doc dom document container
-                    * @param data
-                    * @param id
-                    * @param typeLine
-                    * @param formula
-                    * @param firstPointId
-                    * @param secondPointId
-                    * @param thirdPointId
-                    * @param typeCreation
-                    * @param parent
+                    * @brief VToolBisector constructor.
+                    * @param doc dom document container.
+                    * @param data container with variables.
+                    * @param id object id in container.
+                    * @param typeLine line type.
+                    * @param formula string with formula length of bisector.
+                    * @param firstPointId id first point of angle.
+                    * @param secondPointId id second point of angle.
+                    * @param thirdPointId id third point of angle.
+                    * @param typeCreation way we create this tool.
+                    * @param parent parent object.
                     */
                    VToolBisector(VDomDocument *doc, VContainer *data, const qint64 &id, const QString &typeLine,
                                  const QString &formula, const qint64 &firstPointId, const qint64 &secondPointId,
                                  const qint64 &thirdPointId, const Tool::Sources &typeCreation,
                                  QGraphicsItem * parent = 0);
     /**
-     * @brief FindPoint
-     * @param firstPoint
-     * @param secondPoint
-     * @param thirdPoint
-     * @param length
-     * @return
+     * @brief FindPoint find bisector point.
+     * @param firstPoint first point of angle.
+     * @param secondPoint second point of angle.
+     * @param thirdPoint third point of angle.
+     * @param length bisector length.
+     * @return bisector point.
      */
     static QPointF FindPoint(const QPointF &firstPoint, const QPointF &secondPoint, const QPointF &thirdPoint,
                              const qreal& length);
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void   setDialog();
     /**
-     * @brief Create
-     * @param dialog
-     * @param scene
-     * @param doc dom document container
-     * @param data
+     * @brief Create help create tool form GUI.
+     * @param dialog dialog.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
      */
     static void    Create(QSharedPointer<DialogBisector> &dialog, VMainGraphicsScene  *scene,
                           VDomDocument *doc, VContainer *data);
     /**
-     * @brief Create
-     * @param _id
-     * @param formula
-     * @param firstPointId
-     * @param secondPointId
-     * @param thirdPointId
-     * @param typeLine
-     * @param pointName
-     * @param mx
-     * @param my
-     * @param scene
-     * @param doc dom document container
-     * @param data
-     * @param parse
-     * @param typeCreation
+     * @brief Create help create tool.
+     * @param _id tool id, 0 if tool doesn't exist yet.
+     * @param formula string with formula.
+     * @param firstPointId id first point of angle.
+     * @param secondPointId id second point of angle.
+     * @param thirdPointId id third point of angle.
+     * @param typeLine line type.
+     * @param pointName point name.
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
     static void    Create(const qint64 _id, const QString &formula, const qint64 &firstPointId,
                           const qint64 &secondPointId, const qint64 &thirdPointId, const QString &typeLine,
                           const QString &pointName, const qreal &mx, const qreal &my, VMainGraphicsScene  *scene,
                           VDomDocument *doc, VContainer *data, const Document::Documents &parse,
                           const Tool::Sources &typeCreation);
-    /**
-     * @brief ToolType
-     */
     static const QString ToolType;
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void   FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
-     * @param result
+     * @brief FullUpdateFromGui  refresh tool data from change options.
+     * @param result result working dialog.
      */
     virtual void   FullUpdateFromGui(int result);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void   SetFactor(qreal factor);
+    /**
+     * @brief ShowContextMenu show context menu.
+     * @param event context menu event.
+     */
     virtual void   ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
 protected:
     /**
-     * @brief contextMenuEvent
-     * @param event
+     * @brief contextMenuEvent handle context menu events.
+     * @param event context menu event.
      */
     virtual void   contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void   AddToFile();
     /**
@@ -135,20 +136,20 @@ protected:
      */
     virtual void RefreshDataInFile();
     /**
-     * @brief RemoveReferens
+     * @brief RemoveReferens decrement value of reference.
      */
     virtual void   RemoveReferens();
 private:
     /**
-     * @brief firstPointId
+     * @brief firstPointId id first point of angle.
      */
     qint64         firstPointId;
     /**
-     * @brief thirdPointId
+     * @brief thirdPointId id third point of angle.
      */
     qint64         thirdPointId;
     /**
-     * @brief dialogBisector
+     * @brief dialogBisector dialog.
      */
     QSharedPointer<DialogBisector> dialogBisector;
 };

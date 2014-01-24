@@ -35,88 +35,88 @@
 #include <QGraphicsSceneContextMenuEvent>
 
 /**
- * @brief The VDrawTool class
+ * @brief The VDrawTool abstract class for all draw tool.
  */
 class VDrawTool : public VAbstractTool
 {
     Q_OBJECT
 public:
                  /**
-                  * @brief VDrawTool
-                  * @param doc dom document container
-                  * @param data
-                  * @param id
-                  * @param parent
+                  * @brief VDrawTool constructor.
+                  * @param doc dom document container.
+                  * @param data container with variables.
+                  * @param id object id in container.
+                  * @param parent parent object.
                   */
                  VDrawTool(VDomDocument *doc, VContainer *data, qint64 id);
     virtual      ~VDrawTool() {}
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void setDialog() {}
     /**
-     * @brief ignoreContextMenu
-     * @param enable
+     * @brief ignoreContextMenu set ignore contect menu tool.
+     * @param enable true - ignore.
      */
     void         ignoreContextMenu(bool enable) {ignoreContextMenuEvent = enable;}
 public slots:
     /**
-     * @brief ShowTool
-     * @param id
-     * @param color
-     * @param enable
+     * @brief ShowTool  highlight tool.
+     * @param id object id in container.
+     * @param color highlight color.
+     * @param enable enable or disable highlight.
      */
     virtual void ShowTool(qint64 id, Qt::GlobalColor color, bool enable);
     /**
-     * @brief ChangedActivDraw
-     * @param newName
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
+     * @param newName new name active pattern peace. name new active pattern peace.
      */
     virtual void ChangedActivDraw(const QString &newName);
     /**
-     * @brief ChangedNameDraw
-     * @param oldName
-     * @param newName
+     * @brief ChangedNameDraw save new name active pattern peace.
+     * @param oldName old name.
+     * @param newName new name active pattern peace. new name.
      */
     void         ChangedNameDraw(const QString &oldName, const QString &newName);
     /**
-     * @brief FullUpdateFromGui
-     * @param result
+     * @brief FullUpdateFromGui refresh tool data after change in options.
+     * @param result keep result working dialog.
      */
     virtual void FullUpdateFromGui(int result)=0;
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void SetFactor(qreal factor);
 protected:
     /**
-     * @brief ignoreContextMenuEvent
+     * @brief ignoreContextMenuEvent ignore or not context menu events.
      */
     bool         ignoreContextMenuEvent;
     /**
-     * @brief ignoreFullUpdate
+     * @brief ignoreFullUpdate ignore or not full updates.
      */
     bool         ignoreFullUpdate;
     /**
-     * @brief nameActivDraw
+     * @brief nameActivDraw name of tool's pattern peace.
      */
     QString      nameActivDraw;
     /**
-     * @brief factor
+     * @brief factor scene scale factor.
      */
     static qreal factor;
     /**
-     * @brief AddToCalculation
-     * @param domElement
+     * @brief AddToCalculation add tool to calculation tag in pattern file.
+     * @param domElement tag in xml tree.
      */
     void         AddToCalculation(const QDomElement &domElement);
     template <typename Dialog, typename Tool>
     /**
-     * @brief ContextMenu
-     * @param dialog
-     * @param tool
-     * @param event
-     * @param showRemove
+     * @brief ContextMenu show context menu for tool.
+     * @param dialog dialog option.
+     * @param tool tool.
+     * @param event context menu event.
+     * @param showRemove true - tool have option delete.
      */
     void ContextMenu(QSharedPointer<Dialog> &dialog, Tool *tool, QGraphicsSceneContextMenuEvent *event,
                      bool showRemove = true)
@@ -168,11 +168,11 @@ protected:
     }
     template <typename Item>
     /**
-     * @brief ShowItem
-     * @param item
-     * @param id
-     * @param color
-     * @param enable
+     * @brief ShowItem highlight tool.
+     * @param item tool.
+     * @param id object id in container.
+     * @param color highlight color.
+     * @param enable enable or disable highlight.
      */
     void ShowItem(Item *item, qint64 id, Qt::GlobalColor color, bool enable)
     {

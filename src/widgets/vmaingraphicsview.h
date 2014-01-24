@@ -46,7 +46,7 @@ public:
 signals:
     /**
      * @brief NewFactor
-     * @param factor
+     * @param factor scene scale factor.
      */
     void     NewFactor(qreal factor);
 public slots:
@@ -72,7 +72,7 @@ protected:
      */
     void     mousePressEvent(QMouseEvent *mousePress);
     /**
-     * @brief mouseReleaseEvent
+     * @brief mouseReleaseEvent  handle mouse release events.
      * @param event
      */
     void     mouseReleaseEvent(QMouseEvent *event);
