@@ -215,7 +215,7 @@ void VContainer::UpdateId(qint64 newId)
     }
 }
 
-QVector<QPointF> VContainer::CorrectEquidistantPoints(const QVector<QPointF> &points) const
+QVector<QPointF> VContainer::CorrectEquidistantPoints(const QVector<QPointF> &points)
 {
     QVector<QPointF> correctPoints;
     if(points.size()<4)//Better don't check if only three points. We can destroy equidistant.
@@ -273,7 +273,7 @@ QPainterPath VContainer::ContourPath(qint64 idDetail) const
             {
                 const VPointF *point = GeometricObject<const VPointF*>(detail.at(i).getId());
                 points.append(point->toQPointF());
-                if (detail.getSupplement() == true)
+                if (detail.getSeamAllowance() == true)
                 {
                     QPointF pEkv = point->toQPointF();
                     pEkv.setX(pEkv.x()+detail.at(i).getMx());
@@ -290,7 +290,7 @@ QPainterPath VContainer::ContourPath(qint64 idDetail) const
                 if (len1 <= lenReverse)
                 {
                     points << arc->GetPoints();
-                    if (detail.getSupplement() == true)
+                    if (detail.getSeamAllowance() == true)
                     {
                         pointsEkv << biasPoints(arc->GetPoints(), detail.at(i).getMx(), detail.at(i).getMy());
                     }
@@ -298,7 +298,7 @@ QPainterPath VContainer::ContourPath(qint64 idDetail) const
                 else
                 {
                     points << GetReversePoint(arc->GetPoints());
-                    if (detail.getSupplement() == true)
+                    if (detail.getSeamAllowance() == true)
                     {
                         pointsEkv << biasPoints(GetReversePoint(arc->GetPoints()), detail.at(i).getMx(),
                                                 detail.at(i).getMy());
@@ -314,7 +314,7 @@ QPainterPath VContainer::ContourPath(qint64 idDetail) const
                 if (len1 <= lenReverse)
                 {
                     points << spline->GetPoints();
-                    if (detail.getSupplement() == true)
+                    if (detail.getSeamAllowance() == true)
                     {
                         pointsEkv << biasPoints(spline->GetPoints(), detail.at(i).getMx(), detail.at(i).getMy());
                     }
@@ -322,7 +322,7 @@ QPainterPath VContainer::ContourPath(qint64 idDetail) const
                 else
                 {
                     points << GetReversePoint(spline->GetPoints());
-                    if (detail.getSupplement() == true)
+                    if (detail.getSeamAllowance() == true)
                     {
                         pointsEkv << biasPoints(GetReversePoint(spline->GetPoints()), detail.at(i).getMx(),
                                                 detail.at(i).getMy());
@@ -338,7 +338,7 @@ QPainterPath VContainer::ContourPath(qint64 idDetail) const
                 if (len1 <= lenReverse)
                 {
                     points << splinePath->GetPathPoints();
-                    if (detail.getSupplement() == true)
+                    if (detail.getSeamAllowance() == true)
                     {
                      pointsEkv << biasPoints(splinePath->GetPathPoints(), detail.at(i).getMx(), detail.at(i).getMy());
                     }
@@ -346,7 +346,7 @@ QPainterPath VContainer::ContourPath(qint64 idDetail) const
                 else
                 {
                     points << GetReversePoint(splinePath->GetPathPoints());
-                    if (detail.getSupplement() == true)
+                    if (detail.getSeamAllowance() == true)
                     {
                         pointsEkv << biasPoints(GetReversePoint(splinePath->GetPathPoints()), detail.at(i).getMx(),
                                                 detail.at(i).getMy());
@@ -370,7 +370,7 @@ QPainterPath VContainer::ContourPath(qint64 idDetail) const
 
     pointsEkv = CorrectEquidistantPoints(pointsEkv);
 
-    if (detail.getSupplement() == true)
+    if (detail.getSeamAllowance() == true)
     {
         QPainterPath ekv;
         if (detail.getClosed() == true)
@@ -387,7 +387,7 @@ QPainterPath VContainer::ContourPath(qint64 idDetail) const
     return path;
 }
 
-QVector<QPointF> VContainer::biasPoints(const QVector<QPointF> &points, const qreal &mx, const qreal &my) const
+QVector<QPointF> VContainer::biasPoints(const QVector<QPointF> &points, const qreal &mx, const qreal &my)
 {
     QVector<QPointF> p;
     for (qint32 i = 0; i < points.size(); ++i)
@@ -400,7 +400,7 @@ QVector<QPointF> VContainer::biasPoints(const QVector<QPointF> &points, const qr
     return p;
 }
 
-QPainterPath VContainer::Equidistant(QVector<QPointF> points, const Detail::Equidistant &eqv, const qreal &width) const
+QPainterPath VContainer::Equidistant(QVector<QPointF> points, const Detail::Equidistant &eqv, const qreal &width)
 {
     QPainterPath ekv;
     QVector<QPointF> ekvPoints;
@@ -483,7 +483,7 @@ QPointF VContainer::SingleParallelPoint(const QLineF &line, const qreal &angle, 
     return pLine.p2();
 }
 
-QVector<QPointF> VContainer::EkvPoint(const QLineF &line1, const QLineF &line2, const qreal &width) const
+QVector<QPointF> VContainer::EkvPoint(const QLineF &line1, const QLineF &line2, const qreal &width)
 {
     Q_ASSERT(width > 0);
     QVector<QPointF> points;
@@ -533,7 +533,7 @@ QVector<QPointF> VContainer::EkvPoint(const QLineF &line1, const QLineF &line2, 
     return points;
 }
 
-QVector<QPointF> VContainer::CheckLoops(const QVector<QPointF> &points) const
+QVector<QPointF> VContainer::CheckLoops(const QVector<QPointF> &points)
 {
     QVector<QPointF> ekvPoints;
     /*If we got less than 4 points no need seek loops.*/
@@ -848,7 +848,7 @@ void VContainer::CreateManTableIGroup ()
     AddStandardTableCell("Sb", VStandardTableRow(492, 15, 5));
 }
 
-QVector<QPointF> VContainer::GetReversePoint(const QVector<QPointF> &points) const
+QVector<QPointF> VContainer::GetReversePoint(const QVector<QPointF> &points)
 {
     Q_ASSERT(points.size() > 0);
     QVector<QPointF> reversePoints;
@@ -859,7 +859,7 @@ QVector<QPointF> VContainer::GetReversePoint(const QVector<QPointF> &points) con
     return reversePoints;
 }
 
-qreal VContainer::GetLengthContour(const QVector<QPointF> &contour, const QVector<QPointF> &newPoints) const
+qreal VContainer::GetLengthContour(const QVector<QPointF> &contour, const QVector<QPointF> &newPoints)
 {
     qreal length = 0;
     QVector<QPointF> points;

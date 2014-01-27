@@ -33,58 +33,58 @@
 #include "../../dialogs/dialognormal.h"
 
 /**
- * @brief The VToolNormal class
+ * @brief The VToolNormal class tool for creation point on normal. Normal begin from first point of line.
  */
 class VToolNormal : public VToolLinePoint
 {
     Q_OBJECT
 public:
                    /**
-                    * @brief VToolNormal
-                    * @param doc dom document container
-                    * @param data
-                    * @param id
-                    * @param typeLine
-                    * @param formula
-                    * @param angle
-                    * @param firstPointId
-                    * @param secondPointId
-                    * @param typeCreation
-                    * @param parent
+                    * @brief VToolNormal constructor.
+                    * @param doc dom document container.
+                    * @param data container with variables.
+                    * @param id object id in container.
+                    * @param typeLine line type.
+                    * @param formula string with formula normal length.
+                    * @param angle additional angle.
+                    * @param firstPointId id first line point.
+                    * @param secondPointId id second line point.
+                    * @param typeCreation way we create this tool.
+                    * @param parent parent object.
                     */
                    VToolNormal(VDomDocument *doc, VContainer *data, const qint64 &id, const QString &typeLine,
                                const QString &formula, const qreal &angle, const qint64 &firstPointId,
                                const qint64 &secondPointId, const Tool::Sources &typeCreation,
                                QGraphicsItem * parent = 0);
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void   setDialog();
     /**
-     * @brief Create
-     * @param dialog
-     * @param scene
-     * @param doc dom document container
-     * @param data
+     * @brief Create help create tool from GUI.
+     * @param dialog dialog.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
      */
     static void    Create(QSharedPointer<DialogNormal> &dialog, VMainGraphicsScene  *scene, VDomDocument *doc,
                           VContainer *data);
     /**
-     * @brief Create
-     * @param _id
-     * @param formula
-     * @param firstPointId
-     * @param secondPointId
-     * @param typeLine
-     * @param pointName
-     * @param angle
-     * @param mx
-     * @param my
-     * @param scene
-     * @param doc dom document container
-     * @param data
-     * @param parse
-     * @param typeCreation
+     * @brief Create help create tool.
+     * @param _id tool id, 0 if tool doesn't exist yet.
+     * @param formula string with formula normal length.
+     * @param firstPointId id first line point.
+     * @param secondPointId id second line point.
+     * @param typeLine line type.
+     * @param pointName point name.
+     * @param angle additional angle.
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
     static void    Create(const qint64 _id, const QString &formula, const qint64 &firstPointId,
                           const qint64 &secondPointId, const QString &typeLine, const QString &pointName,
@@ -92,43 +92,44 @@ public:
                           VDomDocument *doc, VContainer *data, const Document::Documents &parse,
                           const Tool::Sources &typeCreation);
     /**
-     * @brief FindPoint
-     * @param firstPoint
-     * @param secondPoint
-     * @param length
-     * @param angle
-     * @return
+     * @brief FindPoint return normal point.
+     * @param firstPoint first line point.
+     * @param secondPoint second line point.
+     * @param length normal length.
+     * @param angle additional angle.
+     * @return normal point.
      */
     static QPointF FindPoint(const QPointF &firstPoint, const QPointF &secondPoint, const qreal &length,
                              const qreal &angle = 0);
-    /**
-     * @brief ToolType
-     */
     static const QString ToolType;
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void   FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
-     * @param result
+     * @brief FullUpdateFromGui  refresh tool data from change options.
+     * @param result result working dialog.
      */
     virtual void   FullUpdateFromGui(int result);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void   SetFactor(qreal factor);
+    /**
+     * @brief ShowContextMenu show context menu.
+     * @param event context menu event.
+     */
     virtual void   ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
 protected:
     /**
-     * @brief contextMenuEvent
-     * @param event
+     * @brief contextMenuEvent handle context menu events.
+     * @param event context menu event.
      */
     virtual void   contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void   AddToFile();
     /**
@@ -136,16 +137,16 @@ protected:
      */
     virtual void RefreshDataInFile();
     /**
-     * @brief RemoveReferens
+     * @brief RemoveReferens decrement value of reference.
      */
     virtual void   RemoveReferens();
 private:
     /**
-     * @brief secondPointId
+     * @brief secondPointId id second line point.
      */
     qint64         secondPointId;
     /**
-     * @brief dialogNormal
+     * @brief dialogNormal dialog.
      */
     QSharedPointer<DialogNormal> dialogNormal;
 };

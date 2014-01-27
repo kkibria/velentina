@@ -33,98 +33,109 @@
 #include "../../widgets/vgraphicssimpletextitem.h"
 
 /**
- * @brief The VToolPoint class
+ * @brief The VToolPoint class parent for all tools what create points.
  */
 class VToolPoint: public VDrawTool, public QGraphicsEllipseItem
 {
     Q_OBJECT
 public:
                             /**
-                             * @brief VToolPoint
-                             * @param doc dom document container
-                             * @param data
-                             * @param id
-                             * @param parent
+                             * @brief VToolPoint constructor.
+                             * @param doc dom document container.
+                             * @param data container with variables.
+                             * @param id object id in container.
+                             * @param parent parent object.
                              */
                             VToolPoint(VDomDocument *doc, VContainer *data, qint64 id, QGraphicsItem * parent = 0);
     virtual                 ~VToolPoint(){}
-    /**
-     * @brief TagName
-     */
     static const QString    TagName;
 public slots:
     /**
-     * @brief NameChangePosition
-     * @param pos
+     * @brief NameChangePosition handle change posion point label.
+     * @param pos new position.
      */
     void                    NameChangePosition(const QPointF &pos);
     /**
-     * @brief ChangedActivDraw
-     * @param newName
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
+     * @param newName new name active pattern peace.
      */
     virtual void            ChangedActivDraw(const QString &newName);
     /**
-     * @brief FullUpdateFromGui
-     * @param result
+     * @brief FullUpdateFromGui  refresh tool data from change options.
+     * @param result result working dialog.
      */
     virtual void            FullUpdateFromGui(int result) = 0;
     /**
-     * @brief ShowTool
-     * @param id
-     * @param color
-     * @param enable
+     * @brief ShowTool  highlight tool.
+     * @param id object id in container.
+     * @param color highlight color.
+     * @param enable enable or disable highlight.
      */
     virtual void            ShowTool(qint64 id, Qt::GlobalColor color, bool enable);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void            SetFactor(qreal factor);
+    /**
+     * @brief ShowContextMenu show context menu.
+     * @param event context menu event.
+     */
     virtual void            ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
 protected:
     /**
-     * @brief radius
+     * @brief radius radius circle.
      */
     qreal                   radius;
     /**
-     * @brief namePoint
+     * @brief namePoint point label.
      */
     VGraphicsSimpleTextItem *namePoint;
     /**
-     * @brief lineName
+     * @brief lineName line what we see if label moved too away from point.
      */
     QGraphicsLineItem       *lineName;
     /**
-     * @brief UpdateNamePosition
-     * @param mx
-     * @param my
+     * @brief UpdateNamePosition save new position label to the pattern file.
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
      */
     virtual void            UpdateNamePosition(qreal mx, qreal my);
     /**
-     * @brief mouseReleaseEvent
-     * @param event
+     * @brief mouseReleaseEvent  handle mouse release events.
+     * @param event mouse release event.
      */
     virtual void            mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
     /**
-     * @brief hoverMoveEvent
-     * @param event
+     * @brief hoverMoveEvent handle hover move events.
+     * @param event hover move event.
      */
     virtual void            hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief hoverLeaveEvent
-     * @param event
+     * @brief hoverLeaveEvent handle hover leave events.
+     * @param event hover leave event.
      */
     virtual void            hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief RefreshPointGeometry
-     * @param point
+     * @brief RefreshPointGeometry refresh point on scene.
+     * @param point point.
      */
     virtual void            RefreshPointGeometry(const VPointF &point);
     /**
-     * @brief RefreshLine
+     * @brief RefreshLine refresh line to label on scene.
      */
     void                    RefreshLine();
+    /**
+     * @brief itemChange hadle item change.
+     * @param change change.
+     * @param value value.
+     * @return value.
+     */
     virtual QVariant        itemChange ( GraphicsItemChange change, const QVariant &value );
+    /**
+     * @brief keyReleaseEvent handle key release events.
+     * @param event key release event.
+     */
     virtual void            keyReleaseEvent(QKeyEvent * event);
 private:
     Q_DISABLE_COPY(VToolPoint)

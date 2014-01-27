@@ -41,83 +41,84 @@ class VToolCutSpline : public VToolPoint
     Q_OBJECT
 public:
     /**
-     * @brief VToolCutSpline
-     * @param doc
-     * @param data
-     * @param id
-     * @param formula
-     * @param splineId
-     * @param typeCreation
-     * @param parent
+     * @brief VToolCutSpline constructor.
+     * @param doc dom document container.
+     * @param data container with variables.
+     * @param id object id in container.
+     * @param formula string with formula length first spline.
+     * @param splineId id spline in data container.
+     * @param typeCreation way we create this tool.
+     * @param parent parent object.
      */
     VToolCutSpline(VDomDocument *doc, VContainer *data, const qint64 &id, const QString &formula,
                    const qint64 &splineId, const qint64 &spl1id, const qint64 &spl2id,
                    const Tool::Sources &typeCreation, QGraphicsItem * parent = 0);
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void setDialog();
     /**
-     * @brief Create
-     * @param dialog
-     * @param scene
-     * @param doc dom document container
-     * @param data
+     * @brief Create help create tool from GUI.
+     * @param dialog dialog.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
      */
     static void  Create(QSharedPointer<DialogCutSpline> &dialog, VMainGraphicsScene  *scene, VDomDocument *doc,
                         VContainer *data);
     /**
-     * @brief Create
-     * @param _id
-     * @param pointName
-     * @param formula
-     * @param splineId
-     * @param mx
-     * @param my
-     * @param scene
-     * @param doc dom document container
-     * @param data
-     * @param parse
-     * @param typeCreation
+     * @brief Create help create tool.
+     * @param _id tool id, 0 if tool doesn't exist yet.
+     * @param pointName point name.
+     * @param formula string with formula length first spline.
+     * @param splineId id spline in data container.
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
     static void  Create(const qint64 _id, const QString &pointName,
                         const QString &formula, const qint64 &splineId, const qreal &mx, const qreal &my,
                         VMainGraphicsScene  *scene, VDomDocument *doc, VContainer *data,
                         const Document::Documents &parse, const Tool::Sources &typeCreation);
-    /**
-     * @brief ToolType
-     */
     static const QString ToolType;
     static const QString AttrSpline;
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
+     * @brief FullUpdateFromGui  refresh tool data from change options.
      * @param result
      */
     virtual void FullUpdateFromGui(int result);
     /**
-     * @brief SplineChoosed
-     * @param id
+     * @brief SplineChoosed send signal about selection from spline.
+     * @param id object id in container.
      */
     void SplineChoosed(qint64 id);
     /**
-     * @brief ChangedActivDraw
-     * @param newName
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
+     * @param newName new name active pattern peace.
      */
     virtual void      ChangedActivDraw(const QString &newName);
+    /**
+     * @brief ShowContextMenu show context menu.
+     * @param event context menu event.
+     */
     virtual void      ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
 protected:
     /**
-     * @brief contextMenuEvent
-     * @param event
+     * @brief contextMenuEvent handle context menu events.
+     * @param event context menu event.
      */
     virtual void contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void AddToFile();
     /**
@@ -125,34 +126,49 @@ protected:
      */
     virtual void RefreshDataInFile();
     /**
-     * @brief RefreshGeometry
+     * @brief RefreshGeometry  refresh item on scene.
      */
     void         RefreshGeometry();
+    /**
+     * @brief RemoveReferens decrement referens value for used objects.
+     */
     virtual void RemoveReferens();
 private:
     Q_DISABLE_COPY(VToolCutSpline)
     /**
-     * @brief formula keep formula of length
+     * @brief formula keep formula of length.
      */
     QString           formula;
     /**
-     * @brief splineId keep id of spline
+     * @brief splineId keep id of spline.
      */
     qint64            splineId;
     /**
-     * @brief DialogCutSpline pointer to the tool's dialog
+     * @brief DialogCutSpline pointer to the tool's dialog.
      */
     QSharedPointer<DialogCutSpline> dialogCutSpline;
     /**
-     * @brief firstSpline
+     * @brief firstSpline first spline after cutting.
      */
     VSimpleSpline *firstSpline;
     /**
-     * @brief secondSpline
+     * @brief secondSpline second spline after cutting.
      */
     VSimpleSpline *secondSpline;
+    /**
+     * @brief spl1id id first spline after cutting.
+     */
     const qint64 spl1id;
+    /**
+     * @brief spl2id id second spline after cutting.
+     */
     const qint64 spl2id;
+    /**
+     * @brief RefreshSpline refresh spline on scene.
+     * @param spline spline.
+     * @param splid spline id.
+     * @param tr spline type.
+     */
     void RefreshSpline(VSimpleSpline *spline, qint64 splid, SimpleSpline::Translation tr);
 };
 

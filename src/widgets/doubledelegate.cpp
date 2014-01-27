@@ -26,17 +26,11 @@
  **
  *************************************************************************/
 
- /*
-     doubledelegate.cpp
-
-     A delegate that allows the user to change integer values from the model
-     using a spin box widget.
- */
-
 #include "doubledelegate.h"
 
 #include <QDoubleSpinBox>
 
+//cppcheck-suppress unusedFunction
 QWidget *DoubleSpinBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                                              const QModelIndex &index ) const
 {
@@ -50,6 +44,7 @@ QWidget *DoubleSpinBoxDelegate::createEditor(QWidget *parent, const QStyleOption
     return editor;
 }
 
+//cppcheck-suppress unusedFunction
 void DoubleSpinBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     qreal value = index.model()->data(index, Qt::EditRole).toDouble();
@@ -59,6 +54,7 @@ void DoubleSpinBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &in
     spinBox->setValue(value);
 }
 
+//cppcheck-suppress unusedFunction
 void DoubleSpinBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
     QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(editor);
@@ -69,6 +65,7 @@ void DoubleSpinBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *mo
     model->setData(index, value, Qt::EditRole);
 }
 
+//cppcheck-suppress unusedFunction
 void DoubleSpinBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
                                                  const QModelIndex &index) const
 {

@@ -33,88 +33,89 @@
 #include "../../dialogs/dialogalongline.h"
 
 /**
- * @brief The VToolAlongLine class
+ * @brief The VToolAlongLine class tool for creation point along line.
  */
 class VToolAlongLine : public VToolLinePoint
 {
     Q_OBJECT
 public:
                  /**
-                  * @brief VToolAlongLine
-                  * @param doc dom document container
-                  * @param data
-                  * @param id
-                  * @param formula
-                  * @param firstPointId
-                  * @param secondPointId
-                  * @param typeLine
-                  * @param typeCreation
-                  * @param parent
+                  * @brief VToolAlongLine constuctor.
+                  * @param doc dom document container.
+                  * @param data container with variables.
+                  * @param id object id in container.
+                  * @param formula string with length formula.
+                  * @param firstPointId id first point of line.
+                  * @param secondPointId id second point of line.
+                  * @param typeLine line type. line type.
+                  * @param typeCreation way we create this tool.
+                  * @param parent parent object.
                   */
                  VToolAlongLine(VDomDocument *doc, VContainer *data, qint64 id, const QString &formula,
                                 const qint64 &firstPointId, const qint64 &secondPointId, const QString &typeLine,
                                 const Tool::Sources &typeCreation, QGraphicsItem * parent = 0);
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void setDialog();
     /**
-     * @brief Create
-     * @param dialog
-     * @param scene
-     * @param doc dom document container
-     * @param data
+     * @brief Create help create tool form GUI.
+     * @param dialog dialog options.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
      */
     static void  Create(QSharedPointer<DialogAlongLine> &dialog, VMainGraphicsScene  *scene, VDomDocument *doc,
                         VContainer *data);
     /**
-     * @brief Create
-     * @param _id
-     * @param pointName
-     * @param typeLine
-     * @param formula
-     * @param firstPointId
-     * @param secondPointId
-     * @param mx
-     * @param my
-     * @param scene
-     * @param doc dom document container
-     * @param data
-     * @param parse
-     * @param typeCreation
+     * @brief Create help create tool.
+     * @param _id tool id, 0 if tool doesn't exist yet.
+     * @param pointName point name. point name.
+     * @param typeLine line type.
+     * @param formula string with length formula.
+     * @param firstPointId id first point of line.
+     * @param secondPointId id second point of line.
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
     static void  Create(const qint64 _id, const QString &pointName, const QString &typeLine, const QString &formula,
                         const qint64 &firstPointId, const qint64 &secondPointId, const qreal &mx, const qreal &my,
                         VMainGraphicsScene  *scene, VDomDocument *doc, VContainer *data,
                         const Document::Documents &parse, const Tool::Sources &typeCreation);
-    /**
-     * @brief ToolType
-     */
     static const QString ToolType;
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
-     * @param result
+     * @brief FullUpdateFromGui  refresh tool data from change options.
+     * @param result result working dialog.
      */
     virtual void FullUpdateFromGui(int result);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void SetFactor(qreal factor);
+    /**
+     * @brief ShowContextMenu handle context menu event.
+     * @param event context menu event.
+     */
     virtual void ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
 protected:
     /**
-     * @brief contextMenuEvent
-     * @param event
+     * @brief contextMenuEvent handle context menu events. handle context menu event.
+     * @param event context menu event.
      */
     virtual void contextMenuEvent ( QGraphicsSceneContextMenuEvent * event ); 
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void AddToFile();
     /**
@@ -122,16 +123,16 @@ protected:
      */
     virtual void RefreshDataInFile();
     /**
-     * @brief RemoveReferens
+     * @brief RemoveReferens decrement value of reference.
      */
     virtual void RemoveReferens();
 private:
     /**
-     * @brief secondPointId
+     * @brief secondPointId id second point of line.
      */
     qint64       secondPointId;
     /**
-     * @brief dialogAlongLine
+     * @brief dialogAlongLine dialog.
      */
     QSharedPointer<DialogAlongLine> dialogAlongLine;
 };

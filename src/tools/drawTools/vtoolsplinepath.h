@@ -35,114 +35,108 @@
 #include "../../widgets/vcontrolpointspline.h"
 
 /**
- * @brief The VToolSplinePath class
+ * @brief The VToolSplinePath class tool for creation spline path.
  */
 class VToolSplinePath:public VDrawTool, public QGraphicsPathItem
 {
     Q_OBJECT
 public:
                   /**
-                   * @brief VToolSplinePath
-                   * @param doc dom document container
-                   * @param data
-                   * @param id
-                   * @param typeCreation
-                   * @param parent
+                   * @brief VToolSplinePath constructor.
+                   * @param doc dom document container.
+                   * @param data container with variables.
+                   * @param id object id in container.
+                   * @param typeCreation way we create this tool.
+                   * @param parent parent object.
                    */
                   VToolSplinePath(VDomDocument *doc, VContainer *data, qint64 id, const Tool::Sources &typeCreation,
                                   QGraphicsItem * parent = 0);
      /**
-      * @brief setDialog
+      * @brief setDialog set dialog when user want change tool option.
       */
      virtual void    setDialog();
      /**
-      * @brief Create
-      * @param dialog
-      * @param scene
-      * @param doc dom document container
-      * @param data
+      * @brief Create help create tool from GUI.
+      * @param dialog dialog.
+      * @param scene pointer to scene.
+      * @param doc dom document container.
+      * @param data container with variables.
       */
      static void  Create(QSharedPointer<DialogSplinePath> &dialog, VMainGraphicsScene  *scene,
                          VDomDocument *doc, VContainer *data);
      /**
-      * @brief Create
-      * @param _id
-      * @param path
-      * @param scene
-      * @param doc dom document container
-      * @param data
-      * @param parse
-      * @param typeCreation
+      * @brief Create help create tool.
+      * @param _id tool id, 0 if tool doesn't exist yet.
+      * @param path spline path.
+      * @param scene pointer to scene.
+      * @param doc dom document container.
+      * @param data container with variables.
+      * @param parse parser file mode.
+      * @param typeCreation way we create this tool.
       */
      static void  Create(const qint64 _id, VSplinePath *path, VMainGraphicsScene  *scene,
                          VDomDocument *doc, VContainer *data, const Document::Documents &parse,
                          const Tool::Sources &typeCreation);
-     /**
-      * @brief TagName
-      */
      static const QString TagName;
-     /**
-      * @brief ToolType
-      */
      static const QString ToolType;
 signals:
     /**
-     * @brief RefreshLine
-     * @param indexSpline
-     * @param pos
-     * @param controlPoint
-     * @param splinePoint
+     * @brief RefreshLine refresh control line.
+     * @param indexSpline position spline in spline list.
+     * @param position position point in spline.
+     * @param controlPoint new position control point.
+     * @param splinePoint new position spline point.
      */
     void             RefreshLine(const qint32 &indexSpline, SplinePoint::Position pos,
                                  const QPointF &controlPoint, const QPointF &splinePoint);
     /**
-     * @brief setEnabledPoint
-     * @param enable
+     * @brief setEnabledPoint disable control points.
+     * @param enable enable or diasable points.
      */
     void             setEnabledPoint(bool enable);
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void     FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
-     * @param result
+     * @brief FullUpdateFromGui  refresh tool data from change options.
+     * @param result result working dialog.
      */
     virtual void     FullUpdateFromGui(int result);
     /**
-     * @brief ControlPointChangePosition
-     * @param indexSpline
-     * @param position
-     * @param pos
+     * @brief ControlPointChangePosition handle change position control point.
+     * @param indexSpline position spline in spline list.
+     * @param position position point in spline.
+     * @param pos new position.
      */
     void             ControlPointChangePosition(const qint32 &indexSpline, const SplinePoint::Position &position,
                                                 const QPointF &pos);
     /**
-     * @brief ChangedActivDraw
-     * @param newName
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
+     * @param newName new name active pattern peace.
      */
     virtual void     ChangedActivDraw(const QString &newName);
     /**
-     * @brief ShowTool
-     * @param id
-     * @param color
-     * @param enable
+     * @brief ShowTool  highlight tool.
+     * @param id object id in container
+     * @param color highlight color.
+     * @param enable enable or disable highlight.
      */
     virtual void     ShowTool(qint64 id, Qt::GlobalColor color, bool enable);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void     SetFactor(qreal factor);
 protected:
     /**
-     * @brief contextMenuEvent
-     * @param event
+     * @brief contextMenuEvent handle context menu events.
+     * @param event context menu event.
      */
     virtual void     contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void     AddToFile();
     /**
@@ -150,56 +144,66 @@ protected:
      */
     virtual void     RefreshDataInFile();
     /**
-     * @brief mouseReleaseEvent
-     * @param event
+     * @brief mouseReleaseEvent  handle mouse release events.
+     * @param event mouse release event.
      */
     virtual void     mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
     /**
-     * @brief hoverMoveEvent
-     * @param event
+     * @brief hoverMoveEvent handle hover move events.
+     * @param event hover move event.
      */
     virtual void     hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief hoverLeaveEvent
-     * @param event
+     * @brief hoverLeaveEvent handle hover leave events.
+     * @param event hover leave event.
      */
     virtual void     hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief RemoveReferens
+     * @brief RemoveReferens decrement value of reference.
      */
     virtual void     RemoveReferens();
+    /**
+     * @brief itemChange handle item change.
+     * @param change change.
+     * @param value value.
+     * @return value.
+     */
     virtual QVariant itemChange ( GraphicsItemChange change, const QVariant &value );
+    /**
+     * @brief keyReleaseEvent handle key release events.
+     * @param event key release event.
+     */
     virtual void     keyReleaseEvent(QKeyEvent * event);
 private:
     /**
-     * @brief dialogSplinePath
+     * @brief dialogSplinePath dialog.
      */
     QSharedPointer<DialogSplinePath> dialogSplinePath;
     /**
-     * @brief controlPoints
+     * @brief controlPoints list pointers of control points.
      */
     QVector<VControlPointSpline *>   controlPoints;
     /**
-     * @brief RefreshGeometry
+     * @brief RefreshGeometry  refresh item on scene.
      */
     void             RefreshGeometry();
     /**
-     * @brief AddPathPoint
-     * @param domElement
-     * @param splPoint
+     * @brief AddPathPoint write path point to pattern file.
+     * @param domElement dom element.
+     * @param splPoint spline path point.
      */
     void             AddPathPoint(QDomElement &domElement, const VSplinePoint &splPoint);
     /**
-     * @brief UpdatePathPoint
-     * @param node
-     * @param path
+     * @brief UpdatePathPoint update spline path in pattern file.
+     * @param node tag in file.
+     * @param path spline path.
      */
     void             UpdatePathPoint(QDomNode& node, VSplinePath &path);
     /**
-     * @brief CorectControlPoints
-     * @param spl
-     * @param splPath
-     * @param indexSpline
+     * @brief CorectControlPoints update position points control points in file.
+     * @param spl spline what was changed.
+     * @param splPath spline path.
+     * @param indexSpline index spline in spline path.
      */
     void             CorectControlPoints(const VSpline &spl, VSplinePath &splPath, const qint32 &indexSpline);
 };
