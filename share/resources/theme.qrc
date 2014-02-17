@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/icons/win.icon.theme">
+        <file alias="index.theme">icons/win.icon.theme/index.theme</file>
+        <file alias="16x16/actions/document-new.png">icons/win.icon.theme/16x16/actions/document-new.png</file>
+        <file alias="16x16/actions/document-open.png">icons/win.icon.theme/16x16/actions/document-open.png</file>
+        <file alias="16x16/actions/document-save.png">icons/win.icon.theme/16x16/actions/document-save.png</file>
+        <file alias="16x16/actions/document-save-as.png">icons/win.icon.theme/16x16/actions/document-save-as.png</file>
+        <file alias="24x24/actions/document-new.png">icons/win.icon.theme/24x24/actions/document-new.png</file>
+        <file alias="24x24/actions/document-open.png">icons/win.icon.theme/24x24/actions/document-open.png</file>
+        <file alias="24x24/actions/document-save.png">icons/win.icon.theme/24x24/actions/document-save.png</file>
+        <file alias="24x24/actions/document-save-as.png">icons/win.icon.theme/24x24/actions/document-save-as.png</file>
+        <file alias="32x32/actions/document-new.png">icons/win.icon.theme/32x32/actions/document-new.png</file>
+        <file alias="32x32/actions/document-open.png">icons/win.icon.theme/32x32/actions/document-open.png</file>
+        <file alias="32x32/actions/document-save.png">icons/win.icon.theme/32x32/actions/document-save.png</file>
+        <file alias="32x32/actions/document-save-as.png">icons/win.icon.theme/32x32/actions/document-save-as.png</file>
+        <file alias="16x16/actions/list-remove.png">icons/win.icon.theme/16x16/actions/list-remove.png</file>
+        <file alias="16x16/actions/list-add.png">icons/win.icon.theme/16x16/actions/list-add.png</file>
+        <file alias="24x24/actions/list-remove.png">icons/win.icon.theme/24x24/actions/list-remove.png</file>
+        <file alias="24x24/actions/list-add.png">icons/win.icon.theme/24x24/actions/list-add.png</file>
+        <file alias="32x32/actions/list-remove.png">icons/win.icon.theme/32x32/actions/list-remove.png</file>
+        <file alias="32x32/actions/list-add.png">icons/win.icon.theme/32x32/actions/list-add.png</file>
+    </qresource>
+</RCC>
