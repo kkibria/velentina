@@ -31,8 +31,8 @@
 
 #include <QPushButton>
 
-DialogBisector::DialogBisector(const VContainer *data, Draw::Draws mode, QWidget *parent)
-    :DialogTool(data, mode, parent), ui(new Ui::DialogBisector), number(0), pointName(QString()),
+DialogBisector::DialogBisector(const VContainer *data, QWidget *parent)
+    :DialogTool(data, parent), ui(new Ui::DialogBisector), number(0), pointName(QString()),
     typeLine(QString()), formula(QString()), firstPointId(0), secondPointId(0), thirdPointId(0)
 {
     ui->setupUi(this);
@@ -40,7 +40,7 @@ DialogBisector::DialogBisector(const VContainer *data, Draw::Draws mode, QWidget
     labelResultCalculation = ui->labelResultCalculation;
     labelDescription = ui->labelDescription;
     radioButtonSizeGrowth = ui->radioButtonSizeGrowth;
-    radioButtonStandartTable = ui->radioButtonStandartTable;
+    radioButtonStandardTable = ui->radioButtonStandardTable;
     radioButtonIncrements = ui->radioButtonIncrements;
     radioButtonLengthLine = ui->radioButtonLengthLine;
     radioButtonLengthArc = ui->radioButtonLengthArc;
@@ -55,6 +55,7 @@ DialogBisector::DialogBisector(const VContainer *data, Draw::Draws mode, QWidget
     CheckState();
     QPushButton *bCansel = ui->buttonBox->button(QDialogButtonBox::Cancel);
     connect(bCansel, &QPushButton::clicked, this, &DialogBisector::DialogRejected);
+
     FillComboBoxPoints(ui->comboBoxFirstPoint);
     FillComboBoxPoints(ui->comboBoxSecondPoint);
     FillComboBoxPoints(ui->comboBoxThirdPoint);
@@ -66,7 +67,7 @@ DialogBisector::DialogBisector(const VContainer *data, Draw::Draws mode, QWidget
 
     ShowVariable(data->DataBase());
     connect(ui->radioButtonSizeGrowth, &QRadioButton::clicked, this, &DialogBisector::SizeGrowth);
-    connect(ui->radioButtonStandartTable, &QRadioButton::clicked, this, &DialogBisector::StandartTable);
+    connect(ui->radioButtonStandardTable, &QRadioButton::clicked, this, &DialogBisector::StandardTable);
     connect(ui->radioButtonIncrements, &QRadioButton::clicked, this, &DialogBisector::Increments);
     connect(ui->radioButtonLengthLine, &QRadioButton::clicked, this, &DialogBisector::LengthLines);
     connect(ui->radioButtonLengthArc, &QRadioButton::clicked, this, &DialogBisector::LengthArcs);
@@ -83,35 +84,12 @@ DialogBisector::~DialogBisector()
 
 void DialogBisector::ChoosedObject(qint64 id, const Scene::Scenes &type)
 {
-    if (idDetail == 0 && mode == Draw::Modeling)
-    {
-        if (type == Scene::Detail)
-        {
-            idDetail = id;
-            return;
-        }
-    }
-    if (mode == Draw::Modeling)
-    {
-        if (CheckObject(id) == false)
-        {
-            return;
-        }
-    }
     if (type == Scene::Point)
     {
-        VPointF point;
-        if (mode == Draw::Calculation)
-        {
-            point = data->GetPoint(id);
-        }
-        else
-        {
-            point = data->GetPointModeling(id);
-        }
+        const VPointF *point = data->GeometricObject<const VPointF *>(id);
         if (number == 0)
         {
-            qint32 index = ui->comboBoxFirstPoint->findText(point.name());
+            qint32 index = ui->comboBoxFirstPoint->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxFirstPoint->setCurrentIndex(index);
@@ -122,7 +100,7 @@ void DialogBisector::ChoosedObject(qint64 id, const Scene::Scenes &type)
         }
         if (number == 1)
         {
-            qint32 index = ui->comboBoxSecondPoint->findText(point.name());
+            qint32 index = ui->comboBoxSecondPoint->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxSecondPoint->setCurrentIndex(index);
@@ -133,7 +111,7 @@ void DialogBisector::ChoosedObject(qint64 id, const Scene::Scenes &type)
         }
         if (number == 2)
         {
-            qint32 index = ui->comboBoxThirdPoint->findText(point.name());
+            qint32 index = ui->comboBoxThirdPoint->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxThirdPoint->setCurrentIndex(index);
@@ -186,8 +164,8 @@ void DialogBisector::DialogAccepted()
     pointName = ui->lineEditNamePoint->text();
     typeLine = GetTypeLine(ui->comboBoxLineType);
     formula = ui->lineEditFormula->text();
-    firstPointId = getCurrentPointId(ui->comboBoxFirstPoint);
-    secondPointId = getCurrentPointId(ui->comboBoxSecondPoint);
-    thirdPointId = getCurrentPointId(ui->comboBoxThirdPoint);
+    firstPointId = getCurrentObjectId(ui->comboBoxFirstPoint);
+    secondPointId = getCurrentObjectId(ui->comboBoxSecondPoint);
+    thirdPointId = getCurrentObjectId(ui->comboBoxThirdPoint);
     emit DialogClosed(QDialog::Accepted);
 }

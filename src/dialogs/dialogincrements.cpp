@@ -29,24 +29,25 @@
 #include "dialogincrements.h"
 #include "ui_dialogincrements.h"
 #include "../widgets/doubledelegate.h"
+#include "../widgets/textdelegate.h"
 #include "../exception/vexception.h"
 
 #include <QPushButton>
 
 DialogIncrements::DialogIncrements(VContainer *data, VDomDocument *doc, QWidget *parent)
-    :DialogTool(data, Draw::Calculation, parent), ui(new Ui::DialogIncrements), data(data), doc(doc), row(0), column(0)
+    :DialogTool(data, parent), ui(new Ui::DialogIncrements), data(data), doc(doc), row(0), column(0)
 {
     ui->setupUi(this);
-    InitialStandartTable();
-    InitialIncrementTable();
-    InitialLinesTable();
-    InitialSplinesTable();
-    InitialArcsTable();
+    TextDelegate *textDelegate = new TextDelegate(ui->tableWidgetIncrement);
+    Q_CHECK_PTR(textDelegate);
+    ui->tableWidgetIncrement->setItemDelegateForColumn(0, textDelegate);
     DoubleSpinBoxDelegate *doubleDelegate = new DoubleSpinBoxDelegate(ui->tableWidgetIncrement);
+    Q_CHECK_PTR(doubleDelegate);
     ui->tableWidgetIncrement->setItemDelegateForColumn(2, doubleDelegate);
     ui->tableWidgetIncrement->setItemDelegateForColumn(3, doubleDelegate);
     ui->tableWidgetIncrement->setItemDelegateForColumn(4, doubleDelegate);
-    FillStandartTable();
+
+    FillStandardTable();
     FillIncrementTable();
     FillLengthLines();
     FillLengthSplines();
@@ -54,59 +55,55 @@ DialogIncrements::DialogIncrements(VContainer *data, VDomDocument *doc, QWidget 
 
     connect(ui->tableWidgetIncrement, &QTableWidget::cellChanged, this, &DialogIncrements::cellChanged);
     connect(ui->toolButtonAdd, &QPushButton::clicked, this, &DialogIncrements::clickedToolButtonAdd);
-    connect(ui->toolButtonRemove, &QPushButton::clicked, this,
-            &DialogIncrements::clickedToolButtonRemove);
+    connect(ui->toolButtonRemove, &QPushButton::clicked, this, &DialogIncrements::clickedToolButtonRemove);
 
     connect(this, &DialogIncrements::FullUpdateTree, this->doc, &VDomDocument::FullUpdateTree);
     connect(this, &DialogIncrements::haveLiteChange, this->doc, &VDomDocument::haveLiteChange);
-    connect(this->doc, &VDomDocument::FullUpdateFromFile, this,
-            &DialogIncrements::FullUpdateFromFile);
+    connect(this->doc, &VDomDocument::FullUpdateFromFile, this, &DialogIncrements::FullUpdateFromFile);
 
-    bOk = ui->buttonBox->button(QDialogButtonBox::Ok);
-    connect(bOk, &QPushButton::clicked, this, &DialogIncrements::DialogAccepted);
     ui->tabWidget->setCurrentIndex(0);
 }
 
-void DialogIncrements::FillStandartTable()
+void DialogIncrements::FillStandardTable()
 {
-    const QHash<QString, VStandartTableRow> *standartTable = data->DataStandartTable();
+    const QHash<QString, VStandardTableRow> *standardTable = data->DataStandardTable();
     qint32 currentRow = -1;
-    QHashIterator<QString, VStandartTableRow> i(*standartTable);
-    ui->tableWidgetStandart->setRowCount ( standartTable->size() );
+    QHashIterator<QString, VStandardTableRow> i(*standardTable);
+    ui->tableWidgetStandard->setRowCount ( standardTable->size() );
     while (i.hasNext())
     {
         i.next();
-        VStandartTableRow cell = i.value();
+        VStandardTableRow cell = i.value();
         currentRow++;
 
         QTableWidgetItem *item = new QTableWidgetItem(QString(i.key()));
         item->setTextAlignment(Qt::AlignHCenter);
         item->setFont(QFont("Times", 12, QFont::Bold));
-        ui->tableWidgetStandart->setItem(currentRow, 0, item);
+        ui->tableWidgetStandard->setItem(currentRow, 0, item);
 
-        item = new QTableWidgetItem(QString().setNum(data->GetValueStandartTableCell(i.key())));
+        item = new QTableWidgetItem(QString().setNum(data->GetValueStandardTableCell(i.key())));
         item->setTextAlignment(Qt::AlignHCenter);
-        ui->tableWidgetStandart->setItem(currentRow, 1, item);
+        ui->tableWidgetStandard->setItem(currentRow, 1, item);
 
         item = new QTableWidgetItem(QString().setNum(cell.GetBase()));
         item->setTextAlignment(Qt::AlignHCenter);
-        ui->tableWidgetStandart->setItem(currentRow, 2, item);
+        ui->tableWidgetStandard->setItem(currentRow, 2, item);
 
         item = new QTableWidgetItem(QString().setNum(cell.GetKsize()));
         item->setTextAlignment(Qt::AlignHCenter);
-        ui->tableWidgetStandart->setItem(currentRow, 3, item);
+        ui->tableWidgetStandard->setItem(currentRow, 3, item);
 
         item = new QTableWidgetItem(QString().setNum(cell.GetKgrowth()));
         item->setTextAlignment(Qt::AlignHCenter);
-        ui->tableWidgetStandart->setItem(currentRow, 4, item);
+        ui->tableWidgetStandard->setItem(currentRow, 4, item);
 
         item = new QTableWidgetItem(cell.GetDescription());
         item->setTextAlignment(Qt::AlignHCenter);
-        ui->tableWidgetStandart->setItem(currentRow, 5, item);
+        ui->tableWidgetStandard->setItem(currentRow, 5, item);
     }
-    ui->tableWidgetStandart->resizeColumnsToContents();
-    ui->tableWidgetStandart->resizeRowsToContents();
-    ui->tableWidgetStandart->verticalHeader()->setDefaultSectionSize(20);
+    ui->tableWidgetStandard->resizeColumnsToContents();
+    ui->tableWidgetStandard->resizeRowsToContents();
+    ui->tableWidgetStandard->verticalHeader()->setDefaultSectionSize(20);
 }
 
 void DialogIncrements::FillIncrementTable()
@@ -280,24 +277,19 @@ void DialogIncrements::FullUpdateFromFile()
     disconnect(ui->tableWidgetIncrement, &QTableWidget::cellChanged, this,
                &DialogIncrements::cellChanged);
 
-    ui->tableWidgetStandart->clear();
-    InitialStandartTable();
-    FillStandartTable();
+    ui->tableWidgetStandard->clearContents();
+    FillStandardTable();
 
-    ui->tableWidgetIncrement->clear();
-    InitialIncrementTable();
+    ui->tableWidgetIncrement->clearContents();
     FillIncrementTable();
 
-    ui->tableWidgetLines->clear();
-    InitialLinesTable();
+    ui->tableWidgetLines->clearContents();
     FillLengthLines();
 
-    ui->tableWidgetSplines->clear();
-    InitialSplinesTable();
+    ui->tableWidgetSplines->clearContents();
     FillLengthSplines();
 
-    ui->tableWidgetArcs->clear();
-    InitialArcsTable();
+    ui->tableWidgetArcs->clearContents();
     FillLengthArcs();
 
     connect(ui->tableWidgetIncrement, &QTableWidget::cellChanged, this,
@@ -306,9 +298,9 @@ void DialogIncrements::FullUpdateFromFile()
 
 void DialogIncrements::clickedToolButtonAdd()
 {
+    ui->tableWidgetIncrement->setFocus(Qt::OtherFocusReason);
     disconnect(ui->tableWidgetIncrement, &QTableWidget::cellChanged, this,
                &DialogIncrements::cellChanged);
-    ui->tableWidgetIncrement->setFocus(Qt::OtherFocusReason);
     qint32 currentRow  = ui->tableWidgetIncrement->rowCount();
     ui->tableWidgetIncrement->insertRow( currentRow );
 
@@ -316,7 +308,7 @@ void DialogIncrements::clickedToolButtonAdd()
     QString name;
     do
     {
-        name = QString(tr("Denotation %1")).arg(num);
+        name = QString(tr("Name_%1")).arg(num);
         num++;
     } while (data->IncrementTableContains(name));
 
@@ -444,6 +436,7 @@ void DialogIncrements::cellChanged ( qint32 row, qint32 column )
                 data->ClearIncrementTable();
                 this->column = 2;
                 emit FullUpdateTree();
+                emit haveLiteChange();
             }
             break;
         case 2:
@@ -454,12 +447,13 @@ void DialogIncrements::cellChanged ( qint32 row, qint32 column )
             if (domElement.isElement())
             {
                 bool ok = false;
-                qreal value = item->text().toDouble(&ok);
+                qreal value = item->text().replace(",", ".").toDouble(&ok);
                 if (ok)
                 {
                     domElement.setAttribute("base", value);
                     this->column = 3;
                     emit FullUpdateTree();
+                    emit haveLiteChange();
                 }
                 else
                 {
@@ -474,9 +468,10 @@ void DialogIncrements::cellChanged ( qint32 row, qint32 column )
             domElement = doc->elementById(QString().setNum(id));
             if (domElement.isElement())
             {
-                domElement.setAttribute("ksize", item->text().toDouble());
+                domElement.setAttribute("ksize", item->text().replace(",", ".").toDouble());
                 this->column = 4;
                 emit FullUpdateTree();
+                emit haveLiteChange();
             }
             break;
         case 4:
@@ -486,9 +481,10 @@ void DialogIncrements::cellChanged ( qint32 row, qint32 column )
             domElement = doc->elementById(QString().setNum(id));
             if (domElement.isElement())
             {
-                domElement.setAttribute("kgrowth", item->text().toDouble());
+                domElement.setAttribute("kgrowth", item->text().replace(",", ".").toDouble());
                 this->column = 5;
                 emit FullUpdateTree();
+                emit haveLiteChange();
             }
             break;
         case 5:
@@ -513,50 +509,10 @@ void DialogIncrements::cellChanged ( qint32 row, qint32 column )
     }
 }
 
-void DialogIncrements::InitialStandartTable()
-{
-    ui->tableWidgetStandart->setSortingEnabled(false);
-    ui->tableWidgetStandart->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Denotation")));
-    ui->tableWidgetStandart->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Calculated value")));
-    ui->tableWidgetStandart->setHorizontalHeaderItem(2, new QTableWidgetItem(tr("Base value")));
-    ui->tableWidgetStandart->setHorizontalHeaderItem(3, new QTableWidgetItem(tr("In size")));
-    ui->tableWidgetStandart->setHorizontalHeaderItem(4, new QTableWidgetItem(tr("In growth")));
-    ui->tableWidgetStandart->setHorizontalHeaderItem(5, new QTableWidgetItem(tr("Description")));
-}
-
-void DialogIncrements::InitialIncrementTable()
-{
-    ui->tableWidgetIncrement->setSortingEnabled(false);
-    ui->tableWidgetIncrement->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Denotation")));
-    ui->tableWidgetIncrement->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Calculated value")));
-    ui->tableWidgetIncrement->setHorizontalHeaderItem(2, new QTableWidgetItem(tr("Base value")));
-    ui->tableWidgetIncrement->setHorizontalHeaderItem(3, new QTableWidgetItem(tr("In size")));
-    ui->tableWidgetIncrement->setHorizontalHeaderItem(4, new QTableWidgetItem(tr("In growth")));
-    ui->tableWidgetIncrement->setHorizontalHeaderItem(5, new QTableWidgetItem(tr("Description")));
-    ui->tableWidgetIncrement->verticalHeader()->setDefaultSectionSize(20);
-}
-
-void DialogIncrements::InitialLinesTable()
-{
-    ui->tableWidgetLines->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Line")));
-    ui->tableWidgetLines->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Length")));
-}
-
-void DialogIncrements::InitialSplinesTable()
-{
-    ui->tableWidgetSplines->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Curve")));
-    ui->tableWidgetSplines->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Length")));
-}
-
-void DialogIncrements::InitialArcsTable()
-{
-    ui->tableWidgetArcs->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Arc")));
-    ui->tableWidgetArcs->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Length")));
-}
-
-void DialogIncrements::DialogAccepted()
+void DialogIncrements::closeEvent(QCloseEvent *event)
 {
     emit DialogClosed(QDialog::Accepted);
+    event->accept();
 }
 
 DialogIncrements::~DialogIncrements()

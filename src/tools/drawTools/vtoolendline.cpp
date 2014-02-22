@@ -29,41 +29,50 @@
 #include "vtoolendline.h"
 #include "../../widgets/vmaingraphicsscene.h"
 #include "../../container/calculator.h"
+#include "../../dialogs/dialogendline.h"
 
 const QString VToolEndLine::ToolType = QStringLiteral("endLine");
 
 VToolEndLine::VToolEndLine(VDomDocument *doc, VContainer *data, const qint64 &id,  const QString &typeLine,
                            const QString &formula, const qreal &angle, const qint64 &basePointId,
                            const Tool::Sources &typeCreation, QGraphicsItem *parent)
-    :VToolLinePoint(doc, data, id, typeLine, formula, basePointId, angle, parent),
-    dialogEndLine(QSharedPointer<DialogEndLine>())
+    :VToolLinePoint(doc, data, id, typeLine, formula, basePointId, angle, parent)
 {
 
     if (typeCreation == Tool::FromGui)
     {
         AddToFile();
     }
+    else
+    {
+        RefreshDataInFile();
+    }
 }
 
 void VToolEndLine::setDialog()
 {
-    Q_ASSERT(dialogEndLine.isNull() == false);
-    VPointF p = VAbstractTool::data.GetPoint(id);
-    dialogEndLine->setTypeLine(typeLine);
-    dialogEndLine->setFormula(formula);
-    dialogEndLine->setAngle(angle);
-    dialogEndLine->setBasePointId(basePointId, id);
-    dialogEndLine->setPointName(p.name());
+    Q_CHECK_PTR(dialog);
+    DialogEndLine *dialogTool = qobject_cast<DialogEndLine*>(dialog);
+    Q_CHECK_PTR(dialogTool);
+    const VPointF *p = VAbstractTool::data.GeometricObject<const VPointF *>(id);
+    dialogTool->setTypeLine(typeLine);
+    dialogTool->setFormula(formula);
+    dialogTool->setAngle(angle);
+    dialogTool->setBasePointId(basePointId, id);
+    dialogTool->setPointName(p->name());
 }
 
-void VToolEndLine::Create(QSharedPointer<DialogEndLine> &dialog, VMainGraphicsScene *scene, VDomDocument *doc,
+void VToolEndLine::Create(DialogTool *dialog, VMainGraphicsScene *scene, VDomDocument *doc,
                           VContainer *data)
 {
-    QString pointName = dialog->getPointName();
-    QString typeLine = dialog->getTypeLine();
-    QString formula = dialog->getFormula();
-    qreal angle = dialog->getAngle();
-    qint64 basePointId = dialog->getBasePointId();
+    Q_CHECK_PTR(dialog);
+    DialogEndLine *dialogTool = qobject_cast<DialogEndLine*>(dialog);
+    Q_CHECK_PTR(dialogTool);
+    QString pointName = dialogTool->getPointName();
+    QString typeLine = dialogTool->getTypeLine();
+    QString formula = dialogTool->getFormula();
+    qreal angle = dialogTool->getAngle();
+    qint64 basePointId = dialogTool->getBasePointId();
     Create(0, pointName, typeLine, formula, angle, basePointId, 5, 10, scene, doc, data, Document::FullParse,
            Tool::FromGui);
 }
@@ -73,8 +82,8 @@ void VToolEndLine::Create(const qint64 _id, const QString &pointName, const QStr
                           const qreal &mx, const qreal &my, VMainGraphicsScene *scene, VDomDocument *doc,
                           VContainer *data, const Document::Documents &parse, const Tool::Sources &typeCreation)
 {
-    VPointF basePoint = data->GetPoint(basePointId);
-    QLineF line = QLineF(basePoint.toQPointF(), QPointF(basePoint.x()+100, basePoint.y()));
+    const VPointF *basePoint = data->GeometricObject<const VPointF *>(basePointId);
+    QLineF line = QLineF(basePoint->toQPointF(), QPointF(basePoint->x()+100, basePoint->y()));
     Calculator cal(data);
     QString errorMsg;
     qreal result = cal.eval(formula, &errorMsg);
@@ -85,12 +94,12 @@ void VToolEndLine::Create(const qint64 _id, const QString &pointName, const QStr
         qint64 id = _id;
         if (typeCreation == Tool::FromGui)
         {
-            id = data->AddPoint(VPointF(line.p2().x(), line.p2().y(), pointName, mx, my));
+            id = data->AddGObject(new VPointF(line.p2().x(), line.p2().y(), pointName, mx, my));
             data->AddLine(basePointId, id);
         }
         else
         {
-            data->UpdatePoint(id, VPointF(line.p2().x(), line.p2().y(), pointName, mx, my));
+            data->UpdateGObject(id, new VPointF(line.p2().x(), line.p2().y(), pointName, mx, my));
             data->AddLine(basePointId, id);
             if (parse != Document::FullParse)
             {
@@ -104,7 +113,6 @@ void VToolEndLine::Create(const qint64 _id, const QString &pointName, const QStr
                                                    basePointId, typeCreation);
             scene->addItem(point);
             connect(point, &VToolPoint::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-            connect(point, &VToolPoint::RemoveTool, scene, &VMainGraphicsScene::RemoveTool);
             connect(scene, &VMainGraphicsScene::NewFactor, point, &VToolPoint::SetFactor);
             doc->AddTool(id, point);
             doc->IncrementReferens(basePointId);
@@ -127,42 +135,57 @@ void VToolEndLine::FullUpdateFromFile()
 
 void VToolEndLine::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    ContextMenu(dialogEndLine, this, event);
+    ContextMenu<DialogEndLine>(this, event);
 }
 
-void VToolEndLine::FullUpdateFromGui(int result)
+void VToolEndLine::ShowContextMenu(QGraphicsSceneContextMenuEvent *event)
 {
-    if (result == QDialog::Accepted)
-    {
-        QDomElement domElement = doc->elementById(QString().setNum(id));
-        if (domElement.isElement())
-        {
-            domElement.setAttribute(AttrName, dialogEndLine->getPointName());
-            domElement.setAttribute(AttrTypeLine, dialogEndLine->getTypeLine());
-            domElement.setAttribute(AttrLength, dialogEndLine->getFormula());
-            domElement.setAttribute(AttrAngle, QString().setNum(dialogEndLine->getAngle()));
-            domElement.setAttribute(AttrBasePoint, QString().setNum(dialogEndLine->getBasePointId()));
-            emit FullUpdateTree();
-        }
-    }
-    dialogEndLine.clear();
+    ContextMenu<DialogEndLine>(this, event);
 }
 
 void VToolEndLine::AddToFile()
 {
-    VPointF point = VAbstractTool::data.GetPoint(id);
+    const VPointF *point = VAbstractTool::data.GeometricObject<const VPointF *>(id);
     QDomElement domElement = doc->createElement(TagName);
 
-    AddAttribute(domElement, AttrId, id);
-    AddAttribute(domElement, AttrType, ToolType);
-    AddAttribute(domElement, AttrName, point.name());
-    AddAttribute(domElement, AttrMx, toMM(point.mx()));
-    AddAttribute(domElement, AttrMy, toMM(point.my()));
+    SetAttribute(domElement, AttrId, id);
+    SetAttribute(domElement, AttrType, ToolType);
+    SetAttribute(domElement, AttrName, point->name());
+    SetAttribute(domElement, AttrMx, toMM(point->mx()));
+    SetAttribute(domElement, AttrMy, toMM(point->my()));
 
-    AddAttribute(domElement, AttrTypeLine, typeLine);
-    AddAttribute(domElement, AttrLength, formula);
-    AddAttribute(domElement, AttrAngle, angle);
-    AddAttribute(domElement, AttrBasePoint, basePointId);
+    SetAttribute(domElement, AttrTypeLine, typeLine);
+    SetAttribute(domElement, AttrLength, formula);
+    SetAttribute(domElement, AttrAngle, angle);
+    SetAttribute(domElement, AttrBasePoint, basePointId);
 
     AddToCalculation(domElement);
+}
+
+void VToolEndLine::RefreshDataInFile()
+{
+    const VPointF *point = VAbstractTool::data.GeometricObject<const VPointF *>(id);
+    QDomElement domElement = doc->elementById(QString().setNum(id));
+    if (domElement.isElement())
+    {
+        SetAttribute(domElement, AttrName, point->name());
+        SetAttribute(domElement, AttrMx, toMM(point->mx()));
+        SetAttribute(domElement, AttrMy, toMM(point->my()));
+        SetAttribute(domElement, AttrTypeLine, typeLine);
+        SetAttribute(domElement, AttrLength, formula);
+        SetAttribute(domElement, AttrAngle, angle);
+        SetAttribute(domElement, AttrBasePoint, basePointId);
+    }
+}
+
+void VToolEndLine::SaveDialog(QDomElement &domElement)
+{
+    Q_CHECK_PTR(dialog);
+    DialogEndLine *dialogTool = qobject_cast<DialogEndLine*>(dialog);
+    Q_CHECK_PTR(dialogTool);
+    SetAttribute(domElement, AttrName, dialogTool->getPointName());
+    SetAttribute(domElement, AttrTypeLine, dialogTool->getTypeLine());
+    SetAttribute(domElement, AttrLength, dialogTool->getFormula());
+    SetAttribute(domElement, AttrAngle, QString().setNum(dialogTool->getAngle()));
+    SetAttribute(domElement, AttrBasePoint, QString().setNum(dialogTool->getBasePointId()));
 }

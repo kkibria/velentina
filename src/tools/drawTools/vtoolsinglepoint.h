@@ -30,84 +30,95 @@
 #define VTOOLSINGLEPOINT_H
 
 #include "vtoolpoint.h"
-#include "../../dialogs/dialogsinglepoint.h"
 
 /**
- * @brief The VToolSinglePoint class
+ * @brief The VToolSinglePoint class tool for creation pattern base point. Obly base point can move. All object
+ * pattern peace depend on base point.
  */
 class VToolSinglePoint : public VToolPoint
 {
     Q_OBJECT
 public:
                  /**
-                  * @brief VToolSinglePoint
-                  * @param doc dom document container
-                  * @param data
-                  * @param id
-                  * @param typeCreation
-                  * @param parent
+                  * @brief VToolSinglePoint constructor.
+                  * @param doc dom document container.
+                  * @param data container with variables.
+                  * @param id object id in container.
+                  * @param typeCreation way we create this tool.
+                  * @param parent parent object.
                   */
                  VToolSinglePoint (VDomDocument *doc, VContainer *data, qint64 id, const Tool::Sources &typeCreation,
                                    QGraphicsItem * parent = 0 );
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void setDialog();
-    /**
-     * @brief ToolType
-     */
     static const QString ToolType;
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
-     * @param result
-     */
-    virtual void FullUpdateFromGui(int result);
-    /**
-     * @brief ChangedActivDraw
-     * @param newName
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
+     * @param newName new name active pattern peace.
      */
     virtual void ChangedActivDraw(const QString &newName);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void SetFactor(qreal factor);
+    /**
+     * @brief ShowContextMenu show context menu.
+     * @param event context menu event.
+     */
+    virtual void ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
 signals:
     /**
-     * @brief FullUpdateTree
+     * @brief FullUpdateTree handle if need update pattern file.
      */
     void         FullUpdateTree();
 protected:
     /**
-     * @brief contextMenuEvent
-     * @param event
+     * @brief contextMenuEvent handle context menu events.
+     * @param event context menu event.
      */
     virtual void contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void AddToFile();
     /**
-     * @brief itemChange
-     * @param change
-     * @param value
-     * @return
+     * @brief RefreshDataInFile refresh attributes in file. If attributes don't exist create them.
+     */
+    virtual void RefreshDataInFile();
+    /**
+     * @brief itemChange handle tool change.
+     * @param change change.
+     * @param value value.
+     * @return value.
      */
     QVariant     itemChange ( GraphicsItemChange change, const QVariant &value );
     /**
-     * @brief decrementReferens
+     * @brief decrementReferens decrement referens parents objects.
      */
     virtual void decrementReferens();
+    /**
+     * @brief DeleteTool delete tool from file and scene. This tool can't be deleted by now.
+     * @param tool tool what me delete.
+     */
+    virtual void DeleteTool(QGraphicsItem *tool){Q_UNUSED(tool)}
+    /**
+     * @brief SaveDialog save options into file after change in dialog.
+     */
+    virtual void SaveDialog(QDomElement &domElement);
 private:
     /**
-     * @brief dialogSinglePoint
+     * @brief setColorLabel change color for label and label line.
+     * @param color new color.
      */
-    QSharedPointer<DialogSinglePoint> dialogSinglePoint;
+    void         setColorLabel(const Qt::GlobalColor & color);
 };
 
 #endif // VTOOLSINGLEPOINT_H

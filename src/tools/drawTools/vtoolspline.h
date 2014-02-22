@@ -31,160 +31,163 @@
 
 #include "vdrawtool.h"
 #include <QGraphicsPathItem>
-#include "../../dialogs/dialogspline.h"
 #include "../../widgets/vcontrolpointspline.h"
 #include "../../geometry/vsplinepath.h"
 
 /**
- * @brief The VToolSpline class
+ * @brief The VToolSpline class tool for creation spline. I mean bezier curve.
  */
 class VToolSpline:public VDrawTool, public QGraphicsPathItem
 {
     Q_OBJECT
 public:
                  /**
-                  * @brief VToolSpline
-                  * @param doc dom document container
-                  * @param data
-                  * @param id
-                  * @param typeCreation
-                  * @param parent
+                  * @brief VToolSpline constructor.
+                  * @param doc dom document container.
+                  * @param data container with variables.
+                  * @param id object id in container.
+                  * @param typeCreation way we create this tool.
+                  * @param parent parent object.
                   */
                  VToolSpline (VDomDocument *doc, VContainer *data, qint64 id, const Tool::Sources &typeCreation,
                               QGraphicsItem * parent = 0 );
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void setDialog();
     /**
-     * @brief Create
-     * @param dialog
-     * @param scene
-     * @param doc dom document container
-     * @param data
+     * @brief Create help create tool from GUI.
+     * @param dialog dialog.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
      */
-    static void  Create(QSharedPointer<DialogSpline> &dialog, VMainGraphicsScene  *scene, VDomDocument *doc,
-                        VContainer *data);
+    static void  Create(DialogTool *dialog, VMainGraphicsScene  *scene, VDomDocument *doc, VContainer *data);
     /**
-     * @brief Create
-     * @param _id
-     * @param p1
-     * @param p4
-     * @param kAsm1
-     * @param kAsm2
-     * @param angle1
-     * @param angle2
-     * @param kCurve
-     * @param scene
-     * @param doc dom document container
-     * @param data
-     * @param parse
-     * @param typeCreation
+     * @brief Create help create tool.
+     * @param _id tool id, 0 if tool doesn't exist yet.
+     * @param p1 id first spline point.
+     * @param p4 id last spline point.
+     * @param kAsm1 coefficient of length first control line.
+     * @param kAsm2 coefficient of length second control line.
+     * @param angle1 angle from first point to first control point.
+     * @param angle2 angle from second point to second control point.
+     * @param kCurve coefficient of curvature spline.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
     static void  Create(const qint64 _id, const qint64 &p1, const qint64 &p4, const qreal &kAsm1,
                         const qreal kAsm2, const qreal &angle1, const qreal &angle2, const qreal &kCurve,
                         VMainGraphicsScene  *scene, VDomDocument *doc, VContainer *data,
                         const Document::Documents &parse, const Tool::Sources &typeCreation);
-    /**
-     * @brief TagName
-     */
     static const QString TagName;
-    /**
-     * @brief ToolType
-     */
     static const QString ToolType;
 signals:
     /**
-     * @brief RefreshLine
-     * @param indexSpline
-     * @param position
-     * @param controlPoint
-     * @param splinePoint
+     * @brief RefreshLine refresh control line.
+     * @param indexSpline position spline in spline list.
+     * @param position position point in spline.
+     * @param controlPoint new position control point.
+     * @param splinePoint new position spline point.
      */
-    void         RefreshLine ( const qint32 &indexSpline, SplinePoint::Position position, const QPointF &controlPoint,
-                               const QPointF &splinePoint );
+    void             RefreshLine ( const qint32 &indexSpline, SplinePoint::Position position,
+                                   const QPointF &controlPoint, const QPointF &splinePoint );
     /**
-     * @brief setEnabledPoint
-     * @param enable
+     * @brief setEnabledPoint disable control points.
+     * @param enable enable or diasable points.
      */
-    void         setEnabledPoint ( bool enable );
+    void             setEnabledPoint ( bool enable );
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
-    virtual void FullUpdateFromFile ();
+    virtual void     FullUpdateFromFile ();
     /**
-     * @brief FullUpdateFromGui
-     * @param result
+     * @brief ControlPointChangePosition handle change position control point.
+     * @param indexSpline position spline in spline list.
+     * @param position position point in spline.
+     * @param pos new position.
      */
-    virtual void FullUpdateFromGui ( int result );
+    void             ControlPointChangePosition (const qint32 &indexSpline, const SplinePoint::Position &position,
+                                                 const QPointF &pos);
     /**
-     * @brief ControlPointChangePosition
-     * @param indexSpline
-     * @param position
-     * @param pos
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
+     * @param newName new name active pattern peace.
      */
-    void         ControlPointChangePosition (const qint32 &indexSpline, const SplinePoint::Position &position,
-                                             const QPointF &pos);
+    virtual void     ChangedActivDraw ( const QString &newName );
     /**
-     * @brief ChangedActivDraw
-     * @param newName
+     * @brief ShowTool highlight tool.
+     * @param id object id in container
+     * @param color highlight color.
+     * @param enable enable or disable highlight.
      */
-    virtual void ChangedActivDraw ( const QString &newName );
+    virtual void     ShowTool(qint64 id, Qt::GlobalColor color, bool enable);
     /**
-     * @brief ShowTool
-     * @param id
-     * @param color
-     * @param enable
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
-    virtual void ShowTool(qint64 id, Qt::GlobalColor color, bool enable);
-    /**
-     * @brief SetFactor
-     * @param factor
-     */
-    virtual void SetFactor(qreal factor);
+    virtual void     SetFactor(qreal factor);
 protected:
     /**
-     * @brief contextMenuEvent
-     * @param event
+     * @brief contextMenuEvent handle context menu events.
+     * @param event context menu event.
      */
-    virtual void contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
+    virtual void     contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
-    virtual void AddToFile ();
+    virtual void     AddToFile ();
     /**
-     * @brief mouseReleaseEvent
-     * @param event
+     * @brief RefreshDataInFile refresh attributes in file. If attributes don't exist create them.
      */
-    virtual void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
+    virtual void     RefreshDataInFile();
     /**
-     * @brief hoverMoveEvent
-     * @param event
+     * @brief mouseReleaseEvent  handle mouse release events.
+     * @param event context menu event.
      */
-    virtual void hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
+    virtual void     mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
     /**
-     * @brief hoverLeaveEvent
-     * @param event
+     * @brief hoverMoveEvent handle hover move events.
+     * @param event hover move event.
      */
-    virtual void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
+    virtual void     hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief RemoveReferens
+     * @brief hoverLeaveEvent handle hover leave events.
+     * @param event hover leave event.
      */
-    virtual void RemoveReferens();
+    virtual void     hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
+    /**
+     * @brief RemoveReferens decrement value of reference.
+     */
+    virtual void     RemoveReferens();
+    /**
+     * @brief itemChange hadle item change.
+     * @param change change.
+     * @param value value.
+     * @return value.
+     */
+    virtual QVariant itemChange ( GraphicsItemChange change, const QVariant &value );
+    /**
+     * @brief keyReleaseEvent handle key release events.
+     * @param event key release event.
+     */
+    virtual void     keyReleaseEvent(QKeyEvent * event);
+    /**
+     * @brief SaveDialog save options into file after change in dialog.
+     */
+    virtual void     SaveDialog(QDomElement &domElement);
 private:
     /**
-     * @brief dialogSpline
-     */
-    QSharedPointer<DialogSpline>   dialogSpline;
-    /**
-     * @brief controlPoints
+     * @brief controlPoints list pointers of control points.
      */
     QVector<VControlPointSpline *> controlPoints;
     /**
-     * @brief RefreshGeometry
+     * @brief RefreshGeometry  refresh item on scene.
      */
-    void         RefreshGeometry ();
+    void              RefreshGeometry ();
 };
 
 #endif // VTOOLSPLINE_H

@@ -46,10 +46,9 @@ public:
                      /**
                       * @brief DialogNormal create dialog
                       * @param data container with data
-                      * @param mode mode of creation tool
                       * @param parent parent widget
                       */
-                     DialogNormal(const VContainer *data, Draw::Draws mode = Draw::Calculation, QWidget *parent = 0);
+                     DialogNormal(const VContainer *data, QWidget *parent = 0);
                      ~DialogNormal();
     /**
      * @brief getPointName return name of point
@@ -97,7 +96,7 @@ public:
      */
     inline qint64    getFirstPointId() const {return firstPointId;}
     /**
-     * @brief setFirstPointId set id of first point 
+     * @brief setFirstPointId set id of first point
      * @param value id
      * @param id don't show this id in list
      */

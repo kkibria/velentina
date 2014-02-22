@@ -30,105 +30,104 @@
 #define VTOOLHEIGHT_H
 
 #include "vtoollinepoint.h"
-#include "../../dialogs/dialogheight.h"
 
 /**
- * @brief The VToolHeight class
+ * @brief The VToolHeight class tool for creation point of height. Help find point of projection onto line.
  */
 class VToolHeight: public VToolLinePoint
 {
     Q_OBJECT
 public:
                    /**
-                    * @brief VToolHeight
-                    * @param doc dom document container
-                    * @param data
-                    * @param id
-                    * @param typeLine
-                    * @param basePointId
-                    * @param p1LineId
-                    * @param p2LineId
-                    * @param typeCreation
-                    * @param parent
+                    * @brief VToolHeight constructor.
+                    * @param doc dom document container.
+                    * @param data container with variables.
+                    * @param id object id in container.
+                    * @param typeLine line type.
+                    * @param basePointId id base point of projection.
+                    * @param p1LineId id first point of line.
+                    * @param p2LineId id second point of line.
+                    * @param typeCreation way we create this tool.
+                    * @param parent parent object.
                     */
                    VToolHeight(VDomDocument *doc, VContainer *data, const qint64 &id, const QString &typeLine,
                                const qint64 &basePointId, const qint64 &p1LineId, const qint64 &p2LineId,
                                const Tool::Sources &typeCreation, QGraphicsItem * parent = 0);
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void   setDialog();
     /**
-     * @brief Create
-     * @param dialog
-     * @param scene
-     * @param doc dom document container
-     * @param data
+     * @brief Create help create tool from GUI.
+     * @param dialog dialog.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
      */
-    static void    Create(QSharedPointer<DialogHeight> &dialog, VMainGraphicsScene  *scene,
-                          VDomDocument *doc, VContainer *data);
+    static void    Create(DialogTool *dialog, VMainGraphicsScene  *scene, VDomDocument *doc, VContainer *data);
     /**
-     * @brief Create
-     * @param _id
-     * @param pointName
-     * @param typeLine
-     * @param basePointId
-     * @param p1LineId
-     * @param p2LineId
-     * @param mx
-     * @param my
-     * @param scene
-     * @param doc dom document container
-     * @param data
-     * @param parse
-     * @param typeCreation
+     * @brief Create help create tool
+     * @param _id tool id, 0 if tool doesn't exist yet.
+     * @param pointName point name.
+     * @param typeLine line type.
+     * @param basePointId id base point of projection.
+     * @param p1LineId id first point of line.
+     * @param p2LineId id second point of line.
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
     static void    Create(const qint64 _id, const QString &pointName, const QString &typeLine,
                           const qint64 &basePointId, const qint64 &p1LineId, const qint64 &p2LineId,
                           const qreal &mx, const qreal &my, VMainGraphicsScene  *scene, VDomDocument *doc,
                           VContainer *data, const Document::Documents &parse, const Tool::Sources &typeCreation);
     /**
-     * @brief FindPoint
-     * @param line
-     * @param point
-     * @return
+     * @brief FindPoint find projection base point onto line.
+     * @param line line
+     * @param point base point.
+     * @return point onto line.
      */
     static QPointF FindPoint(const QLineF &line, const QPointF &point);
-    /**
-     * @brief ToolType
-     */
     static const QString ToolType;
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void   FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
-     * @param result
+     * @brief ShowContextMenu show context menu.
+     * @param event context menu event.
      */
-    virtual void   FullUpdateFromGui(int result);
+    virtual void   ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
 protected:
     /**
-     * @brief contextMenuEvent
-     * @param event
+     * @brief contextMenuEvent handle context menu events.
+     * @param event context menu event.
      */
     virtual void   contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void   AddToFile();
+    /**
+     * @brief RefreshDataInFile refresh attributes in file. If attributes don't exist create them.
+     */
+    virtual void   RefreshDataInFile();
+    /**
+     * @brief SaveDialog save options into file after change in dialog.
+     */
+    virtual void   SaveDialog(QDomElement &domElement);
 private:
     /**
-     * @brief dialogHeight
-     */
-    QSharedPointer<DialogHeight> dialogHeight;
-    /**
-     * @brief p1LineId
+     * @brief p1LineId id first point of line.
      */
     qint64         p1LineId;
     /**
-     * @brief p2LineId
+     * @brief p2LineId id second point of line.
      */
     qint64         p2LineId;
 };

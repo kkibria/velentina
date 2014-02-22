@@ -26,48 +26,62 @@
  **
  *************************************************************************/
 
- /*
-     doubledelegate.cpp
-
-     A delegate that allows the user to change integer values from the model
-     using a spin box widget.
- */
-
 #include "doubledelegate.h"
 
 #include <QDoubleSpinBox>
 
+//cppcheck-suppress unusedFunction
 QWidget *DoubleSpinBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                                              const QModelIndex &index ) const
 {
     Q_UNUSED(option);
     Q_UNUSED(index);
     QDoubleSpinBox *editor = new QDoubleSpinBox(parent);
+    Q_CHECK_PTR(editor);
     editor->setMinimum(-10000.0);
     editor->setMaximum(10000.0);
+    connect(editor, &QDoubleSpinBox::editingFinished, this, &DoubleSpinBoxDelegate::commitAndCloseEditor);
     return editor;
 }
 
+//cppcheck-suppress unusedFunction
 void DoubleSpinBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     qreal value = index.model()->data(index, Qt::EditRole).toDouble();
 
-    QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
+    QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(editor);
+    Q_CHECK_PTR(spinBox);
     spinBox->setValue(value);
 }
 
+//cppcheck-suppress unusedFunction
 void DoubleSpinBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
-    QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
+    QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(editor);
+    Q_CHECK_PTR(spinBox);
     spinBox->interpretText();
     qreal value = spinBox->value();
 
     model->setData(index, value, Qt::EditRole);
 }
 
+//cppcheck-suppress unusedFunction
 void DoubleSpinBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
                                                  const QModelIndex &index) const
 {
     Q_UNUSED(index)
     editor->setGeometry(option.rect);
+}
+
+void DoubleSpinBoxDelegate::commitAndCloseEditor()
+{
+    QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(sender());
+    Q_CHECK_PTR(spinBox);
+    qreal value = spinBox->value();
+    if (qFuzzyCompare ( lastValue, value ) == false)
+    {
+        lastValue = value;
+        emit commitData(spinBox);
+    }
+    emit closeEditor(spinBox);
 }

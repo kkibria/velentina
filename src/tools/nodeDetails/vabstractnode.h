@@ -32,56 +32,42 @@
 #include "../vabstracttool.h"
 
 /**
- * @brief The VAbstractNode class
+ * @brief The VAbstractNode class parent class for all detail node.
  */
 class VAbstractNode : public VAbstractTool
 {
     Q_OBJECT
 public:
                  /**
-                  * @brief VAbstractNode
-                  * @param doc dom document container
-                  * @param data
-                  * @param id
-                  * @param idNode
-                  * @param typeobject
-                  * @param parent
+                  * @brief VAbstractNode constructor.
+                  * @param doc dom document container.
+                  * @param data container with variables.
+                  * @param id object id in container.
+                  * @param id object id in containerNode.
+                  * @param parent parent object.
                   */
-                 VAbstractNode(VDomDocument *doc, VContainer *data, qint64 id, qint64 idNode,
-                               Draw::Draws typeobject, QObject *parent = 0 );
+                 VAbstractNode(VDomDocument *doc, VContainer *data, const qint64 &id, const qint64 &idNode,
+                               const qint64 &idTool, QObject *parent = 0);
     virtual      ~VAbstractNode() {}
-    /**
-     * @brief AttrIdObject
-     */
     static const QString AttrIdObject;
-    /**
-     * @brief AttrTypeObject
-     */
-    static const QString AttrTypeObject;
-    /**
-     * @brief TypeObjectCalculation
-     */
-    static const QString TypeObjectCalculation;
-    /**
-     * @brief TypeObjectModeling
-     */
-    static const QString TypeObjectModeling;
+    static const QString AttrIdTool;
+    virtual void DeleteNode();
 protected:
     /**
-     * @brief idNode
+     * @brief idNodenode id.
      */
     qint64       idNode;
     /**
-     * @brief typeobject
+     * @brief idTool id tool.
      */
-    Draw::Draws  typeobject;
+    qint64       idTool;
     /**
-     * @brief AddToModeling
-     * @param domElement
+     * @brief AddToModeling add tag to modeling tag current pattern peace.
+     * @param domElement tag.
      */
     void         AddToModeling(const QDomElement &domElement);
     /**
-     * @brief decrementReferens
+     * @brief decrementReferens decrement reference for all parent objects.
      */
     virtual void decrementReferens();
 };

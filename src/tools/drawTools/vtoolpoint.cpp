@@ -34,24 +34,30 @@ VToolPoint::VToolPoint(VDomDocument *doc, VContainer *data, qint64 id, QGraphics
     QGraphicsEllipseItem(parent), radius(toPixel(2)), namePoint(0), lineName(0)
 {
     namePoint = new VGraphicsSimpleTextItem(this);
+    Q_CHECK_PTR(namePoint);
+    connect(namePoint, &VGraphicsSimpleTextItem::ShowContextMenu, this, &VToolPoint::ShowContextMenu);
+    namePoint->setBrush(Qt::black);
     lineName = new QGraphicsLineItem(this);
-    connect(namePoint, &VGraphicsSimpleTextItem::NameChangePosition, this,
-            &VToolPoint::NameChangePosition);
+    Q_CHECK_PTR(lineName);
+    lineName->setPen(QPen(Qt::black));
+    connect(namePoint, &VGraphicsSimpleTextItem::NameChangePosition, this, &VToolPoint::NameChangePosition);
     this->setBrush(QBrush(Qt::NoBrush));
     this->setFlag(QGraphicsItem::ItemIsSelectable, true);
+    this->setFlag(QGraphicsItem::ItemIsFocusable, true);
     this->setAcceptHoverEvents(true);
-    RefreshPointGeometry(VAbstractTool::data.GetPoint(id));
+    RefreshPointGeometry(*VAbstractTool::data.GeometricObject<const VPointF *>(id));
 }
 
 void VToolPoint::NameChangePosition(const QPointF &pos)
 {
-    VPointF point = VAbstractTool::data.GetPoint(id);
+    VPointF *point = new VPointF(*VAbstractTool::data.GeometricObject<const VPointF *>(id));
+    Q_CHECK_PTR(point);
     QPointF p = pos - this->pos();
-    point.setMx(p.x());
-    point.setMy(p.y());
+    point->setMx(p.x());
+    point->setMy(p.y());
     RefreshLine();
-    UpdateNamePosition(point.mx(), point.my());
-    VAbstractTool::data.UpdatePoint(id, point);
+    UpdateNamePosition(point->mx(), point->my());
+    VAbstractTool::data.UpdateGObject(id, point);
 }
 
 void VToolPoint::UpdateNamePosition(qreal mx, qreal my)
@@ -59,8 +65,8 @@ void VToolPoint::UpdateNamePosition(qreal mx, qreal my)
     QDomElement domElement = doc->elementById(QString().setNum(id));
     if (domElement.isElement())
     {
-        domElement.setAttribute(AttrMx, QString().setNum(toMM(mx)));
-        domElement.setAttribute(AttrMy, QString().setNum(toMM(my)));
+        SetAttribute(domElement, AttrMx, toMM(mx));
+        SetAttribute(domElement, AttrMy, toMM(my));
         emit toolhaveChange();
     }
 }
@@ -71,7 +77,7 @@ void VToolPoint::ChangedActivDraw(const QString &newName)
     if (nameActivDraw == newName)
     {
         selectable = true;
-        currentColor = Qt::black;
+        currentColor = baseColor;
     }
     else
     {
@@ -98,7 +104,12 @@ void VToolPoint::ShowTool(qint64 id, Qt::GlobalColor color, bool enable)
 void VToolPoint::SetFactor(qreal factor)
 {
     VDrawTool::SetFactor(factor);
-    RefreshPointGeometry(VAbstractTool::data.GetPoint(id));
+    RefreshPointGeometry(*VAbstractTool::data.GeometricObject<const VPointF *>(id));
+}
+
+void VToolPoint::ShowContextMenu(QGraphicsSceneContextMenuEvent *event)
+{
+    Q_UNUSED(event);
 }
 
 void VToolPoint::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
@@ -148,7 +159,14 @@ void VToolPoint::RefreshLine()
     LineIntersectCircle(QPointF(), radius/factor, QLineF(QPointF(), nameRec.center()- scenePos()), p1, p2);
     QPointF pRec = LineIntersectRect(nameRec, QLineF(scenePos(), nameRec.center()));
     lineName->setLine(QLineF(p1, pRec - scenePos()));
-    lineName->setPen(QPen(currentColor, widthHairLine/factor));
+    if (currentColor == Qt::gray)
+    {
+        lineName->setPen(QPen(currentColor, widthHairLine/factor));
+    }
+    else
+    {
+        lineName->setPen(QPen(Qt::black, widthHairLine/factor));
+    }
     if (QLineF(p1, pRec - scenePos()).length() <= toPixel(4))
     {
         lineName->setVisible(false);
@@ -157,4 +175,35 @@ void VToolPoint::RefreshLine()
     {
         lineName->setVisible(true);
     }
+}
+
+QVariant VToolPoint::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
+{
+    if (change == QGraphicsItem::ItemSelectedChange)
+    {
+        if (value == true)
+        {
+            // do stuff if selected
+            this->setFocus();
+        }
+        else
+        {
+            // do stuff if not selected
+        }
+    }
+
+    return QGraphicsItem::itemChange(change, value);
+}
+
+void VToolPoint::keyReleaseEvent(QKeyEvent *event)
+{
+    switch (event->key())
+    {
+        case Qt::Key_Delete:
+            DeleteTool(this);
+            break;
+        default:
+            break;
+    }
+    QGraphicsItem::keyReleaseEvent ( event );
 }

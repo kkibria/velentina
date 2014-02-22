@@ -14,7 +14,7 @@
    <string>Valentina</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="icon.qrc">
+   <iconset resource="../share/resources/icon.qrc">
     <normaloff>:/icon/64x64/icon64x64.png</normaloff>:/icon/64x64/icon64x64.png</iconset>
   </property>
   <property name="locale">
@@ -40,14 +40,14 @@
        <string/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="page">
        <property name="geometry">
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>150</width>
+         <width>144</width>
          <height>150</height>
         </rect>
        </property>
@@ -70,13 +70,13 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>Tool point on the end line.</string>
+           <string>Point at distance and angle</string>
           </property>
           <property name="text">
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/segment.png</normaloff>:/icon/32x32/segment.png</iconset>
           </property>
           <property name="iconSize">
@@ -96,13 +96,13 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>Tool point of shoulder.</string>
+           <string>Special point on shoulder.</string>
           </property>
           <property name="text">
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/shoulder.png</normaloff>:/icon/32x32/shoulder.png</iconset>
           </property>
           <property name="iconSize">
@@ -122,13 +122,13 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>Tool point of contact.</string>
+           <string>Point at intersection of arc and line.</string>
           </property>
           <property name="text">
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/point_of_contact.png</normaloff>:/icon/32x32/point_of_contact.png</iconset>
           </property>
           <property name="iconSize">
@@ -148,13 +148,13 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>Tool point of bisector.</string>
+           <string>Point along bisector</string>
           </property>
           <property name="text">
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/bisector.png</normaloff>:/icon/32x32/bisector.png</iconset>
           </property>
           <property name="iconSize">
@@ -174,13 +174,13 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>Tool point of normal.</string>
+           <string>Point along perpendicular</string>
           </property>
           <property name="text">
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/normal.png</normaloff>:/icon/32x32/normal.png</iconset>
           </property>
           <property name="iconSize">
@@ -200,13 +200,13 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>Tool point along line.</string>
+           <string>Point at distance along line</string>
           </property>
           <property name="text">
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/along_line.png</normaloff>:/icon/32x32/along_line.png</iconset>
           </property>
           <property name="iconSize">
@@ -226,13 +226,13 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>Tool point of height.</string>
+           <string>Perpendicular point along line</string>
           </property>
           <property name="text">
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/height.png</normaloff>:/icon/32x32/height.png</iconset>
           </property>
           <property name="iconSize">
@@ -258,7 +258,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/triangle.png</normaloff>:/icon/32x32/triangle.png</iconset>
           </property>
           <property name="iconSize">
@@ -281,7 +281,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/point_of_intersection.png</normaloff>:/icon/32x32/point_of_intersection.png</iconset>
           </property>
           <property name="iconSize">
@@ -302,7 +302,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>150</width>
+         <width>100</width>
          <height>58</height>
         </rect>
        </property>
@@ -325,13 +325,13 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>Tool line.</string>
+           <string>Line between points</string>
           </property>
           <property name="text">
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/line.png</normaloff>:/icon/32x32/line.png</iconset>
           </property>
           <property name="iconSize">
@@ -351,13 +351,13 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>Tool point of line intersection.</string>
+           <string>Point at line intersection</string>
           </property>
           <property name="text">
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/intersect.png</normaloff>:/icon/32x32/intersect.png</iconset>
           </property>
           <property name="iconSize">
@@ -378,8 +378,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>150</width>
-         <height>58</height>
+         <width>100</width>
+         <height>104</height>
         </rect>
        </property>
        <property name="sizePolicy">
@@ -401,13 +401,13 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>Tool curve.</string>
+           <string>Curve tool.</string>
           </property>
           <property name="text">
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/spline.png</normaloff>:/icon/32x32/spline.png</iconset>
           </property>
           <property name="iconSize">
@@ -427,14 +427,66 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>Tool path curve.</string>
+           <string>Tool for path curve.</string>
           </property>
           <property name="text">
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/splinePath.png</normaloff>:/icon/32x32/splinePath.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QToolButton" name="toolButtonSplinePathCutPoint">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Tool segment a pathed curve.</string>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../share/resources/icon.qrc">
+            <normaloff>:/icon/32x32/splinePath_cut_point.png</normaloff>:/icon/32x32/splinePath_cut_point.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QToolButton" name="toolButtonSplineCutPoint">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Tool for segmenting a curve.</string>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../share/resources/icon.qrc">
+            <normaloff>:/icon/32x32/spline_cut_point.png</normaloff>:/icon/32x32/spline_cut_point.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -477,14 +529,37 @@
            <bool>false</bool>
           </property>
           <property name="toolTip">
-           <string>Tool arc.</string>
+           <string>Arc tool.</string>
           </property>
           <property name="text">
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/arc.png</normaloff>:/icon/32x32/arc.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QToolButton" name="toolButtonArcCutPoint">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../share/resources/icon.qrc">
+            <normaloff>:/icon/32x32/arc_cut.png</normaloff>:/icon/32x32/arc_cut.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -504,7 +579,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>150</width>
+         <width>100</width>
          <height>58</height>
         </rect>
        </property>
@@ -530,8 +605,31 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="icon.qrc">
+           <iconset resource="../share/resources/icon.qrc">
             <normaloff>:/icon/32x32/new_detail.png</normaloff>:/icon/32x32/new_detail.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>32</width>
+            <height>32</height>
+           </size>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QToolButton" name="toolButtonUnionDetails">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>...</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../share/resources/icon.qrc">
+            <normaloff>:/icon/32x32/union.png</normaloff>:/icon/32x32/union.png</iconset>
           </property>
           <property name="iconSize">
            <size>
@@ -571,7 +669,7 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
@@ -582,20 +680,22 @@
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>Help</string>
+     <string>&amp;Help</string>
     </property>
     <addaction name="actionAbout_Qt"/>
     <addaction name="actionAbout_Valentina"/>
    </widget>
    <widget class="QMenu" name="menuDrawing">
     <property name="title">
-     <string>Drawing</string>
+     <string>&amp;Pattern piece</string>
     </property>
     <addaction name="actionNewDraw"/>
     <addaction name="actionOptionDraw"/>
     <addaction name="actionTable"/>
     <addaction name="actionHistory"/>
     <addaction name="actionLayout"/>
+    <addaction name="separator"/>
+    <addaction name="actionOptions"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDrawing"/>
@@ -611,7 +711,6 @@
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
-   <addaction name="actionSaveAs"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="toolBar">
@@ -663,8 +762,14 @@
    <property name="text">
     <string>New</string>
    </property>
+   <property name="iconText">
+    <string>&amp;New</string>
+   </property>
    <property name="toolTip">
     <string>Create a new pattern</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionOpen">
@@ -675,6 +780,9 @@
    </property>
    <property name="text">
     <string>Open</string>
+   </property>
+   <property name="iconText">
+    <string>&amp;Open</string>
    </property>
    <property name="toolTip">
     <string>Open file with pattern</string>
@@ -692,8 +800,14 @@
    <property name="text">
     <string>Save</string>
    </property>
+   <property name="iconText">
+    <string>&amp;Save</string>
+   </property>
    <property name="toolTip">
     <string>Save pattern</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionSaveAs">
@@ -706,10 +820,13 @@
     </iconset>
    </property>
    <property name="text">
-    <string>Save as</string>
+    <string>Save &amp;As...</string>
    </property>
    <property name="toolTip">
     <string>Save not yet saved pattern</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionDraw">
@@ -723,7 +840,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="icon.qrc">
+    <iconset resource="../share/resources/icon.qrc">
      <normaloff>:/icon/32x32/draw.png</normaloff>:/icon/32x32/draw.png</iconset>
    </property>
    <property name="text">
@@ -731,6 +848,9 @@
    </property>
    <property name="toolTip">
     <string>Draw mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
   <action name="actionDetails">
@@ -741,14 +861,17 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="icon.qrc">
+    <iconset resource="../share/resources/icon.qrc">
      <normaloff>:/icon/32x32/kontur.png</normaloff>:/icon/32x32/kontur.png</iconset>
    </property>
    <property name="text">
     <string>Details</string>
    </property>
    <property name="toolTip">
-    <string>Deatils mode</string>
+    <string>Details mode</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
   <action name="actionArrowTool">
@@ -759,38 +882,41 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="icon.qrc">
+    <iconset resource="../share/resources/icon.qrc">
      <normaloff>:/icon/32x32/arrow_cursor.png</normaloff>:/icon/32x32/arrow_cursor.png</iconset>
    </property>
    <property name="text">
-    <string>Tools pointer</string>
+    <string>Pointer tools</string>
    </property>
    <property name="toolTip">
-    <string>Tools pointer</string>
+    <string>Pointer tools</string>
    </property>
   </action>
   <action name="actionNewDraw">
    <property name="icon">
-    <iconset resource="icon.qrc">
+    <iconset resource="../share/resources/icon.qrc">
      <normaloff>:/icon/32x32/new_draw.png</normaloff>:/icon/32x32/new_draw.png</iconset>
    </property>
    <property name="text">
-    <string>New drawing</string>
+    <string>New pattern piece</string>
    </property>
    <property name="toolTip">
-    <string>Add new drawing</string>
+    <string>Add new pattern piece</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+N</string>
    </property>
   </action>
   <action name="actionOptionDraw">
    <property name="icon">
-    <iconset resource="icon.qrc">
+    <iconset resource="../share/resources/icon.qrc">
      <normaloff>:/icon/32x32/option_draw.png</normaloff>:/icon/32x32/option_draw.png</iconset>
    </property>
    <property name="text">
-    <string>Change the name of drawing</string>
+    <string>Change the label of pattern piece</string>
    </property>
    <property name="toolTip">
-    <string>Change the name of drawing</string>
+    <string>Change the label of pattern piece</string>
    </property>
   </action>
   <action name="actionTable">
@@ -798,7 +924,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="icon.qrc">
+    <iconset resource="../share/resources/icon.qrc">
      <normaloff>:/icon/32x32/table.png</normaloff>:/icon/32x32/table.png</iconset>
    </property>
    <property name="text">
@@ -807,22 +933,28 @@
    <property name="toolTip">
     <string>Tables of variables</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
+   </property>
   </action>
   <action name="actionHistory">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="icon.qrc">
+    <iconset resource="../share/resources/icon.qrc">
      <normaloff>:/icon/32x32/history.png</normaloff>:/icon/32x32/history.png</iconset>
    </property>
    <property name="text">
     <string>History</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
   </action>
   <action name="actionLayout">
    <property name="icon">
-    <iconset resource="icon.qrc">
+    <iconset resource="../share/resources/icon.qrc">
      <normaloff>:/icon/32x32/layout.png</normaloff>:/icon/32x32/layout.png</iconset>
    </property>
    <property name="text">
@@ -831,20 +963,34 @@
    <property name="toolTip">
     <string>Create layout</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
   </action>
   <action name="actionAbout_Qt">
    <property name="text">
-    <string>About Qt</string>
+    <string>About &amp;Qt</string>
    </property>
   </action>
   <action name="actionAbout_Valentina">
    <property name="text">
-    <string>About Valentina</string>
+    <string>&amp;About Valentina</string>
    </property>
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>E&amp;xit</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit the application</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionOptions">
+   <property name="text">
+    <string>Options...</string>
    </property>
   </action>
  </widget>
@@ -864,7 +1010,7 @@
   <tabstop>toolButtonNewDetail</tabstop>
  </tabstops>
  <resources>
-  <include location="icon.qrc"/>
+  <include location="../share/resources/icon.qrc"/>
  </resources>
  <connections/>
 </ui>

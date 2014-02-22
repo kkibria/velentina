@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>544</width>
-    <height>327</height>
+    <width>565</width>
+    <height>324</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Detail</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../icon.qrc">
+   <iconset resource="../../share/resources/icon.qrc">
     <normaloff>:/icon/64x64/icon64x64.png</normaloff>:/icon/64x64/icon64x64.png</iconset>
   </property>
   <property name="locale">
@@ -47,14 +47,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="doubleSpinBoxBiasX">
-           <property name="minimum">
-            <double>-10000.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>10000.000000000000000</double>
-           </property>
-          </widget>
+          <widget class="QSpinBox" name="spinBoxBiasX"/>
          </item>
         </layout>
        </item>
@@ -74,21 +67,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="doubleSpinBoxBiasY">
-           <property name="minimum">
-            <double>-10000.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>10000.000000000000000</double>
-           </property>
-          </widget>
+          <widget class="QSpinBox" name="spinBoxBiasY"/>
          </item>
         </layout>
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
-          <string>Option</string>
+          <string>Options</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
@@ -154,6 +140,9 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="text">
+               <string>Detail</string>
+              </property>
              </widget>
             </item>
            </layout>
@@ -161,7 +150,7 @@
           <item>
            <widget class="QCheckBox" name="checkBoxSeams">
             <property name="text">
-             <string>Supplement for seams</string>
+             <string>Seam allowance</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -187,14 +176,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="doubleSpinBoxSeams">
-              <property name="minimum">
-               <double>-10000.000000000000000</double>
-              </property>
-              <property name="value">
-               <double>10.000000000000000</double>
-              </property>
-             </widget>
+             <widget class="QSpinBox" name="spinBoxSeams"/>
             </item>
            </layout>
           </item>
@@ -205,6 +187,16 @@
             </property>
             <property name="checked">
              <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="toolButtonDelete">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Delete</string>
             </property>
            </widget>
           </item>
@@ -236,7 +228,7 @@
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../icon.qrc"/>
+  <include location="../../share/resources/icon.qrc"/>
  </resources>
  <connections>
   <connection>

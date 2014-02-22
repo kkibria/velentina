@@ -31,8 +31,8 @@
 
 #include <QPushButton>
 
-DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, Draw::Draws mode, QWidget *parent)
-    :DialogTool(data, mode, parent), ui(new Ui::DialogShoulderPoint), number(0), pointName(QString()),
+DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, QWidget *parent)
+    :DialogTool(data, parent), ui(new Ui::DialogShoulderPoint), number(0), pointName(QString()),
     typeLine(QString()), formula(QString()), p1Line(0), p2Line(0), pShoulder(0)
 {
     ui->setupUi(this);
@@ -41,7 +41,7 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, Draw::Draws mod
     labelResultCalculation = ui->labelResultCalculation;
     labelDescription = ui->labelDescription;
     radioButtonSizeGrowth = ui->radioButtonSizeGrowth;
-    radioButtonStandartTable = ui->radioButtonStandartTable;
+    radioButtonStandardTable = ui->radioButtonStandardTable;
     radioButtonIncrements = ui->radioButtonIncrements;
     radioButtonLengthLine = ui->radioButtonLengthLine;
     radioButtonLengthArc = ui->radioButtonLengthArc;
@@ -57,6 +57,7 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, Draw::Draws mod
     QPushButton *bCansel = ui->buttonBox->button(QDialogButtonBox::Cancel);
     connect(bCansel, &QPushButton::clicked, this, &DialogShoulderPoint::DialogRejected);
     FillComboBoxTypeLine(ui->comboBoxLineType);
+
     FillComboBoxPoints(ui->comboBoxP1Line);
     FillComboBoxPoints(ui->comboBoxP2Line);
     FillComboBoxPoints(ui->comboBoxPShoulder);
@@ -67,7 +68,7 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, Draw::Draws mod
 
     ShowVariable(data->DataBase());
     connect(ui->radioButtonSizeGrowth, &QRadioButton::clicked, this, &DialogShoulderPoint::SizeGrowth);
-    connect(ui->radioButtonStandartTable, &QRadioButton::clicked, this, &DialogShoulderPoint::StandartTable);
+    connect(ui->radioButtonStandardTable, &QRadioButton::clicked, this, &DialogShoulderPoint::StandardTable);
     connect(ui->radioButtonIncrements, &QRadioButton::clicked, this, &DialogShoulderPoint::Increments);
     connect(ui->radioButtonLengthLine, &QRadioButton::clicked, this, &DialogShoulderPoint::LengthLines);
     connect(ui->radioButtonLengthArc, &QRadioButton::clicked, this, &DialogShoulderPoint::LengthArcs);
@@ -84,35 +85,12 @@ DialogShoulderPoint::~DialogShoulderPoint()
 
 void DialogShoulderPoint::ChoosedObject(qint64 id, const Scene::Scenes &type)
 {
-    if (idDetail == 0 && mode == Draw::Modeling)
-    {
-        if (type == Scene::Detail)
-        {
-            idDetail = id;
-            return;
-        }
-    }
-    if (mode == Draw::Modeling)
-    {
-        if (CheckObject(id) == false)
-        {
-            return;
-        }
-    }
     if (type == Scene::Point)
     {
-        VPointF point;
-        if (mode == Draw::Calculation)
-        {
-            point = data->GetPoint(id);
-        }
-        else
-        {
-            point = data->GetPointModeling(id);
-        }
+        const VPointF *point = data->GeometricObject<const VPointF *>(id);
         if (number == 0)
         {
-            qint32 index = ui->comboBoxP1Line->findText(point.name());
+            qint32 index = ui->comboBoxP1Line->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxP1Line->setCurrentIndex(index);
@@ -123,7 +101,7 @@ void DialogShoulderPoint::ChoosedObject(qint64 id, const Scene::Scenes &type)
         }
         if (number == 1)
         {
-            qint32 index = ui->comboBoxP2Line->findText(point.name());
+            qint32 index = ui->comboBoxP2Line->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxP2Line->setCurrentIndex(index);
@@ -134,7 +112,7 @@ void DialogShoulderPoint::ChoosedObject(qint64 id, const Scene::Scenes &type)
         }
         if (number == 2)
         {
-            qint32 index = ui->comboBoxPShoulder->findText(point.name());
+            qint32 index = ui->comboBoxPShoulder->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxPShoulder->setCurrentIndex(index);
@@ -154,9 +132,9 @@ void DialogShoulderPoint::DialogAccepted()
     pointName = ui->lineEditNamePoint->text();
     typeLine = GetTypeLine(ui->comboBoxLineType);
     formula = ui->lineEditFormula->text();
-    p1Line = getCurrentPointId(ui->comboBoxP1Line);
-    p2Line = getCurrentPointId(ui->comboBoxP2Line);
-    pShoulder = getCurrentPointId(ui->comboBoxPShoulder);
+    p1Line = getCurrentObjectId(ui->comboBoxP1Line);
+    p2Line = getCurrentObjectId(ui->comboBoxP2Line);
+    pShoulder = getCurrentObjectId(ui->comboBoxPShoulder);
     emit DialogClosed(QDialog::Accepted);
 }
 

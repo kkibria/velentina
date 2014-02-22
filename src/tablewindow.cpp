@@ -29,29 +29,30 @@
 #include "tablewindow.h"
 #include "ui_tablewindow.h"
 #include "widgets/vtablegraphicsview.h"
-#include "options.h"
 #include <QtSvg>
+#include <QPrinter>
+#include "options.h"
 
 TableWindow::TableWindow(QWidget *parent)
     :QMainWindow(parent), numberDetal(0), colission(0), ui(new Ui::TableWindow),
-    listDetails(QVector<VItem*>()), outItems(false), collidingItems(false), currentScene(0),
+    listDetails(QVector<VItem*>()), outItems(false), collidingItems(false), tableScene(0),
     paper(0), shadowPaper(0), listOutItems(0), listCollidingItems(QList<QGraphicsItem*>()),
-    indexDetail(0), sceneRect(QRectF())
+    indexDetail(0), sceneRect(QRectF()), fileName(QString())
 {
     ui->setupUi(this);
-    numberDetal = new QLabel("Залишилось 0 деталей.", this);
-    colission = new QLabel("Колізій не знайдено.", this);
+    numberDetal = new QLabel(tr("0 details left."), this);
+    colission = new QLabel(tr("Collisions not found."), this);
     ui->statusBar->addWidget(numberDetal);
     ui->statusBar->addWidget(colission);
     outItems = collidingItems = false;
     //sceneRect = QRectF(0, 0, toPixel(203), toPixel(287));
     sceneRect = QRectF(0, 0, toPixel(823), toPixel(1171));
-    currentScene = new QGraphicsScene(sceneRect);
-    QBrush *brush = new QBrush();
-    brush->setStyle( Qt::SolidPattern );
-    brush->setColor( QColor( Qt::gray ) );
-    currentScene->setBackgroundBrush( *brush );
-    VTableGraphicsView* view = new VTableGraphicsView(currentScene);
+    tableScene = new QGraphicsScene(sceneRect);
+    QBrush brush;
+    brush.setStyle( Qt::SolidPattern );
+    brush.setColor( QColor( Qt::gray ) );
+    tableScene->setBackgroundBrush( brush );
+    VTableGraphicsView* view = new VTableGraphicsView(tableScene);
     view->fitInView(view->scene()->sceneRect(), Qt::KeepAspectRatio);
     ui->horizontalLayout->addWidget(view);
     connect(ui->actionTurn, &QAction::triggered, view, &VTableGraphicsView::rotateItems);
@@ -68,6 +69,7 @@ TableWindow::TableWindow(QWidget *parent)
 
 TableWindow::~TableWindow()
 {
+    delete tableScene;
     delete ui;
 }
 
@@ -77,11 +79,11 @@ void TableWindow::AddPaper()
     sceneRect.getCoords(&x1, &y1, &x2, &y2);
     shadowPaper = new QGraphicsRectItem(QRectF(x1+4, y1+4, x2+4, y2+4));
     shadowPaper->setBrush(QBrush(Qt::black));
-    currentScene->addItem(shadowPaper);
+    tableScene->addItem(shadowPaper);
     paper = new QGraphicsRectItem(QRectF(x1, y1, x2, y2));
     paper->setPen(QPen(Qt::black, widthMainLine));
     paper->setBrush(QBrush(Qt::white));
-    currentScene->addItem(paper);
+    tableScene->addItem(paper);
     qDebug()<<paper->rect().size().toSize();
 }
 
@@ -89,7 +91,7 @@ void TableWindow::AddDetail()
 {
     if (indexDetail<listDetails.count())
     {
-        currentScene->clearSelection();
+        tableScene->clearSelection();
         VItem* Detail = listDetails[indexDetail];
         QObject::connect(Detail, SIGNAL(itemOut(int, bool)), this, SLOT(itemOut(int, bool)));
         QObject::connect(Detail, SIGNAL(itemColliding(QList<QGraphicsItem*>, int)), this,
@@ -102,7 +104,7 @@ void TableWindow::AddDetail()
         Detail->setFlag(QGraphicsItem::ItemIsSelectable, true);
         Detail->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
         Detail->setPaper(paper);
-        currentScene->addItem(Detail);
+        tableScene->addItem(Detail);
         Detail->setSelected(true);
         indexDetail++;
         if (indexDetail==listDetails.count())
@@ -110,14 +112,16 @@ void TableWindow::AddDetail()
             ui->actionSave->setEnabled(true);
         }
     }
-    numberDetal->setText(QString("Залишилось %1 деталей.").arg(listDetails.count()-indexDetail));
+    numberDetal->setText(QString(tr("%1 details left.")).arg(listDetails.count()-indexDetail));
 }
 
 /*
- * Отримуємо деталі розрахованої моделі для подальшого укладання.
+ * Get details for creation layout.
  */
-void TableWindow::ModelChosen(QVector<VItem*> listDetails)
+void TableWindow::ModelChosen(QVector<VItem*> listDetails, const QString &fileName)
 {
+    this->fileName = fileName;
+    this->fileName.remove(this->fileName.size()-4, 4);
     this->listDetails = listDetails;
     listOutItems = new QBitArray(this->listDetails.count());
     AddPaper();
@@ -148,7 +152,7 @@ void TableWindow::showEvent ( QShowEvent * event )
 void TableWindow::StopTable()
 {
     hide();
-    currentScene->clear();
+    tableScene->clear();
     delete listOutItems;
     listDetails.clear();
     //sceneRect = QRectF(0, 0, 230*resol/25.9, 327*resol/25.9);
@@ -158,34 +162,84 @@ void TableWindow::StopTable()
 
 void TableWindow::saveScene()
 {
-    QString name = QFileDialog::getSaveFileName(0, tr("Save layout"), "", "Images (*.png);;Svg files (*.svg)");
-    if (name.isNull())
+    QMap<QString, QString> extByMessage;
+    extByMessage[ tr("Svg files (*.svg)") ] = ".svg";
+    extByMessage[ tr("PDF files (*.pdf)") ] = ".pdf";
+    extByMessage[ tr("Images (*.png)") ] = ".png";
+    extByMessage[ tr("PS files (*.ps)") ] = ".ps";
+    extByMessage[ tr("EPS files (*.eps)") ] = ".eps";
+
+    QString saveMessage;
+    QMapIterator<QString, QString> i(extByMessage);
+    while (i.hasNext())
+    {
+        i.next();
+        saveMessage += i.key();
+        if (i.hasNext())
+        {
+            saveMessage += ";;";
+        }
+    }
+
+    QString sf;
+    // the save function
+    QString dir = QDir::homePath()+fileName;
+    QString name = QFileDialog::getSaveFileName(this, tr("Save layout"), dir, saveMessage, &sf);
+
+    if (name.isEmpty())
     {
         return;
     }
 
+    // what if the users did not specify a suffix...?
+    QFileInfo f( name );
+    if (f.suffix().isEmpty() && f.suffix() != "svg" && f.suffix() != "png" && f.suffix() != "pdf"
+        && f.suffix() != "eps" && f.suffix() != "ps")
+    {
+        name += extByMessage[sf];
+    }
+
     QBrush *brush = new QBrush();
     brush->setColor( QColor( Qt::white ) );
-    currentScene->setBackgroundBrush( *brush );
-    currentScene->clearSelection(); // Selections would also render to the file
+    tableScene->setBackgroundBrush( *brush );
+    tableScene->clearSelection(); // Selections would also render to the file, so need delete them
     shadowPaper->setVisible(false);
-    QFileInfo fi(name);
-    if (fi.suffix() == "svg")
-    {
+    QFileInfo fi( name );
+    QStringList suffix;
+    suffix << "svg" << "png" << "pdf" << "eps" << "ps";
+    switch (suffix.indexOf(fi.suffix())) {
+    case 0:
         paper->setVisible(false);
         SvgFile(name);
         paper->setVisible(true);
-    }
-    else if (fi.suffix() == "png")
-    {
+        break;
+    case 1:
         paper->setPen(QPen(Qt::white, 0.1, Qt::NoPen));
         PngFile(name);
         paper->setPen(QPen(Qt::black, widthMainLine));
+        break;
+    case 2:
+        paper->setPen(QPen(Qt::white, 0.1, Qt::NoPen));
+        PdfFile(name);
+        paper->setPen(QPen(Qt::black, widthMainLine));
+        break;
+    case 3:
+        paper->setPen(QPen(Qt::white, 0.1, Qt::NoPen));
+        EpsFile(name);
+        paper->setPen(QPen(Qt::black, widthMainLine));
+        break;
+    case 4:
+        paper->setPen(QPen(Qt::white, 0.1, Qt::NoPen));
+        PsFile(name);
+        paper->setPen(QPen(Qt::black, widthMainLine));
+        break;
+    default:
+        qWarning() << "Bad file suffix in TableWindow::saveScene().";
+        break;
     }
-
     brush->setColor( QColor( Qt::gray ) );
     brush->setStyle( Qt::SolidPattern );
-    currentScene->setBackgroundBrush( *brush );
+    tableScene->setBackgroundBrush( *brush );
     shadowPaper->setVisible(true);
     delete brush;
 }
@@ -200,7 +254,7 @@ void TableWindow::checkNext()
 {
     if (outItems == true && collidingItems == true)
     {
-        colission->setText("Колізій не знайдено.");
+        colission->setText(tr("Collisions not found."));
         if (indexDetail==listDetails.count())
         {
             ui->actionSave->setEnabled(true);
@@ -214,7 +268,7 @@ void TableWindow::checkNext()
     }
     else
     {
-        colission->setText("Знайдено колізії.");
+        colission->setText(tr("Collisions found."));
         ui->actionNext->setDisabled(true);
         ui->actionSave->setEnabled(false);
     }
@@ -255,14 +309,8 @@ void TableWindow::itemColliding(QList<QGraphicsItem *> list, int number)
                         if (lis.size()-2 <= 0)
                         {
                             VItem * bitem = qgraphicsitem_cast<VItem *> ( listCollidingItems.at(i) );
-                            if (bitem == 0)
-                            {
-                                qDebug()<<"Не можу привести тип об'єкту";
-                            }
-                            else
-                            {
-                                bitem->setPen(QPen(Qt::black, widthMainLine));
-                            }
+                            Q_CHECK_PTR(bitem);
+                            bitem->setPen(QPen(Qt::black, widthMainLine));
                             listCollidingItems.removeAt(i);
                         }
                     }
@@ -270,14 +318,8 @@ void TableWindow::itemColliding(QList<QGraphicsItem *> list, int number)
                 else if (listCollidingItems.size()==1)
                 {
                     VItem * bitem = qgraphicsitem_cast<VItem *> ( listCollidingItems.at(0) );
-                    if (bitem == 0)
-                    {
-                        qDebug()<<"Не можу привести тип об'єкту";
-                    }
-                    else
-                    {
-                        bitem->setPen(QPen(Qt::black, widthMainLine));
-                    }
+                    Q_CHECK_PTR(bitem);
+                    bitem->setPen(QPen(Qt::black, widthMainLine));
                     listCollidingItems.clear();
                     collidingItems = true;
                 }
@@ -322,9 +364,9 @@ void TableWindow::GetNextDetail()
 
 void TableWindow::AddLength()
 {
-    QRectF rect = currentScene->sceneRect();
+    QRectF rect = tableScene->sceneRect();
     rect.setHeight(rect.height()+toPixel(279));
-    currentScene->setSceneRect(rect);
+    tableScene->setSceneRect(rect);
     rect = shadowPaper->rect();
     rect.setHeight(rect.height()+toPixel(279));
     shadowPaper->setRect(rect);
@@ -337,18 +379,18 @@ void TableWindow::AddLength()
 
 void TableWindow::RemoveLength()
 {
-    if (sceneRect.height() <= currentScene->sceneRect().height() - 100)
+    if (sceneRect.height() <= tableScene->sceneRect().height() - 100)
     {
-        QRectF rect = currentScene->sceneRect();
+        QRectF rect = tableScene->sceneRect();
         rect.setHeight(rect.height()-toPixel(279));
-        currentScene->setSceneRect(rect);
+        tableScene->setSceneRect(rect);
         rect = shadowPaper->rect();
         rect.setHeight(rect.height()-toPixel(279));
         shadowPaper->setRect(rect);
         rect = paper->rect();
         rect.setHeight(rect.height()-toPixel(279));
         paper->setRect(rect);
-        if (fabs(sceneRect.height() - currentScene->sceneRect().height()) < 0.01)
+        if (fabs(sceneRect.height() - tableScene->sceneRect().height()) < 0.01)
         {
             ui->actionRemove->setDisabled(true);
         }
@@ -367,7 +409,7 @@ void TableWindow::keyPressEvent ( QKeyEvent * event )
         if (ui->actionNext->isEnabled() == true )
         {
             AddDetail();
-            qDebug()<<"Додали деталь.";
+            qDebug()<<"Added detail.";
         }
     }
     QMainWindow::keyPressEvent ( event );
@@ -390,7 +432,7 @@ void TableWindow::SvgFile(const QString &name) const
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(QPen(Qt::black, 1.2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.setBrush ( QBrush ( Qt::NoBrush ) );
-    currentScene->render(&painter);
+    tableScene->render(&painter);
     painter.end();
 }
 
@@ -407,6 +449,106 @@ void TableWindow::PngFile(const QString &name) const
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(QPen(Qt::black, widthMainLine, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.setBrush ( QBrush ( Qt::NoBrush ) );
-    currentScene->render(&painter);
+    tableScene->render(&painter);
     image.save(name);
+}
+
+void TableWindow::PdfFile(const QString &name) const
+{
+    QPrinter printer;
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(name);
+    QRectF r = paper->rect();
+    qreal x=0, y=0, w=0, h=0;
+    r.getRect(&x, &y, &w, &h);// Re-shrink the scene to it's bounding contents
+    printer.setResolution(PrintDPI);
+    printer.setPaperSize ( QSizeF(toMM(w), toMM(h)), QPrinter::Millimeter );
+    QPainter painter;
+    if (painter.begin( &printer ) == false)
+    { // failed to open file
+        qCritical("Can't open printer %s", qPrintable(name));
+        return;
+    }
+    painter.setFont( QFont( "Arial", 8, QFont::Normal ) );
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setPen(QPen(Qt::black, widthMainLine, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter.setBrush ( QBrush ( Qt::NoBrush ) );
+    tableScene->render(&painter);
+    painter.end();
+}
+
+void TableWindow::EpsFile(const QString &name) const
+{
+    QTemporaryFile tmp;
+    if (tmp.open()) {
+        QProcess proc;
+        QString program;
+        QStringList params;
+        
+        PdfFile(tmp.fileName());
+
+#ifdef Q_OS_WIN32
+        program = "pdftops.exe";
+#else
+        program = "pdftops";
+#endif        
+        params << "-eps" << tmp.fileName() << name;
+        
+#ifndef QT_NO_CURSOR
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+#endif
+        proc.start(program, params);
+        proc.waitForFinished(15000); 
+#ifndef QT_NO_CURSOR
+        QApplication::restoreOverrideCursor();
+#endif
+        qDebug() << proc.errorString();
+        
+        QFile F(name);
+        if(!F.exists())
+        {
+            QMessageBox msgBox(QMessageBox::Critical, "Critical error!",
+                        "Creating file '"+name+"' failed!",
+                        QMessageBox::Ok | QMessageBox::Default);
+            msgBox.exec();
+        }
+    } 
+}
+
+void TableWindow::PsFile(const QString &name) const
+{
+    QTemporaryFile tmp;
+    if (tmp.open()) {
+        QProcess proc;
+        QString program;
+        QStringList params;
+        
+        PdfFile(tmp.fileName());
+
+#ifdef Q_OS_WIN32
+        program = "pdftops.exe";
+#else
+        program = "pdftops";
+#endif        
+        params << tmp.fileName() << name;
+        
+#ifndef QT_NO_CURSOR
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+#endif
+        proc.start(program, params);
+        proc.waitForFinished(15000); 
+#ifndef QT_NO_CURSOR
+        QApplication::restoreOverrideCursor();
+#endif
+        qDebug() << proc.errorString();
+        
+        QFile F(name);
+        if(!F.exists())
+        {
+            QMessageBox msgBox(QMessageBox::Critical, "Critical error!",
+                        "Creating file '"+name+"' failed!",
+                        QMessageBox::Ok | QMessageBox::Default);
+            msgBox.exec();
+        }
+    } 
 }

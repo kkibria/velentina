@@ -31,48 +31,55 @@
 
 #include "vdatatool.h"
 #include "../xml/vdomdocument.h"
+#include <QMessageBox>
 
 /**
- * @brief The VAbstractTool class
+ * @brief The VAbstractTool abstract class for all tools.
  */
 class VAbstractTool: public VDataTool
 {
     Q_OBJECT
 public:
                             /**
-                             * @brief VAbstractTool
-                             * @param doc dom document container
-                             * @param data
-                             * @param id
-                             * @param parent
+                             * @brief VAbstractTool container.
+                             * @param doc dom document container.
+                             * @param data container with data.
+                             * @param id object id in container.
+                             * @param parent parent object.
                              */
                             VAbstractTool(VDomDocument *doc, VContainer *data, qint64 id, QObject *parent = 0);
-    virtual                 ~VAbstractTool() {}
+    virtual                 ~VAbstractTool(){}
     /**
-     * @brief LineIntersectRect
-     * @param rec
-     * @param line
-     * @return
+     * @brief NewSceneRect calculate scene rect what contains all items and doesn't less that size of scene view.
+     * @param sc scene.
+     * @param view view.
+     */
+    static void             NewSceneRect(QGraphicsScene *sc, QGraphicsView *view);
+    /**
+     * @brief LineIntersectRect find point intersection line and rect.
+     * @param rec rect.
+     * @param line line.
+     * @return point intersection.
      */
     static QPointF          LineIntersectRect(QRectF rec, QLineF line);
     /**
-     * @brief LineIntersectCircle
-     * @param center
-     * @param radius
-     * @param line
-     * @param p1
-     * @param p2
-     * @return
+     * @brief LineIntersectCircle find point intersection line and circle.
+     * @param center arc center.
+     * @param radius arc radius.
+     * @param line line
+     * @param p1 first intersection point.
+     * @param p2 second intersection point.
+     * @return 0 - intersection doesn't exist, 1 - one intersection point, 2 - two intersection points.
      */
     static qint32           LineIntersectCircle(const QPointF &center, qreal radius, const QLineF &line, QPointF &p1,
                                                 QPointF &p2);
     /**
-     * @brief ClosestPoint
-     * @param line
-     * @param p
-     * @return
+     * @brief ClosestPoint find point projection of point onto line.
+     * @param line line.
+     * @param p point.
+     * @return point on line or extended line if origin size too small.
      */
-    static QPointF          ClosestPoint(const QLineF &line, const QPointF &p);
+    static QPointF          ClosestPoint(const QLineF &line, const QPointF &point);
     /**
      * @brief addVector
      * @param p
@@ -83,244 +90,163 @@ public:
      */
     static QPointF          addVector (const QPointF &p, const QPointF &p1, const QPointF &p2, qreal k);
     /**
-     * @brief getId
-     * @return
+     * @brief getId return object id.
+     * @return id.
      */
     inline qint64           getId() const {return id;}
     /**
-     * @brief LineCoefficients
-     * @param line
-     * @param a
-     * @param b
-     * @param c
+     * @brief LineCoefficients coefficient for equation of segment. Segment equestion ax+by+c=0.
+     * @param line line
+     * @param a a value
+     * @param b b value
+     * @param c c value
      */
     static void             LineCoefficients(const QLineF &line, qreal *a, qreal *b, qreal *c);
-    /**
-     * @brief AttrId
-     */
     static const QString    AttrId;
-    /**
-     * @brief AttrType
-     */
     static const QString    AttrType;
-    /**
-     * @brief AttrMx
-     */
     static const QString    AttrMx;
-    /**
-     * @brief AttrMy
-     */
     static const QString    AttrMy;
-    /**
-     * @brief AttrName
-     */
     static const QString    AttrName;
-    /**
-     * @brief AttrX
-     */
     static const QString    AttrX;
-    /**
-     * @brief AttrY
-     */
     static const QString    AttrY;
-    /**
-     * @brief AttrTypeLine
-     */
     static const QString    AttrTypeLine;
-    /**
-     * @brief AttrLength
-     */
     static const QString    AttrLength;
-    /**
-     * @brief AttrBasePoint
-     */
     static const QString    AttrBasePoint;
-    /**
-     * @brief AttrFirstPoint
-     */
     static const QString    AttrFirstPoint;
-    /**
-     * @brief AttrSecondPoint
-     */
     static const QString    AttrSecondPoint;
-    /**
-     * @brief AttrThirdPoint
-     */
     static const QString    AttrThirdPoint;
-    /**
-     * @brief AttrCenter
-     */
     static const QString    AttrCenter;
-    /**
-     * @brief AttrRadius
-     */
     static const QString    AttrRadius;
-    /**
-     * @brief AttrAngle
-     */
     static const QString    AttrAngle;
-    /**
-     * @brief AttrAngle1
-     */
     static const QString    AttrAngle1;
-    /**
-     * @brief AttrAngle2
-     */
     static const QString    AttrAngle2;
-    /**
-     * @brief AttrP1Line
-     */
     static const QString    AttrP1Line;
-    /**
-     * @brief AttrP2Line
-     */
     static const QString    AttrP2Line;
-    /**
-     * @brief AttrP1Line1
-     */
     static const QString    AttrP1Line1;
-    /**
-     * @brief AttrP2Line1
-     */
     static const QString    AttrP2Line1;
-    /**
-     * @brief AttrP1Line2
-     */
     static const QString    AttrP1Line2;
-    /**
-     * @brief AttrP2Line2
-     */
     static const QString    AttrP2Line2;
-    /**
-     * @brief AttrPShoulder
-     */
     static const QString    AttrPShoulder;
-    /**
-     * @brief AttrPoint1
-     */
     static const QString    AttrPoint1;
-    /**
-     * @brief AttrPoint4
-     */
     static const QString    AttrPoint4;
-    /**
-     * @brief AttrKAsm1
-     */
     static const QString    AttrKAsm1;
-    /**
-     * @brief AttrKAsm2
-     */
     static const QString    AttrKAsm2;
-    /**
-     * @brief AttrKCurve
-     */
     static const QString    AttrKCurve;
-    /**
-     * @brief AttrPathPoint
-     */
     static const QString    AttrPathPoint;
-    /**
-     * @brief AttrPSpline
-     */
     static const QString    AttrPSpline;
-    /**
-     * @brief AttrAxisP1
-     */
     static const QString    AttrAxisP1;
-    /**
-     * @brief AttrAxisP2
-     */
     static const QString    AttrAxisP2;
-    /**
-     * @brief TypeLineNone
-     */
     static const QString    TypeLineNone;
-    /**
-     * @brief TypeLineLine
-     */
     static const QString    TypeLineLine;
+    static const QString    TypeLineDashLine;
+    static const QString    TypeLineDotLine;
+    static const QString    TypeLineDashDotLine;
+    static const QString    TypeLineDashDotDotLine;
+    /**
+     * @brief Styles return list of all line styles.
+     * @return
+     */
+    static const QStringList Styles();
+    /**
+     * @brief AddRecord add record about tool in history.
+     * @param id object id in container
+     * @param toolType tool type
+     * @param doc dom document container
+     */
+    static void  AddRecord(const qint64 id, const Tool::Tools &toolType, VDomDocument *doc);
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void            FullUpdateFromFile()=0;
 signals:
     /**
-     * @brief toolhaveChange
+     * @brief toolhaveChange emit if tool create change that need save.
      */
     void                    toolhaveChange();
     /**
-     * @brief ChoosedTool
-     * @param id
-     * @param type
+     * @brief ChoosedTool emit if object was clicked.
+     * @param id object id in container.
+     * @param type type of scene object.
      */
     void                    ChoosedTool(qint64 id, Scene::Scenes type);
     /**
-     * @brief FullUpdateTree
+     * @brief FullUpdateTree emit if need reparse pattern file.
      */
     void                    FullUpdateTree();
-    /**
-     * @brief RemoveTool
-     * @param tool
-     */
-    void                    RemoveTool(QGraphicsItem *tool);
 protected:
     /**
      * @brief doc dom document container
      */
     VDomDocument            *doc;
     /**
-     * @brief id
+     * @brief id object id.
      */
     const qint64            id;
     /**
-     * @brief baseColor
+     * @brief baseColor base color for tool.
      */
-    const Qt::GlobalColor   baseColor;
+    Qt::GlobalColor         baseColor;
     /**
-     * @brief currentColor
+     * @brief currentColor current tool color.
      */
     Qt::GlobalColor         currentColor;
     /**
-     * @brief AddToFile
+     * @brief typeLine line type.
+     */
+    QString                 typeLine;
+    /**
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void            AddToFile()=0;
     /**
-     * @brief getData
-     * @return
+     * @brief RefreshDataInFile refresh attributes in file. If attributes don't exist create them.
+     */
+    virtual void            RefreshDataInFile()=0;
+    /**
+     * @brief getData return pointer to data container.
+     * @return container.
      */
     inline const VContainer *getData() const {return &data;}
     /**
-     * @brief RemoveReferens
+     * @brief RemoveReferens decrement value of reference.
      */
     virtual void            RemoveReferens(){}
     /**
-     * @brief RemoveAllChild
-     * @param domElement
+     * @brief RemoveAllChild remove all child from file.
+     * @param domElement tag in xml tree.
      */
     void                    RemoveAllChild(QDomElement &domElement);
+    /**
+     * @brief DeleteTool full delete object form scene and file.
+     * @param tool tool
+     */
+    virtual void            DeleteTool(QGraphicsItem *tool);
+    /**
+     * @brief LineStyle return pen style for current line style.
+     * @return pen style.
+     */
+    Qt::PenStyle            LineStyle();
     template <typename T>
     /**
-     * @brief AddAttribute
-     * @param domElement
-     * @param name
-     * @param value
+     * @brief SetAttribute set attribute in pattern file. Replace "," by ".".
+     * @param domElement element in xml tree.
+     * @param name name of attribute.
+     * @param value value of attribute.
      */
-    void AddAttribute(QDomElement &domElement, const QString &name, const T &value)
+    void SetAttribute(QDomElement &domElement, const QString &name, const T &value)
     {
-        QDomAttr domAttr = doc->createAttribute(name);
-        domAttr.setValue(QString().setNum(value));
-        domElement.setAttributeNode(domAttr);
+        QString val = QString().setNum(value);
+        val = val.replace(",", ".");
+        domElement.setAttribute(name, val);
     }
 private:
     Q_DISABLE_COPY(VAbstractTool)
 };
 
 template <>
-inline void VAbstractTool::AddAttribute<QString>(QDomElement &domElement, const QString &name, const QString &value)
+inline void VAbstractTool::SetAttribute<QString>(QDomElement &domElement, const QString &name, const QString &value)
 {
-    QDomAttr domAttr = doc->createAttribute(name);
-    domAttr.setValue(value);
-    domElement.setAttributeNode(domAttr);
+    domElement.setAttribute(name, value);
 }
 #endif // VABSTRACTTOOL_H

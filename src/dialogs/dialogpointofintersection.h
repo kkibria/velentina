@@ -46,11 +46,9 @@ public:
                    /**
                     * @brief DialogPointOfIntersection create dialog
                     * @param data container with data
-                    * @param mode mode of creation tool
                     * @param parent parent widget
                     */
-                   DialogPointOfIntersection(const VContainer *data, Draw::Draws mode = Draw::Calculation,
-                                             QWidget *parent = 0);
+                   DialogPointOfIntersection(const VContainer *data, QWidget *parent = 0);
                    ~DialogPointOfIntersection();
     /**
      * @brief getPointName return name of point
@@ -68,7 +66,7 @@ public:
      */
     inline qint64  getFirstPointId() const {return firstPointId;}
     /**
-     * @brief setFirstPointId set id of first point 
+     * @brief setFirstPointId set id of first point
      * @param value id
      * @param id don't show this id in list.
      */

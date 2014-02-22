@@ -30,92 +30,90 @@
 #define VTOOLENDLINE_H
 
 #include "vtoollinepoint.h"
-#include "../../dialogs/dialogendline.h"
 
 /**
- * @brief The VToolEndLine class
+ * @brief The VToolEndLine class tool for creation point on the line end.
  */
 class VToolEndLine : public VToolLinePoint
 {
     Q_OBJECT
 public:
                  /**
-                  * @brief VToolEndLine
-                  * @param doc dom document container
-                  * @param data
-                  * @param id
-                  * @param typeLine
-                  * @param formula
-                  * @param angle
-                  * @param basePointId
-                  * @param typeCreation
-                  * @param parent
+                  * @brief VToolEndLine constructor.
+                  * @param doc dom document container.
+                  * @param data container with variables.
+                  * @param id object id in container.
+                  * @param typeLine line type.
+                  * @param formula string with formula length of line.
+                  * @param angle angle of line.
+                  * @param basePointId id first point of line.
+                  * @param typeCreation way we create this tool.
+                  * @param parent parent object.
                   */
                  VToolEndLine(VDomDocument *doc, VContainer *data, const qint64 &id, const QString &typeLine,
                               const QString &formula, const qreal &angle, const qint64 &basePointId,
                               const Tool::Sources &typeCreation, QGraphicsItem * parent = 0);
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void setDialog();
     /**
-     * @brief Create
-     * @param dialog
-     * @param scene
-     * @param doc dom document container
-     * @param data
+     * @brief Create help create tool from GUI.
+     * @param dialog dialog.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
      */
-    static void  Create(QSharedPointer<DialogEndLine> &dialog, VMainGraphicsScene  *scene, VDomDocument *doc,
-                        VContainer *data);
+    static void  Create(DialogTool *dialog, VMainGraphicsScene  *scene, VDomDocument *doc, VContainer *data);
     /**
-     * @brief Create
-     * @param _id
-     * @param pointName
-     * @param typeLine
-     * @param formula
-     * @param angle
-     * @param basePointId
-     * @param mx
-     * @param my
-     * @param scene
-     * @param doc dom document container
-     * @param data
-     * @param parse
-     * @param typeCreation
+     * @brief Create help create tool.
+     * @param _id tool id, 0 if tool doesn't exist yet.
+     * @param pointName point name.
+     * @param typeLine line type.
+     * @param formula string with formula length of line.
+     * @param angle angle of line.
+     * @param basePointId id first point of line.
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
     static void  Create(const qint64 _id, const QString &pointName, const QString &typeLine,
                         const QString &formula, const qreal &angle, const qint64 &basePointId, const qreal &mx,
                         const qreal &my, VMainGraphicsScene  *scene, VDomDocument *doc, VContainer *data,
                         const Document::Documents &parse, const Tool::Sources &typeCreation);
-    /**
-     * @brief ToolType
-     */
     static const QString ToolType;
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
-     * @param result
+     * @brief ShowContextMenu show context menu.
+     * @param event context menu event.
      */
-    virtual void FullUpdateFromGui(int result);
+    virtual void ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
 protected:
     /**
-     * @brief contextMenuEvent
-     * @param event
+     * @brief contextMenuEvent handle context menu events.
+     * @param event context menu event.
      */
     virtual void contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void AddToFile();
-private:
     /**
-     * @brief dialogEndLine
+     * @brief RefreshDataInFile refresh attributes in file. If attributes don't exist create them.
      */
-    QSharedPointer<DialogEndLine> dialogEndLine;
+    virtual void RefreshDataInFile();
+    /**
+     * @brief SaveDialog save options into file after change in dialog.
+     */
+    virtual void SaveDialog(QDomElement &domElement);
 };
 
 #endif // VTOOLENDLINE_H

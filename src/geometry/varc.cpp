@@ -27,34 +27,35 @@
  *************************************************************************/
 
 #include "varc.h"
+#include "vspline.h"
 #include "../exception/vexception.h"
 
 class QRectF;
 
 VArc::VArc ()
-    : f1(0), formulaF1(QString()), f2(0), formulaF2(QString()), radius(0), formulaRadius(QString()),
-      center(0), points(QHash<qint64, VPointF>()), mode(Draw::Calculation), idObject(0), _name(QString()){}
-
-VArc::VArc (const QHash<qint64, VPointF> *points, qint64 center, qreal radius, QString formulaRadius,
-            qreal f1, QString formulaF1, qreal f2, QString formulaF2, Draw::Draws mode, qint64 idObject)
-    : f1(f1), formulaF1(formulaF1), f2(f2), formulaF2(formulaF2), radius(radius), formulaRadius(formulaRadius),
-      center(center), points(*points), mode(mode), idObject(idObject), _name(QString())
+    :VGObject(GObject::Arc), f1(0), formulaF1(QString()), f2(0), formulaF2(QString()), radius(0),
+      formulaRadius(QString()), center(VPointF())
 {
-    /**
-     * @todo Change name of arc in formula. Name now not unique.
-     */
-    _name = QString ("Arc_%1").arg(this->GetCenterVPoint().name());
+}
+
+VArc::VArc (VPointF center, qreal radius, QString formulaRadius, qreal f1, QString formulaF1, qreal f2,
+            QString formulaF2, qint64 idObject, Draw::Draws mode)
+    : VGObject(GObject::Arc, idObject, mode), f1(f1), formulaF1(formulaF1), f2(f2), formulaF2(formulaF2),
+      radius(radius), formulaRadius(formulaRadius), center(center)
+{
+    _name = QString ("Arc_%1").arg(this->GetCenter().name());
 }
 
 VArc::VArc(const VArc &arc)
-    : f1(arc.GetF1()), formulaF1(arc.GetFormulaF1()), f2(arc.GetF2()),
+    : VGObject(arc), f1(arc.GetF1()), formulaF1(arc.GetFormulaF1()), f2(arc.GetF2()),
     formulaF2(arc.GetFormulaF2()), radius(arc.GetRadius()), formulaRadius(arc.GetFormulaRadius()),
-    center(arc.GetCenter()), points(arc.GetDataPoints()), mode(arc.getMode()),
-    idObject(arc.getIdObject()), _name(arc.name()){}
+    center(arc.GetCenter())
+{
+}
 
 VArc &VArc::operator =(const VArc &arc)
 {
-    this->points = arc.GetDataPoints();
+    VGObject::operator=(arc);
     this->f1 = arc.GetF1();
     this->formulaF1 = arc.GetFormulaF1();
     this->f2 = arc.GetF2();
@@ -62,61 +63,48 @@ VArc &VArc::operator =(const VArc &arc)
     this->radius = arc.GetRadius();
     this->formulaRadius = arc.GetFormulaRadius();
     this->center = arc.GetCenter();
-    this->mode = arc.getMode();
-    this->idObject = arc.getIdObject();
-    this->_name = arc.name();
     return *this;
 }
 
-QPointF VArc::GetCenterPoint() const
+qreal VArc::GetLength() const
 {
-    return GetCenterVPoint().toQPointF();
-}
-
-VPointF VArc::GetCenterVPoint() const
-{
-    if (points.contains(center))
-    {
-        return points.value(center);
-    }
-    else
-    {
-        QString error = QString(tr("Can't find id = %1 in table.")).arg(center);
-        throw VException(error);
-    }
-    return VPointF();
+    return (M_PI * radius)/180 * AngleArc();
 }
 
 QPointF VArc::GetP1() const
 {
-    QPointF p1 ( GetCenterPoint().x () + radius, GetCenterPoint().y () );
-    QLineF centerP1(GetCenterPoint(), p1);
+    QPointF p1 ( GetCenter().x () + radius, GetCenter().y () );
+    QLineF centerP1(GetCenter().toQPointF(), p1);
     centerP1.setAngle(f1);
     return centerP1.p2();
 }
 
 QPointF VArc::GetP2 () const
 {
-    QPointF p2 ( GetCenterPoint().x () + radius, GetCenterPoint().y () );
-    QLineF centerP2(GetCenterPoint(), p2);
+    QPointF p2 ( GetCenter().x () + radius, GetCenter().y () );
+    QLineF centerP2(GetCenter().toQPointF(), p2);
     centerP2.setAngle(f2);
     return centerP2.p2();
 }
 
-const QHash<qint64, VPointF> VArc::GetDataPoints() const
-{
-    return points;
-}
-
 QPainterPath VArc::GetPath() const
 {
-    QPainterPath Path;
-    QPointF center = GetCenterPoint();
-    QRectF rect(center.x()-radius, center.y()-radius, radius*2, radius*2);
-    Path.moveTo(GetP1());
-    qreal angle = QLineF(center, GetP1()).angleTo(QLineF(center, GetP2()));
-    Path.arcTo(rect, GetF1(), angle);
-    return Path;
+    QPainterPath path;
+
+    QVector<QPointF> points = GetPoints();
+    if (points.count() >= 2)
+    {
+        for (qint32 i = 0; i < points.count()-1; ++i)
+        {
+            path.moveTo(points[i]);
+            path.lineTo(points[i+1]);
+        }
+    }
+    else
+    {
+        qWarning()<<"points.count() < 2"<<Q_FUNC_INFO;
+    }
+    return path;
 }
 
 qreal VArc::AngleArc() const
@@ -128,90 +116,65 @@ qreal VArc::AngleArc() const
     return l1.angleTo(l2);
 }
 
-qint32 VArc::NumberSplOfArc() const
-{
-    qint32 angArc = static_cast<qint32> (AngleArc ());
-    switch ( angArc )
-    {
-        case 0:
-        {
-            QString error = QString(tr("Angle of arc can't be 0 degree."));
-            throw VException(error);
-        }
-        case 90:
-            return 1;
-        case 180:
-            return 2;
-        case 270:
-            return 3;
-        case 360:
-            return 4;
-        default:
-            return static_cast<qint32> (AngleArc ( ) / 90 + 1);
-    }
-}
-
 QVector<QPointF> VArc::GetPoints() const
 {
     QVector<QPointF> points;
-    qint32 numberSpl =  NumberSplOfArc();
-    for (qint32 i = 1; i <= numberSpl; ++i)
+    qreal i = 0;
+    qreal angle = AngleArc();
+    qint32 k = static_cast<qint32>(angle);
+    qreal s = angle/(k/4);
+    do
     {
-        points<<SplOfArc ( i );
-    }
+        QLineF line(center.toQPointF(), GetP1());
+        line.setAngle(line.angle()+i);
+        points.append(line.p2());
+        i = i + s;
+        if (i > angle)
+        {
+            QLineF line(center.toQPointF(), GetP1());
+            line.setAngle(line.angle()+angle);
+            points.append(line.p2());
+        }
+    } while (i <= angle);
     return points;
 }
 
-QVector<QPointF> VArc::SplOfArc(qint32 number) const
+QString VArc::name() const
 {
-    qint32 n = NumberSplOfArc ();
-    if ( number > n )
+    return _name;
+}
+
+QPointF VArc::CutArc(const qreal &length, VArc &arc1, VArc &arc2) const
+{
+    //Always need return two arcs, so we must correct wrong length.
+    qreal len = 0;
+    if (length < this->GetLength()*0.02)
     {
-        QString error = QString(tr("Arc have not this number of part."));
-        throw VException(error);
+        len = this->GetLength()*0.02;
     }
-    qreal f1 = GetF1 ();
-    qreal f2 = GetF2 ();
-    qint32 i;
-    for ( i = 0; i < n; ++i )
+    else if ( length > this->GetLength()*0.98)
     {
-        if ( i == n - 1 )
-        {
-            f2 = GetF2 ();
-        }
-        else
-        {
-            if ( f1 + 90 > 360 )
-            {
-                f2 = f1 + 90 - 360;
-            }
-            else
-            {
-                f2 = f1 + 90;
-            }
-        }
-        qreal anglF1, anglF2;
-        if ( f1 + 90 > 360 )
-        {
-            anglF1 =  f1 + 90 - 360;
-        }
-        else
-        {
-            anglF1 = f1 + 90;
-        }
-        if ( f2 - 90 < 0 )
-        {
-            anglF2 = 360 + f2 - 90;
-        }
-        else
-        {
-            anglF2 = f2 - 90;
-        }
-        if ( i + 1 == number )
-        {
-            f1 = f2;
-            return VSpline::SplinePoints(GetP1 (), GetP2 (), anglF1, anglF2, 1., 1., 1.);
-        }
+        len = this->GetLength()*0.98;
     }
-    return QVector<QPointF>();
+    else
+    {
+        len = length;
+    }
+
+    qreal n = (len*180)/(M_PI*radius);
+    QLineF line(GetCenter().toQPointF(), GetP1());
+    line.setAngle(line.angle()+n);
+
+    arc1 = VArc (center, radius, formulaRadius, f1, formulaF1, line.angle(), QString().setNum(line.angle()),
+                 idObject, mode);
+
+    arc2 = VArc (center, radius, formulaRadius, line.angle(), QString().setNum(line.angle()), f2, formulaF2,
+                 idObject, mode);
+    return line.p2();
+}
+
+void VArc::setId(const qint64 &id)
+{
+    _id = id;
+    _name = QString ("Arc_%1_%2").arg(center.name()).arg(id);
 }

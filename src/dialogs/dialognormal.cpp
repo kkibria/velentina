@@ -31,8 +31,8 @@
 
 #include <QPushButton>
 
-DialogNormal::DialogNormal(const VContainer *data, Draw::Draws mode, QWidget *parent)
-    :DialogTool(data, mode, parent), ui(new Ui::DialogNormal), number(0), pointName(QString()),
+DialogNormal::DialogNormal(const VContainer *data, QWidget *parent)
+    :DialogTool(data, parent), ui(new Ui::DialogNormal), number(0), pointName(QString()),
     typeLine(QString()), formula(QString()), angle(0), firstPointId(0), secondPointId(0)
 {
     ui->setupUi(this);
@@ -41,7 +41,7 @@ DialogNormal::DialogNormal(const VContainer *data, Draw::Draws mode, QWidget *pa
     labelResultCalculation = ui->labelResultCalculation;
     labelDescription = ui->labelDescription;
     radioButtonSizeGrowth = ui->radioButtonSizeGrowth;
-    radioButtonStandartTable = ui->radioButtonStandartTable;
+    radioButtonStandardTable = ui->radioButtonStandardTable;
     radioButtonIncrements = ui->radioButtonIncrements;
     radioButtonLengthLine = ui->radioButtonLengthLine;
     radioButtonLengthArc = ui->radioButtonLengthArc;
@@ -56,6 +56,7 @@ DialogNormal::DialogNormal(const VContainer *data, Draw::Draws mode, QWidget *pa
     CheckState();
     QPushButton *bCansel = ui->buttonBox->button(QDialogButtonBox::Cancel);
     connect(bCansel, &QPushButton::clicked, this, &DialogNormal::DialogRejected);
+
     FillComboBoxPoints(ui->comboBoxFirstPoint);
     FillComboBoxPoints(ui->comboBoxSecondPoint);
     FillComboBoxTypeLine(ui->comboBoxLineType);
@@ -82,7 +83,7 @@ DialogNormal::DialogNormal(const VContainer *data, Draw::Draws mode, QWidget *pa
 
     ShowVariable(data->DataBase());
     connect(ui->radioButtonSizeGrowth, &QRadioButton::clicked, this, &DialogNormal::SizeGrowth);
-    connect(ui->radioButtonStandartTable, &QRadioButton::clicked, this, &DialogNormal::StandartTable);
+    connect(ui->radioButtonStandardTable, &QRadioButton::clicked, this, &DialogNormal::StandardTable);
     connect(ui->radioButtonIncrements, &QRadioButton::clicked, this, &DialogNormal::Increments);
     connect(ui->radioButtonLengthLine, &QRadioButton::clicked, this, &DialogNormal::LengthLines);
     connect(ui->radioButtonLengthArc, &QRadioButton::clicked, this, &DialogNormal::LengthArcs);
@@ -99,35 +100,12 @@ DialogNormal::~DialogNormal()
 
 void DialogNormal::ChoosedObject(qint64 id, const Scene::Scenes &type)
 {
-    if (idDetail == 0 && mode == Draw::Modeling)
-    {
-        if (type == Scene::Detail)
-        {
-            idDetail = id;
-            return;
-        }
-    }
-    if (mode == Draw::Modeling)
-    {
-        if (CheckObject(id) == false)
-        {
-            return;
-        }
-    }
     if (type == Scene::Point)
     {
-        VPointF point;
-        if (mode == Draw::Calculation)
-        {
-            point = data->GetPoint(id);
-        }
-        else
-        {
-            point = data->GetPointModeling(id);
-        }
+        const VPointF *point = data->GeometricObject<const VPointF *>(id);
         if (number == 0)
         {
-            qint32 index = ui->comboBoxFirstPoint->findText(point.name());
+            qint32 index = ui->comboBoxFirstPoint->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxFirstPoint->setCurrentIndex(index);
@@ -138,7 +116,7 @@ void DialogNormal::ChoosedObject(qint64 id, const Scene::Scenes &type)
         }
         if (number == 1)
         {
-            qint32 index = ui->comboBoxSecondPoint->findText(point.name());
+            qint32 index = ui->comboBoxSecondPoint->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxSecondPoint->setCurrentIndex(index);
@@ -159,8 +137,8 @@ void DialogNormal::DialogAccepted()
     typeLine = GetTypeLine(ui->comboBoxLineType);
     formula = ui->lineEditFormula->text();
     angle = ui->doubleSpinBoxAngle->value();
-    firstPointId = getCurrentPointId(ui->comboBoxFirstPoint);
-    secondPointId = getCurrentPointId(ui->comboBoxSecondPoint);
+    firstPointId = getCurrentObjectId(ui->comboBoxFirstPoint);
+    secondPointId = getCurrentObjectId(ui->comboBoxSecondPoint);
     emit DialogClosed(QDialog::Accepted);
 }
 

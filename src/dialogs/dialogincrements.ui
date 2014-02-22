@@ -6,15 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>681</width>
+    <width>897</width>
     <height>422</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Increments</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../icon.qrc">
+   <iconset resource="../../share/resources/icon.qrc">
     <normaloff>:/icon/64x64/icon64x64.png</normaloff>:/icon/64x64/icon64x64.png</iconset>
   </property>
   <property name="locale">
@@ -23,19 +29,25 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="tabPosition">
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
       <number>1</number>
      </property>
-     <widget class="QWidget" name="tabStandart">
+     <widget class="QWidget" name="tabStandard">
       <attribute name="title">
-       <string>Table sizes</string>
+       <string>Sizes table</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
-        <widget class="QTableWidget" name="tableWidgetStandart">
+        <widget class="QTableWidget" name="tableWidgetStandard">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -80,7 +92,7 @@
          </attribute>
          <column>
           <property name="text">
-           <string>Denotation</string>
+           <string>Name</string>
           </property>
          </column>
          <column>
@@ -153,14 +165,14 @@
           <bool>false</bool>
          </attribute>
          <attribute name="verticalHeaderDefaultSectionSize">
-          <number>45</number>
+          <number>20</number>
          </attribute>
          <attribute name="verticalHeaderStretchLastSection">
           <bool>false</bool>
          </attribute>
          <column>
           <property name="text">
-           <string>Denotation</string>
+           <string>Name</string>
           </property>
          </column>
          <column>
@@ -175,12 +187,12 @@
          </column>
          <column>
           <property name="text">
-           <string>In size</string>
+           <string>In sizes</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>In growth</string>
+           <string>In growths</string>
           </property>
          </column>
          <column>
@@ -229,6 +241,9 @@
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
          </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
          <attribute name="horizontalHeaderCascadingSectionResizes">
           <bool>false</bool>
          </attribute>
@@ -248,7 +263,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Length of the line</string>
+           <string>Length</string>
           </property>
          </column>
         </widget>
@@ -264,6 +279,9 @@
         <widget class="QTableWidget" name="tableWidgetSplines">
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
          </property>
          <attribute name="horizontalHeaderCascadingSectionResizes">
           <bool>false</bool>
@@ -284,7 +302,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Length of the curve</string>
+           <string>Length</string>
           </property>
          </column>
         </widget>
@@ -300,6 +318,9 @@
         <widget class="QTableWidget" name="tableWidgetArcs">
          <property name="editTriggers">
           <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
          </property>
          <attribute name="horizontalHeaderCascadingSectionResizes">
           <bool>false</bool>
@@ -320,7 +341,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Length of arc</string>
+           <string>Length</string>
           </property>
          </column>
         </widget>
@@ -329,67 +350,20 @@
      </widget>
     </widget>
    </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Ok</set>
-     </property>
-     <property name="centerButtons">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>tabWidget</tabstop>
-  <tabstop>tableWidgetStandart</tabstop>
+  <tabstop>tableWidgetStandard</tabstop>
   <tabstop>tableWidgetIncrement</tabstop>
   <tabstop>toolButtonAdd</tabstop>
   <tabstop>toolButtonRemove</tabstop>
   <tabstop>tableWidgetLines</tabstop>
   <tabstop>tableWidgetSplines</tabstop>
   <tabstop>tableWidgetArcs</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../icon.qrc"/>
+  <include location="../../share/resources/icon.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>DialogIncrements</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>DialogIncrements</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

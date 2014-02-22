@@ -30,13 +30,17 @@
 #define OPTIONS_H
 
 #include <QFlags>
+#include <QString>
+
+#define SceneSize 50000
 
 #define PrintDPI 96
-#define PaperSize 50000
 #define toPixel(mm) ((mm / 25.4) * PrintDPI)
 #define toMM(pix) ((pix / PrintDPI) * 25.4)
 #define widthMainLine 1.2
 #define widthHairLine widthMainLine/3
+
+extern const QString translationsPath;
 
 namespace Scene
 {
@@ -65,8 +69,11 @@ namespace Tool
         BisectorTool,
         LineIntersectTool,
         SplineTool,
+        CutSplineTool,
+        CutArcTool,
         ArcTool,
         SplinePathTool,
+        CutSplinePathTool,
         PointOfContact,
         Detail,
         NodePoint,
@@ -75,14 +82,15 @@ namespace Tool
         NodeSplinePath,
         Height,
         Triangle,
-        PointOfIntersection
+        PointOfIntersection,
+        UnionDetails
     };
     Q_DECLARE_FLAGS(Tools, Tool)
 
     /**
      * @brief The Source enum
      */
-    enum Source { FromGui, FromFile };
+    enum Source { FromGui, FromFile, FromTool };
     Q_DECLARE_FLAGS(Sources, Source)
 }
 Q_DECLARE_OPERATORS_FOR_FLAGS( Tool::Tools )

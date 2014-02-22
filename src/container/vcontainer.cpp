@@ -27,22 +27,17 @@
  *************************************************************************/
 
 #include "vcontainer.h"
-#include "../exception/vexceptionbadid.h"
 
 #include <QDebug>
+#include <QtAlgorithms>
 
 qint64 VContainer::_id = 0;
 
 VContainer::VContainer()
-    :base(QHash<QString, qint32>()), points(QHash<qint64, VPointF>()),
-    pointsModeling(QHash<qint64, VPointF>()),
-    standartTable(QHash<QString, VStandartTableRow>()), incrementTable(QHash<QString, VIncrementTableRow>()),
-    lengthLines(QHash<QString, qreal>()), lineAngles(QHash<QString, qreal>()), splines(QHash<qint64, VSpline>()),
-    splinesModeling(QHash<qint64, VSpline>()),
-    lengthSplines(QHash<QString, qreal>()), arcs(QHash<qint64, VArc>()), arcsModeling(QHash<qint64, VArc>()),
-    lengthArcs(QHash<QString, qreal>()),
-    splinePaths(QHash<qint64, VSplinePath>()), splinePathsModeling(QHash<qint64, VSplinePath>()),
-    details(QHash<qint64, VDetail>())
+    :base(QHash<QString, qint32>()),  gObjects(QHash<qint64, VGObject *>()),
+      standardTable(QHash<QString, VStandardTableRow>()), incrementTable(QHash<QString, VIncrementTableRow>()),
+      lengthLines(QHash<QString, qreal>()), lineAngles(QHash<QString, qreal>()), lengthSplines(QHash<QString, qreal>()),
+      lengthArcs(QHash<QString, qreal>()), details(QHash<qint64, VDetail>())
 {
     SetSize(500);
     SetGrowth(1760);
@@ -56,51 +51,74 @@ VContainer &VContainer::operator =(const VContainer &data)
 }
 
 VContainer::VContainer(const VContainer &data)
-    :base(QHash<QString, qint32>()), points(QHash<qint64, VPointF>()),
-    pointsModeling(QHash<qint64, VPointF>()),
-    standartTable(QHash<QString, VStandartTableRow>()), incrementTable(QHash<QString, VIncrementTableRow>()),
-    lengthLines(QHash<QString, qreal>()), lineAngles(QHash<QString, qreal>()), splines(QHash<qint64, VSpline>()),
-    splinesModeling(QHash<qint64, VSpline>()),
-    lengthSplines(QHash<QString, qreal>()), arcs(QHash<qint64, VArc>()), arcsModeling(QHash<qint64, VArc>()),
-    lengthArcs(QHash<QString, qreal>()),
-    splinePaths(QHash<qint64, VSplinePath>()), splinePathsModeling(QHash<qint64, VSplinePath>()),
-    details(QHash<qint64, VDetail>())
+    :base(QHash<QString, qint32>()), gObjects(QHash<qint64, VGObject *>()),
+      standardTable(QHash<QString, VStandardTableRow>()), incrementTable(QHash<QString, VIncrementTableRow>()),
+      lengthLines(QHash<QString, qreal>()), lineAngles(QHash<QString, qreal>()), lengthSplines(QHash<QString, qreal>()),
+      lengthArcs(QHash<QString, qreal>()), details(QHash<qint64, VDetail>())
 {
     setData(data);
+}
+
+VContainer::~VContainer()
+{
+    qDeleteAll(gObjects);
+    gObjects.clear();
 }
 
 void VContainer::setData(const VContainer &data)
 {
     base = *data.DataBase();
-    points = *data.DataPoints();
-    pointsModeling = *data.DataPointsModeling();
-    standartTable = *data.DataStandartTable();
+
+    qDeleteAll(gObjects);
+    gObjects.clear();
+    const QHash<qint64, VGObject*> *obj = data.DataGObjects();
+    Q_CHECK_PTR(obj);
+    QHashIterator<qint64, VGObject*> i(*obj);
+    while (i.hasNext())
+    {
+        i.next();
+        switch (i.value()->getType())
+        {
+            case (GObject::Arc):
+            {
+                CopyGObject<VArc>(data, i.key());
+                break;
+            }
+            case (GObject::Point):
+            {
+                CopyGObject<VPointF>(data, i.key());
+                break;
+            }
+            case (GObject::Spline):
+            {
+                CopyGObject<VSpline>(data, i.key());
+                break;
+            }
+            case (GObject::SplinePath):
+            {
+                CopyGObject<VSplinePath>(data, i.key());
+                break;
+            }
+            default:
+            qWarning()<<"Don't know how copy this type.";
+        }
+    }
+    standardTable = *data.DataStandardTable();
     incrementTable = *data.DataIncrementTable();
     lengthLines = *data.DataLengthLines();
     lineAngles = *data.DataLineAngles();
-    splines = *data.DataSplines();
-    splinesModeling = *data.DataSplinesModeling();
     lengthSplines = *data.DataLengthSplines();
-    arcs = *data.DataArcs();
-    arcsModeling = *data.DataArcsModeling();
     lengthArcs = *data.DataLengthArcs();
-    splinePaths = *data.DataSplinePaths();
-    splinePathsModeling = *data.DataSplinePathsModeling();
     details = *data.DataDetails();
 }
 
-VPointF VContainer::GetPoint(qint64 id) const
+const VGObject *VContainer::GetGObject(qint64 id)const
 {
-    return GetObject(points, id);
-}
-
-VPointF VContainer::GetPointModeling(qint64 id) const
-{
-    return GetObject(pointsModeling, id);
+    return GetObject(gObjects, id);
 }
 
 template <typename key, typename val>
-val VContainer::GetObject(const QHash<key, val> &obj, key id)
+const val VContainer::GetObject(const QHash<key, val> &obj, key id) const
 {
     if (obj.contains(id))
     {
@@ -112,90 +130,75 @@ val VContainer::GetObject(const QHash<key, val> &obj, key id)
     }
 }
 
-VStandartTableRow VContainer::GetStandartTableCell(const QString &name) const
+template <typename key, typename val>
+val VContainer::GetVariable(const QHash<key, val> &obj, key id) const
 {
-    Q_ASSERT(name.isEmpty()==false);
-    return GetObject(standartTable, name);
+    if (obj.contains(id))
+    {
+        return obj.value(id);
+    }
+    else
+    {
+        throw VExceptionBadId(tr("Can't find object"), id);
+    }
 }
 
-VIncrementTableRow VContainer::GetIncrementTableRow(const QString& name) const
+const VStandardTableRow VContainer::GetStandardTableCell(const QString &name) const
 {
     Q_ASSERT(name.isEmpty()==false);
-    return GetObject(incrementTable, name);
+    return GetVariable(standardTable, name);
+}
+
+const VIncrementTableRow VContainer::GetIncrementTableRow(const QString& name) const
+{
+    Q_ASSERT(name.isEmpty()==false);
+    return GetVariable(incrementTable, name);
 }
 
 qreal VContainer::GetLine(const QString &name) const
 {
     Q_ASSERT(name.isEmpty()==false);
-    return GetObject(lengthLines, name);
+    return GetVariable(lengthLines, name);
 }
 
 qreal VContainer::GetLengthArc(const QString &name) const
 {
     Q_ASSERT(name.isEmpty()==false);
-    return GetObject(lengthArcs, name);
+    return GetVariable(lengthArcs, name);
 }
 
 qreal VContainer::GetLengthSpline(const QString &name) const
 {
     Q_ASSERT(name.isEmpty()==false);
-    return GetObject(lengthSplines, name);
+    return GetVariable(lengthSplines, name);
 }
 
 qreal VContainer::GetLineAngle(const QString &name) const
 {
     Q_ASSERT(name.isEmpty()==false);
-    return GetObject(lineAngles, name);
+    return GetVariable(lineAngles, name);
 }
 
-VSpline VContainer::GetSpline(qint64 id) const
+const VDetail VContainer::GetDetail(qint64 id) const
 {
-    return GetObject(splines, id);
+    return GetVariable(details, id);
 }
 
-VSpline VContainer::GetSplineModeling(qint64 id) const
+qint64 VContainer::AddGObject(VGObject *obj)
 {
-    return GetObject(splinesModeling, id);
+    return AddObject(gObjects, obj);
 }
 
-VArc VContainer::GetArc(qint64 id) const
+qint64 VContainer::AddDetail(VDetail detail)
 {
-    return GetObject(arcs, id);
+    qint64 id = getNextId();
+    details[id] = detail;
+    return id;
 }
 
-VArc VContainer::GetArcModeling(qint64 id) const
+void VContainer::AddIncrementTableRow(const QString &name, VIncrementTableRow row)
 {
-    return GetObject(arcsModeling, id);
-}
-
-VSplinePath VContainer::GetSplinePath(qint64 id) const
-{
-    return GetObject(splinePaths, id);
-}
-
-VSplinePath VContainer::GetSplinePathModeling(qint64 id) const
-{
-    return GetObject(splinePathsModeling, id);
-}
-
-VDetail VContainer::GetDetail(qint64 id) const
-{
-    return GetObject(details, id);
-}
-
-qint64 VContainer::AddPoint(const VPointF &point)
-{
-    return AddObject(points, point);
-}
-
-qint64 VContainer::AddPointModeling(const VPointF &point)
-{
-    return AddObject(pointsModeling, point);
-}
-
-qint64 VContainer::AddDetail(const VDetail &detail)
-{
-    return AddObject(details, detail);
+    incrementTable[name] = row;
 }
 
 qint64 VContainer::getNextId()
@@ -212,351 +215,17 @@ void VContainer::UpdateId(qint64 newId)
     }
 }
 
-QPainterPath VContainer::ContourPath(qint64 idDetail) const
-{
-    VDetail detail = GetDetail(idDetail);
-    QVector<QPointF> points;
-    QVector<QPointF> pointsEkv;
-    for (ptrdiff_t i = 0; i< detail.CountNode(); ++i)
-    {
-        switch (detail[i].getTypeTool())
-        {
-            case (Tool::NodePoint):
-            {
-                VPointF point = GetPointModeling(detail[i].getId());
-                points.append(point.toQPointF());
-                if (detail.getSupplement() == true)
-                {
-                    QPointF pEkv = point.toQPointF();
-                    pEkv.setX(pEkv.x()+detail[i].getMx());
-                    pEkv.setY(pEkv.y()+detail[i].getMy());
-                    pointsEkv.append(pEkv);
-                }
-            }
-            break;
-            case (Tool::NodeArc):
-            {
-                VArc arc = GetArcModeling(detail[i].getId());
-                qreal len1 = GetLengthContour(points, arc.GetPoints());
-                qreal lenReverse = GetLengthContour(points, GetReversePoint(arc.GetPoints()));
-                if (len1 <= lenReverse)
-                {
-                    points << arc.GetPoints();
-                    if (detail.getSupplement() == true)
-                    {
-                        pointsEkv << biasPoints(arc.GetPoints(), detail[i].getMx(), detail[i].getMy());
-                    }
-                }
-                else
-                {
-                    points << GetReversePoint(arc.GetPoints());
-                    if (detail.getSupplement() == true)
-                    {
-                        pointsEkv << biasPoints(GetReversePoint(arc.GetPoints()), detail[i].getMx(), detail[i].getMy());
-                    }
-                }
-            }
-            break;
-            case (Tool::NodeSpline):
-            {
-                VSpline spline = GetSplineModeling(detail[i].getId());
-                qreal len1 = GetLengthContour(points, spline.GetPoints());
-                qreal lenReverse = GetLengthContour(points, GetReversePoint(spline.GetPoints()));
-                if (len1 <= lenReverse)
-                {
-                    points << spline.GetPoints();
-                    if (detail.getSupplement() == true)
-                    {
-                        pointsEkv << biasPoints(spline.GetPoints(), detail[i].getMx(), detail[i].getMy());
-                    }
-                }
-                else
-                {
-                    points << GetReversePoint(spline.GetPoints());
-                    if (detail.getSupplement() == true)
-                    {
-                        pointsEkv << biasPoints(GetReversePoint(spline.GetPoints()), detail[i].getMx(),
-                                                detail[i].getMy());
-                    }
-                }
-            }
-            break;
-            case (Tool::NodeSplinePath):
-            {
-                VSplinePath splinePath = GetSplinePathModeling(detail[i].getId());
-                qreal len1 = GetLengthContour(points, splinePath.GetPathPoints());
-                qreal lenReverse = GetLengthContour(points, GetReversePoint(splinePath.GetPathPoints()));
-                if (len1 <= lenReverse)
-                {
-                    points << splinePath.GetPathPoints();
-                    if (detail.getSupplement() == true)
-                    {
-                     pointsEkv << biasPoints(splinePath.GetPathPoints(), detail[i].getMx(), detail[i].getMy());
-                    }
-                }
-                else
-                {
-                    points << GetReversePoint(splinePath.GetPathPoints());
-                    if (detail.getSupplement() == true)
-                    {
-                        pointsEkv << biasPoints(GetReversePoint(splinePath.GetPathPoints()), detail[i].getMx(),
-                                                detail[i].getMy());
-                    }
-                }
-            }
-            break;
-            case (Tool::SplineTool):
-                break;//Nothing to do, just ignore.
-            default:
-                qWarning()<<"Get wrong tool type. Ignore."<<detail[i].getTypeTool();
-                break;
-        }
-    }
-
-    QPainterPath path;
-    path.moveTo(points[0]);
-    for (qint32 i = 1; i < points.count(); ++i)
-    {
-        path.lineTo(points[i]);
-    }
-    path.lineTo(points[0]);
-
-    if (detail.getSupplement() == true)
-    {
-        QPainterPath ekv;
-        if (detail.getClosed() == true)
-        {
-            ekv = Equidistant(pointsEkv, Detail::CloseEquidistant, toPixel(detail.getWidth()));
-        }
-        else
-        {
-            ekv = Equidistant(pointsEkv, Detail::OpenEquidistant, toPixel(detail.getWidth()));
-        }
-        path.addPath(ekv);
-        path.setFillRule(Qt::WindingFill);
-    }
-    return path;
-}
-
-QVector<QPointF> VContainer::biasPoints(const QVector<QPointF> &points, const qreal &mx, const qreal &my) const
-{
-    QVector<QPointF> p;
-    for (qint32 i = 0; i < points.size(); ++i)
-    {
-        QPointF point = points.at(i);
-        point.setX(point.x() + mx);
-        point.setY(point.y() + my);
-        p.append(point);
-    }
-    return p;
-}
-
-QPainterPath VContainer::Equidistant(QVector<QPointF> points, const Detail::Equidistant &eqv, const qreal &width) const
-{
-    QPainterPath ekv;
-    QVector<QPointF> ekvPoints;
-    if ( points.size() < 3 )
-    {
-        qDebug()<<"Not enough points for build equidistant.\n";
-        return ekv;
-    }
-    for (qint32 i = 0; i < points.size(); ++i )
-    {
-        if (i != points.size()-1)
-        {
-            if (points[i] == points[i+1])
-            {
-                points.remove(i+1);
-            }
-        }
-        else
-        {
-            if (points[i] == points[0])
-            {
-                points.remove(i);
-            }
-        }
-    }
-    if (eqv == Detail::CloseEquidistant)
-    {
-        points.append(points.at(0));
-    }
-    for (qint32 i = 0; i < points.size(); ++i )
-    {
-        if ( i == 0 && eqv == Detail::CloseEquidistant)
-        {//перша точка, ламана замкнена
-            ekvPoints<<EkvPoint(QLineF(points[points.size()-2], points[points.size()-1]), QLineF(points[1], points[0]),
-                    width);
-            continue;
-        }
-        else if (i == 0 && eqv == Detail::OpenEquidistant)
-        {//перша точка, ламана не замкнена
-            ekvPoints.append(SingleParallelPoint(QLineF(points[0], points[1]), 90, width));
-            continue;
-        }
-        if (i == points.size()-1 && eqv == Detail::CloseEquidistant)
-        {//остання точка, ламана замкнена
-            ekvPoints.append(ekvPoints.at(0));
-            continue;
-        }
-        else if (i == points.size()-1 && eqv == Detail::OpenEquidistant)
-        {//остання точка, ламана не замкнена
-                ekvPoints.append(SingleParallelPoint(QLineF(points[points.size()-1], points[points.size()-2]), -90,
-                        width));
-                continue;
-        }
-        //точка яка не лежить ні на початку ні в кінці
-        ekvPoints<<EkvPoint(QLineF(points[i-1], points[i]), QLineF(points[i+1], points[i]), width);
-    }
-    ekvPoints = CheckLoops(ekvPoints);
-    ekv.moveTo(ekvPoints[0]);
-    for (qint32 i = 1; i < ekvPoints.count(); ++i)
-    {
-        ekv.lineTo(ekvPoints[i]);
-    }
-    return ekv;
-}
-
-QLineF VContainer::ParallelLine(const QLineF &line, qreal width)
-{
-    Q_ASSERT(width > 0);
-    QLineF paralel = QLineF (SingleParallelPoint(line, 90, width), SingleParallelPoint(QLineF(line.p2(), line.p1()),
-                                                                                       -90, width));
-    return paralel;
-}
-
-QPointF VContainer::SingleParallelPoint(const QLineF &line, const qreal &angle, const qreal &width)
-{
-    Q_ASSERT(width > 0);
-    QLineF pLine = line;
-    pLine.setAngle( pLine.angle() + angle );
-    pLine.setLength( width );
-    return pLine.p2();
-}
-
-QVector<QPointF> VContainer::EkvPoint(const QLineF &line1, const QLineF &line2, const qreal &width) const
-{
-    Q_ASSERT(width > 0);
-    QVector<QPointF> points;
-    if (line1.p2() != line2.p2())
-    {
-        qWarning()<<"Last point of two lines must be equal.";
-    }
-    QPointF CrosPoint;
-    QLineF bigLine1 = ParallelLine(line1, width );
-    QLineF bigLine2 = ParallelLine(QLineF(line2.p2(), line2.p1()), width );
-    QLineF::IntersectType type = bigLine1.intersect( bigLine2, &CrosPoint );
-    switch (type)
-    {
-        case (QLineF::BoundedIntersection):
-            points.append(CrosPoint);
-            return points;
-            break;
-        case (QLineF::UnboundedIntersection):
-        {
-            QLineF line( line1.p2(), CrosPoint );
-            if (line.length() > width + toPixel(8))
-            {
-                QLineF lineL;
-                lineL = QLineF(bigLine1.p2(), CrosPoint);
-                lineL.setLength(width);
-                points.append(lineL.p2());
-
-                lineL = QLineF(bigLine2.p1(), CrosPoint);
-                lineL.setLength(width);
-                points.append(lineL.p2());
-            }
-            else
-            {
-                points.append(CrosPoint);
-                return points;
-            }
-            break;
-        }
-        case (QLineF::NoIntersection):
-            /*If we have correct lines this means lines lie on a line.*/
-            points.append(bigLine1.p2());
-            return points;
-            break;
-        default:
-            break;
-    }
-    return points;
-}
-
-QVector<QPointF> VContainer::CheckLoops(const QVector<QPointF> &points) const
-{
-    QVector<QPointF> ekvPoints;
-    /*If we got less than 4 points no need seek loops.*/
-    if (points.size() < 4)
-    {
-       return ekvPoints;
-    }
-    bool closed = false;
-    if (points.at(0) == points.at(points.size()-1))
-    {
-        closed = true;
-    }
-    qint32 i, j;
-    for (i = 0; i < points.size(); ++i)
-    {
-        /*Last three points no need check.*/
-        if (i >= points.size()-3)
-        {
-            ekvPoints.append(points.at(i));
-            continue;
-        }
-        QPointF crosPoint;
-        QLineF::IntersectType intersect = QLineF::NoIntersection;
-        QLineF line1(points.at(i), points.at(i+1));
-        for (j = i+2; j < points.size()-1; ++j)
-        {
-            QLineF line2(points.at(j), points.at(j+1));
-            intersect = line1.intersect(line2, &crosPoint);
-            if (intersect == QLineF::BoundedIntersection)
-            {
-                break;
-            }
-        }
-        if (intersect == QLineF::BoundedIntersection)
-        {
-            if (i == 0 && j+1 == points.size()-1 && closed)
-            {
-                /*We got closed contour.*/
-                ekvPoints.append(points.at(i));
-            }
-            else
-            {
-                /*We found loop.*/
-                ekvPoints.append(points.at(i));
-                ekvPoints.append(crosPoint);
-                ekvPoints.append(points.at(j+1));
-                i = j + 2;
-            }
-        }
-        else
-        {
-            /*We did not found loop.*/
-            ekvPoints.append(points.at(i));
-        }
-    }
-    return ekvPoints;
-}
-
-void VContainer::PrepareDetails(QVector<VItem *> &list) const
-{
-    QHashIterator<qint64, VDetail> iDetail(details);
-    while (iDetail.hasNext())
-    {
-        iDetail.next();
-        list.append(new VItem(ContourPath(iDetail.key()), list.size()));
-    }
-}
-
 template <typename val>
-void VContainer::UpdateObject(QHash<qint64, val> &obj, const qint64 &id, const val& point)
+void VContainer::UpdateObject(QHash<qint64, val> &obj, const qint64 &id, val point)
 {
     Q_ASSERT_X(id > 0, Q_FUNC_INFO, "id <= 0");
+    Q_CHECK_PTR(point);
+    point->setId(id);
+    if (gObjects.contains(id))
+    {
+        delete gObjects.value(id);
+        gObjects.remove(id);
+    }
     obj[id] = point;
     UpdateId(id);
 }
@@ -569,13 +238,8 @@ void VContainer::AddLengthSpline(const QString &name, const qreal &value)
 
 void VContainer::AddLengthArc(const qint64 &id)
 {
-    AddLengthArc(GetArc(id).name(), toMM(GetArc(id).GetLength()));
-}
-
-void VContainer::AddLengthArc(const QString &name, const qreal &value)
-{
-    Q_ASSERT(name.isEmpty() == false);
-    lengthArcs[name] = value;
+    const VArc * arc = GeometricObject<const VArc *>(id);
+    lengthArcs[arc->name()] = toMM(arc->GetLength());
 }
 
 void VContainer::AddLineAngle(const QString &name, const qreal &value)
@@ -584,9 +248,9 @@ void VContainer::AddLineAngle(const QString &name, const qreal &value)
     lineAngles[name] = value;
 }
 
-qreal VContainer::GetValueStandartTableCell(const QString& name) const
+qreal VContainer::GetValueStandardTableCell(const QString& name) const
 {
-    VStandartTableRow cell =  GetStandartTableCell(name);
+    VStandardTableRow cell =  GetStandardTableCell(name);
     qreal k_size    = ( static_cast<qreal> (size()/10.0) - 50.0 ) / 2.0;
     qreal k_growth  = ( static_cast<qreal> (growth()/10.0) - 176.0 ) / 6.0;
     qreal value = cell.GetBase() + k_size*cell.GetKsize() + k_growth*cell.GetKgrowth();
@@ -605,26 +269,39 @@ qreal VContainer::GetValueIncrementTableRow(const QString& name) const
 void VContainer::Clear()
 {
     _id = 0;
-    standartTable.clear();
+    standardTable.clear();
     incrementTable.clear();
     lengthLines.clear();
     lengthArcs.clear();
     lineAngles.clear();
     details.clear();
-    arcsModeling.clear();
-    pointsModeling.clear();
-    splinePathsModeling.clear();
-    splinesModeling.clear();
-    ClearObject();
-    CreateManTableIGroup ();
+    ClearGObjects();
 }
 
-void VContainer::ClearObject()
+void VContainer::ClearGObjects()
 {
-    points.clear();
-    splines.clear();
-    arcs.clear();
-    splinePaths.clear();
+    if (gObjects.size()>0)
+    {
+        qDeleteAll(gObjects);
+    }
+    gObjects.clear();
+}
+
+void VContainer::ClearCalculationGObjects()
+{
+    if (gObjects.size()>0)
+    {
+        QHashIterator<qint64, VGObject*> i(gObjects);
+        while (i.hasNext())
+        {
+            i.next();
+            if (i.value()->getMode() == Draw::Calculation)
+            {
+                delete i.value();
+                gObjects.remove(i.key());
+            }
+        }
+    }
 }
 
 qreal VContainer::FindVar(const QString &name, bool *ok)const
@@ -635,10 +312,10 @@ qreal VContainer::FindVar(const QString &name, bool *ok)const
         return base.value(name);
     }
 
-    if (standartTable.contains(name))
+    if (standardTable.contains(name))
     {
         *ok = true;
-        return GetValueStandartTableCell(name);
+        return GetValueStandardTableCell(name);
     }
     if (incrementTable.contains(name))
     {
@@ -669,141 +346,52 @@ qreal VContainer::FindVar(const QString &name, bool *ok)const
     return 0;
 }
 
-void VContainer::AddLine(const qint64 &firstPointId, const qint64 &secondPointId, const Draw::Draws &mode)
+void VContainer::AddLine(const qint64 &firstPointId, const qint64 &secondPointId)
 {
-    QString nameLine = GetNameLine(firstPointId, secondPointId, mode);
-    VPointF first;
-    VPointF second;
-    if (mode == Draw::Calculation)
-    {
-        first = GetPoint(firstPointId);
-        second = GetPoint(secondPointId);
-    }
-    else
-    {
-        first = GetPointModeling(firstPointId);
-        second = GetPointModeling(secondPointId);
-    }
-    AddLengthLine(nameLine, toMM(QLineF(first.toQPointF(), second.toQPointF()).length()));
-    nameLine = GetNameLineAngle(firstPointId, secondPointId, mode);
-    AddLineAngle(nameLine, QLineF(first.toQPointF(), second.toQPointF()).angle());
-}
-
-qint64 VContainer::AddSpline(const VSpline &spl)
-{
-    return AddObject(splines, spl);
-}
-
-qint64 VContainer::AddSplineModeling(const VSpline &spl)
-{
-    return AddObject(splinesModeling, spl);
-}
-
-qint64 VContainer::AddSplinePath(const VSplinePath &splPath)
-{
-    return AddObject(splinePaths, splPath);
-}
-
-qint64 VContainer::AddSplinePathModeling(const VSplinePath &splPath)
-{
-    return AddObject(splinePathsModeling, splPath);
-}
-
-qint64 VContainer::AddArc(const VArc &arc)
-{
-    return AddObject(arcs, arc);
-}
-
-qint64 VContainer::AddArcModeling(const VArc &arc)
-{
-    return AddObject(arcsModeling, arc);
+    QString nameLine = GetNameLine(firstPointId, secondPointId);
+    const VPointF *first = GeometricObject<const VPointF *>(firstPointId);
+    const VPointF *second = GeometricObject<const VPointF *>(secondPointId);
+    AddLengthLine(nameLine, toMM(QLineF(first->toQPointF(), second->toQPointF()).length()));
+    nameLine = GetNameLineAngle(firstPointId, secondPointId);
+    AddLineAngle(nameLine, QLineF(first->toQPointF(), second->toQPointF()).angle());
 }
 
 template <typename key, typename val>
-qint64 VContainer::AddObject(QHash<key, val> &obj, const val& value)
+qint64 VContainer::AddObject(QHash<key, val> &obj, val value)
 {
+    Q_CHECK_PTR(value);
     qint64 id = getNextId();
+    value->setId(id);
     obj[id] = value;
     return id;
 }
 
-QString VContainer::GetNameLine(const qint64 &firstPoint, const qint64 &secondPoint, const Draw::Draws &mode) const
+QString VContainer::GetNameLine(const qint64 &firstPoint, const qint64 &secondPoint) const
 {
-    VPointF first;
-    VPointF second;
-    if (mode == Draw::Calculation)
-    {
-        first = GetPoint(firstPoint);
-        second = GetPoint(secondPoint);
-    }
-    else
-    {
-        first = GetPointModeling(firstPoint);
-        second = GetPointModeling(secondPoint);
-    }
-    return QString("Line_%1_%2").arg(first.name(), second.name());
+    const VPointF *first = GeometricObject<const VPointF *>(firstPoint);
+    const VPointF *second = GeometricObject<const VPointF *>(secondPoint);
+
+    return QString("Line_%1_%2").arg(first->name(), second->name());
 }
 
-QString VContainer::GetNameLineAngle(const qint64 &firstPoint, const qint64 &secondPoint, const Draw::Draws &mode) const
+QString VContainer::GetNameLineAngle(const qint64 &firstPoint, const qint64 &secondPoint) const
 {
-    VPointF first;
-    VPointF second;
-    if (mode == Draw::Calculation)
-    {
-        first = GetPoint(firstPoint);
-        second = GetPoint(secondPoint);
-    }
-    else
-    {
-        first = GetPointModeling(firstPoint);
-        second = GetPointModeling(secondPoint);
-    }
-    return QString("AngleLine_%1_%2").arg(first.name(), second.name());
+    const VPointF *first = GeometricObject<const VPointF *>(firstPoint);
+    const VPointF *second = GeometricObject<const VPointF *>(secondPoint);
+
+    return QString("AngleLine_%1_%2").arg(first->name(), second->name());
 }
 
-void VContainer::UpdatePoint(qint64 id, const VPointF &point)
+void VContainer::UpdateGObject(qint64 id, VGObject* obj)
 {
-    UpdateObject(points, id, point);
-}
-
-void VContainer::UpdatePointModeling(qint64 id, const VPointF &point)
-{
-    UpdateObject(pointsModeling, id, point);
+    UpdateObject(gObjects, id, obj);
 }
 
 void VContainer::UpdateDetail(qint64 id, const VDetail &detail)
 {
-    UpdateObject(details, id, detail);
-}
-
-void VContainer::UpdateSpline(qint64 id, const VSpline &spl)
-{
-    UpdateObject(splines, id, spl);
-}
-
-void VContainer::UpdateSplineModeling(qint64 id, const VSpline &spl)
-{
-    UpdateObject(splinesModeling, id, spl);
-}
-
-void VContainer::UpdateSplinePath(qint64 id, const VSplinePath &splPath)
-{
-    UpdateObject(splinePaths, id, splPath);
-}
-
-void VContainer::UpdateSplinePathModeling(qint64 id, const VSplinePath &splPath)
-{
-    UpdateObject(splinePathsModeling, id, splPath);
-}
-
-void VContainer::UpdateArc(qint64 id, const VArc &arc)
-{
-    UpdateObject(arcs, id, arc);
-}
-
-void VContainer::UpdateArcModeling(qint64 id, const VArc &arc)
-{
-    UpdateObject(arcsModeling, id, arc);
+    Q_ASSERT_X(id > 0, Q_FUNC_INFO, "id <= 0");
+    details[id] = detail;
+    UpdateId(id);
 }
 
 void VContainer::AddLengthLine(const QString &name, const qreal &value)
@@ -814,82 +402,62 @@ void VContainer::AddLengthLine(const QString &name, const qreal &value)
 
 void VContainer::CreateManTableIGroup ()
 {
-    AddStandartTableCell("Pkor", VStandartTableRow(84, 0, 3));
-    AddStandartTableCell("Pkor", VStandartTableRow(84, 0, 3));
-    AddStandartTableCell("Vtos", VStandartTableRow(1450, 2, 51));
-    AddStandartTableCell("Vtosh", VStandartTableRow(1506, 2, 54));
-    AddStandartTableCell("Vpt", VStandartTableRow(1438, 3, 52));
-    AddStandartTableCell("Vst", VStandartTableRow(1257, -1, 49));
-    AddStandartTableCell("Vlt", VStandartTableRow(1102, 0, 43));
-    AddStandartTableCell("Vk", VStandartTableRow(503, 0, 22));
-    AddStandartTableCell("Vsht", VStandartTableRow(1522, 2, 54));
-    AddStandartTableCell("Vzy", VStandartTableRow(1328, 0, 49));
-    AddStandartTableCell("Vlop", VStandartTableRow(1320, 0, 49));
-    AddStandartTableCell("Vps", VStandartTableRow(811, -1, 36));
-    AddStandartTableCell("Ssh", VStandartTableRow(202, 4, 1));
-    AddStandartTableCell("SgI", VStandartTableRow(517, 18, 2));
-    AddStandartTableCell("SgII", VStandartTableRow(522, 19, 1));
-    AddStandartTableCell("SgIII", VStandartTableRow(500, 20, 0));
-    AddStandartTableCell("St", VStandartTableRow(390, 20, 0));
-    AddStandartTableCell("Sb", VStandartTableRow(492, 15, 5));
-    AddStandartTableCell("SbI", VStandartTableRow(482, 12, 6));
-    AddStandartTableCell("Obed", VStandartTableRow(566, 18, 6));
-    AddStandartTableCell("Ok", VStandartTableRow(386, 8, 8));
-    AddStandartTableCell("Oi", VStandartTableRow(380, 8, 6));
-    AddStandartTableCell("Osch", VStandartTableRow(234, 4, 4));
-    AddStandartTableCell("Dsb", VStandartTableRow(1120, 0, 44));
-    AddStandartTableCell("Dsp", VStandartTableRow(1110, 0, 43));
-    AddStandartTableCell("Dn", VStandartTableRow(826, -3, 37));
-    AddStandartTableCell("Dps", VStandartTableRow(316, 4, 7));
-    AddStandartTableCell("Dpob", VStandartTableRow(783, 14, 15));
-    AddStandartTableCell("Ds", VStandartTableRow(260, 1, 6));
-    AddStandartTableCell("Op", VStandartTableRow(316, 12, 0));
-    AddStandartTableCell("Ozap", VStandartTableRow(180, 4, 0));
-    AddStandartTableCell("Pkis", VStandartTableRow(250, 4, 0));
-    AddStandartTableCell("SHp", VStandartTableRow(160, 1, 4));
-    AddStandartTableCell("Dlych", VStandartTableRow(500, 2, 15));
-    AddStandartTableCell("Dzap", VStandartTableRow(768, 2, 24));
-    AddStandartTableCell("DIIIp", VStandartTableRow(970, 2, 29));
-    AddStandartTableCell("Vprp", VStandartTableRow(214, 3, 3));
-    AddStandartTableCell("Vg", VStandartTableRow(262, 8, 3));
-    AddStandartTableCell("Dtp", VStandartTableRow(460, 7, 9));
-    AddStandartTableCell("Dp", VStandartTableRow(355, 5, 5));
-    AddStandartTableCell("Vprz", VStandartTableRow(208, 3, 5));
-    AddStandartTableCell("Dts", VStandartTableRow(438, 2, 10));
-    AddStandartTableCell("DtsI", VStandartTableRow(469, 2, 10));
-    AddStandartTableCell("Dvcht", VStandartTableRow(929, 9, 19));
-    AddStandartTableCell("SHg", VStandartTableRow(370, 14, 4));
-    AddStandartTableCell("Cg", VStandartTableRow(224, 6, 0));
-    AddStandartTableCell("SHs", VStandartTableRow(416, 10, 2));
-    AddStandartTableCell("dpzr", VStandartTableRow(121, 6, 0));
-    AddStandartTableCell("Ogol", VStandartTableRow(576, 4, 4));
-    AddStandartTableCell("Ssh1", VStandartTableRow(205, 5, 0));
-    AddStandartTableCell("St", VStandartTableRow(410, 20, 0));
-    AddStandartTableCell("Drzap", VStandartTableRow(594, 3, 19));
-    AddStandartTableCell("DbII", VStandartTableRow(1020, 0, 44));
-    AddStandartTableCell("Sb", VStandartTableRow(504, 15, 4));
-}
+    AddStandardTableCell("Pkor", VStandardTableRow(84, 0, 3));
+    AddStandardTableCell("Vtos", VStandardTableRow(1450, 2, 51));
+    AddStandardTableCell("Vtosh", VStandardTableRow(1506, 2, 54));
+    AddStandardTableCell("Vpt", VStandardTableRow(1438, 3, 52));
+    AddStandardTableCell("Vst", VStandardTableRow(1257, -1, 49));
+    AddStandardTableCell("Vlt", VStandardTableRow(1102, 0, 43));
+    AddStandardTableCell("Vk", VStandardTableRow(503, 0, 22));
+    AddStandardTableCell("Vsht", VStandardTableRow(1522, 2, 54));
+    AddStandardTableCell("Vzy", VStandardTableRow(1328, 0, 49));
+    AddStandardTableCell("Vlop", VStandardTableRow(1320, 0, 49));
+    AddStandardTableCell("Vps", VStandardTableRow(811, -1, 36));
+    AddStandardTableCell("Ssh", VStandardTableRow(202, 4, 1));
+    AddStandardTableCell("SgI", VStandardTableRow(517, 18, 2));
+    AddStandardTableCell("SgII", VStandardTableRow(522, 19, 1));
+    AddStandardTableCell("SgIII", VStandardTableRow(500, 20, 0));
+    AddStandardTableCell("SbI", VStandardTableRow(482, 12, 6));
+    AddStandardTableCell("Obed", VStandardTableRow(566, 18, 6));
+    AddStandardTableCell("Ok", VStandardTableRow(386, 8, 8));
+    AddStandardTableCell("Oi", VStandardTableRow(380, 8, 6));
+    AddStandardTableCell("Osch", VStandardTableRow(234, 4, 4));
+    AddStandardTableCell("Dsb", VStandardTableRow(1120, 0, 44));
+    AddStandardTableCell("Dsp", VStandardTableRow(1110, 0, 43));
+    AddStandardTableCell("Dn", VStandardTableRow(826, -3, 37));
+    AddStandardTableCell("Dps", VStandardTableRow(316, 4, 7));
+    AddStandardTableCell("Dpob", VStandardTableRow(783, 14, 15));
+    AddStandardTableCell("Ds", VStandardTableRow(260, 1, 6));
+    AddStandardTableCell("Op", VStandardTableRow(316, 12, 0));
+    AddStandardTableCell("Ozap", VStandardTableRow(180, 4, 0));
+    AddStandardTableCell("Pkis", VStandardTableRow(250, 4, 0));
+    AddStandardTableCell("SHp", VStandardTableRow(160, 1, 4));
+    AddStandardTableCell("Dlych", VStandardTableRow(500, 2, 15));
+    AddStandardTableCell("Dzap", VStandardTableRow(768, 2, 24));
+    AddStandardTableCell("DIIIp", VStandardTableRow(970, 2, 29));
+    AddStandardTableCell("Vprp", VStandardTableRow(214, 3, 3));
+    AddStandardTableCell("Vg", VStandardTableRow(262, 8, 3));
+    AddStandardTableCell("Dtp", VStandardTableRow(460, 7, 9));
+    AddStandardTableCell("Dp", VStandardTableRow(355, 5, 5));
+    AddStandardTableCell("Vprz", VStandardTableRow(208, 3, 5));
+    AddStandardTableCell("Dts", VStandardTableRow(438, 2, 10));
+    AddStandardTableCell("DtsI", VStandardTableRow(469, 2, 10));
+    AddStandardTableCell("Dvcht", VStandardTableRow(929, 9, 19));
+    AddStandardTableCell("SHg", VStandardTableRow(370, 14, 4));
+    AddStandardTableCell("Cg", VStandardTableRow(224, 6, 0));
+    AddStandardTableCell("SHs", VStandardTableRow(416, 10, 2));
+    AddStandardTableCell("dpzr", VStandardTableRow(121, 6, 0));
+    AddStandardTableCell("Ogol", VStandardTableRow(576, 4, 4));
+    AddStandardTableCell("Ssh1", VStandardTableRow(205, 5, 0));
 
-QVector<QPointF> VContainer::GetReversePoint(const QVector<QPointF> &points) const
-{
-    Q_ASSERT(points.size() > 0);
-    QVector<QPointF> reversePoints;
-    for (qint32 i = points.size() - 1; i >= 0; --i)
-    {
-        reversePoints.append(points.at(i));
-    }
-    return reversePoints;
-}
+    //TODO Posible duplicate. Need check.
+    //AddStandardTableCell("St", VStandardTableRow(410, 20, 0));
+    AddStandardTableCell("St", VStandardTableRow(390, 20, 0));
 
-qreal VContainer::GetLengthContour(const QVector<QPointF> &contour, const QVector<QPointF> &newPoints) const
-{
-    qreal length = 0;
-    QVector<QPointF> points;
-    points << contour << newPoints;
-    for (qint32 i = 0; i < points.size()-1; ++i)
-    {
-        QLineF line(points.at(i), points.at(i+1));
-        length += line.length();
-    }
-    return length;
+    AddStandardTableCell("Drzap", VStandardTableRow(594, 3, 19));
+    AddStandardTableCell("DbII", VStandardTableRow(1020, 0, 44));
+
+    //TODO Posible duplicate. Need check.
+    //AddStandardTableCell("Sb", VStandardTableRow(504, 15, 4));
+    AddStandardTableCell("Sb", VStandardTableRow(492, 15, 5));
 }

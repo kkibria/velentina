@@ -46,10 +46,9 @@ public:
                      /**
                       * @brief DialogLine create dialog
                       * @param data container with data
-                      * @param mode mode of creation tool
                       * @param parent parent widget
                       */
-                     DialogLine(const VContainer *data, Draw::Draws mode = Draw::Calculation, QWidget *parent = 0);
+                     DialogLine(const VContainer *data, QWidget *parent = 0);
                      ~DialogLine();
     /**
      * @brief getFirstPoint return id first point
@@ -71,13 +70,23 @@ public:
      * @param value id
      */
     void             setSecondPoint(const qint64 &value);
+    /**
+     * @brief getTypeLine return type of line
+     * @return type
+     */
+    inline QString    getTypeLine() const {return typeLine;}
+    /**
+     * @brief setTypeLine set type of line
+     * @param value type
+     */
+    void              setTypeLine(const QString &value);
 public slots:
     /**
      * @brief ChoosedObject gets id and type of selected object. Save right data and ignore wrong.
      * @param id id of point or detail
      * @param type type of object
      */
-    void             ChoosedObject(qint64 id, const Scene::Scenes &type);
+    virtual void     ChoosedObject(qint64 id, const Scene::Scenes &type);
     /**
      * @brief DialogAccepted save data and emit signal about closed dialog.
      */
@@ -100,6 +109,10 @@ private:
      * @brief secondPoint id second point
      */
     qint64           secondPoint;
+    /**
+     * @brief typeLine type of line
+     */
+    QString           typeLine;
 };
 
 #endif // DIALOGLINE_H

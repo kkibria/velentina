@@ -28,6 +28,7 @@
 
 #include "vtoolbisector.h"
 #include "../../container/calculator.h"
+#include "../../dialogs/dialogbisector.h"
 
 const QString VToolBisector::ToolType = QStringLiteral("bisector");
 
@@ -35,8 +36,7 @@ VToolBisector::VToolBisector(VDomDocument *doc, VContainer *data, const qint64 &
                              const QString &typeLine, const QString &formula, const qint64 &firstPointId,
                              const qint64 &secondPointId, const qint64 &thirdPointId, const Tool::Sources &typeCreation,
                              QGraphicsItem *parent)
-    :VToolLinePoint(doc, data, id, typeLine, formula, secondPointId, 0, parent), firstPointId(0),
-    thirdPointId(0), dialogBisector(QSharedPointer<DialogBisector>())
+    :VToolLinePoint(doc, data, id, typeLine, formula, secondPointId, 0, parent), firstPointId(0), thirdPointId(0)
 {
     this->firstPointId = firstPointId;
     this->thirdPointId = thirdPointId;
@@ -44,6 +44,10 @@ VToolBisector::VToolBisector(VDomDocument *doc, VContainer *data, const qint64 &
     if (typeCreation == Tool::FromGui)
     {
         AddToFile();
+    }
+    else
+    {
+        RefreshDataInFile();
     }
 }
 
@@ -68,25 +72,30 @@ QPointF VToolBisector::FindPoint(const QPointF &firstPoint, const QPointF &secon
 
 void VToolBisector::setDialog()
 {
-    Q_ASSERT(dialogBisector.isNull() == false);
-    VPointF p = VAbstractTool::data.GetPoint(id);
-    dialogBisector->setTypeLine(typeLine);
-    dialogBisector->setFormula(formula);
-    dialogBisector->setFirstPointId(firstPointId, id);
-    dialogBisector->setSecondPointId(basePointId, id);
-    dialogBisector->setThirdPointId(thirdPointId, id);
-    dialogBisector->setPointName(p.name());
+    Q_CHECK_PTR(dialog);
+    DialogBisector *dialogTool = qobject_cast<DialogBisector*>(dialog);
+    Q_CHECK_PTR(dialogTool);
+    const VPointF *p = VAbstractTool::data.GeometricObject<const VPointF *>(id);
+    dialogTool->setTypeLine(typeLine);
+    dialogTool->setFormula(formula);
+    dialogTool->setFirstPointId(firstPointId, id);
+    dialogTool->setSecondPointId(basePointId, id);
+    dialogTool->setThirdPointId(thirdPointId, id);
+    dialogTool->setPointName(p->name());
 }
 
-void VToolBisector::Create(QSharedPointer<DialogBisector> &dialog, VMainGraphicsScene *scene, VDomDocument *doc,
+void VToolBisector::Create(DialogTool *dialog, VMainGraphicsScene *scene, VDomDocument *doc,
                            VContainer *data)
 {
-    QString formula = dialog->getFormula();
-    qint64 firstPointId = dialog->getFirstPointId();
-    qint64 secondPointId = dialog->getSecondPointId();
-    qint64 thirdPointId = dialog->getThirdPointId();
-    QString typeLine = dialog->getTypeLine();
-    QString pointName = dialog->getPointName();
+    Q_CHECK_PTR(dialog);
+    DialogBisector *dialogTool = qobject_cast<DialogBisector*>(dialog);
+    Q_CHECK_PTR(dialogTool);
+    QString formula = dialogTool->getFormula();
+    qint64 firstPointId = dialogTool->getFirstPointId();
+    qint64 secondPointId = dialogTool->getSecondPointId();
+    qint64 thirdPointId = dialogTool->getThirdPointId();
+    QString typeLine = dialogTool->getTypeLine();
+    QString pointName = dialogTool->getPointName();
     Create(0, formula, firstPointId, secondPointId, thirdPointId, typeLine, pointName, 5, 10, scene, doc, data,
            Document::FullParse, Tool::FromGui);
 }
@@ -97,26 +106,26 @@ void VToolBisector::Create(const qint64 _id, const QString &formula, const qint6
                            VMainGraphicsScene *scene, VDomDocument *doc, VContainer *data,
                            const Document::Documents &parse, const Tool::Sources &typeCreation)
 {
-    VPointF firstPoint = data->GetPoint(firstPointId);
-    VPointF secondPoint = data->GetPoint(secondPointId);
-    VPointF thirdPoint = data->GetPoint(thirdPointId);
+    const VPointF *firstPoint = data->GeometricObject<const VPointF *>(firstPointId);
+    const VPointF *secondPoint = data->GeometricObject<const VPointF *>(secondPointId);
+    const VPointF *thirdPoint = data->GeometricObject<const VPointF *>(thirdPointId);
 
     Calculator cal(data);
     QString errorMsg;
     qreal result = cal.eval(formula, &errorMsg);
     if (errorMsg.isEmpty())
     {
-        QPointF fPoint = VToolBisector::FindPoint(firstPoint.toQPointF(), secondPoint.toQPointF(),
-                                                  thirdPoint.toQPointF(), toPixel(result));
+        QPointF fPoint = VToolBisector::FindPoint(firstPoint->toQPointF(), secondPoint->toQPointF(),
+                                                  thirdPoint->toQPointF(), toPixel(result));
         qint64 id = _id;
         if (typeCreation == Tool::FromGui)
         {
-            id = data->AddPoint(VPointF(fPoint.x(), fPoint.y(), pointName, mx, my));
+            id = data->AddGObject(new VPointF(fPoint.x(), fPoint.y(), pointName, mx, my));
             data->AddLine(firstPointId, id);
         }
         else
         {
-            data->UpdatePoint(id, VPointF(fPoint.x(), fPoint.y(), pointName, mx, my));
+            data->UpdateGObject(id, new VPointF(fPoint.x(), fPoint.y(), pointName, mx, my));
             data->AddLine(firstPointId, id);
             if (parse != Document::FullParse)
             {
@@ -130,7 +139,6 @@ void VToolBisector::Create(const qint64 _id, const QString &formula, const qint6
                                                      thirdPointId, typeCreation);
             scene->addItem(point);
             connect(point, &VToolBisector::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-            connect(point, &VToolBisector::RemoveTool, scene, &VMainGraphicsScene::RemoveTool);
             connect(scene, &VMainGraphicsScene::NewFactor, point, &VToolBisector::SetFactor);
             doc->AddTool(id, point);
             doc->IncrementReferens(firstPointId);
@@ -154,54 +162,57 @@ void VToolBisector::FullUpdateFromFile()
     RefreshGeometry();
 }
 
-void VToolBisector::FullUpdateFromGui(int result)
-{
-    if (result == QDialog::Accepted)
-    {
-        QDomElement domElement = doc->elementById(QString().setNum(id));
-        if (domElement.isElement())
-        {
-            domElement.setAttribute(AttrName, dialogBisector->getPointName());
-            domElement.setAttribute(AttrTypeLine, dialogBisector->getTypeLine());
-            domElement.setAttribute(AttrLength, dialogBisector->getFormula());
-            domElement.setAttribute(AttrFirstPoint, QString().setNum(dialogBisector->getFirstPointId()));
-            domElement.setAttribute(AttrSecondPoint, QString().setNum(dialogBisector->getSecondPointId()));
-            domElement.setAttribute(AttrThirdPoint, QString().setNum(dialogBisector->getThirdPointId()));
-            emit FullUpdateTree();
-        }
-    }
-    dialogBisector.clear();
-}
-
 void VToolBisector::SetFactor(qreal factor)
 {
     VDrawTool::SetFactor(factor);
     RefreshGeometry();
 }
 
+void VToolBisector::ShowContextMenu(QGraphicsSceneContextMenuEvent *event)
+{
+    ContextMenu<DialogBisector>(this, event);
+}
+
 void VToolBisector::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    ContextMenu(dialogBisector, this, event);
+    ContextMenu<DialogBisector>(this, event);
 }
 
 void VToolBisector::AddToFile()
 {
-    VPointF point = VAbstractTool::data.GetPoint(id);
+    const VPointF *point = VAbstractTool::data.GeometricObject<const VPointF *>(id);
     QDomElement domElement = doc->createElement(TagName);
 
-    AddAttribute(domElement, AttrId, id);
-    AddAttribute(domElement, AttrType, ToolType);
-    AddAttribute(domElement, AttrName, point.name());
-    AddAttribute(domElement, AttrMx, toMM(point.mx()));
-    AddAttribute(domElement, AttrMy, toMM(point.my()));
+    SetAttribute(domElement, AttrId, id);
+    SetAttribute(domElement, AttrType, ToolType);
+    SetAttribute(domElement, AttrName, point->name());
+    SetAttribute(domElement, AttrMx, toMM(point->mx()));
+    SetAttribute(domElement, AttrMy, toMM(point->my()));
 
-    AddAttribute(domElement, AttrTypeLine, typeLine);
-    AddAttribute(domElement, AttrLength, formula);
-    AddAttribute(domElement, AttrFirstPoint, firstPointId);
-    AddAttribute(domElement, AttrSecondPoint, basePointId);
-    AddAttribute(domElement, AttrThirdPoint, thirdPointId);
+    SetAttribute(domElement, AttrTypeLine, typeLine);
+    SetAttribute(domElement, AttrLength, formula);
+    SetAttribute(domElement, AttrFirstPoint, firstPointId);
+    SetAttribute(domElement, AttrSecondPoint, basePointId);
+    SetAttribute(domElement, AttrThirdPoint, thirdPointId);
 
     AddToCalculation(domElement);
+}
+
+void VToolBisector::RefreshDataInFile()
+{
+    const VPointF *point = VAbstractTool::data.GeometricObject<const VPointF *>(id);
+    QDomElement domElement = doc->elementById(QString().setNum(id));
+    if (domElement.isElement())
+    {
+        SetAttribute(domElement, AttrMx, toMM(point->mx()));
+        SetAttribute(domElement, AttrMy, toMM(point->my()));
+        SetAttribute(domElement, AttrName, point->name());
+        SetAttribute(domElement, AttrTypeLine, typeLine);
+        SetAttribute(domElement, AttrLength, formula);
+        SetAttribute(domElement, AttrFirstPoint, firstPointId);
+        SetAttribute(domElement, AttrSecondPoint, basePointId);
+        SetAttribute(domElement, AttrThirdPoint, thirdPointId);
+    }
 }
 
 void VToolBisector::RemoveReferens()
@@ -209,4 +220,17 @@ void VToolBisector::RemoveReferens()
     doc->DecrementReferens(firstPointId);
     doc->DecrementReferens(thirdPointId);
     VToolLinePoint::RemoveReferens();
+}
+
+void VToolBisector::SaveDialog(QDomElement &domElement)
+{
+    Q_CHECK_PTR(dialog);
+    DialogBisector *dialogTool = qobject_cast<DialogBisector*>(dialog);
+    Q_CHECK_PTR(dialogTool);
+    SetAttribute(domElement, AttrName, dialogTool->getPointName());
+    SetAttribute(domElement, AttrTypeLine, dialogTool->getTypeLine());
+    SetAttribute(domElement, AttrLength, dialogTool->getFormula());
+    SetAttribute(domElement, AttrFirstPoint, QString().setNum(dialogTool->getFirstPointId()));
+    SetAttribute(domElement, AttrSecondPoint, QString().setNum(dialogTool->getSecondPointId()));
+    SetAttribute(domElement, AttrThirdPoint, QString().setNum(dialogTool->getThirdPointId()));
 }

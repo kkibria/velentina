@@ -46,16 +46,15 @@ public:
                   /**
                    * @brief DialogSpline create dialog
                    * @param data container with data
-                   * @param mode mode of creation tool
                    * @param parent parent widget
                    */
-                  DialogSpline(const VContainer *data, Draw::Draws mode = Draw::Calculation, QWidget *parent = 0);
+                  DialogSpline(const VContainer *data, QWidget *parent = 0);
                   ~DialogSpline();
     /**
      * @brief getP1 return id first point of spline
      * @return id
      */
-    inline qint64 getP1() const {return p1;}
+    qint64        getP1() const;
     /**
      * @brief setP1 set id first point of spline
      * @param value id
@@ -65,7 +64,7 @@ public:
      * @brief getP4 return id fourth point of spline
      * @return id
      */
-    inline qint64 getP4() const {return p4;}
+    qint64        getP4() const;
     /**
      * @brief setP4 set id fourth point of spline
      * @param value id

@@ -31,8 +31,8 @@
 
 #include <QPushButton>
 
-DialogPointOfIntersection::DialogPointOfIntersection(const VContainer *data, Draw::Draws mode, QWidget *parent)
-    :DialogTool(data, mode, parent), ui(new Ui::DialogPointOfIntersection), number(0), pointName(QString()),
+DialogPointOfIntersection::DialogPointOfIntersection(const VContainer *data, QWidget *parent)
+    :DialogTool(data, parent), ui(new Ui::DialogPointOfIntersection), number(0), pointName(QString()),
     firstPointId(0), secondPointId(0)
 {
     ui->setupUi(this);
@@ -43,8 +43,10 @@ DialogPointOfIntersection::DialogPointOfIntersection(const VContainer *data, Dra
     CheckState();
     QPushButton *bCansel = ui->buttonBox->button(QDialogButtonBox::Cancel);
     connect(bCansel, &QPushButton::clicked, this, &DialogPointOfIntersection::DialogRejected);
+
     FillComboBoxPoints(ui->comboBoxFirstPoint);
     FillComboBoxPoints(ui->comboBoxSecondPoint);
+
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this, &DialogPointOfIntersection::NamePointChanged);
 }
 
@@ -61,35 +63,12 @@ void DialogPointOfIntersection::setSecondPointId(const qint64 &value, const qint
 
 void DialogPointOfIntersection::ChoosedObject(qint64 id, const Scene::Scenes &type)
 {
-    if (idDetail == 0 && mode == Draw::Modeling)
-    {
-        if (type == Scene::Detail)
-        {
-            idDetail = id;
-            return;
-        }
-    }
-    if (mode == Draw::Modeling)
-    {
-        if (CheckObject(id) == false)
-        {
-            return;
-        }
-    }
     if (type == Scene::Point)
     {
-        VPointF point;
-        if (mode == Draw::Calculation)
-        {
-            point = data->GetPoint(id);
-        }
-        else
-        {
-            point = data->GetPointModeling(id);
-        }
+        const VPointF *point = data->GeometricObject<const VPointF *>(id);
         if (number == 0)
         {
-            qint32 index = ui->comboBoxFirstPoint->findText(point.name());
+            qint32 index = ui->comboBoxFirstPoint->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxFirstPoint->setCurrentIndex(index);
@@ -100,7 +79,7 @@ void DialogPointOfIntersection::ChoosedObject(qint64 id, const Scene::Scenes &ty
         }
         if (number == 1)
         {
-            qint32 index = ui->comboBoxSecondPoint->findText(point.name());
+            qint32 index = ui->comboBoxSecondPoint->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxSecondPoint->setCurrentIndex(index);
@@ -118,8 +97,8 @@ void DialogPointOfIntersection::ChoosedObject(qint64 id, const Scene::Scenes &ty
 void DialogPointOfIntersection::DialogAccepted()
 {
     pointName = ui->lineEditNamePoint->text();
-    firstPointId = getCurrentPointId(ui->comboBoxFirstPoint);
-    secondPointId = getCurrentPointId(ui->comboBoxSecondPoint);
+    firstPointId = getCurrentObjectId(ui->comboBoxFirstPoint);
+    secondPointId = getCurrentObjectId(ui->comboBoxSecondPoint);
     emit DialogClosed(QDialog::Accepted);
 }
 

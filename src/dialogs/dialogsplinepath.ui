@@ -14,7 +14,7 @@
    <string>Curve path</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../icon.qrc">
+   <iconset resource="../../share/resources/icon.qrc">
     <normaloff>:/icon/64x64/icon64x64.png</normaloff>:/icon/64x64/icon64x64.png</iconset>
   </property>
   <property name="locale">
@@ -53,6 +53,9 @@
          </item>
          <item>
           <widget class="QDoubleSpinBox" name="doubleSpinBoxKasm1">
+           <property name="singleStep">
+            <double>0.010000000000000</double>
+           </property>
            <property name="value">
             <double>1.000000000000000</double>
            </property>
@@ -73,9 +76,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBoxAngle1">
+          <widget class="QDoubleSpinBox" name="doubleSpinBoxAngle1">
            <property name="maximum">
-            <number>360</number>
+            <double>360.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -95,6 +98,9 @@
          </item>
          <item>
           <widget class="QDoubleSpinBox" name="doubleSpinBoxKasm2">
+           <property name="singleStep">
+            <double>0.010000000000000</double>
+           </property>
            <property name="value">
             <double>1.000000000000000</double>
            </property>
@@ -115,9 +121,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBoxAngle2">
+          <widget class="QDoubleSpinBox" name="doubleSpinBoxAngle2">
            <property name="maximum">
-            <number>360</number>
+            <double>360.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -169,6 +175,9 @@
          <height>0</height>
         </size>
        </property>
+       <property name="singleStep">
+        <double>0.010000000000000</double>
+       </property>
        <property name="value">
         <double>1.000000000000000</double>
        </property>
@@ -191,15 +200,15 @@
  <tabstops>
   <tabstop>comboBoxPoint</tabstop>
   <tabstop>doubleSpinBoxKasm1</tabstop>
-  <tabstop>spinBoxAngle1</tabstop>
+  <tabstop>doubleSpinBoxAngle1</tabstop>
   <tabstop>doubleSpinBoxKasm2</tabstop>
-  <tabstop>spinBoxAngle2</tabstop>
+  <tabstop>doubleSpinBoxAngle2</tabstop>
   <tabstop>doubleSpinBoxKcurve</tabstop>
   <tabstop>listWidget</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../icon.qrc"/>
+  <include location="../../share/resources/icon.qrc"/>
  </resources>
  <connections>
   <connection>

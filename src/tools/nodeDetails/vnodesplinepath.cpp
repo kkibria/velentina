@@ -34,40 +34,61 @@ const QString VNodeSplinePath::TagName = QStringLiteral("spline");
 const QString VNodeSplinePath::ToolType = QStringLiteral("modelingPath");
 
 VNodeSplinePath::VNodeSplinePath(VDomDocument *doc, VContainer *data, qint64 id, qint64 idSpline,
-                                 Draw::Draws typeobject, const Tool::Sources &typeCreation, QGraphicsItem * parent)
-    :VAbstractNode(doc, data, id, idSpline, typeobject), QGraphicsPathItem(parent)
+                                 const Tool::Sources &typeCreation, const qint64 &idTool, QObject *qoParent,
+                                 QGraphicsItem * parent)
+    :VAbstractNode(doc, data, id, idSpline, idTool, qoParent), QGraphicsPathItem(parent)
 {
     RefreshGeometry();
     this->setPen(QPen(baseColor, widthHairLine));
-    this->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    this->setAcceptHoverEvents(true);
 
     if (typeCreation == Tool::FromGui)
     {
         AddToFile();
     }
+    else
+    {
+        RefreshDataInFile();
+    }
 }
 
 void VNodeSplinePath::Create(VDomDocument *doc, VContainer *data, qint64 id, qint64 idSpline,
-                             const Draw::Draws &typeobject, const Document::Documents &parse,
-                             const Tool::Sources &typeCreation)
+                             const Document::Documents &parse, const Tool::Sources &typeCreation, const qint64 &idTool,
+                             QObject *parent)
 {
+    VAbstractTool::AddRecord(id, Tool::NodeSplinePath, doc);
     if (parse == Document::FullParse)
     {
-        VNodeSplinePath *splPath = new VNodeSplinePath(doc, data, id, idSpline, typeobject, typeCreation);
-        Q_ASSERT(splPath != 0);
+        VNodeSplinePath *splPath = new VNodeSplinePath(doc, data, id, idSpline, typeCreation, idTool, parent);
+        Q_CHECK_PTR(splPath);
         doc->AddTool(id, splPath);
-        VSplinePath path = data->GetSplinePathModeling(id);
-        const QVector<VSplinePoint> *points = path.GetPoint();
+        const VSplinePath *path = data->GeometricObject<const VSplinePath *>(id);
+        const QVector<VSplinePoint> *points = path->GetPoint();
         for (qint32 i = 0; i<points->size(); ++i)
         {
-            doc->IncrementReferens(points->at(i).P());
+            if (idTool != 0)
+            {
+                doc->IncrementReferens(idTool);
+                //Some nodes we don't show on scene. Tool that create this nodes must free memory.
+                VDataTool *tool = doc->getTool(idTool);
+                Q_CHECK_PTR(tool);
+                splPath->setParent(tool);
+            }
+            else
+            {
+                doc->IncrementReferens(points->at(i).P().id());
+            }
         }
     }
     else
     {
         doc->UpdateToolData(id, data);
     }
+}
+
+void VNodeSplinePath::DeleteNode()
+{
+    VAbstractNode::DeleteNode();
+    this->setVisible(false);
 }
 
 void VNodeSplinePath::FullUpdateFromFile()
@@ -79,19 +100,28 @@ void VNodeSplinePath::AddToFile()
 {
     QDomElement domElement = doc->createElement(TagName);
 
-    AddAttribute(domElement, AttrId, id);
-    AddAttribute(domElement, AttrType, ToolType);
-    AddAttribute(domElement, AttrIdObject, idNode);
-    if (typeobject == Draw::Calculation)
+    SetAttribute(domElement, AttrId, id);
+    SetAttribute(domElement, AttrType, ToolType);
+    SetAttribute(domElement, AttrIdObject, idNode);
+    if (idTool != 0)
     {
-        AddAttribute(domElement, AttrTypeObject, TypeObjectCalculation);
-    }
-    else
-    {
-        AddAttribute(domElement, AttrTypeObject, TypeObjectModeling);
+        SetAttribute(domElement, AttrIdTool, idTool);
     }
 
     AddToModeling(domElement);
+}
+
+void VNodeSplinePath::RefreshDataInFile()
+{
+    QDomElement domElement = doc->elementById(QString().setNum(id));
+    if (domElement.isElement())
+    {
+        SetAttribute(domElement, AttrIdObject, QString().setNum(idNode));
+        if (idTool != 0)
+        {
+            SetAttribute(domElement, AttrIdTool, idTool);
+        }
+    }
 }
 
 void VNodeSplinePath::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
@@ -117,9 +147,9 @@ void VNodeSplinePath::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 void VNodeSplinePath::RefreshGeometry()
 {
-    VSplinePath splPath = VAbstractTool::data.GetSplinePathModeling(id);
+    const VSplinePath *splPath = VAbstractTool::data.GeometricObject<const VSplinePath *>(id);
     QPainterPath path;
-    path.addPath(splPath.GetPath());
+    path.addPath(splPath->GetPath());
     path.setFillRule( Qt::WindingFill );
     this->setPath(path);
 }

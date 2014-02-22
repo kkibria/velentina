@@ -33,99 +33,101 @@
 #include "../../widgets/vgraphicssimpletextitem.h"
 
 /**
- * @brief The VNodePoint class
+ * @brief The VNodePoint class point detail node.
  */
 class VNodePoint: public VAbstractNode, public QGraphicsEllipseItem
 {
     Q_OBJECT
 public:
                  /**
-                  * @brief VNodePoint
-                  * @param doc dom document container
-                  * @param data
-                  * @param id
-                  * @param idPoint
-                  * @param typeobject
-                  * @param typeCreation
-                  * @param parent
+                  * @brief VNodePoint constructor.
+                  * @param doc dom document container.
+                  * @param data container with variables.
+                  * @param id object id in container.
+                  * @param id object id in containerPoint.
+                  * @param typeCreation way we create this tool.
+                  * @param parent parent object.
                   */
-                 VNodePoint(VDomDocument *doc, VContainer *data, qint64 id, qint64 idPoint, Draw::Draws typeobject,
-                            const Tool::Sources &typeCreation, QGraphicsItem * parent = 0 );
+                 VNodePoint(VDomDocument *doc, VContainer *data, qint64 id, qint64 idPoint,
+                            const Tool::Sources &typeCreation, const qint64 &idTool = 0, QObject *qoParent = 0,
+                            QGraphicsItem * parent = 0 );
     /**
-     * @brief Create
-     * @param doc dom document container
-     * @param data
-     * @param id
-     * @param idPoint
-     * @param typeobject
-     * @param parse
-     * @param typeCreation
+     * @brief Create help create tool.
+     * @param doc dom document container.
+     * @param data container with variables.
+     * @param id object id in container.
+     * @param id object id in containerPoint.
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
-    static void  Create(VDomDocument *doc, VContainer *data, qint64 id, qint64 idPoint, const Draw::Draws &typeobject,
-                        const Document::Documents &parse, const Tool::Sources &typeCreation);
-    /**
-     * @brief TagName
-     */
+    static void  Create(VDomDocument *doc, VContainer *data, qint64 id, qint64 idPoint,
+                        const Document::Documents &parse, const Tool::Sources &typeCreation, const qint64 &idTool = 0,
+                        QObject *parent = 0);
     static const QString TagName;
-    /**
-     * @brief ToolType
-     */
     static const QString ToolType;
+    /**
+     * @brief DeleteNode delete node from detail.
+     */
+    virtual void DeleteNode();
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void FullUpdateFromFile();
     /**
-     * @brief NameChangePosition
-     * @param pos
+     * @brief NameChangePosition label change position.
+     * @param pos new position.
      */
     void         NameChangePosition(const QPointF &pos);
 protected:
     /**
-     * @brief radius
+     * @brief radius radius circle.
      */
     qreal        radius;
     /**
-     * @brief namePoint
+     * @brief namePoint label name.
      */
     VGraphicsSimpleTextItem *namePoint;
     /**
-     * @brief lineName
+     * @brief lineName pointer to label line.
      */
     QGraphicsLineItem       *lineName;
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void AddToFile();
     /**
-     * @brief mouseReleaseEvent
-     * @param event
+     * @brief RefreshDataInFile refresh attributes in file. If attributes don't exist create them.
+     */
+    virtual void RefreshDataInFile();
+    /**
+     * @brief mouseReleaseEvent handle mouse release events.
+     * @param event mouse release event.
      */
     virtual void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
     /**
-     * @brief hoverMoveEvent
-     * @param event
+     * @brief hoverMoveEvent handle hover move events.
+     * @param event hover move event.
      */
     virtual void hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief hoverLeaveEvent
-     * @param event
+     * @brief hoverLeaveEvent handle hover leave events.
+     * @param event hover leave event.
      */
     virtual void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief UpdateNamePosition
-     * @param mx
-     * @param my
+     * @brief UpdateNamePosition update label position in file.
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
      */
     virtual void UpdateNamePosition(qreal mx, qreal my);
     /**
-     * @brief RefreshPointGeometry
-     * @param point
+     * @brief RefreshPointGeometry refresh point on scene.
+     * @param point point position.
      */
     virtual void RefreshPointGeometry(const VPointF &point);
     /**
-     * @brief RefreshLine
+     * @brief RefreshLine refresh label line on scene.
      */
     void         RefreshLine();
 private:

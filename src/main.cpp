@@ -31,6 +31,17 @@
 #include <QTextCodec>
 #include <QtCore>
 #include "tablewindow.h"
+#include "options.h"
+
+#ifdef Q_OS_WIN32
+    const QString translationsPath = QString("/translations");
+#else
+    #ifdef QT_DEBUG
+        const QString translationsPath = QString("/translations");
+    #else
+        const QString translationsPath = QString("/usr/share/valentina/translations");
+    #endif
+#endif
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
@@ -60,24 +71,30 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 
 int main(int argc, char *argv[])
 {
+    Q_INIT_RESOURCE(cursor);
+    Q_INIT_RESOURCE(icon);
+    Q_INIT_RESOURCE(schema);
+    Q_INIT_RESOURCE(theme);
+
     qInstallMessageHandler(myMessageOutput);
     VApplication app(argc, argv);
+    app.setApplicationDisplayName("Valentina");
+    app.setApplicationName("Valentina");
+    app.setOrganizationName("ValentinaTeam");
+    app.setOrganizationDomain("valentinaproject.bitbucket.org");
+
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(),
+                       QApplication::applicationName());
+    QString defaultLocale = QLocale::system().name();       // e.g. "de_DE"
+    defaultLocale.truncate(defaultLocale.lastIndexOf('_')); // e.g. "de"
+    QString checkedLocale = settings.value("configuration/locale", defaultLocale).toString();
 
     QTranslator qtTranslator;
-    qtTranslator.load("qt_" + QLocale::system().name(),
-                      QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    qtTranslator.load("qt_" + checkedLocale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     app.installTranslator(&qtTranslator);
 
     QTranslator appTranslator;
-#ifdef Q_OS_WIN32
-    appTranslator.load("valentina_" + QLocale::system().name(), ".");
-#else
-    #ifdef QT_DEBUG
-        appTranslator.load("valentina_" + QLocale::system().name(), ".");
-    #else
-        appTranslator.load("valentina_" + QLocale::system().name(), "/usr/share/valentina/translations");
-    #endif
-#endif
+    appTranslator.load("valentina_" + checkedLocale, translationsPath);
     app.installTranslator(&appTranslator);
 
     MainWindow w;
@@ -101,7 +118,7 @@ int main(int argc, char *argv[])
                 {
                     fileName =  args.at(i+1);
                     qDebug() << args.at(i)<< ":" << fileName;
-                    w.OpenPattern(fileName);
+                    w.LoadPattern(fileName);
                 }
                 w.show();
                 break;

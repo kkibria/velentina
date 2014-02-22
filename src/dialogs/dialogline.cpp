@@ -31,16 +31,19 @@
 
 #include <QPushButton>
 
-DialogLine::DialogLine(const VContainer *data, Draw::Draws mode, QWidget *parent)
-    :DialogTool(data, mode, parent), ui(new Ui::DialogLine), number(0), firstPoint(0), secondPoint(0)
+DialogLine::DialogLine(const VContainer *data, QWidget *parent)
+    :DialogTool(data, parent), ui(new Ui::DialogLine), number(0), firstPoint(0), secondPoint(0), typeLine(QString())
 {
     ui->setupUi(this);
     bOk = ui->buttonBox->button(QDialogButtonBox::Ok);
     connect(bOk, &QPushButton::clicked, this, &DialogLine::DialogAccepted);
     QPushButton *bCansel = ui->buttonBox->button(QDialogButtonBox::Cancel);
     connect(bCansel, &QPushButton::clicked, this, &DialogLine::DialogRejected);
+
     FillComboBoxPoints(ui->comboBoxFirstPoint);
     FillComboBoxPoints(ui->comboBoxSecondPoint);
+    FillComboBoxTypeLine(ui->comboBoxLineType);
+
     number = 0;
 }
 
@@ -52,19 +55,25 @@ DialogLine::~DialogLine()
 void DialogLine::setSecondPoint(const qint64 &value)
 {
     secondPoint = value;
-    VPointF point = data->GetPoint(value);
-    qint32 index = ui->comboBoxSecondPoint->findText(point.name());
+    const VPointF *point = data->GeometricObject<const VPointF *>(value);
+    qint32 index = ui->comboBoxSecondPoint->findText(point->name());
     if (index != -1)
     {
         ui->comboBoxSecondPoint->setCurrentIndex(index);
     }
 }
 
+void DialogLine::setTypeLine(const QString &value)
+{
+    typeLine = value;
+    SetupTypeLine(ui->comboBoxLineType, value);
+}
+
 void DialogLine::setFirstPoint(const qint64 &value)
 {
     firstPoint = value;
-    VPointF point = data->GetPoint(value);
-    qint32 index = ui->comboBoxFirstPoint->findText(point.name());
+    const VPointF *point = data->GeometricObject<const VPointF *>(value);
+    qint32 index = ui->comboBoxFirstPoint->findText(point->name());
     if (index != -1)
     {
         ui->comboBoxFirstPoint->setCurrentIndex(index);
@@ -78,40 +87,18 @@ void DialogLine::DialogAccepted()
     firstPoint = qvariant_cast<qint64>(ui->comboBoxFirstPoint->itemData(index));
     index = ui->comboBoxSecondPoint->currentIndex();
     secondPoint = qvariant_cast<qint64>(ui->comboBoxSecondPoint->itemData(index));
+    typeLine = GetTypeLine(ui->comboBoxLineType);
     DialogClosed(QDialog::Accepted);
 }
 
 void DialogLine::ChoosedObject(qint64 id, const Scene::Scenes &type)
 {
-    if (idDetail == 0 && mode == Draw::Modeling)
-    {
-        if (type == Scene::Detail)
-        {
-            idDetail = id;
-            return;
-        }
-    }
-    if (mode == Draw::Modeling)
-    {
-        if (CheckObject(id) == false)
-        {
-            return;
-        }
-    }
     if (type == Scene::Point)
     {
-        VPointF point;
-        if (mode == Draw::Calculation)
-        {
-            point = data->GetPoint(id);
-        }
-        else
-        {
-            point = data->GetPointModeling(id);
-        }
+        const VPointF *point = data->GeometricObject<const VPointF *>(id);
         if (number == 0)
         {
-            qint32 index = ui->comboBoxFirstPoint->findText(point.name());
+            qint32 index = ui->comboBoxFirstPoint->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxFirstPoint->setCurrentIndex(index);
@@ -122,7 +109,7 @@ void DialogLine::ChoosedObject(qint64 id, const Scene::Scenes &type)
         }
         if (number == 1)
         {
-            qint32 index = ui->comboBoxSecondPoint->findText(point.name());
+            qint32 index = ui->comboBoxSecondPoint->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxSecondPoint->setCurrentIndex(index);

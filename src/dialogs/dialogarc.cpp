@@ -32,8 +32,8 @@
 #include <QPushButton>
 #include <QtWidgets>
 
-DialogArc::DialogArc(const VContainer *data, Draw::Draws mode, QWidget *parent)
-    :DialogTool(data, mode, parent), ui(new Ui::DialogArc), flagRadius(false), flagF1(false), flagF2(false),
+DialogArc::DialogArc(const VContainer *data, QWidget *parent)
+    :DialogTool(data, parent), ui(new Ui::DialogArc), flagRadius(false), flagF1(false), flagF2(false),
     timerRadius(0), timerF1(0), timerF2(0), center(0), radius(QString()), f1(QString()), f2(QString())
 {
     ui->setupUi(this);
@@ -52,6 +52,7 @@ DialogArc::DialogArc(const VContainer *data, Draw::Draws mode, QWidget *parent)
 
     QPushButton *bCansel = ui->buttonBox->button(QDialogButtonBox::Cancel);
     connect(bCansel, &QPushButton::clicked, this, &DialogArc::DialogRejected);
+
     FillComboBoxPoints(ui->comboBoxBasePoint);
 
     CheckState();
@@ -59,7 +60,7 @@ DialogArc::DialogArc(const VContainer *data, Draw::Draws mode, QWidget *parent)
     listWidget = ui->listWidget;
     labelDescription = ui->labelDescription;
     radioButtonSizeGrowth = ui->radioButtonSizeGrowth;
-    radioButtonStandartTable = ui->radioButtonStandartTable;
+    radioButtonStandardTable = ui->radioButtonStandardTable;
     radioButtonIncrements = ui->radioButtonIncrements;
     radioButtonLengthLine = ui->radioButtonLengthLine;
     radioButtonLengthArc = ui->radioButtonLengthArc;
@@ -72,7 +73,7 @@ DialogArc::DialogArc(const VContainer *data, Draw::Draws mode, QWidget *parent)
 
     ShowVariable(data->DataBase());
     connect(ui->radioButtonSizeGrowth, &QRadioButton::clicked, this, &DialogArc::SizeGrowth);
-    connect(ui->radioButtonStandartTable, &QRadioButton::clicked, this, &DialogArc::StandartTable);
+    connect(ui->radioButtonStandardTable, &QRadioButton::clicked, this, &DialogArc::StandardTable);
     connect(ui->radioButtonIncrements, &QRadioButton::clicked, this, &DialogArc::Increments);
     connect(ui->radioButtonLengthLine, &QRadioButton::clicked, this, &DialogArc::LengthLines);
     connect(ui->radioButtonLineAngles, &QRadioButton::clicked, this, &DialogArc::LineAngles);
@@ -119,33 +120,11 @@ void DialogArc::SetRadius(const QString &value)
 
 void DialogArc::ChoosedObject(qint64 id, const Scene::Scenes &type)
 {
-    if (idDetail == 0 && mode == Draw::Modeling)
-    {
-        if (type == Scene::Detail)
-        {
-            idDetail = id;
-            return;
-        }
-    }
-    if (mode == Draw::Modeling)
-    {
-        if (CheckObject(id)==false)
-        {
-            return;
-        }
-    }
     if (type == Scene::Point)
     {
-        VPointF point;
-        if (mode == Draw::Calculation)
-        {
-            point = data->GetPoint(id);
-        }
-        else
-        {
-            point = data->GetPointModeling(id);
-        }
-        ChangeCurrentText(ui->comboBoxBasePoint, point.name());
+        const VPointF *point = data->GeometricObject<const VPointF *>(id);
+
+        ChangeCurrentText(ui->comboBoxBasePoint, point->name());
         emit ToolTip("");
         this->show();
     }
@@ -156,7 +135,7 @@ void DialogArc::DialogAccepted()
     radius = ui->lineEditRadius->text();
     f1 = ui->lineEditF1->text();
     f2 = ui->lineEditF2->text();
-    center = getCurrentPointId(ui->comboBoxBasePoint);
+    center = getCurrentObjectId(ui->comboBoxBasePoint);
     emit DialogClosed(QDialog::Accepted);
 }
 
@@ -170,7 +149,7 @@ void DialogArc::ValChenged(int row)
     if (ui->radioButtonLineAngles->isChecked())
     {
         QString desc = QString("%1(%2) - %3").arg(item->text()).arg(data->GetLineAngle(item->text()))
-                .arg(tr("Value angle of line."));
+                .arg(tr("Value of angle of line."));
         ui->labelDescription->setText(desc);
         return;
     }
@@ -217,7 +196,7 @@ void DialogArc::F2Changed()
 
 void DialogArc::CheckState()
 {
-    Q_ASSERT(bOk != 0);
+    Q_CHECK_PTR(bOk);
     bOk->setEnabled(flagRadius && flagF1 && flagF2);
 }
 
@@ -245,7 +224,7 @@ void DialogArc::ShowLineAngles()
     ui->listWidget->clear();
     connect(ui->listWidget, &QListWidget::currentRowChanged, this, &DialogArc::ValChenged);
     const QHash<QString, qreal> *lineAnglesTable = data->DataLineAngles();
-    Q_ASSERT(lineAnglesTable != 0);
+    Q_CHECK_PTR(lineAnglesTable);
     QHashIterator<QString, qreal> i(*lineAnglesTable);
     while (i.hasNext())
     {

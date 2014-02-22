@@ -37,6 +37,20 @@
 #include <QRadioButton>
 #include "../container/vcontainer.h"
 
+namespace ComboMode
+{
+    /**
+     * @brief The ComboBoxCutSpline enum
+     */
+    enum ComboBoxCutSpline { CutSpline, NoCutSpline };
+    Q_DECLARE_FLAGS(ComboBoxCutSplines, ComboBoxCutSpline)
+
+    enum ComboBoxCutArc { CutArc, NoCutArc};
+    Q_DECLARE_FLAGS(ComboBoxCutArcs, ComboBoxCutArc)
+}
+Q_DECLARE_OPERATORS_FOR_FLAGS( ComboMode::ComboBoxCutSplines )
+Q_DECLARE_OPERATORS_FOR_FLAGS( ComboMode::ComboBoxCutArcs )
+
 /**
  * @brief The DialogTool class parent for all dialog of tools.
  */
@@ -47,21 +61,10 @@ public:
                      /**
                       * @brief DialogTool create dialog
                       * @param data container with data
-                      * @param mode mode of creation tool
                       * @param parent parent widget
                       */
-                     DialogTool(const VContainer *data, Draw::Draws mode = Draw::Calculation, QWidget *parent = 0);
+                     DialogTool(const VContainer *data, QWidget *parent = 0);
     virtual          ~DialogTool() {}
-    /**
-     * @brief getIdDetail return id detail
-     * @return id
-     */
-    inline qint64    getIdDetail() const {return idDetail;}
-    /**
-     * @brief setIdDetail set id detail
-     * @param value id
-     */
-    inline void      setIdDetail(const qint64 &value) {idDetail = value;}
 signals:
     /**
      * @brief DialogClosed signal dialog closed
@@ -137,9 +140,9 @@ public slots:
      */
     void             SizeGrowth();
     /**
-     * @brief StandartTable show in list standart table variables
+     * @brief StandardTable show in list standard table variables
      */
-    void             StandartTable();
+    void             StandardTable();
     /**
      * @brief LengthLines show in list lengths of lines variables
      */
@@ -233,9 +236,9 @@ protected:
      */
     QRadioButton     *radioButtonSizeGrowth;
     /**
-     * @brief radioButtonStandartTable radio button for standart table variables
+     * @brief radioButtonStandardTable radio button for standard table variables
      */
-    QRadioButton     *radioButtonStandartTable;
+    QRadioButton     *radioButtonStandardTable;
     /**
      * @brief radioButtonIncrements radio button for increments variables
      */
@@ -253,19 +256,9 @@ protected:
      */
     QRadioButton     *radioButtonLengthCurve;
     /**
-     * @brief idDetail id detail
+     * @brief lineStyles list supported line styles.
      */
-    qint64           idDetail;
-    /**
-     * @brief mode mode
-     */
-    Draw::Draws      mode;
-    /**
-     * @brief CheckObject check if object belongs to detail
-     * @param id id of object (point, arc, spline, spline path)
-     * @return true - belons, false - don't
-     */
-    bool             CheckObject(const qint64 &id);
+    QStringList      lineStyles;
     /**
      * @brief closeEvent handle when dialog cloded
      * @param event event
@@ -282,6 +275,24 @@ protected:
      * @param id don't show this id in list
      */
     void             FillComboBoxPoints(QComboBox *box, const qint64 &id = 0)const;
+    void             FillComboBoxArcs(QComboBox *box, const qint64 &id = 0,
+                                      ComboMode::ComboBoxCutArc cut = ComboMode::NoCutArc)const;
+    /**
+     * @brief FillComboBoxSplines fill comboBox list of splines
+     * @param box comboBox
+     * @param id don't show id in list
+     * @param cut if set to ComboMode::CutSpline don't show id+1 and id+2
+     */
+    void             FillComboBoxSplines(QComboBox *box, const qint64 &id = 0,
+                                         ComboMode::ComboBoxCutSpline cut = ComboMode::NoCutSpline)const;
+    /**
+     * @brief FillComboBoxSplinesPath
+     * @param box comboBox
+     * @param id don't show id in list
+     * @param cut if set to ComboMode::CutSpline don't show id+1 and id+2
+     */
+    void             FillComboBoxSplinesPath(QComboBox *box, const qint64 &id = 0,
+                                             ComboMode::ComboBoxCutSpline cut = ComboMode::NoCutSpline)const;
     /**
      * @brief FillComboBoxTypeLine fill comboBox list of type lines
      * @param box comboBox
@@ -351,11 +362,48 @@ protected:
      */
     void             setCurrentPointId(QComboBox *box, qint64 &pointId, const qint64 &value, const qint64 &id) const;
     /**
+     * @brief setCurrentSplineId set current spline id in combobox
+     * @param box combobox
+     * @param splineId save current spline id
+     * @param value spline id
+     * @param id don't show this id in list
+     * @param cut if set to ComboMode::CutSpline don't show id+1 and id+2
+     */
+    void             setCurrentSplineId(QComboBox *box, qint64 &splineId, const qint64 &value, const qint64 &id,
+                                        ComboMode::ComboBoxCutSpline cut = ComboMode::NoCutSpline) const;
+    /**
+     * @brief setCurrentArcId
+     * @param box combobox
+     * @param arcId save current arc id
+     * @param value arc id
+     * @param id don't show this id in list
+     * @param cut if set to ComboMode::CutArc don't show id+1 and id+2
+     */
+    void             setCurrentArcId(QComboBox *box, qint64 &arcId, const qint64 &value, const qint64 &id,
+                                        ComboMode::ComboBoxCutArc cut = ComboMode::NoCutArc) const;
+    /**
+     * @brief setCurrentSplinePathId set current splinePath id in combobox
+     * @param box combobox
+     * @param splinePathId save current splinePath id
+     * @param value splinePath id
+     * @param id don't show this id in list
+     * @param cut if set to ComboMode::CutSpline don't show id+1 and id+2
+     */
+    void             setCurrentSplinePathId(QComboBox *box, qint64 &splinePathId, const qint64 &value, const qint64 &id,
+                                            ComboMode::ComboBoxCutSpline cut = ComboMode::NoCutSpline) const;
+    /**
      * @brief getCurrentPointId return current point id in combobox
      * @param box combobox
      * @return id or -1 if combobox is empty
      */
-    qint64           getCurrentPointId(QComboBox *box) const;
+    qint64           getCurrentObjectId(QComboBox *box) const;
+private:
+    /**
+     * @brief FillList fill combobox list
+     * @param box combobox
+     * @param list list with ids and names
+     */
+    void             FillList(QComboBox *box, const QMap<QString, qint64> &list)const;
 };
 
 #endif // DIALOGTOOL_H

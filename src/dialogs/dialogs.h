@@ -45,5 +45,12 @@
 #include "dialogspline.h"
 #include "dialogsplinepath.h"
 #include "dialogheight.h"
+#include "dialogcutarc.h"
+#include "dialogcutspline.h"
+#include "dialogcutsplinepath.h"
+#include "dialoguniondetails.h"
+#include "dialogtriangle.h"
+#include "dialogpointofintersection.h"
+#include "configdialog.h"
 
 #endif // DIALOGS_H

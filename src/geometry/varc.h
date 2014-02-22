@@ -29,212 +29,157 @@
 #ifndef VARC_H
 #define VARC_H
 
-#include "vspline.h"
+#include "vgobject.h"
 #include <QCoreApplication>
 #include "../options.h"
+#include "vpointf.h"
 class QString;
 class QLineF;
 class QPainterPath;
-class QPointF;
 
 /**
- * @brief VArc клас, що реалізує дугу. Дуга розраховується за годиниковою стрілкою.
+ * @brief VArc class for anticlockwise arc.
  */
-class VArc
+class VArc: public VGObject
 {
     Q_DECLARE_TR_FUNCTIONS(VArc)
 public:
                        /**
-                        * @brief VArc конструктор по замовчуванню.
+                        * @brief VArc default constructor.
                         */
                        VArc ();
                        /**
-                        * @brief VArc конструктор.
-                        * @param center точка центру.
-                        * @param radius радіус.
-                        * @param f1 початковий кут в градусах.
-                        * @param f2 кінцевий кут в градусах.
+                        * @brief VArc constructor.
+                        * @param center center point.
+                        * @param radius arc radius.
+                        * @param f1 start angle (degree).
+                        * @param f2 end angle (degree).
                         */
-                       VArc (const QHash<qint64, VPointF> *points, qint64 center, qreal radius, QString formulaRadius,
-                             qreal f1, QString formulaF1, qreal f2, QString formulaF2,
-                             Draw::Draws mode = Draw::Calculation, qint64 idObject = 0);
+                       VArc (VPointF center, qreal radius, QString formulaRadius, qreal f1, QString formulaF1, qreal f2,
+                             QString formulaF2, qint64 idObject = 0, Draw::Draws mode = Draw::Calculation);
                        /**
-                        * @brief VArc
-                        * @param arc
+                        * @brief VArc copy constructor
+                        * @param arc arc
                         */
                        VArc(const VArc &arc);
                        /**
-                        * @brief operator =
-                        * @param arc
-                        * @return
+                        * @brief operator = assignment operator
+                        * @param arc arc
+                        * @return arc
                         */
                        VArc& operator= (const VArc &arc);
     /**
-     * @brief GetF1 повертає початковий кут дуги.
-     * @return повертає кут в градусах.
+     * @brief GetF1 return start angle.
+     * @return angle in degree.
      */
     inline QString     GetFormulaF1 () const {return formulaF1;}
     /**
-     * @brief GetF1
-     * @return
+     * @brief GetF1 return formula for start angle.
+     * @return string with formula.
      */
     inline qreal       GetF1 () const {return f1;}
     /**
-     * @brief GetF2 повертає кінцевий кут дуги.
-     * @return повертає кут в градусах.
+     * @brief GetF2 return end angle.
+     * @return angle in degree.
      */
     inline QString     GetFormulaF2 () const {return formulaF2;}
     /**
-     * @brief GetF2
-     * @return
+     * @brief GetF2 return formula for end angle.
+     * @return string with formula.
      */
     inline qreal       GetF2 () const {return f2;}
     /**
-     * @brief GetLength повертає довжину дуги.
-     * @return повертає довжину дуги.
+     * @brief GetLength return arc length.
+     * @return length.
      */
-    inline qreal       GetLength () const {return M_PI * radius/180 * (f2-f1);}
+    qreal              GetLength () const;
     /**
-     * @brief GetRadius повертає радіус дуги.
-     * @return повертає радіус дуги.
+     * @brief GetRadius return arc radius.
+     * @return radius.
      */
     inline QString     GetFormulaRadius () const {return formulaRadius;}
     /**
-     * @brief GetRadius
-     * @return
+     * @brief GetRadius return formula for radius.
+     * @return string with formula.
      */
     inline qreal       GetRadius () const {return radius;}
     /**
-     * @brief GetCenter повертає точку центра дуги.
-     * @return повертає точку центра дуги.
+     * @brief GetCenter return center point.
+     * @return center point.
      */
-    inline qint64      GetCenter () const {return center;}
+    inline VPointF     GetCenter () const {return center;}
     /**
-     * @brief GetCenterPoint
-     * @return
+     * @brief GetP1 return point associated with start angle.
+     * @return point.
      */
-    QPointF            GetCenterPoint() const;
+    QPointF GetP1() const;
     /**
-     * @brief GetCenterVPoint
-     * @return
-     */
-    VPointF            GetCenterVPoint() const;
-    /**
-     * @brief GetP1 повертає першу точку з якої починається дуга.
-     * @return точку початку дуги.
-     */
-    QPointF            GetP1 () const;
-    /**
-     * @brief GetP2 повертає другу точку в якій закінчується дуга.
-     * @return точку кінця дуги.
+     * @brief GetP2 return point associated with end angle.
+     * @return точку point.
      */
     QPointF            GetP2 () const;
     /**
-     * @brief GetDataPoints
-     * @return
-     */
-    const QHash<qint64, VPointF> GetDataPoints() const;
-    /**
-     * @brief GetPath будує шлях по даній дузі.
-     * @return повертає шлях.
+     * @brief GetPath return QPainterPath for this arc.
+     * @return path.
      */
     QPainterPath       GetPath() const;
     /**
-     * @brief AngleArc
-     * @return
+     * @brief AngleArc calculate arc angle.
+     * @return angle in degree.
      */
     qreal              AngleArc() const;
     /**
-     * @brief NumberSplOfArc
-     * @return
-     */
-    qint32             NumberSplOfArc () const;
-    /**
-     * @brief GetPoints
-     * @return
+     * @brief GetPoints return list of points needed for drawing arc.
+     * @return list of points
      */
     QVector<QPointF>   GetPoints () const;
     /**
-     * @brief SplOfArc
-     * @param number
-     * @return
+     * @brief name return arc name. This name used in variables.
+     * @return name
      */
-    QVector<QPointF>   SplOfArc( qint32 number ) const;
+    virtual QString    name() const;
     /**
-     * @brief getMode
-     * @return
+     * @brief CutArc cut arc into two arcs.
+     * @param length length first arc.
+     * @param arc1 first arc.
+     * @param arc2 second arc.
+     * @return point cutting
      */
-    inline Draw::Draws getMode() const {return mode;}
+    QPointF            CutArc (const qreal &length, VArc &arc1, VArc &arc2) const;
     /**
-     * @brief setMode
-     * @param value
+     * @brief setId keep id arc in data.
+     * @param id id arc in data.
      */
-    inline void        setMode(const Draw::Draws &value) {mode = value;}
-    /**
-     * @brief getIdObject
-     * @return
-     */
-    inline qint64      getIdObject() const {return idObject;}
-    /**
-     * @brief setIdObject
-     * @param value
-     */
-    inline void        setIdObject(const qint64 &value) {idObject = value;}
-    /**
-     * @brief name
-     * @return
-     */
-    QString            name() const {return _name;}
-    /**
-     * @brief setName
-     * @param name
-     */
-    void               setName(const QString &name) {_name = name;}
+    virtual void       setId(const qint64 &id);
 private:
     /**
-     * @brief f1 початковий кут в градусах
+     * @brief f1 start angle in degree.
      */
-    qreal              f1;          // початковий кут нахилу дуги (градуси)
+    qreal              f1;
     /**
-     * @brief formulaF1
+     * @brief formulaF1 formula for start angle.
      */
     QString            formulaF1;
     /**
-     * @brief f2 кінцевий кут в градусах
+     * @brief f2 end angle in degree.
      */
-    qreal              f2;          // кінцевий кут нахилу дуги (градуси)
+    qreal              f2;
     /**
-     * @brief formulaF2
+     * @brief formulaF2 formula for end angle.
      */
     QString            formulaF2;
     /**
-     * @brief radius радіус дуги.
+     * @brief radius arc radius.
      */
     qreal              radius;
     /**
-     * @brief formulaRadius
+     * @brief formulaRadius formula for arc radius.
      */
     QString            formulaRadius;
     /**
-     * @brief center центральна точка дуги.
+     * @brief center center point of arc.
      */
-    qint64             center;
-    /**
-     * @brief points
-     */
-    QHash<qint64, VPointF> points;
-    /**
-     * @brief mode
-     */
-    Draw::Draws        mode;
-    /**
-     * @brief idObject
-     */
-    qint64             idObject;
-    /**
-     * @brief _name
-     */
-    QString            _name;
+    VPointF            center;
 };
 
 #endif // VARC_H

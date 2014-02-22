@@ -27,6 +27,9 @@
  *************************************************************************/
 
 #include "vexception.h"
+#include <QMessageBox>
+#include <QSpacerItem>
+#include <QGridLayout>
 
 VException::VException(const QString &what):QException(), what(what)
 {
@@ -37,4 +40,25 @@ QString VException::ErrorMessage() const
 {
     QString error = QString("Exception: %1").arg(what);
     return error;
+}
+
+void VException::CriticalMessageBox(const QString &situation, QWidget * parent) const
+{
+    QMessageBox msgBox(parent);
+    msgBox.setWindowTitle("Critical error!");
+    msgBox.setText(situation);
+    msgBox.setInformativeText(ErrorMessage());
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    if (DetailedInformation().isEmpty() == false)
+    {
+        msgBox.setDetailedText(DetailedInformation());
+    }
+    msgBox.setIcon(QMessageBox::Critical);
+    QSpacerItem* horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    Q_CHECK_PTR(horizontalSpacer);
+    QGridLayout* layout = static_cast<QGridLayout*>(msgBox.layout());
+    Q_CHECK_PTR(layout);
+    layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+    msgBox.exec();
 }

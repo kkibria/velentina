@@ -32,64 +32,60 @@
 #include "vtoolpoint.h"
 
 /**
- * @brief The VToolLinePoint class
+ * @brief The VToolLinePoint class parent for all tools what create point with line.
  */
 class VToolLinePoint : public VToolPoint
 {
     Q_OBJECT
 public:
                       /**
-                       * @brief VToolLinePoint
-                       * @param doc dom document container
-                       * @param data
-                       * @param id
-                       * @param typeLine
-                       * @param formula
-                       * @param basePointId
-                       * @param angle
-                       * @param parent
+                       * @brief VToolLinePoint constructor.
+                       * @param doc dom document container.
+                       * @param data container with variables.
+                       * @param id object id in container.
+                       * @param typeLine line type.
+                       * @param formula string with length formula.
+                       * @param basePointId id base line point.
+                       * @param angle line angle.
+                       * @param parent parent object.
                        */
                       VToolLinePoint(VDomDocument *doc, VContainer *data, const qint64 &id, const QString &typeLine,
                                      const QString &formula, const qint64 &basePointId, const qreal &angle,
                                      QGraphicsItem * parent = 0);
 public slots:
     /**
-     * @brief ChangedActivDraw
-     * @param newName
+     * @brief ChangedActivDraw disable or enable context menu after change active pattern peace.
+     * @param newName new name active pattern peace.
      */
     virtual void      ChangedActivDraw(const QString &newName);
     /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void      SetFactor(qreal factor);
 protected:
     /**
-     * @brief typeLine
-     */
-    QString           typeLine;
-    /**
-     * @brief formula
+     * @brief formula string with length formula.
      */
     QString           formula;
     /**
-     * @brief angle
+     * @brief angle line angle.
      */
     qreal             angle;
     /**
-     * @brief basePointId
+     * @brief basePointId id base line point.
      */
     qint64            basePointId;
     /**
-     * @brief mainLine
+     * @brief mainLine line item.
      */
     QGraphicsLineItem *mainLine;
     /**
-     * @brief RefreshGeometry
+     * @brief RefreshGeometry  refresh item on scene.
      */
     virtual void      RefreshGeometry();
     /**
-     * @brief RemoveReferens
+     * @brief RemoveReferens decrement value of reference.
      */
     virtual void      RemoveReferens() {doc->DecrementReferens(basePointId);}
 private:

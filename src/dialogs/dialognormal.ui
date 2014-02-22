@@ -14,7 +14,7 @@
    <string>Normal</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../icon.qrc">
+   <iconset resource="../../share/resources/icon.qrc">
     <normaloff>:/icon/64x64/icon64x64.png</normaloff>:/icon/64x64/icon64x64.png</iconset>
   </property>
   <property name="locale">
@@ -82,20 +82,40 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string>Formula calculation of length of normal</string>
+        <string>Formula for calculation of length of normal</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButtonPutHere">
+       <property name="toolTip">
+        <string>Insert variable into formula</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../share/resources/icon.qrc">
+         <normaloff>:/icon/24x24/putHere.png</normaloff>:/icon/24x24/putHere.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="toolButtonEqual">
        <property name="toolTip">
-        <string>Calculate formula</string>
+        <string>Calculate value</string>
        </property>
        <property name="text">
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../icon.qrc">
+        <iconset resource="../../share/resources/icon.qrc">
          <normaloff>:/icon/24x24/equal.png</normaloff>:/icon/24x24/equal.png</iconset>
        </property>
        <property name="iconSize">
@@ -182,32 +202,12 @@
             </palette>
            </property>
            <property name="text">
-            <string>Name new point</string>
+            <string>Point label</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QLineEdit" name="lineEditNamePoint"/>
-         </item>
-         <item>
-          <widget class="QToolButton" name="toolButtonPutHere">
-           <property name="toolTip">
-            <string>Put variable into formula</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../icon.qrc">
-             <normaloff>:/icon/24x24/putHere.png</normaloff>:/icon/24x24/putHere.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>24</width>
-             <height>24</height>
-            </size>
-           </property>
-          </widget>
          </item>
         </layout>
        </item>
@@ -294,7 +294,7 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset resource="../icon.qrc">
+                <iconset resource="../../share/resources/icon.qrc">
                  <normaloff>:/icon/24x24/arrowRightUp.png</normaloff>:/icon/24x24/arrowRightUp.png</iconset>
                </property>
                <property name="iconSize">
@@ -311,7 +311,7 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset resource="../icon.qrc">
+                <iconset resource="../../share/resources/icon.qrc">
                  <normaloff>:/icon/24x24/arrowLeftUp.png</normaloff>:/icon/24x24/arrowLeftUp.png</iconset>
                </property>
                <property name="iconSize">
@@ -328,7 +328,7 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset resource="../icon.qrc">
+                <iconset resource="../../share/resources/icon.qrc">
                  <normaloff>:/icon/24x24/arrowLeft.png</normaloff>:/icon/24x24/arrowLeft.png</iconset>
                </property>
                <property name="iconSize">
@@ -345,7 +345,7 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset resource="../icon.qrc">
+                <iconset resource="../../share/resources/icon.qrc">
                  <normaloff>:/icon/24x24/arrowRight.png</normaloff>:/icon/24x24/arrowRight.png</iconset>
                </property>
                <property name="iconSize">
@@ -368,7 +368,7 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset resource="../icon.qrc">
+                <iconset resource="../../share/resources/icon.qrc">
                  <normaloff>:/icon/24x24/arrowUp.png</normaloff>:/icon/24x24/arrowUp.png</iconset>
                </property>
                <property name="iconSize">
@@ -385,7 +385,7 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset resource="../icon.qrc">
+                <iconset resource="../../share/resources/icon.qrc">
                  <normaloff>:/icon/24x24/arrowDown.png</normaloff>:/icon/24x24/arrowDown.png</iconset>
                </property>
                <property name="iconSize">
@@ -402,7 +402,7 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset resource="../icon.qrc">
+                <iconset resource="../../share/resources/icon.qrc">
                  <normaloff>:/icon/24x24/arrowLeftDown.png</normaloff>:/icon/24x24/arrowLeftDown.png</iconset>
                </property>
                <property name="iconSize">
@@ -419,7 +419,7 @@
                 <string>...</string>
                </property>
                <property name="icon">
-                <iconset resource="../icon.qrc">
+                <iconset resource="../../share/resources/icon.qrc">
                  <normaloff>:/icon/24x24/arrowRightDown.png</normaloff>:/icon/24x24/arrowRightDown.png</iconset>
                </property>
                <property name="iconSize">
@@ -460,14 +460,14 @@
          <item>
           <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>Type line</string>
+            <string>Type of line</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QComboBox" name="comboBoxLineType">
            <property name="toolTip">
-            <string>Show line from first point to our point</string>
+            <string>Show line from first point to this point</string>
            </property>
           </widget>
          </item>
@@ -485,7 +485,7 @@
          <item>
           <widget class="QRadioButton" name="radioButtonSizeGrowth">
            <property name="text">
-            <string>Size and growth</string>
+            <string>Size and height</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -493,9 +493,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QRadioButton" name="radioButtonStandartTable">
+          <widget class="QRadioButton" name="radioButtonStandardTable">
            <property name="text">
-            <string>Standart table</string>
+            <string>Standard table</string>
            </property>
           </widget>
          </item>
@@ -543,7 +543,7 @@
      <item>
       <widget class="QListWidget" name="listWidget">
        <property name="toolTip">
-        <string>Variables. Click twice to select.</string>
+        <string>Variables - Click twice to insert into formula</string>
        </property>
       </widget>
      </item>
@@ -584,18 +584,17 @@
   <tabstop>toolButtonArrowRightDown</tabstop>
   <tabstop>comboBoxLineType</tabstop>
   <tabstop>radioButtonSizeGrowth</tabstop>
-  <tabstop>radioButtonStandartTable</tabstop>
+  <tabstop>radioButtonStandardTable</tabstop>
   <tabstop>radioButtonIncrements</tabstop>
   <tabstop>radioButtonLengthLine</tabstop>
   <tabstop>radioButtonLengthArc</tabstop>
   <tabstop>radioButtonLengthSpline</tabstop>
   <tabstop>listWidget</tabstop>
-  <tabstop>toolButtonPutHere</tabstop>
   <tabstop>toolButtonEqual</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
-  <include location="../icon.qrc"/>
+  <include location="../../share/resources/icon.qrc"/>
  </resources>
  <connections>
   <connection>

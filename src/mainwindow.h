@@ -35,8 +35,8 @@
 #include "widgets/vitem.h"
 #include "dialogs/dialogs.h"
 #include "tools/vtooldetail.h"
+#include "tools/vtooluniondetails.h"
 #include "tools/drawTools/drawtools.h"
-#include "tools/modelingTools/modelingtools.h"
 #include "xml/vdomdocument.h"
 
 namespace Ui
@@ -45,301 +45,347 @@ namespace Ui
 }
 
 /**
- * @brief The MainWindow class
+ * @brief The MainWindow class main windows.
  */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
               /**
-               * @brief MainWindow
-               * @param parent
+               * @brief MainWindow constructor.
+               * @param parent parent widget.
                */
               explicit MainWindow(QWidget *parent = 0);
                        ~MainWindow();
     /**
-     * @brief OpenPattern
-     * @param fileName
+     * @brief LoadPattern open pattern file.
+     * @param fileName name of file.
      */
-    void               OpenPattern(const QString &fileName);
+    void               LoadPattern(const QString &curFile);
 public slots:
     /**
-     * @brief mouseMove
-     * @param scenePos
+     * @brief mouseMove save mouse position and show user.
+     * @param scenePos position mouse.
      */
     void               mouseMove(const QPointF &scenePos);
     /**
-     * @brief ActionAroowTool
+     * @brief ActionAroowTool set arrow tool. Cansel tool what was before.
      */
     void               ActionAroowTool();
     /**
-     * @brief ActionDraw
-     * @param checked
+     * @brief ActionDraw show draw scene.
+     * @param checked true - button checked.
      */
     void               ActionDraw(bool checked);
     /**
-     * @brief ActionDetails
-     * @param checked
+     * @brief ActionDetails show details scene.
+     * @param checked true - button checked.
      */
     void               ActionDetails(bool checked);
     /**
-     * @brief ActionNewDraw
+     * @brief ActionNewDraw add to scene new pattern peace.
      */
     void               ActionNewDraw();
     /**
-     * @brief ActionSaveAs
+     * @brief SaveAs save as pattern file.
+     * @return true for successes saving.
      */
-    void               ActionSaveAs();
+    bool               SaveAs();
     /**
-     * @brief ActionSave
+     * @brief Save save pattern file.
+     * @return true for successes saving.
      */
-    void               ActionSave();
+    bool               Save();
     /**
-     * @brief ActionOpen
+     * @brief Open ask user select pattern file.
      */
-    void               ActionOpen();
+    void               Open();
     /**
-     * @brief ActionNew
+     * @brief Options config dialog.
      */
-    void               ActionNew();
+    void               Options();
     /**
-     * @brief ActionTable
-     * @param checked
+     * @brief NewPattern create new empty pattern.
+     */
+    void               NewPattern();
+    /**
+     * @brief ActionTable show table with variables.
+     * @param checked true - button checked.
      */
     void               ActionTable(bool checked);
     /**
-     * @brief ActionHistory
-     * @param checked
+     * @brief ActionHistory show tool history.
+     * @param checked true - button checked.
      */
     void               ActionHistory(bool checked);
     /**
-     * @brief ActionLayout
-     * @param checked
+     * @brief ActionLayout begin creation layout.
+     * @param checked true - button checked.
      */
     void               ActionLayout(bool checked);
     /**
-     * @brief currentDrawChanged
-     * @param index
+     * @brief currentDrawChanged change active pattern peace.
+     * @param index index in combobox.
      */
     void               currentDrawChanged( int index );
     /**
-     * @brief OptionDraw
+     * @brief OptionDraw help change name of pattern peace.
      */
     void               OptionDraw();
     /**
-     * @brief haveChange
+     * @brief haveChange enable action save if we have unsaved change.
      */
-    void               haveChange();
+    void               PatternWasModified();
     /**
-     * @brief ChangedSize
-     * @param text
+     * @brief ChangedSize change new size value.
+     * @param text value size.
      */
     void               ChangedSize(const QString &text);
     /**
-     * @brief ChangedGrowth
-     * @param text
+     * @brief ChangedGrowth change new height value.
+     * @param text value height.
      */
-    void               ChangedGrowth(const QString & text);
+    void               ChangedHeight(const QString & text);
     /**
-     * @brief ClosedActionTable
+     * @brief ClosedActionTable actions after closing table with variables.
      */
     void               ClosedActionTable();
     /**
-     * @brief ClosedActionHistory
+     * @brief ClosedActionHistory actions after closing history window with variables.
      */
     void               ClosedActionHistory();
     /**
-     * @brief ToolEndLine
-     * @param checked
+     * @brief ToolEndLine handler tool endLine.
+     * @param checked true - button checked.
      */
     void               ToolEndLine(bool checked);
     /**
-     * @brief ToolLine
-     * @param checked
+     * @brief ToolLine handler tool line.
+     * @param checked true - button checked.
      */
     void               ToolLine(bool checked);
     /**
-     * @brief ToolAlongLine
-     * @param checked
+     * @brief ToolAlongLine handler tool alongLine.
+     * @param checked true - button checked.
      */
     void               ToolAlongLine(bool checked);
     /**
-     * @brief ToolShoulderPoint
-     * @param checked
+     * @brief ToolShoulderPoint handler tool shoulderPoint.
+     * @param checked true - button checked.
      */
     void               ToolShoulderPoint(bool checked);
     /**
-     * @brief ToolNormal
-     * @param checked
+     * @brief ToolNormal handler tool normal.
+     * @param checked true - button checked.
      */
     void               ToolNormal(bool checked);
     /**
-     * @brief ToolBisector
-     * @param checked
+     * @brief ToolBisector handler tool bisector.
+     * @param checked true - button checked.
      */
     void               ToolBisector(bool checked);
     /**
-     * @brief ToolLineIntersect
-     * @param checked
+     * @brief ToolLineIntersect handler tool lineIntersect.
+     * @param checked true - button checked.
      */
     void               ToolLineIntersect(bool checked);
     /**
-     * @brief ToolSpline
-     * @param checked
+     * @brief ToolSpline handler tool spline.
+     * @param checked true - button checked.
      */
     void               ToolSpline(bool checked);
     /**
-     * @brief ToolArc
-     * @param checked
+     * @brief ToolCutSpline handler tool CutSpline.
+     * @param checked true - button is checked
+     */
+    void               ToolCutSpline(bool checked);
+    /**
+     * @brief ToolArc handler tool arc.
+     * @param checked true - button checked.
      */
     void               ToolArc(bool checked);
     /**
-     * @brief ToolSplinePath
-     * @param checked
+     * @brief ToolSplinePath handler tool splinePath.
+     * @param checked true - button checked.
      */
     void               ToolSplinePath(bool checked);
     /**
-     * @brief ToolPointOfContact
-     * @param checked
+     * @brief ToolCutSplinePath handler tool CutSplinePath.
+     * @param checked true - button is checked
+     */
+    void               ToolCutSplinePath(bool checked);
+    /**
+     * @brief ToolPointOfContact handler tool pointOfContact.
+     * @param checked true - button checked.
      */
     void               ToolPointOfContact(bool checked);
     /**
-     * @brief ToolDetail
-     * @param checked
+     * @brief ToolDetail handler tool detail.
+     * @param checked true - button checked.
      */
     void               ToolDetail(bool checked);
     /**
-     * @brief ToolHeight
-     * @param checked
+     * @brief ToolHeight handler tool height.
+     * @param checked true - button checked.
      */
     void               ToolHeight(bool checked);
     /**
-     * @brief ToolTriangle
-     * @param checked
+     * @brief ToolTriangle handler tool triangle.
+     * @param checked true - button checked.
      */
     void               ToolTriangle(bool checked);
     /**
-     * @brief ToolPointOfIntersection
-     * @param checked
+     * @brief ToolPointOfIntersection handler tool pointOfIntersection.
+     * @param checked true - button checked.
      */
     void               ToolPointOfIntersection(bool checked);
     /**
-     * @brief ClosedDialogEndLine
-     * @param result
+     * @brief ToolUnionDetails handler tool unionDetails.
+     * @param checked true - button checked.
+     */
+    void               ToolUnionDetails(bool checked);
+    /**
+     * @brief ToolCutArc handler tool cutArc.
+     * @param checked true - button checked.
+     */
+    void               ToolCutArc(bool checked);
+    /**
+     * @brief ClosedDialogEndLine actions after closing DialogEndLine.
+     * @param result result of dialog working.
      */
     void               ClosedDialogEndLine(int result);
     /**
-     * @brief ClosedDialogLine
-     * @param result
+     * @brief ClosedDialogLine actions after closing DialogLine.
+     * @param result result of dialog working.
      */
     void               ClosedDialogLine(int result);
     /**
-     * @brief ClosedDialogAlongLine
-     * @param result
+     * @brief ClosedDialogAlongLine actions after closing DialogAlongLine.
+     * @param result result of dialog working.
      */
     void               ClosedDialogAlongLine(int result);
     /**
-     * @brief ClosedDialogShoulderPoint
-     * @param result
+     * @brief ClosedDialogShoulderPoint actions after closing DialogShoulderPoint.
+     * @param result result of dialog working.
      */
     void               ClosedDialogShoulderPoint(int result);
     /**
-     * @brief ClosedDialogNormal
-     * @param result
+     * @brief ClosedDialogNormal actions after closing DialogNormal.
+     * @param result result of dialog working.
      */
     void               ClosedDialogNormal(int result);
     /**
-     * @brief ClosedDialogBisector
-     * @param result
+     * @brief ClosedDialogBisector actions after closing DialogBisector.
+     * @param result result of dialog working.
      */
     void               ClosedDialogBisector(int result);
     /**
-     * @brief ClosedDialogLineIntersect
-     * @param result
+     * @brief ClosedDialogLineIntersect actions after closing DialogLineIntersect.
+     * @param result result of dialog working.
      */
     void               ClosedDialogLineIntersect(int result);
     /**
-     * @brief ClosedDialogSpline
-     * @param result
+     * @brief ClosedDialogSpline actions after closing DialogSpline.
+     * @param result result of dialog working.
      */
     void               ClosedDialogSpline(int result);
     /**
-     * @brief ClosedDialogArc
-     * @param result
+     * @brief ClosedDialogArc actions after closing DialogArc.
+     * @param result result of dialog working..
      */
     void               ClosedDialogArc(int result);
     /**
-     * @brief ClosedDialogSplinePath
-     * @param result
+     * @brief ClosedDialogSplinePath actions after closing DialogSplinePath.
+     * @param result result of dialog working.
      */
     void               ClosedDialogSplinePath(int result);
     /**
-     * @brief ClosedDialogPointOfContact
-     * @param result
+     * @brief ClosedDialogCutSplinePath actions after closing DialogCutSplinePath.
+     * @param result result of dialog working.
+     */
+    void               ClosedDialogCutSplinePath(int result);
+    /**
+     * @brief ClosedDialogPointOfContact actions after closing DialogPointOfContact.
+     * @param result result of dialog working.
      */
     void               ClosedDialogPointOfContact(int result);
     /**
-     * @brief ClosedDialogDetail
-     * @param result
+     * @brief ClosedDialogDetail actions after closing DialogDetail.
+     * @param result result of dialog working.
      */
     void               ClosedDialogDetail(int result);
     /**
-     * @brief ClosedDialogHeight
-     * @param result
+     * @brief ClosedDialogHeight actions after closing DialogHeight.
+     * @param result result of dialog working.
      */
     void               ClosedDialogHeight(int result);
     /**
-     * @brief ClosedDialogTriangle
-     * @param result
+     * @brief ClosedDialogTriangle actions after closing DialogTriangle.
+     * @param result result of dialog working.
      */
     void               ClosedDialogTriangle(int result);
     /**
-     * @brief ClosedDialogPointOfIntersection
-     * @param result
+     * @brief ClosedDialogPointOfIntersection actions after closing DialogPointOfIntersection.
+     * @param result result of dialog working.
      */
     void               ClosedDialogPointOfIntersection(int result);
     /**
-     * @brief About
+     * @brief ClosedDialogUnionDetails actions after closing DialogUnionDetails.
+     * @param result result of dialog working.
+     */
+    void               ClosedDialogUnionDetails(int result);
+    /**
+     * @brief ClosedDialogCutSpline actions after closing DialogCutSpline.
+     * @param result result of dialog working.
+     */
+    void               ClosedDialogCutSpline(int result);
+    /**
+     * @brief ClosedDialogCutArc actions after closing DialogCutArc.
+     * @param result result of dialog working.
+     */
+    void               ClosedDialogCutArc(int result);
+    /**
+     * @brief About show widows about.
      */
     void               About();
     /**
-     * @brief AboutQt
+     * @brief AboutQt show widows aboutQt.
      */
     void               AboutQt();
     /**
-     * @brief ShowToolTip
-     * @param toolTip
+     * @brief ShowTool  highlight tool.Tip show tools tooltip.
+     * @param toolTip tooltip text.
      */
     void               ShowToolTip(const QString &toolTip);
     /**
-     * @brief tableClosed Слот, що виконується при отриманні сигналу закриття вікна укладання
-     *деталей моделі.
+     * @brief tableClosed handle after close layout window.
      */
     void               tableClosed();
+    void               OpenRecentFile();
 signals:
     /**
-     * @brief ModelChosen Сигнал, що висилається після розрахунку всіх деталей моделі.
-     * @param listDetails Список детайле моделі.
+     * @brief ModelChosen emit after calculation all details.
+     * @param listDetails list of details.
      */
-    void               ModelChosen(QVector<VItem*> listDetails);
+    void               ModelChosen(QVector<VItem*> listDetails, const QString &curFile);
 protected:
     /**
-     * @brief keyPressEvent
-     * @param event
+     * @brief keyPressEvent handle key press events.
+     * @param event key event.
      */
     virtual void       keyPressEvent ( QKeyEvent * event );
     /**
-     * @brief showEvent
-     * @param event
+     * @brief showEvent handle after show window.
+     * @param event show event.
      */
     virtual void       showEvent( QShowEvent *event );
     /**
-     * @brief closeEvent
-     * @param event
+     * @brief closeEvent handle after close window.
+     * @param event close event.
      */
     virtual void       closeEvent( QCloseEvent * event );
     /**
-     * @brief Clear
+     * @brief Clear reset to default window.
      */
     void               Clear();
 private:
@@ -349,201 +395,181 @@ private:
      */
     Ui::MainWindow     *ui;
     /**
-     * @brief tool
+     * @brief pattern container with data (points, arcs, splines, spline paths, variables)
      */
-    Tool::Tools        tool;
-    /**
-     * @brief currentScene
-     */
-    VMainGraphicsScene *currentScene;
-    /**
-     * @brief sceneDraw
-     */
-    VMainGraphicsScene *sceneDraw;
-    /**
-     * @brief sceneDetails
-     */
-    VMainGraphicsScene *sceneDetails;
-    /**
-     * @brief mouseCoordinate
-     */
-    QLabel             *mouseCoordinate;
-    /**
-     * @brief helpLabel
-     */
-    QLabel             *helpLabel;
-    /**
-     * @brief view
-     */
-    VMainGraphicsView  *view;
-    /**
-     * @brief isInitialized
-     */
-    bool               isInitialized;
-    /**
-     * @brief dialogTable
-     */
-    DialogIncrements   *dialogTable;
-    /**
-     * @brief dialogEndLine
-     */
-    QSharedPointer<DialogEndLine>             dialogEndLine;
-    /**
-     * @brief dialogLine
-     */
-    QSharedPointer<DialogLine>                dialogLine;
-    /**
-     * @brief dialogAlongLine
-     */
-    QSharedPointer<DialogAlongLine>           dialogAlongLine;
-    /**
-     * @brief dialogShoulderPoint
-     */
-    QSharedPointer<DialogShoulderPoint>       dialogShoulderPoint;
-    /**
-     * @brief dialogNormal
-     */
-    QSharedPointer<DialogNormal>              dialogNormal;
-    /**
-     * @brief dialogBisector
-     */
-    QSharedPointer<DialogBisector>            dialogBisector;
-    /**
-     * @brief dialogLineIntersect
-     */
-    QSharedPointer<DialogLineIntersect>       dialogLineIntersect;
-    /**
-     * @brief dialogSpline
-     */
-    QSharedPointer<DialogSpline>              dialogSpline;
-    /**
-     * @brief dialogArc
-     */
-    QSharedPointer<DialogArc>                 dialogArc;
-    /**
-     * @brief dialogSplinePath
-     */
-    QSharedPointer<DialogSplinePath>          dialogSplinePath;
-    /**
-     * @brief dialogPointOfContact
-     */
-    QSharedPointer<DialogPointOfContact>      dialogPointOfContact;
-    /**
-     * @brief dialogDetail
-     */
-    QSharedPointer<DialogDetail>              dialogDetail;
-    /**
-     * @brief dialogHeight
-     */
-    QSharedPointer<DialogHeight>              dialogHeight;
-    /**
-     * @brief dialogTriangle
-     */
-    QSharedPointer<DialogTriangle>            dialogTriangle;
-    /**
-     * @brief dialogPointOfIntersection
-     */
-    QSharedPointer<DialogPointOfIntersection> dialogPointOfIntersection;
-    /**
-     * @brief dialogHistory
-     */
-    DialogHistory      *dialogHistory;
+    VContainer        *pattern;
     /**
      * @brief doc dom document container
      */
-    VDomDocument       *doc;
+    VDomDocument      *doc;
     /**
-     * @brief data container with data
+     * @brief tool current tool
      */
-    VContainer         *data;
+    Tool::Tools        tool;
     /**
-     * @brief comboBoxDraws
+     * @brief currentScene pointer to current scene.
+     */
+    VMainGraphicsScene *currentScene;
+    /**
+     * @brief sceneDraw draw scene.
+     */
+    VMainGraphicsScene *sceneDraw;
+    /**
+     * @brief sceneDetails details scene.
+     */
+    VMainGraphicsScene *sceneDetails;
+    /**
+     * @brief mouseCoordinate pointer to label who show mouse coordinate.
+     */
+    QLabel             *mouseCoordinate;
+    /**
+     * @brief helpLabel help show tooltip.
+     */
+    QLabel             *helpLabel;
+    /**
+     * @brief view show current scene.
+     */
+    VMainGraphicsView  *view;
+    /**
+     * @brief isInitialized true after first show window.
+     */
+    bool               isInitialized;
+    DialogIncrements   *dialogTable;
+    DialogTool         *dialogTool;
+    DialogHistory      *dialogHistory;
+    /**
+     * @brief comboBoxDraws comboc who show name of pattern peaces.
      */
     QComboBox          *comboBoxDraws;
     /**
-     * @brief fileName
+     * @brief fileName name current pattern file.
      */
-    QString            fileName;
+    QString            curFile;
     /**
-     * @brief changeInFile
-     */
-    bool               changeInFile;
-    /**
-     * @brief mode
+     * @brief mode keep current draw mode.
      */
     Draw::Draws        mode;
     /**
-     * @brief ToolBarOption
+     * @brief currentDrawIndex save current selected pattern peace.
+     */
+    qint32             currentDrawIndex;
+    /**
+     * @brief currentToolBoxIndex save current set of tools.
+     */
+    qint32             currentToolBoxIndex;
+    /**
+     * @brief drawMode true if we current draw scene.
+     */
+    bool               drawMode;
+    enum { MaxRecentFiles = 5 };
+    QAction            *recentFileActs[MaxRecentFiles];
+    QAction            *separatorAct;
+    QTimer             *autoSaveTimer;
+    /**
+     * @brief ToolBarOption enable option toolbar.
      */
     void               ToolBarOption();
     /**
-     * @brief ToolBarDraws
+     * @brief ToolBarDraws enable draw toolbar.
      */
     void               ToolBarDraws();
     /**
-     * @brief CanselTool
+     * @brief CanselTool cansel tool.
      */
-    void               CanselTool();
+    void               CancelTool();
     /**
-     * @brief ArrowTool
+     * @brief ArrowTool enable arrow tool.
      */
     void               ArrowTool();
     /**
-     * @brief SetEnableWidgets
-     * @param enable
+     * @brief SetEnableWidgets enable action button.
+     * @param enable enable value.
      */
     void               SetEnableWidgets(bool enable);
     /**
-     * @brief SetEnableTool
-     * @param enable
+     * @brief SetEnableTool enable button.
+     * @param enable enable value.
      */
     void               SetEnableTool(bool enable);
     /**
-     *
+     * @brief SaveCurrentScene save scene options before set another.
      */
+    void               SaveCurrentScene();
+    /**
+     * @brief RestoreCurrentScene restore scene options after change.
+     */
+    void               RestoreCurrentScene();
     template <typename Dialog, typename Func>
     /**
-     * @brief SetToolButton
-     * @param checked
-     * @param t
-     * @param cursor
-     * @param toolTip
-     * @param dialog
-     * @param closeDialogSlot
+     * @brief SetToolButton set tool and show dialog.
+     * @param checked true if tool button checked.
+     * @param t tool type.
+     * @param cursor path tool cursor icon.
+     * @param toolTip first tooltipe.
+     * @param closeDialogSlot function what handle after close dialog.
      */
     void               SetToolButton(bool checked, Tool::Tools t, const QString &cursor, const QString &toolTip,
-                                     QSharedPointer<Dialog> &dialog, Func closeDialogSlot);
+                                     Func closeDialogSlot);
     /**
-     * @brief MinimumScrollBar
+     * @brief MinimumScrollBar set scroll bar to minimum.
      */
     void               MinimumScrollBar();
-    template <typename T>
     /**
-     * @brief AddToolToDetail
-     * @param tool
-     * @param id
-     * @param typeTool
-     * @param idDetail
+     * @brief ValidatePattern validate pattern file by xsd schema.
+     * @param schema path to schema file.
+     * @param fileName name of pattern file.
+     * @param errorMsg error message.
+     * @param errorLine number error line.
+     * @param errorColumn number error column.
+     * @return true if validation successful.
      */
-    void               AddToolToDetail(T *tool, const qint64 &id, Tool::Tools typeTool,
-                                       const qint64 &idDetail);
-    template <typename DrawTool, typename ModelingTool, typename Dialog>
+    bool ValidatePattern(const QString &schema, const QString &curFile, QString &errorMsg, qint64 &errorLine,
+                         qint64 &errorColumn) const;
+    template <typename DrawTool>
     /**
-     * @brief ClosedDialog
-     * @param dialog
-     * @param result
+     * @brief ClosedDialog handle close dialog
+     * @param result result working dialog.
      */
-    void               ClosedDialog(QSharedPointer<Dialog> &dialog, int result);
+    void               ClosedDialog(int result);
     /**
-     * @brief SafeSaveing
-     * @param fileName
-     * @return
+     * @brief SavePattern save pattern file.
+     * @param fileName pattern file name.
+     * @return true if all is good.
      */
-    bool               SafeSaveing(const QString &fileName)const;
+    bool               SavePattern(const QString &curFile);
     /**
-     * @brief AutoSavePattern
+     * @brief AutoSavePattern start safe saving.
      */
     void               AutoSavePattern();
+    /**
+     * @brief setCurrentFile the function is called to reset the state of a few variables when a file
+     * is loaded or saved, or when the user starts editing a new file (in which case fileName is empty).
+     * @param fileName file name.
+     */
+    void               setCurrentFile(const QString &fileName);
+    /**
+     * @brief strippedName the function call around curFile to exclude the path to the file.
+     * @param fullFileName full path to the file.
+     * @return file name.
+     */
+    QString            strippedName(const QString &fullFileName);
+    /**
+     * @brief ReadSettings read setting for app.
+     */
+    void               ReadSettings();
+    /**
+     * @brief WriteSettings save setting for app.
+     */
+    void               WriteSettings();
+    /**
+     * @brief MaybeSave The function is called to save pending changes.
+     * @return returns true in all cases, except when the user clicks Cancel.
+     */
+    bool               MaybeSave();
+    void               UpdateRecentFileActions();
+    void               CreateMenus();
+    void               CreateActions();
+    void               InitAutoSave();
 };
 
 #endif // MAINWINDOW_H

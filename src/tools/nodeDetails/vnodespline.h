@@ -33,74 +33,75 @@
 #include <QGraphicsPathItem>
 
 /**
- * @brief The VNodeSpline class
+ * @brief The VNodeSpline class spline detail node.
  */
 class VNodeSpline:public VAbstractNode, public QGraphicsPathItem
 {
     Q_OBJECT
 public:
                   /**
-                   * @brief VNodeSpline
-                   * @param doc dom document container
-                   * @param data
-                   * @param id
-                   * @param idSpline
-                   * @param typeobject
-                   * @param typeCreation
-                   * @param parent
+                   * @brief VNodeSpline constructor.
+                   * @param doc dom document container.
+                   * @param data container with variables.
+                   * @param id object id in container.
+                   * @param id object id in containerSpline.
+                   * @param typeCreation way we create this tool.
+                   * @param parent parent object.
                    */
-                  VNodeSpline(VDomDocument *doc, VContainer *data, qint64 id, qint64 idSpline, Draw::Draws typeobject,
-                              const Tool::Sources &typeCreation, QGraphicsItem * parent = 0);
+                  VNodeSpline(VDomDocument *doc, VContainer *data, qint64 id, qint64 idSpline,
+                              const Tool::Sources &typeCreation, const qint64 &idTool = 0, QObject *qoParent = 0,
+                              QGraphicsItem * parent = 0);
     /**
-     * @brief Create
-     * @param doc dom document container
-     * @param data
-     * @param id
-     * @param idSpline
-     * @param typeobject
-     * @param parse
-     * @param typeCreation
+     * @brief Create help create tool.
+     * @param doc dom document container.
+     * @param data container with variables.
+     * @param id object id in container.
+     * @param id object id in containerSpline.
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      * @return
      */
     static VNodeSpline *Create(VDomDocument *doc, VContainer *data, qint64 id, qint64 idSpline,
-                               const Draw::Draws &typeobject, const Document::Documents &parse,
-                               const Tool::Sources &typeCreation);
-    /**
-     * @brief TagName
-     */
+                               const Document::Documents &parse, const Tool::Sources &typeCreation,
+                               const qint64 &idTool = 0, QObject *parent = 0);
     static const QString TagName;
-    /**
-     * @brief ToolType
-     */
     static const QString ToolType;
+    /**
+     * @brief DeleteNode delete node from detail.
+     */
+    virtual void DeleteNode();
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void FullUpdateFromFile ();
 protected:
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void AddToFile ();
     /**
-     * @brief mouseReleaseEvent
-     * @param event
+     * @brief RefreshDataInFile refresh attributes in file. If attributes don't exist create them.
+     */
+    virtual void RefreshDataInFile();
+    /**
+     * @brief mouseReleaseEvent handle mouse release events.
+     * @param event mouse release event.
      */
     virtual void mouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
     /**
-     * @brief hoverMoveEvent
-     * @param event
+     * @brief hoverMoveEvent handle hover move events.
+     * @param event hover move event.
      */
     virtual void hoverMoveEvent ( QGraphicsSceneHoverEvent * event );
     /**
-     * @brief hoverLeaveEvent
-     * @param event
+     * @brief hoverLeaveEvent handle hover leave events.
+     * @param event hover leave event.
      */
     virtual void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event );
 private:
     /**
-     * @brief RefreshGeometry
+     * @brief RefreshGeometry refresh item on scene.
      */
     void         RefreshGeometry ();
 };

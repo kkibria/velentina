@@ -30,15 +30,47 @@
 #include <QDebug>
 
 const QString VAbstractNode::AttrIdObject = QStringLiteral("idObject");
-const QString VAbstractNode::AttrTypeObject = QStringLiteral("typeObject");
-const QString VAbstractNode::TypeObjectCalculation = QStringLiteral("Calculation");
-const QString VAbstractNode::TypeObjectModeling = QStringLiteral("Modeling");
+const QString VAbstractNode::AttrIdTool = QStringLiteral("idTool");
 
-VAbstractNode::VAbstractNode(VDomDocument *doc, VContainer *data, qint64 id, qint64 idNode, Draw::Draws typeobject,
-                             QObject *parent)
-    : VAbstractTool(doc, data, id, parent), idNode(idNode), typeobject(typeobject)
+VAbstractNode::VAbstractNode(VDomDocument *doc, VContainer *data, const qint64 &id, const qint64 &idNode,
+                             const qint64 &idTool, QObject *parent)
+    : VAbstractTool(doc, data, id, parent), idNode(idNode), idTool(idTool)
 {
     _referens = 0;
+}
+
+void VAbstractNode::DeleteNode()
+{
+    if (_referens <= 1)
+    {
+        //remove from xml file
+        QDomElement domElement = doc->elementById(QString().setNum(id));
+        if (domElement.isElement())
+        {
+            QDomNode element = domElement.parentNode();
+            if (element.isNull() == false)
+            {
+                if (element.isElement())
+                {
+                    RemoveReferens();//deincrement referens
+                    element.removeChild(domElement);//remove form file
+                    emit toolhaveChange();//set enabled save button
+                }
+                else
+                {
+                    qWarning()<<"parent isn't element"<<Q_FUNC_INFO;
+                }
+            }
+            else
+            {
+                qWarning()<<"parent isNull"<<Q_FUNC_INFO;
+            }
+        }
+        else
+        {
+            qWarning()<<"Can't get element by id form file = "<<id<<Q_FUNC_INFO;
+        }
+    }
 }
 
 void VAbstractNode::AddToModeling(const QDomElement &domElement)

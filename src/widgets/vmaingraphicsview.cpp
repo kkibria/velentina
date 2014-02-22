@@ -32,6 +32,7 @@
 #include <QWheelEvent>
 #include <QApplication>
 #include <QScrollBar>
+#include "../tools/vabstracttool.h"
 
 VMainGraphicsView::VMainGraphicsView(QWidget *parent)
     :QGraphicsView(parent), _numScheduledScalings(0)
@@ -41,20 +42,29 @@ VMainGraphicsView::VMainGraphicsView(QWidget *parent)
     this->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 }
 
+//cppcheck-suppress unusedFunction
 void VMainGraphicsView::wheelEvent(QWheelEvent *event)
 {
-    int numDegrees = event->delta() / 8;
-    int numSteps = numDegrees / 15;  // see QWheelEvent documentation
+    int numSteps = event->delta() / 8 / 15;  // see QWheelEvent documentation
+
     _numScheduledScalings += numSteps;
     if (_numScheduledScalings * numSteps < 0)
     {  // if user moved the wheel in another direction, we reset
         _numScheduledScalings = numSteps;       // previously scheduled scalings
     }
 
-    QTimeLine *anim = new QTimeLine(350, this);
+    QTimeLine *anim = new QTimeLine(300, this);
+    Q_CHECK_PTR(anim);
     anim->setUpdateInterval(20);
 
-    connect(anim, &QTimeLine::valueChanged, this, &VMainGraphicsView::scalingTime);
+    if (QApplication::keyboardModifiers() == Qt::ControlModifier)
+    {// If you press CTRL this code will be executed
+        connect(anim, &QTimeLine::valueChanged, this, &VMainGraphicsView::scalingTime);
+    }
+    else
+    {
+        connect(anim, &QTimeLine::valueChanged, this, &VMainGraphicsView::scrollingTime);
+    }
     connect(anim, &QTimeLine::finished, this, &VMainGraphicsView::animFinished);
     anim->start();
 }
@@ -62,27 +72,37 @@ void VMainGraphicsView::wheelEvent(QWheelEvent *event)
 void VMainGraphicsView::scalingTime(qreal x)
 {
     Q_UNUSED(x);
-    qreal factor = 1.0 + static_cast<qreal>(_numScheduledScalings) / 300.0;
-    if (QApplication::keyboardModifiers() == Qt::ControlModifier)
-    {// If you press CTRL this code will execute
-        scale(factor, factor);
+    const QPointF p0scene = mapToScene(mapFromGlobal(QCursor::pos()));
+
+    qreal factor = 1.0 + static_cast<qreal>(_numScheduledScalings) / 50.0;
+    scale(factor, factor);
+
+    const QPointF p1mouse = mapFromScene(p0scene);
+    const QPointF move = p1mouse - this->mapFromGlobal(QCursor::pos()); // The move
+    horizontalScrollBar()->setValue(static_cast<qint32>(move.x()) + horizontalScrollBar()->value());
+    verticalScrollBar()->setValue(static_cast<qint32>(move.y()) + verticalScrollBar()->value());
+
+    VAbstractTool::NewSceneRect(this->scene(), this);
+
+    emit NewFactor(factor);
+}
+
+void VMainGraphicsView::scrollingTime(qreal x)
+{
+    Q_UNUSED(x);
+    qreal factor = 1.0;
+    if (_numScheduledScalings < 0)
+    {
+        verticalScrollBar()->setValue(qRound(verticalScrollBar()->value() + factor*3.5));
         emit NewFactor(factor);
     }
     else
     {
-        if (_numScheduledScalings < 0)
-        {
-            verticalScrollBar()->setValue(qRound(verticalScrollBar()->value() + factor*3.5));
+//        if (verticalScrollBar()->value() > 0)
+//        {
+            verticalScrollBar()->setValue(qRound(verticalScrollBar()->value() - factor*3.5));
             emit NewFactor(factor);
-        }
-        else
-        {
-            if (verticalScrollBar()->value() > 0)
-            {
-                verticalScrollBar()->setValue(qRound(verticalScrollBar()->value() - factor*3.5));
-                emit NewFactor(factor);
-            }
-        }
+//        }
     }
 }
 

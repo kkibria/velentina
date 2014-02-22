@@ -30,127 +30,126 @@
 #define VTOOLPOINTOFCONTACT_H
 
 #include "vtoolpoint.h"
-#include "../../dialogs/dialogpointofcontact.h"
 
 /**
- * @brief The VToolPointOfContact class
+ * @brief The VToolPointOfContact class tool for creation point intersection line and arc.
  */
 class VToolPointOfContact : public VToolPoint
 {
 public:
                    /**
-                    * @brief VToolPointOfContact
-                    * @param doc dom document container
-                    * @param data
-                    * @param id
-                    * @param radius
-                    * @param center
-                    * @param firstPointId
-                    * @param secondPointId
-                    * @param typeCreation
-                    * @param parent
+                    * @brief VToolPointOfContact constructor.
+                    * @param doc dom document container.
+                    * @param data container with variables.
+                    * @param id object id in container.
+                    * @param radius string with formula radius arc.
+                    * @param center id center arc point.
+                    * @param firstPointId id first line point.
+                    * @param secondPointId id second line point.
+                    * @param typeCreation way we create this tool.
+                    * @param parent parent object.
                     */
                    VToolPointOfContact(VDomDocument *doc, VContainer *data, const qint64 &id,
-                                       const QString &radius, const qint64 &center,
+                                       const QString &arcRadius, const qint64 &center,
                                        const qint64 &firstPointId, const qint64 &secondPointId,
                                        const Tool::Sources &typeCreation, QGraphicsItem * parent = 0);
     /**
-     * @brief setDialog
+     * @brief setDialog set dialog when user want change tool option.
      */
     virtual void   setDialog();
     /**
-     * @brief FindPoint
-     * @param radius
-     * @param center
-     * @param firstPoint
-     * @param secondPoint
-     * @return
+     * @brief FindPoint return point intersection line and arc.
+     * @param radius string with formula radius arc.
+     * @param center center arc point.
+     * @param firstPoint first line point.
+     * @param secondPoint second line point.
+     * @return point intersection.
      */
-    static QPointF FindPoint(const qreal &radius, const QPointF &center, const QPointF &firstPoint,
+    static QPointF FindPoint(const qreal &arcRadius, const QPointF &center, const QPointF &firstPoint,
                              const QPointF &secondPoint);
     /**
-     * @brief Create
-     * @param dialog
-     * @param scene
-     * @param doc dom document container
-     * @param data
+     * @brief Create help create tool from GUI.
+     * @param dialog dialog.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
      */
-    static void    Create(QSharedPointer<DialogPointOfContact> &dialog, VMainGraphicsScene  *scene,
-                          VDomDocument *doc, VContainer *data);
+    static void    Create(DialogTool *dialog, VMainGraphicsScene  *scene, VDomDocument *doc, VContainer *data);
     /**
-     * @brief Create
-     * @param _id
-     * @param radius
-     * @param center
-     * @param firstPointId
-     * @param secondPointId
-     * @param pointName
-     * @param mx
-     * @param my
-     * @param scene
-     * @param doc dom document container
-     * @param data
-     * @param parse
-     * @param typeCreation
+     * @brief Create help create tool.
+     * @param _id tool id, 0 if tool doesn't exist yet.
+     * @param radius string with formula radius arc.
+     * @param center id center arc point.
+     * @param firstPointId id first line point.
+     * @param secondPointId id second line point.
+     * @param pointName point name.
+     * @param mx label bias x axis.
+     * @param my label bias y axis.
+     * @param scene pointer to scene.
+     * @param doc dom document container.
+     * @param data container with variables.
+     * @param parse parser file mode.
+     * @param typeCreation way we create this tool.
      */
-    static void    Create(const qint64 _id, const QString &radius, const qint64 &center,
+    static void    Create(const qint64 _id, const QString &arcRadius, const qint64 &center,
                           const qint64 &firstPointId, const qint64 &secondPointId, const QString &pointName,
                           const qreal &mx, const qreal &my, VMainGraphicsScene  *scene, VDomDocument *doc,
                           VContainer *data, const Document::Documents &parse, const Tool::Sources &typeCreation);
-    /**
-     * @brief ToolType
-     */
     static const QString ToolType;
 public slots:
     /**
-     * @brief FullUpdateFromFile
+     * @brief FullUpdateFromFile update tool data form file.
      */
     virtual void   FullUpdateFromFile();
     /**
-     * @brief FullUpdateFromGui
-     * @param result
-     */
-    virtual void   FullUpdateFromGui(int result);
-    /**
-     * @brief SetFactor
-     * @param factor
+     * @brief SetFactor set current scale factor of scene.
+     * @param factor scene scale factor.
      */
     virtual void   SetFactor(qreal factor);
+    /**
+     * @brief ShowContextMenu show context menu.
+     * @param event context menu event.
+     */
+    virtual void   ShowContextMenu(QGraphicsSceneContextMenuEvent *event);
 protected:
     /**
-     * @brief contextMenuEvent
-     * @param event
+     * @brief contextMenuEvent handle context menu events.
+     * @param event context menu event.
      */
     virtual void   contextMenuEvent ( QGraphicsSceneContextMenuEvent * event );
     /**
-     * @brief AddToFile
+     * @brief AddToFile add tag with informations about tool into file.
      */
     virtual void   AddToFile();
     /**
-     * @brief RemoveReferens
+     * @brief RefreshDataInFile refresh attributes in file. If attributes don't exist create them.
+     */
+    virtual void   RefreshDataInFile();
+    /**
+     * @brief RemoveReferens decrement value of reference.
      */
     virtual void   RemoveReferens();
+    /**
+     * @brief SaveDialog save options into file after change in dialog.
+     */
+    virtual void   SaveDialog(QDomElement &domElement);
 private:
     /**
-     * @brief radius
+     * @brief radius string with formula radius arc.
      */
-    QString        radius;
+    QString        arcRadius;
     /**
-     * @brief center
+     * @brief center id center arc point.
      */
     qint64         center;
     /**
-     * @brief firstPointId
+     * @brief firstPointId id first line point.
      */
     qint64         firstPointId;
     /**
-     * @brief secondPointId
+     * @brief secondPointId id second line point.
      */
     qint64         secondPointId;
-    /**
-     * @brief dialogPointOfContact
-     */
-    QSharedPointer<DialogPointOfContact> dialogPointOfContact;
 };
 
 #endif // VTOOLPOINTOFCONTACT_H

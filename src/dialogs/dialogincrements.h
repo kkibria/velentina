@@ -71,10 +71,6 @@ public slots:
      * @brief FullUpdateFromFile update information in tables form file
      */
     void                 FullUpdateFromFile();
-    /**
-     * @brief DialogAccepted save data and emit signal about closed dialog.
-     */
-    virtual void         DialogAccepted();
 signals:
     /**
      * @brief FullUpdateTree signal update data for dom document
@@ -84,6 +80,8 @@ signals:
      * @brief haveLiteChange signal show sign of change
      */
     void                 haveLiteChange();
+protected:
+    virtual void         closeEvent ( QCloseEvent * event );
 private:
     Q_DISABLE_COPY(DialogIncrements)
     /**
@@ -107,29 +105,9 @@ private:
      */
     qint32               column;
     /**
-     * @brief InitialStandartTable initial option standart table
+     * @brief FillStandardTable fill data for standard table
      */
-    void                 InitialStandartTable();
-    /**
-     * @brief InitialIncrementTable initial option increment table
-     */
-    void                 InitialIncrementTable();
-    /**
-     * @brief InitialLinesTable initial option lines table
-     */
-    void                 InitialLinesTable();
-    /**
-     * @brief InitialSplinesTable initial option splines table
-     */
-    void                 InitialSplinesTable();
-    /**
-     * @brief InitialArcsTable initial option arcs table
-     */
-    void                 InitialArcsTable();
-    /**
-     * @brief FillStandartTable fill data for standart table
-     */
-    void                 FillStandartTable();
+    void                 FillStandardTable();
     /**
      * @brief FillIncrementTable fill data for increment table
      */

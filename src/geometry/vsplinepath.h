@@ -30,14 +30,16 @@
 #define VSPLINEPATH_H
 
 #include "vsplinepoint.h"
-#include "../container/vpointf.h"
+#include "vpointf.h"
 #include "vspline.h"
+#include "vgobject.h"
 #include <QApplication>
+#include "../container/vcontainer.h"
 
 namespace SplinePoint
 {
     /**
-     * @brief The Position enum
+     * @brief The Position enum position in spline.
      */
     enum Position { FirstPoint, LastPoint };
     Q_DECLARE_FLAGS(Positions, Position)
@@ -45,172 +47,169 @@ namespace SplinePoint
 Q_DECLARE_OPERATORS_FOR_FLAGS( SplinePoint::Positions )
 
 /**
- * @brief The VSplinePath клас, що розраховує шлях сплайнів.
+ * @brief The VSplinePath class keep information about splinePath.
  */
-class VSplinePath
+class VSplinePath :public VGObject
 {
     Q_DECLARE_TR_FUNCTIONS(VSplinePath)
 public:
                   /**
-                   * @brief VSplinePath конструктор по замовчуванню.
+                   * @brief VSplinePath constructor.
+                   * @param kCurve coefficient of curvature spline path.
+                   * @param idObject parent id.
+                   * @param mode mode creation spline path.
                    */
-                  VSplinePath();
+                  VSplinePath(qreal kCurve = 1, qint64 idObject = 0, Draw::Draws mode = Draw::Calculation);
                   /**
-                   * @brief VSplinePath конструктор по замовчуванню.
-                   */
-                  VSplinePath(const QHash<qint64, VPointF> *points, qreal kCurve = 1,
-                              Draw::Draws mode = Draw::Calculation, qint64 idObject = 0);
-                  /**
-                   * @brief VSplinePath
-                   * @param splPath
+                   * @brief VSplinePath copy constructor.
+                   * @param splPath spline path.
                    */
                   VSplinePath(const VSplinePath& splPath);
     /**
-     * @brief append додає точку сплайну до шляху.
-     * @param point точка.
+     * @brief append add point in the end of list points.
+     * @param point new point.
      */
     void          append(const VSplinePoint &point);
     /**
-     * @brief Count
-     * @return
+     * @brief Count return count point.
+     * @return count.
      */
     qint32        Count() const;
     /**
-     * @brief CountPoint
-     * @return
+     * @brief CountPoint return count point.
+     * @return count.
      */
     inline qint32 CountPoint() const {return path.size();}
     /**
-     * @brief GetSpline
-     * @param index
-     * @return
+     * @brief GetSpline return spline by index.
+     * @param index index spline in spline path.
+     * @return spline
      */
     VSpline       GetSpline(qint32 index) const;
     /**
-     * @brief GetPath
-     * @return
+     * @brief GetPath return QPainterPath which reprezent spline path.
+     * @return path.
      */
     QPainterPath  GetPath() const;
     /**
-     * @brief GetPathPoints
-     * @return
+     * @brief GetPathPoints return list of points what located on path.
+     * @return list.
      */
     QVector<QPointF> GetPathPoints() const;
     /**
-     * @brief GetSplinePath
-     * @return
+     * @brief GetSplinePath return list with spline points.
+     * @return list.
      */
     inline QVector<VSplinePoint> GetSplinePath() const {return path;}
     /**
-     * @brief GetLength
-     * @return
+     * @brief GetLength return length of spline path.
+     * @return length.
      */
     qreal         GetLength() const;
     /**
-     * @brief GetDataPoints
-     * @return
-     */
-    inline QHash<qint64, VPointF> GetDataPoints() const {return points;}
-    /**
-     * @brief UpdatePoint
-     * @param indexSpline
-     * @param pos
-     * @param point
+     * @brief UpdatePoint update spline point in list.
+     * @param indexSpline spline index in list.
+     * @param pos position point in spline.
+     * @param point point.
      */
     void          UpdatePoint(qint32 indexSpline, const SplinePoint::Position &pos, const VSplinePoint &point);
     /**
-     * @brief GetSplinePoint
-     * @param indexSpline
-     * @param pos
-     * @return
+     * @brief GetSplinePoint return spline point from list.
+     * @param indexSpline spline index in list.
+     * @param pos position point in spline.
+     * @return spline point.
      */
     VSplinePoint  GetSplinePoint(qint32 indexSpline, SplinePoint::Position pos) const;
     /**
-     * @brief Clear очищає шлях сплайнів.
+     * @brief Clear clear list of points.
      */
     inline void   Clear() {path.clear();}
     /**
-     * @brief getKCurve
-     * @return
+     * @brief getKCurve return coefficient of curvature spline path.
+     * @return coefficient of curvature spline.
      */
     inline qreal  getKCurve() const {return kCurve;}
     /**
-     * @brief setKCurve
-     * @param value
+     * @brief setKCurve set coefficient of curvature spline path.
+     * @param value coefficient of curvature spline path.
      */
     inline void   setKCurve(const qreal &value) {kCurve = value;}
     /**
-     * @brief GetPoint
-     * @return
+     * @brief GetPoint pointer to list spline point.
+     * @return list.
      */
     inline const  QVector<VSplinePoint> *GetPoint() const {return &path;}
     /**
-     * @brief operator =
-     * @param path
-     * @return
+     * @brief operator = assignment operator.
+     * @param path spline path.
+     * @return spline path.
      */
     VSplinePath   &operator=(const VSplinePath &path);
     /**
-     * @brief operator []
-     * @param indx
-     * @return
+     * @brief operator [] return spline point by index.
+     * @param indx index in list.
+     * @return spline point.
      */
     VSplinePoint  &operator[](ptrdiff_t indx);
     /**
-     * @brief getMode
-     * @return
+     * @brief at return spline point by index.
+     * @param indx index in list.
+     * @return spline point.
      */
-    inline Draw::Draws getMode() const {return mode;}
+    const VSplinePoint &at(ptrdiff_t indx) const;
     /**
-     * @brief setMode
-     * @param value
+     * @brief CutSplinePath cut spline path into two. This method don't return two spline path. You must create spline
+     * paths by yourself.
+     * Example:
+     * QPointF spl1p2, spl1p3, spl2p2, spl2p3;
+     * qint32 p1 = 0, p2 = 0;
+     * QPointF point = splPath->CutSplinePath(length, p1, p2, spl1p2, spl1p3, spl2p2, spl2p3);
+     *
+     * VSplinePoint splP1 = splPath->at(p1);
+     * VSplinePoint splP2 = splPath->at(p2);
+     * VSpline spl1 = VSpline(splP1.P(), spl1p2, spl1p3, *p, splPath->getKCurve());
+     * VSpline spl2 = VSpline(*p, spl2p2, spl2p3, splP2.P(), splPath->getKCurve());
+     * @param length length first spline path.
+     * @param p1 index first spline point in list.
+     * @param p2 index second spline point in list.
+     * @param spl1p2 first control point first spline.
+     * @param spl1p3 second control point first spline.
+     * @param spl2p2 first control point second spline.
+     * @param spl2p3 second control point second spline.
+     * @return cutting point.
      */
-    inline void   setMode(const Draw::Draws &value) {mode = value;}
+    QPointF       CutSplinePath(qreal length, qint32 &p1, qint32 &p2, QPointF &spl1p2, QPointF &spl1p3, QPointF &spl2p2,
+                                QPointF &spl2p3) const;
     /**
-     * @brief getIdObject
-     * @return
+     * @brief name return spline path name.
+     * @return name.
      */
-    inline qint64 getIdObject() const {return idObject;}
+    virtual QString name() const{return _name;}
     /**
-     * @brief setIdObject
-     * @param value
+     * @brief getMaxCountPoints return max count of points what can have spline path. This method use tool union detail.
+     * Because cutting point can change position spline can have diffirent count of points. Need know max value. This
+     * value stored from cuted spline path.
+     * @return count.
      */
-    inline void   setIdObject(const qint64 &value) {idObject = value;}
+    qint32 getMaxCountPoints() const;
     /**
-     * @brief name
-     * @return
+     * @brief setMaxCountPoints set max count points from cuted spline path.
+     * @param value max count.
      */
-    QString       name() const {return _name;}
-    /**
-     * @brief setName
-     * @param name
-     */
-    void          setName(const QString &name) {_name = name;}
+    void setMaxCountPoints(const qint32 &value);
 protected:
     /**
-     * @brief path вектор з точок сплайна.
+     * @brief path list spline point.
      */
     QVector<VSplinePoint> path;
     /**
-     * @brief kCurve
+     * @brief kCurve coefficient of curvature spline.
      */
     qreal         kCurve;
     /**
-     * @brief mode
+     * @brief maxCountPoints max count of points what can have spline path.
      */
-    Draw::Draws   mode;
-    /**
-     * @brief points
-     */
-    QHash<qint64, VPointF> points;
-    /**
-     * @brief idObject
-     */
-    qint64        idObject;
-    /**
-     * @brief _name
-     */
-    QString       _name;
+    qint32        maxCountPoints;
 };
 
 #endif // VSPLINEPATH_H

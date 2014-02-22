@@ -64,13 +64,47 @@ const QString VAbstractTool::AttrAxisP1      = QStringLiteral("axisP1");
 const QString VAbstractTool::AttrAxisP2      = QStringLiteral("axisP2");
 const QString VAbstractTool::TypeLineNone    = QStringLiteral("none");
 const QString VAbstractTool::TypeLineLine    = QStringLiteral("hair");
+const QString VAbstractTool::TypeLineDashLine       = QStringLiteral("dashLine");
+const QString VAbstractTool::TypeLineDotLine        = QStringLiteral("dotLine");
+const QString VAbstractTool::TypeLineDashDotLine    = QStringLiteral("dashDotLine");
+const QString VAbstractTool::TypeLineDashDotDotLine = QStringLiteral("dashDotDotLine");
 
 VAbstractTool::VAbstractTool(VDomDocument *doc, VContainer *data, qint64 id, QObject *parent)
-    :VDataTool(data, parent), doc(doc), id(id), baseColor(Qt::black), currentColor(Qt::black)
+    :VDataTool(data, parent), doc(doc), id(id), baseColor(Qt::black), currentColor(Qt::black), typeLine(TypeLineLine)
 {
+    Q_CHECK_PTR(doc);
     connect(this, &VAbstractTool::toolhaveChange, this->doc, &VDomDocument::haveLiteChange);
     connect(this->doc, &VDomDocument::FullUpdateFromFile, this, &VAbstractTool::FullUpdateFromFile);
     connect(this, &VAbstractTool::FullUpdateTree, this->doc, &VDomDocument::FullUpdateTree);
+    emit toolhaveChange();
+}
+
+void VAbstractTool::NewSceneRect(QGraphicsScene *sc, QGraphicsView *view)
+{
+    QRectF rect = sc->itemsBoundingRect();
+
+    QRect  rec0 = view->rect();
+    rec0 = QRect(0, 0, rec0.width()-2, rec0.height()-2);
+
+    QTransform t = view->transform();
+
+    QRectF rec1;
+    if (t.m11() < 1)
+    {
+        qreal width = rec0.width()/t.m11();
+        qreal height = rec0.height()/t.m22();
+        rec1 = QRect(0, 0, static_cast<qint32>(width), static_cast<qint32>(height));
+
+        rec1.translate(rec0.center().x()-rec1.center().x(), rec0.center().y()-rec1.center().y());
+        QPolygonF polygone =  view->mapToScene(rec1.toRect());
+        rec1 = polygone.boundingRect();
+    }
+    else
+    {
+        rec1 = rec0;
+    }
+    rec1 = rec1.united(rect.toRect());
+    sc->setSceneRect(rec1);
 }
 
 QPointF VAbstractTool::LineIntersectRect(QRectF rec, QLineF line)
@@ -105,16 +139,15 @@ QPointF VAbstractTool::LineIntersectRect(QRectF rec, QLineF line)
 qint32 VAbstractTool::LineIntersectCircle(const QPointF &center, qreal radius, const QLineF &line, QPointF &p1,
                                           QPointF &p2)
 {
-    const qreal eps = 1e-8;
-    //коефіцієнти для рівняння відрізку
+    //coefficient for equation of segment
     qreal a = 0, b = 0, c = 0;
     LineCoefficients(line, &a, &b, &c);
-    // проекция центра окружности на прямую
+    // projection center of circle on to line
     QPointF p = ClosestPoint (line, center);
-    // сколько всего решений?
+    // how many solutions?
     qint32 flag = 0;
     qreal d = QLineF (center, p).length();
-    if (qAbs (d - radius) <= eps)
+    if (qFuzzyCompare(d, radius))
     {
         flag = 1;
     }
@@ -129,36 +162,32 @@ qint32 VAbstractTool::LineIntersectCircle(const QPointF &center, qreal radius, c
             return 0;
         }
     }
-    // находим расстояние от проекции до точек пересечения
+    // find distance from projection to points of intersection
     qreal k = sqrt (radius * radius - d * d);
     qreal t = QLineF (QPointF (0, 0), QPointF (b, - a)).length();
-    // добавляем к проекции векторы направленные к точкам пеерсечения
+    // add to projection a vectors aimed to points of intersection
     p1 = addVector (p, QPointF (0, 0), QPointF (- b, a), k / t);
     p2 = addVector (p, QPointF (0, 0), QPointF (b, - a), k / t);
     return flag;
 }
 
-QPointF VAbstractTool::ClosestPoint(const QLineF &line, const QPointF &p)
+QPointF VAbstractTool::ClosestPoint(const QLineF &line, const QPointF &point)
 {
-    QLineF lineP2pointFrom = QLineF(line.p2(), p);
-    qreal angle = 180-line.angleTo(lineP2pointFrom)-90;
-    QLineF pointFromlineP2 = QLineF(p, line.p2());
-    pointFromlineP2.setAngle(pointFromlineP2.angle()+angle);
-    QPointF point;
-    QLineF::IntersectType type = pointFromlineP2.intersect(line, &point);
-    if ( type == QLineF::BoundedIntersection )
+    qreal a = 0, b = 0, c = 0;
+    LineCoefficients(line, &a, &b, &c);
+    qreal x = point.x() + a;
+    qreal y = b + point.y();
+    QLineF lin (point, QPointF(x, y));
+    QPointF p;
+    QLineF::IntersectType intersect = line.intersect(lin, &p);
+    if (intersect == QLineF::UnboundedIntersection || intersect == QLineF::BoundedIntersection)
     {
-        return point;
+        return p;
     }
     else
     {
-        if ( type == QLineF::NoIntersection || type == QLineF::UnboundedIntersection )
-        {
-            Q_ASSERT_X(type != QLineF::BoundedIntersection, Q_FUNC_INFO, "Don't have point of intersection.");
-            return point;
-        }
+        return QPointF();
     }
-    return point;
 }
 
 QPointF VAbstractTool::addVector(const QPointF &p, const QPointF &p1, const QPointF &p2, qreal k)
@@ -177,11 +206,123 @@ void VAbstractTool::RemoveAllChild(QDomElement &domElement)
     }
 }
 
+void VAbstractTool::DeleteTool(QGraphicsItem *tool)
+{
+    if (_referens <= 1)
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("Confirm the deletion."));
+        msgBox.setInformativeText(tr("Do you really want delete?"));
+        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        msgBox.setIcon(QMessageBox::Question);
+        if (msgBox.exec() == QMessageBox::Cancel)
+        {
+            return;
+        }
+        //remove from xml file
+        QDomElement domElement = doc->elementById(QString().setNum(id));
+        if (domElement.isElement())
+        {
+            QDomNode element = domElement.parentNode();
+            if (element.isNull() == false)
+            {
+                if (element.isElement())
+                {
+                    RemoveReferens();//deincrement referens
+                    element.removeChild(domElement);//remove form file
+                    QGraphicsScene *scene = tool->scene();
+                    if (scene != 0)//some tools haven't scene
+                    {
+                        scene->removeItem(tool);//remove form scene
+                    }
+                    doc->FullUpdateTree();
+                    emit toolhaveChange();//set enabled save button
+                }
+                else
+                {
+                    qWarning()<<"parent isn't element"<<Q_FUNC_INFO;
+                }
+            }
+            else
+            {
+                qWarning()<<"parent isNull"<<Q_FUNC_INFO;
+            }
+        }
+        else
+        {
+            qWarning()<<"Can't get element by id form file = "<<id<<Q_FUNC_INFO;
+        }
+    }
+}
+
+Qt::PenStyle VAbstractTool::LineStyle()
+{
+    QStringList styles = Styles();
+    switch(styles.indexOf(typeLine))
+    {
+        case 0:
+            return Qt::NoPen;
+            break;
+        case 1:
+            return Qt::SolidLine;
+            break;
+        case 2:
+            return Qt::DashLine;
+            break;
+        case 3:
+            return Qt::DotLine;
+            break;
+        case 4:
+            return Qt::DashDotLine;
+            break;
+        case 5:
+            return Qt::DashDotDotLine;
+            break;
+        default:
+            return Qt::SolidLine;
+            break;
+    }
+}
+
 void VAbstractTool::LineCoefficients(const QLineF &line, qreal *a, qreal *b, qreal *c)
 {
-    //коефіцієнти для рівняння відрізку
+    //coefficient for equation of segment
     QPointF p1 = line.p1();
     *a = line.p2().y() - p1.y();
     *b = p1.x() - line.p2().x();
     *c = - *a * p1.x() - *b * p1.y();
+}
+
+const QStringList VAbstractTool::Styles()
+{
+    //Keep synchronize with DialogTool lineStyles list!!!
+    QStringList styles;
+    styles << TypeLineNone << TypeLineLine << TypeLineDashLine << TypeLineDotLine << TypeLineDashDotLine
+              << TypeLineDashDotDotLine;
+    return styles;
+}
+
+void VAbstractTool::AddRecord(const qint64 id, const Tool::Tools &toolType, VDomDocument *doc)
+{
+    qint64 cursor = doc->getCursor();
+    QVector<VToolRecord> *history = doc->getHistory();
+    if (cursor <= 0)
+    {
+        history->append(VToolRecord(id, toolType, doc->GetNameActivDraw()));
+    }
+    else
+    {
+        qint32 index = 0;
+        for (qint32 i = 0; i<history->size(); ++i)
+        {
+            VToolRecord rec = history->at(i);
+            if (rec.getId() == cursor)
+            {
+                index = i;
+                break;
+            }
+        }
+        history->insert(index+1, VToolRecord(id, toolType, doc->GetNameActivDraw()));
+    }
 }

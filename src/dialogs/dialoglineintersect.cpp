@@ -31,8 +31,8 @@
 
 #include <QPushButton>
 
-DialogLineIntersect::DialogLineIntersect(const VContainer *data, Draw::Draws mode, QWidget *parent)
-    :DialogTool(data, mode, parent), ui(new Ui::DialogLineIntersect), number(0), pointName(QString()),
+DialogLineIntersect::DialogLineIntersect(const VContainer *data, QWidget *parent)
+    :DialogTool(data, parent), ui(new Ui::DialogLineIntersect), number(0), pointName(QString()),
     p1Line1(0), p2Line1(0), p1Line2(0), p2Line2(0), flagPoint(true)
 {
     ui->setupUi(this);
@@ -43,6 +43,7 @@ DialogLineIntersect::DialogLineIntersect(const VContainer *data, Draw::Draws mod
     flagName = false;
     QPushButton *bCansel = ui->buttonBox->button(QDialogButtonBox::Cancel);
     connect(bCansel, &QPushButton::clicked, this, &DialogLineIntersect::DialogRejected);
+
     FillComboBoxPoints(ui->comboBoxP1Line1);
     FillComboBoxPoints(ui->comboBoxP2Line1);
     FillComboBoxPoints(ui->comboBoxP1Line2);
@@ -58,35 +59,12 @@ DialogLineIntersect::~DialogLineIntersect()
 
 void DialogLineIntersect::ChoosedObject(qint64 id, const Scene::Scenes &type)
 {
-    if (idDetail == 0 && mode == Draw::Modeling)
-    {
-        if (type == Scene::Detail)
-        {
-            idDetail = id;
-            return;
-        }
-    }
-    if (mode == Draw::Modeling)
-    {
-        if (CheckObject(id) == false)
-        {
-            return;
-        }
-    }
     if (type == Scene::Point)
     {
-        VPointF point;
-        if (mode == Draw::Calculation)
-        {
-            point = data->GetPoint(id);
-        }
-        else
-        {
-            point = data->GetPointModeling(id);
-        }
+        const VPointF *point = data->GeometricObject<const VPointF *>(id);
         if (number == 0)
         {
-            qint32 index = ui->comboBoxP1Line1->findText(point.name());
+            qint32 index = ui->comboBoxP1Line1->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxP1Line1->setCurrentIndex(index);
@@ -98,7 +76,7 @@ void DialogLineIntersect::ChoosedObject(qint64 id, const Scene::Scenes &type)
         }
         if (number == 1)
         {
-            qint32 index = ui->comboBoxP2Line1->findText(point.name());
+            qint32 index = ui->comboBoxP2Line1->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxP2Line1->setCurrentIndex(index);
@@ -110,7 +88,7 @@ void DialogLineIntersect::ChoosedObject(qint64 id, const Scene::Scenes &type)
         }
         if (number == 2)
         {
-            qint32 index = ui->comboBoxP1Line2->findText(point.name());
+            qint32 index = ui->comboBoxP1Line2->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxP1Line2->setCurrentIndex(index);
@@ -122,7 +100,7 @@ void DialogLineIntersect::ChoosedObject(qint64 id, const Scene::Scenes &type)
         }
         if (number == 3)
         {
-            qint32 index = ui->comboBoxP2Line2->findText(point.name());
+            qint32 index = ui->comboBoxP2Line2->findText(point->name());
             if ( index != -1 )
             { // -1 for not found
                 ui->comboBoxP2Line2->setCurrentIndex(index);
@@ -155,10 +133,10 @@ void DialogLineIntersect::ChoosedObject(qint64 id, const Scene::Scenes &type)
 void DialogLineIntersect::DialogAccepted()
 {
     pointName = ui->lineEditNamePoint->text();
-    p1Line1 = getCurrentPointId(ui->comboBoxP1Line1);
-    p2Line1 = getCurrentPointId(ui->comboBoxP2Line1);
-    p1Line2 = getCurrentPointId(ui->comboBoxP1Line2);
-    p2Line2 = getCurrentPointId(ui->comboBoxP2Line2);
+    p1Line1 = getCurrentObjectId(ui->comboBoxP1Line1);
+    p2Line1 = getCurrentObjectId(ui->comboBoxP2Line1);
+    p1Line2 = getCurrentObjectId(ui->comboBoxP1Line2);
+    p2Line2 = getCurrentObjectId(ui->comboBoxP2Line2);
     emit DialogClosed(QDialog::Accepted);
 }
 
@@ -192,19 +170,19 @@ void DialogLineIntersect::P2Line2Changed(int index)
 
 void DialogLineIntersect::CheckState()
 {
-    Q_ASSERT(bOk != 0);
+    Q_CHECK_PTR(bOk);
     bOk->setEnabled(flagName && flagPoint);
 }
 
 bool DialogLineIntersect::CheckIntersecion()
 {
-    VPointF p1L1 = data->GetPoint(p1Line1);
-    VPointF p2L1 = data->GetPoint(p2Line1);
-    VPointF p1L2 = data->GetPoint(p1Line2);
-    VPointF p2L2 = data->GetPoint(p2Line2);
+    const VPointF *p1L1 = data->GeometricObject<const VPointF *>(p1Line1);
+    const VPointF *p2L1 = data->GeometricObject<const VPointF *>(p2Line1);
+    const VPointF *p1L2 = data->GeometricObject<const VPointF *>(p1Line2);
+    const VPointF *p2L2 = data->GeometricObject<const VPointF *>(p2Line2);
 
-    QLineF line1(p1L1.toQPointF(), p2L1.toQPointF());
-    QLineF line2(p1L2.toQPointF(), p2L2.toQPointF());
+    QLineF line1(p1L1->toQPointF(), p2L1->toQPointF());
+    QLineF line2(p1L2->toQPointF(), p2L2->toQPointF());
     QPointF fPoint;
     QLineF::IntersectType intersect = line1.intersect(line2, &fPoint);
     if (intersect == QLineF::UnboundedIntersection || intersect == QLineF::BoundedIntersection)

@@ -31,8 +31,8 @@
 
 #include <QPushButton>
 
-DialogEndLine::DialogEndLine(const VContainer *data, Draw::Draws mode, QWidget *parent)
-    :DialogTool(data, mode, parent), ui(new Ui::DialogEndLine), pointName(QString()), typeLine(QString()),
+DialogEndLine::DialogEndLine(const VContainer *data, QWidget *parent)
+    :DialogTool(data, parent), ui(new Ui::DialogEndLine), pointName(QString()), typeLine(QString()),
     formula(QString()), angle(0), basePointId(0)
 {
     ui->setupUi(this);
@@ -41,7 +41,7 @@ DialogEndLine::DialogEndLine(const VContainer *data, Draw::Draws mode, QWidget *
     labelResultCalculation = ui->labelResultCalculation;
     labelDescription = ui->labelDescription;
     radioButtonSizeGrowth = ui->radioButtonSizeGrowth;
-    radioButtonStandartTable = ui->radioButtonStandartTable;
+    radioButtonStandardTable = ui->radioButtonStandardTable;
     radioButtonIncrements = ui->radioButtonIncrements;
     radioButtonLengthLine = ui->radioButtonLengthLine;
     radioButtonLengthArc = ui->radioButtonLengthArc;
@@ -56,7 +56,9 @@ DialogEndLine::DialogEndLine(const VContainer *data, Draw::Draws mode, QWidget *
     CheckState();
     QPushButton *bCansel = ui->buttonBox->button(QDialogButtonBox::Cancel);
     connect(bCansel, &QPushButton::clicked, this, &DialogEndLine::DialogRejected);
+
     FillComboBoxPoints(ui->comboBoxBasePoint);
+
     FillComboBoxTypeLine(ui->comboBoxLineType);
 
     connect(ui->toolButtonArrowDown, &QPushButton::clicked, this,
@@ -81,7 +83,7 @@ DialogEndLine::DialogEndLine(const VContainer *data, Draw::Draws mode, QWidget *
 
     ShowVariable(data->DataBase());
     connect(ui->radioButtonSizeGrowth, &QRadioButton::clicked, this, &DialogEndLine::SizeGrowth);
-    connect(ui->radioButtonStandartTable, &QRadioButton::clicked, this, &DialogEndLine::StandartTable);
+    connect(ui->radioButtonStandardTable, &QRadioButton::clicked, this, &DialogEndLine::StandardTable);
     connect(ui->radioButtonIncrements, &QRadioButton::clicked, this, &DialogEndLine::Increments);
     connect(ui->radioButtonLengthLine, &QRadioButton::clicked, this, &DialogEndLine::LengthLines);
     connect(ui->radioButtonLengthArc, &QRadioButton::clicked, this, &DialogEndLine::LengthArcs);
@@ -93,33 +95,10 @@ DialogEndLine::DialogEndLine(const VContainer *data, Draw::Draws mode, QWidget *
 
 void DialogEndLine::ChoosedObject(qint64 id, const Scene::Scenes &type)
 {
-    if (idDetail == 0 && mode == Draw::Modeling)
-    {
-        if (type == Scene::Detail)
-        {
-            idDetail = id;
-            return;
-        }
-    }
-    if (mode == Draw::Modeling)
-    {
-        if (CheckObject(id) == false)
-        {
-            return;
-        }
-    }
     if (type == Scene::Point)
     {
-        VPointF point;
-        if (mode == Draw::Calculation)
-        {
-            point = data->GetPoint(id);
-        }
-        else
-        {
-            point = data->GetPointModeling(id);
-        }
-        ChangeCurrentText(ui->comboBoxBasePoint, point.name());
+        const VPointF *point = data->GeometricObject<const VPointF *>(id);
+        ChangeCurrentText(ui->comboBoxBasePoint, point->name());
         emit ToolTip("");
         this->show();
     }
@@ -160,7 +139,7 @@ void DialogEndLine::DialogAccepted()
     typeLine = GetTypeLine(ui->comboBoxLineType);
     formula = ui->lineEditFormula->text();
     angle = ui->doubleSpinBoxAngle->value();
-    basePointId = getCurrentPointId(ui->comboBoxBasePoint);
+    basePointId = getCurrentObjectId(ui->comboBoxBasePoint);
     emit DialogClosed(QDialog::Accepted);
 }
 

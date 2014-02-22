@@ -31,65 +31,58 @@
 #include <QPushButton>
 #include <QDebug>
 
-DialogDetail::DialogDetail(const VContainer *data, Draw::Draws mode, QWidget *parent)
-    :DialogTool(data, mode, parent), ui(), details(VDetail()), supplement(true), closed(true)
+DialogDetail::DialogDetail(const VContainer *data, QWidget *parent)
+    :DialogTool(data, parent), ui(), details(VDetail()), supplement(true), closed(true)
 {
     ui.setupUi(this);
     labelEditNamePoint = ui.labelEditNameDetail;
     bOk = ui.buttonBox->button(QDialogButtonBox::Ok);
     connect(bOk, &QPushButton::clicked, this, &DialogDetail::DialogAccepted);
-    flagName = false;
+
+    flagName = true;//We have default name of detail.
+    QPalette palette = labelEditNamePoint->palette();
+    palette.setColor(labelEditNamePoint->foregroundRole(), QColor(76, 76, 76));
+    labelEditNamePoint->setPalette(palette);
     CheckState();
+
     QPushButton *bCansel = ui.buttonBox->button(QDialogButtonBox::Cancel);
     connect(bCansel, &QPushButton::clicked, this, &DialogDetail::DialogRejected);
 
     connect(ui.listWidget, &QListWidget::currentRowChanged, this, &DialogDetail::ObjectChanged);
-    connect(ui.doubleSpinBoxBiasX,  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+    connect(ui.spinBoxBiasX,  static_cast<void (QSpinBox::*)(qint32)>(&QSpinBox::valueChanged),
             this, &DialogDetail::BiasXChanged);
-    connect(ui.doubleSpinBoxBiasY,  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+    connect(ui.spinBoxBiasY,  static_cast<void (QSpinBox::*)(qint32)>(&QSpinBox::valueChanged),
             this, &DialogDetail::BiasYChanged);
     connect(ui.checkBoxSeams, &QCheckBox::clicked, this, &DialogDetail::ClickedSeams);
     connect(ui.checkBoxClosed, &QCheckBox::clicked, this, &DialogDetail::ClickedClosed);
     connect(ui.lineEditNameDetail, &QLineEdit::textChanged, this, &DialogDetail::NamePointChanged);
+
+    connect(ui.toolButtonDelete, &QToolButton::clicked, this, &DialogDetail::DeleteItem);
 }
 
 void DialogDetail::ChoosedObject(qint64 id, const Scene::Scenes &type)
 {
-    if (idDetail == 0 && mode == Draw::Modeling)
-    {
-        if (type == Scene::Detail)
-        {
-            idDetail = id;
-            return;
-        }
-    }
-    if (mode == Draw::Modeling)
-    {
-        if (CheckObject(id) == false)
-        {
-            return;
-        }
-    }
     if (type != Scene::Line && type != Scene::Detail)
     {
         switch (type)
         {
             case (Scene::Arc):
-                NewItem(id, Tool::NodeArc, mode, NodeDetail::Contour);
+                NewItem(id, Tool::NodeArc, NodeDetail::Contour);
                 break;
             case (Scene::Point):
-                NewItem(id, Tool::NodePoint, mode, NodeDetail::Contour);
+                NewItem(id, Tool::NodePoint, NodeDetail::Contour);
                 break;
             case (Scene::Spline):
-                NewItem(id, Tool::NodeSpline, mode, NodeDetail::Contour);
+                NewItem(id, Tool::NodeSpline, NodeDetail::Contour);
                 break;
             case (Scene::SplinePath):
-                NewItem(id, Tool::NodeSplinePath, mode, NodeDetail::Contour);
+                NewItem(id, Tool::NodeSplinePath, NodeDetail::Contour);
                 break;
             default:
-                qWarning()<<tr("Get wrong scene object. Ignore.");
+                qWarning()<<tr("Got wrong scene object. Ignore.");
                 break;
         }
+        ui.toolButtonDelete->setEnabled(true);
         this->show();
     }
 }
@@ -102,95 +95,64 @@ void DialogDetail::DialogAccepted()
         QListWidgetItem *item = ui.listWidget->item(i);
         details.append( qvariant_cast<VNodeDetail>(item->data(Qt::UserRole)));
     }
-    details.setWidth(ui.doubleSpinBoxSeams->value());
+    details.setWidth(ui.spinBoxSeams->value());
     details.setName(ui.lineEditNameDetail->text());
-    details.setSupplement(supplement);
+    details.setSeamAllowance(supplement);
     details.setClosed(closed);
     emit ToolTip("");
     emit DialogClosed(QDialog::Accepted);
 }
 
-void DialogDetail::NewItem(qint64 id, const Tool::Tools &typeTool, const Draw::Draws &mode,
-                           const NodeDetail::NodeDetails &typeNode, qreal mx, qreal my)
+void DialogDetail::NewItem(qint64 id, const Tool::Tools &typeTool, const NodeDetail::NodeDetails &typeNode, qreal mx,
+                           qreal my)
 {
     QString name;
     switch (typeTool)
     {
         case (Tool::NodePoint):
         {
-            VPointF point;
-            if (mode == Draw::Calculation)
-            {
-                point = data->GetPoint(id);
-            }
-            else
-            {
-                point = data->GetPointModeling(id);
-            }
-            name = point.name();
+            const VPointF *point = data->GeometricObject<const VPointF *>(id);
+            name = point->name();
             break;
         }
         case (Tool::NodeArc):
         {
-            VArc arc;
-            if (mode == Draw::Calculation)
-            {
-                arc = data->GetArc(id);
-            }
-            else
-            {
-                arc = data->GetArcModeling(id);
-            }
-            name = arc.name();
+            const VArc *arc = data->GeometricObject<const VArc *>(id);
+            name = arc->name();
             break;
         }
         case (Tool::NodeSpline):
         {
-            VSpline spl;
-            if (mode == Draw::Calculation)
-            {
-                spl = data->GetSpline(id);
-            }
-            else
-            {
-                spl = data->GetSplineModeling(id);
-            }
-            name = spl.GetName();
+            const VSpline *spl = data->GeometricObject<const VSpline *>(id);
+            name = spl->name();
             break;
         }
         case (Tool::NodeSplinePath):
         {
-            VSplinePath splPath;
-            if (mode == Draw::Calculation)
-            {
-                splPath = data->GetSplinePath(id);
-            }
-            else
-            {
-                splPath = data->GetSplinePathModeling(id);
-            }
-            name = splPath.name();
+            const VSplinePath *splPath = data->GeometricObject<const VSplinePath *>(id);
+            name = splPath->name();
             break;
         }
         default:
-            qWarning()<<tr("Get wrong tools. Ignore.");
+            qWarning()<<tr("Got wrong tools. Ignore.");
             break;
     }
 
     QListWidgetItem *item = new QListWidgetItem(name);
     item->setFont(QFont("Times", 12, QFont::Bold));
-    VNodeDetail node(id, typeTool, mode, typeNode, mx, my);
+    VNodeDetail node(id, typeTool, typeNode, mx, my);
     item->setData(Qt::UserRole, QVariant::fromValue(node));
     ui.listWidget->addItem(item);
-    disconnect(ui.doubleSpinBoxBiasX,  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+    ui.listWidget->setCurrentRow(ui.listWidget->count()-1);
+    disconnect(ui.spinBoxBiasX,  static_cast<void (QSpinBox::*)(qint32)>(&QSpinBox::valueChanged),
             this, &DialogDetail::BiasXChanged);
-    disconnect(ui.doubleSpinBoxBiasY,  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+    disconnect(ui.spinBoxBiasY,  static_cast<void (QSpinBox::*)(qint32)>(&QSpinBox::valueChanged),
             this, &DialogDetail::BiasYChanged);
-    ui.doubleSpinBoxBiasX->setValue(toMM(node.getMx()));
-    ui.doubleSpinBoxBiasY->setValue(toMM(node.getMy()));
-    connect(ui.doubleSpinBoxBiasX,  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+    ui.spinBoxBiasX->setValue(static_cast<qint32>(toMM(node.getMx())));
+    ui.spinBoxBiasY->setValue(static_cast<qint32>(toMM(node.getMy())));
+    connect(ui.spinBoxBiasX,  static_cast<void (QSpinBox::*)(qint32)>(&QSpinBox::valueChanged),
             this, &DialogDetail::BiasXChanged);
-    connect(ui.doubleSpinBoxBiasY,  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+    connect(ui.spinBoxBiasY,  static_cast<void (QSpinBox::*)(qint32)>(&QSpinBox::valueChanged),
             this, &DialogDetail::BiasYChanged);
 }
 
@@ -200,21 +162,25 @@ void DialogDetail::setDetails(const VDetail &value)
     ui.listWidget->clear();
     for (ptrdiff_t i = 0; i < details.CountNode(); ++i)
     {
-        NewItem(details[i].getId(), details[i].getTypeTool(), details[i].getMode(), details[i].getTypeNode(),
-                details[i].getMx(), details[i].getMy());
+        NewItem(details[i].getId(), details[i].getTypeTool(), details[i].getTypeNode(), details[i].getMx(),
+                details[i].getMy());
     }
     ui.lineEditNameDetail->setText(details.getName());
-    ui.checkBoxSeams->setChecked(details.getSupplement());
+    ui.checkBoxSeams->setChecked(details.getSeamAllowance());
     ui.checkBoxClosed->setChecked(details.getClosed());
-    ui.doubleSpinBoxSeams->setValue(details.getWidth());
+    ClickedClosed(details.getClosed());
+    ClickedSeams(details.getSeamAllowance());
+    ui.spinBoxSeams->setValue(static_cast<qint32>(details.getWidth()));
     ui.listWidget->setCurrentRow(0);
     ui.listWidget->setFocus(Qt::OtherFocusReason);
+    ui.toolButtonDelete->setEnabled(true);
 }
 
 void DialogDetail::BiasXChanged(qreal d)
 {
     qint32 row = ui.listWidget->currentRow();
     QListWidgetItem *item = ui.listWidget->item( row );
+    Q_CHECK_PTR(item);
     VNodeDetail node = qvariant_cast<VNodeDetail>(item->data(Qt::UserRole));
     node.setMx(toPixel(d));
     item->setData(Qt::UserRole, QVariant::fromValue(node));
@@ -224,6 +190,7 @@ void DialogDetail::BiasYChanged(qreal d)
 {
     qint32 row = ui.listWidget->currentRow();
     QListWidgetItem *item = ui.listWidget->item( row );
+    Q_CHECK_PTR(item);
     VNodeDetail node = qvariant_cast<VNodeDetail>(item->data(Qt::UserRole));
     node.setMy(toPixel(d));
     item->setData(Qt::UserRole, QVariant::fromValue(node));
@@ -233,7 +200,7 @@ void DialogDetail::ClickedSeams(bool checked)
 {
     supplement = checked;
     ui.checkBoxClosed->setEnabled(checked);
-    ui.doubleSpinBoxSeams->setEnabled(checked);
+    ui.spinBoxSeams->setEnabled(checked);
 }
 
 void DialogDetail::ClickedClosed(bool checked)
@@ -249,6 +216,12 @@ void DialogDetail::ObjectChanged(int row)
     }
     QListWidgetItem *item = ui.listWidget->item( row );
     VNodeDetail node = qvariant_cast<VNodeDetail>(item->data(Qt::UserRole));
-    ui.doubleSpinBoxBiasX->setValue(toMM(node.getMx()));
-    ui.doubleSpinBoxBiasY->setValue(toMM(node.getMy()));
+    ui.spinBoxBiasX->setValue(static_cast<qint32>(toMM(node.getMx())));
+    ui.spinBoxBiasY->setValue(static_cast<qint32>(toMM(node.getMy())));
+}
+
+void DialogDetail::DeleteItem()
+{
+    qint32 row = ui.listWidget->currentRow();
+    delete ui.listWidget->item( row );
 }
