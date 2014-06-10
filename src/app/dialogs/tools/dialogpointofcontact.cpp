@@ -31,6 +31,11 @@
 #include <QPushButton>
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief DialogPointOfContact create dialog
+ * @param data container with data
+ * @param parent parent widget
+ */
 DialogPointOfContact::DialogPointOfContact(const VContainer *data, QWidget *parent)
     :DialogTool(data, parent), ui(new Ui::DialogPointOfContact), number(0), pointName(QString()), radius(QString()), center(0),
     firstPoint(0), secondPoint(0)
@@ -59,7 +64,7 @@ DialogPointOfContact::DialogPointOfContact(const VContainer *data, QWidget *pare
     QPushButton *bCansel = ui.buttonBox->button(QDialogButtonBox::Cancel);
     SCASSERT(bCansel != nullptr);
     connect(bCansel, &QPushButton::clicked, this, &DialogTool::DialogRejected);
-*/
+    */
     flagFormula = false;
     flagName = false;
     CheckState();
@@ -96,8 +101,6 @@ DialogPointOfContact::DialogPointOfContact(const VContainer *data, QWidget *pare
             QIcon(":/icons/win.icon.theme/icons/win.icon.theme/16x16/actions/go-down.png")));
 }
 
-
-
 //---------------------------------------------------------------------------------------------------------------------
 void DialogPointOfContact::FormulaTextChanged()
 {
@@ -124,6 +127,11 @@ void DialogPointOfContact::DeployFormulaTextEdit()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ChoosedObject gets id and type of selected object. Save right data and ignore wrong.
+ * @param id id of point or detail
+ * @param type type of object
+ */
 void DialogPointOfContact::ChoosedObject(quint32 id, const Valentina::Scenes &type)
 {
     if (type == Valentina::Point)
@@ -169,6 +177,9 @@ void DialogPointOfContact::ChoosedObject(quint32 id, const Valentina::Scenes &ty
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief DialogAccepted save data and emit signal about closed dialog.
+ */
 void DialogPointOfContact::DialogAccepted()
 {
     this->SaveData();
@@ -193,18 +204,33 @@ void DialogPointOfContact::SaveData()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief setSecondPoint set id second point
+ * @param value id
+ * @param id don't show this id in list.
+ */
 void DialogPointOfContact::setSecondPoint(const quint32 &value, const quint32 &id)
 {
     setCurrentPointId(ui->comboBoxSecondPoint, secondPoint, value, id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief setFirstPoint set id first point
+ * @param value id
+ * @param id don't show this id in list.
+ */
 void DialogPointOfContact::setFirstPoint(const quint32 &value, const quint32 &id)
 {
     setCurrentPointId(ui->comboBoxFirstPoint, firstPoint, value, id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief SetCenter set id of center point
+ * @param value id
+ * @param id don't show this id in list.
+ */
 void DialogPointOfContact::setCenter(const quint32 &value, const quint32 &id)
 {
     setCurrentPointId(ui->comboBoxCenter, center, value, id);
@@ -212,6 +238,10 @@ void DialogPointOfContact::setCenter(const quint32 &value, const quint32 &id)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief setRadius set formula radius of arc
+ * @param value formula
+ */
 void DialogPointOfContact::setRadius(const QString &value)
 {
     radius = value;
@@ -224,6 +254,10 @@ void DialogPointOfContact::setRadius(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief setPointName set name of point
+ * @param value name
+ */
 void DialogPointOfContact::setPointName(const QString &value)
 {
     pointName = value;

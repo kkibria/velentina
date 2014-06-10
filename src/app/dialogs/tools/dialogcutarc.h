@@ -47,10 +47,13 @@ public:
 
     DialogCutArc(const VContainer *data, QWidget *parent = nullptr);
     ~DialogCutArc();
+
     QString           getPointName() const;
     void              setPointName(const QString &value);
+
     QString           getFormula() const;
     void              setFormula(const QString &value);
+
     quint32           getArcId() const;
     void              setArcId(const quint32 &value, const quint32 &id);
 public slots:
@@ -70,30 +73,24 @@ public slots:
     void FormulaTextChanged();
 private:
     Q_DISABLE_COPY(DialogCutArc)
+    /** @brief ui keeps information about user interface */
+    Ui::DialogCutArc  *ui;
+
+    /** @brief pointName name of created point */
+    QString           pointName;
+
+    /** @brief formula string with formula */
+    QString           formula;
+
+    /** @brief arcId keep id of arc */
+    quint32            arcId;
+
+    /** @brief formulaBaseHeight base height defined by dialogui */
+    int formulaBaseHeight;
     /**
      * @brief SaveData Put dialog data in local variables
      */
     void SaveData();
-    /**
-     * @brief ui keeps information about user interface
-     */
-    Ui::DialogCutArc  *ui;
-    /**
-     * @brief pointName name of created point
-     */
-    QString           pointName;
-    /**
-     * @brief formula string with formula
-     */
-    QString           formula;
-    /**
-     * @brief arcId keep id of arc
-     */
-    quint32            arcId;
-    /**
-    * @brief formulaBaseHeight base height defined by dialogui
-    */
-   int formulaBaseHeight;
 };
 
 //---------------------------------------------------------------------------------------------------------------------

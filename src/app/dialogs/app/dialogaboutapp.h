@@ -31,8 +31,9 @@
 
 #include <QDialog>
 
-namespace Ui {
-class DialogAboutApp;
+namespace Ui
+{
+    class DialogAboutApp;
 }
 
 class DialogAboutApp : public QDialog
@@ -48,9 +49,6 @@ private:
     Q_DISABLE_COPY(DialogAboutApp)
 
 private slots:
-    /**
-     * @brief Fake button clicked
-     */
     void webButtonClicked();
 };
 

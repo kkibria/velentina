@@ -32,6 +32,11 @@
 #include <QPushButton>
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief DialogEndLine create dialog
+ * @param data container with data
+ * @param parent parent widget
+ */
 DialogEndLine::DialogEndLine(const VContainer *data, QWidget *parent)
     :DialogTool(data, parent), ui(new Ui::DialogEndLine), pointName(QString()), typeLine(QString()),
     formula(QString()), angle(0), basePointId(0)
@@ -93,6 +98,11 @@ void DialogEndLine::DeployFormulaTextEdit()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ChoosedObject gets id and type of selected object. Save right data and ignore wrong.
+ * @param id id of point or detail
+ * @param type type of object
+ */
 void DialogEndLine::ChoosedObject(quint32 id, const Valentina::Scenes &type)
 {
     if (type == Valentina::Point)
@@ -105,6 +115,10 @@ void DialogEndLine::ChoosedObject(quint32 id, const Valentina::Scenes &type)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief setPointName set name of point
+ * @param value name
+ */
 void DialogEndLine::setPointName(const QString &value)
 {
     pointName = value;
@@ -112,6 +126,10 @@ void DialogEndLine::setPointName(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief setTypeLine set type of line
+ * @param value type
+ */
 void DialogEndLine::setTypeLine(const QString &value)
 {
     typeLine = value;
@@ -119,6 +137,10 @@ void DialogEndLine::setTypeLine(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief setFormula set string of formula
+ * @param value formula
+ */
 void DialogEndLine::setFormula(const QString &value)
 {
     formula = qApp->FormulaToUser(value);
@@ -135,6 +157,10 @@ void DialogEndLine::setFormula(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief setAngle set angle of line
+ * @param value angle in degree
+ */
 void DialogEndLine::setAngle(const qreal &value)
 {
     angle = value;
@@ -142,12 +168,20 @@ void DialogEndLine::setAngle(const qreal &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief setBasePointId set id base point of line
+ * @param value id
+ * @param id don't show this id in list
+ */
 void DialogEndLine::setBasePointId(const quint32 &value, const quint32 &id)
 {
     setCurrentPointId(ui->comboBoxBasePoint, basePointId, value, id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief DialogAccepted save data and emit signal about closed dialog.
+ */
 void DialogEndLine::DialogAccepted()
 {
     this->SaveData();

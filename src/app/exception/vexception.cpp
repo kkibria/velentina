@@ -34,16 +34,28 @@
 #include <QApplication>
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief VException constructor exception
+ * @param what string with error
+ */
 VException::VException(const QString &what):QException(), what(what), moreInfo(QString())
 {
     Q_ASSERT_X(what.isEmpty() == false, Q_FUNC_INFO, "Error message is empty");
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief VException copy constructor
+ * @param e exception
+ */
 VException::VException(const VException &e):what(e.What()), moreInfo(e.MoreInformation())
 {}
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief ErrorMessage return main error message
+ * @return error message
+ */
 QString VException::ErrorMessage() const
 {
     QString error = QString("Exception: %1").arg(what);
@@ -51,6 +63,10 @@ QString VException::ErrorMessage() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief CriticalMessageBox show Critical Message Box.
+ * @param situation main text message box.
+ */
 void VException::CriticalMessageBox(const QString &situation, QWidget * parent) const
 {
     QMessageBox msgBox(parent);
@@ -76,6 +92,10 @@ void VException::CriticalMessageBox(const QString &situation, QWidget * parent) 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief AddMoreInformation add more information for error
+ * @param info information
+ */
 void VException::AddMoreInformation(const QString &info)
 {
     if (info.isEmpty())
@@ -96,4 +116,33 @@ QString VException::MoreInfo(const QString &detInfo) const
     {
         return detInfo;
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief DetailedInformation return detailed information about error
+ * @return detailed information
+ */
+QString VException::DetailedInformation() const
+{
+    return moreInfo;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief clone clone exception
+ * @return new exception
+ */
+VException *VException::clone() const
+{
+    return new VException(*this);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief raise method raise for exception
+ */
+Q_NORETURN void VException::raise() const
+{
+    throw *this;
 }

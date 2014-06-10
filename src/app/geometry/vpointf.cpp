@@ -29,6 +29,13 @@
 #include "vpointf.h"
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief VPointF create new point
+ * @param x x coordinate
+ * @param y y coordinate
+ * @param mx offset name respect to x
+ * @param my offset name respect to y
+ */
 VPointF::VPointF(qreal x, qreal y, QString name, qreal mx, qreal my, quint32 idObject, Valentina::Draws mode)
     :VGObject(GObject::Point, idObject, mode), _mx(mx), _my(my), _x(x), _y(y)
 {
@@ -36,6 +43,9 @@ VPointF::VPointF(qreal x, qreal y, QString name, qreal mx, qreal my, quint32 idO
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief VPointF creat empty point
+ */
 VPointF::VPointF() :VGObject(GObject::Point, 0, Valentina::Calculation), _mx(0), _my(0), _x(0), _y(0)
 {}
 
@@ -48,6 +58,11 @@ VPointF::VPointF(const QPointF &point) :VGObject(VPointF()), _mx(0), _my(0), _x(
 {}
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief operator = assignment operator
+ * @param point point
+ * @return point
+ */
 VPointF &VPointF::operator =(const VPointF &point)
 {
     VGObject::operator=(point);
@@ -56,4 +71,10 @@ VPointF &VPointF::operator =(const VPointF &point)
     _x = point.x();
     _y = point.y();
     return *this;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QString VPointF::name() const
+{
+    return _name;
 }

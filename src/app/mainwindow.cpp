@@ -85,6 +85,8 @@ MainWindow::MainWindow(QWidget *parent)
     helpLabel = new QLabel(QObject::tr("Create new pattern piece to start working."));
     ui->statusBar->addWidget(helpLabel);
 
+    ToolBarZoom();
+
     pattern = new VContainer();
 
     doc = new VPattern(pattern, comboBoxDraws, &mode);
@@ -841,7 +843,7 @@ void MainWindow::ClosedDialogCutArc(int result)
 void MainWindow::About()
 {
     DialogAboutApp * about_dialog = new DialogAboutApp(this);
-    about_dialog->setAttribute(Qt::WA_DeleteOnClose,true);
+    about_dialog->setAttribute(Qt::WA_DeleteOnClose, true);
     about_dialog->show();
 }
 
@@ -889,6 +891,14 @@ void MainWindow::PatternProperties()
 {
     DialogPatternProperties proper(doc, this);
     proper.exec();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::EditPatternCode()
+{
+    DialogPatternXmlEdit *Pattern = new DialogPatternXmlEdit (this, doc);
+    Pattern->setAttribute(Qt::WA_DeleteOnClose, true);
+    Pattern->show();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -999,6 +1009,24 @@ void MainWindow::ToolBarDraws()
     ui->toolBarDraws->addAction(ui->actionLayout);
     connect(ui->actionLayout, &QAction::triggered, this, &MainWindow::ActionLayout);
     ui->actionLayout->setEnabled(false);
+}
+
+void MainWindow::ToolBarZoom()
+{
+    /*First we will try use Standard Shortcuts from Qt, but because keypad "-" and "+" not the same keys like in main
+    keypad, shortcut Ctrl+"-" or "+" from keypad will not working with standard shortcut (QKeySequence::ZoomIn or
+    QKeySequence::ZoomOut). For examle "+" is Qt::Key_Plus + Qt::KeypadModifier for keypad.
+    Also for me don't work Qt:CTRL and work Qt::ControlModifier.*/
+
+    const QList<QKeySequence> zoomInShortcuts = {QKeySequence::ZoomIn,
+                                                 Qt::ControlModifier + Qt::Key_Plus + Qt::KeypadModifier};
+    ui->actionZoomIn->setShortcuts(zoomInShortcuts);
+    connect(ui->actionZoomIn, &QAction::triggered, view, &VMainGraphicsView::ZoomIn);
+
+    const QList<QKeySequence> zoomOutShortcuts = {QKeySequence::ZoomOut,
+                                                 Qt::ControlModifier + Qt::Key_Minus + Qt::KeypadModifier};
+    ui->actionZoomOut->setShortcuts(zoomOutShortcuts);
+    connect(ui->actionZoomOut, &QAction::triggered, view, &VMainGraphicsView::ZoomOut);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1430,9 +1458,9 @@ void MainWindow::Open()
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief Options config dialog.
+ * @brief Preferences config dialog.
  */
-void MainWindow::Options()
+void MainWindow::Preferences()
 {
     ConfigDialog dlg(this);
     if (dlg.exec() == QDialog::Accepted)
@@ -1458,6 +1486,8 @@ void MainWindow::Clear()
     ui->actionOptionDraw->setEnabled(false);
     ui->actionSave->setEnabled(false);
     ui->actionPattern_properties->setEnabled(false);
+    ui->actionZoomIn->setEnabled(false);
+    ui->actionZoomOut->setEnabled(false);
     SetEnableTool(false);
     qApp->setPatternUnit(Valentina::Cm);
     qApp->setPatternType(Pattern::Individual);
@@ -1532,6 +1562,10 @@ void MainWindow::SetEnableWidgets(bool enable)
     }
     ui->actionTable->setEnabled(enable);
     ui->actionHistory->setEnabled(enable);
+    ui->actionPattern_properties->setEnabled(enable);
+    ui->actionEdit_pattern_code->setEnabled(enable);
+	ui->actionZoomIn->setEnabled(enable);
+    ui->actionZoomOut->setEnabled(enable);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1835,11 +1869,11 @@ void MainWindow::CreateMenus()
 {
     for (int i = 0; i < MaxRecentFiles; ++i)
     {
-        ui->menuFile->insertAction(ui->actionExit, recentFileActs[i]);
+        ui->menuFile->insertAction(ui->actionPreferences, recentFileActs[i]);
     }
     separatorAct = new QAction(this);
     separatorAct->setSeparator(true);
-    ui->menuFile->insertAction(ui->actionExit, separatorAct);
+    ui->menuFile->insertAction(ui->actionPreferences, separatorAct);
     UpdateRecentFileActions();
 }
 
@@ -1861,9 +1895,11 @@ void MainWindow::CreateActions()
     connect(ui->actionAbout_Qt, &QAction::triggered, this, &MainWindow::AboutQt);
     connect(ui->actionAbout_Valentina, &QAction::triggered, this, &MainWindow::About);
     connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
-    connect(ui->actionOptions, &QAction::triggered, this, &MainWindow::Options);
+    connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::Preferences);
     connect(ui->actionPattern_properties, &QAction::triggered, this, &MainWindow::PatternProperties);
     ui->actionPattern_properties->setEnabled(false);
+    connect(ui->actionEdit_pattern_code, &QAction::triggered, this, &MainWindow::EditPatternCode);
+    ui->actionEdit_pattern_code->setEnabled(false);
 
     //Actions for recent files loaded by a main window application.
     for (int i = 0; i < MaxRecentFiles; ++i)

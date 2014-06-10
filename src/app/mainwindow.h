@@ -72,7 +72,7 @@ public slots:
     bool               SaveAs();
     bool               Save();
     void               Open();
-    void               Options();
+    void               Preferences();
     void               NewPattern();
 
     void               currentDrawChanged( int index );
@@ -136,6 +136,10 @@ public slots:
     void               ShowToolTip(const QString &toolTip);
     void               OpenRecentFile();
     void               Clear();
+	/**
+     * @brief Edit XML code of pattern
+     */
+    void               EditPatternCode();
 signals:
     /**
      * @brief ModelChosen emit after calculation all details.
@@ -210,6 +214,7 @@ private:
     QTimer             *autoSaveTimer;
     void               ToolBarOption();
     void               ToolBarDraws();
+    void               ToolBarZoom();
     void               InitToolButtons();
     void               CancelTool();
     void               ArrowTool();

@@ -33,6 +33,7 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 
+//---------------------------------------------------------------------------------------------------------------------
 DialogAboutApp::DialogAboutApp(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogAboutApp)
@@ -48,21 +49,25 @@ DialogAboutApp::DialogAboutApp(QWidget *parent) :
     ui->label_Legal_Stuff->setText(WARRANTY);
 
     ui->pushButton_Web_Site->setText(tr("Web site : %1").arg(VER_COMPANYDOMAIN_STR));
-    connect(ui->pushButton_Web_Site, &QPushButton::clicked,
-            this, &DialogAboutApp::webButtonClicked );
+    connect(ui->pushButton_Web_Site, &QPushButton::clicked, this, &DialogAboutApp::webButtonClicked );
 
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 DialogAboutApp::~DialogAboutApp()
 {
     delete ui;
 }
 
-void DialogAboutApp::webButtonClicked() {
-    if ( ! QDesktopServices::openUrl(QUrl(VER_COMPANYDOMAIN_STR))) {
-        QMessageBox::warning(this,
-                             tr("Warning"),
-                             tr("Cannot open your default browser"));
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief Fake button clicked
+ */
+void DialogAboutApp::webButtonClicked()
+{
+    if ( QDesktopServices::openUrl(QUrl(VER_COMPANYDOMAIN_STR)) == false)
+    {
+        QMessageBox::warning(this, tr("Warning"), tr("Cannot open your default browser"));
     }
 
 }

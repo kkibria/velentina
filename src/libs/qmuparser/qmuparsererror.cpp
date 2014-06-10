@@ -211,4 +211,23 @@ void QmuParserError::Reset()
     m_iErrc = ecUNDEFINED;
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief raise method raise for exception
+ */
+Q_NORETURN void QmuParserError::raise() const
+{
+    throw *this;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief clone clone exception
+ * @return new exception
+ */
+QmuParserError *QmuParserError::clone() const
+{
+    return new QmuParserError(*this);
+}
+
 } // namespace qmu
