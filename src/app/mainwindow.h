@@ -56,7 +56,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow();
     void               LoadPattern(const QString &curFile);
-    void               ReopenFilesAfterCrash();
+    void               ReopenFilesAfterCrash(QStringList &args);
 public slots:
     void               mouseMove(const QPointF &scenePos);
     void               ArrowTool();
@@ -76,6 +76,7 @@ public slots:
     bool               Save();
     void               Open();
     void               Preferences();
+    void               RepotBug();
     void               NewPattern();
     void               ShowToolTip(const QString &toolTip);
     void               OpenRecentFile();
@@ -133,6 +134,7 @@ signals:
      * @param description pattern description.
      */
     void               ModelChosen(QVector<VItem*> listDetails, const QString &curFile, const QString &description);
+    void               RefreshHistory();
 protected:
     virtual void       keyPressEvent(QKeyEvent *event);
     virtual void       showEvent(QShowEvent *event);

@@ -52,6 +52,7 @@ DialogShoulderPoint::DialogShoulderPoint(const VContainer *data, const quint32 &
     ui->lineEditNamePoint->setText(qApp->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
     labelEditNamePoint = ui->labelEditNamePoint;
     this->formulaBaseHeight = ui->plainTextEditFormula->height();
+    ui->plainTextEditFormula->installEventFilter(this);
 
     InitOkCancelApply(ui);
     flagFormula = false;
@@ -247,6 +248,7 @@ void DialogShoulderPoint::setFormula(const QString &value)
     }
     ui->plainTextEditFormula->setPlainText(formula);
     line->setLength(formula);
+    MoveCursorToEnd(ui->plainTextEditFormula);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -58,6 +58,7 @@
 #include <QTimer>
 #include <QtGlobal>
 #include <QDesktopWidget>
+#include <QDesktopServices>
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -723,7 +724,6 @@ void MainWindow::ShowToolTip(const QString &toolTip)
 void MainWindow::tableClosed()
 {
     show();
-    MinimumScrollBar();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1375,6 +1375,12 @@ void MainWindow::Preferences()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::RepotBug()
+{
+    QDesktopServices::openUrl(QUrl("https://bitbucket.org/dismine/valentina/issues/new"));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief Clear reset to default window.
  */
@@ -1522,7 +1528,8 @@ void MainWindow::SetEnabledGUI(bool enabled)
     {
         if (enabled == false)
         {
-            CancelTool();
+            ArrowTool();
+            qApp->getUndoStack()->clear();
         }
         comboBoxDraws->setEnabled(enabled);
         ui->actionOptionDraw->setEnabled(enabled);
@@ -1538,6 +1545,9 @@ void MainWindow::SetEnabledGUI(bool enabled)
         ui->actionDraw->setEnabled(enabled);
         ui->actionDetails->setEnabled(enabled);
         ui->actionTable->setEnabled(enabled);
+        ui->actionLayout->setEnabled(enabled);
+        ui->actionZoomFitBest->setEnabled(enabled);
+        ui->actionZoomOriginal->setEnabled(enabled);
         guiEnabled = enabled;
 
         sceneDraw->SetDisable(!enabled);
@@ -1741,6 +1751,7 @@ void MainWindow::ActionHistory(bool checked)
     {
         dialogHistory = new DialogHistory(pattern, doc, this);
         dialogHistory->setWindowFlags(Qt::Window);
+        connect(this, &MainWindow::RefreshHistory, dialogHistory, &DialogHistory::UpdateHistory);
         connect(dialogHistory, &DialogHistory::DialogClosed, this, &MainWindow::ClosedActionHistory);
         dialogHistory->show();
     }
@@ -2103,6 +2114,7 @@ void MainWindow::CreateActions()
     connect(ui->actionAbout_Valentina, &QAction::triggered, this, &MainWindow::About);
     connect(ui->actionExit, &QAction::triggered, this, &MainWindow::close);
     connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::Preferences);
+    connect(ui->actionRepotBug, &QAction::triggered, this, &MainWindow::RepotBug);
     connect(ui->actionPattern_properties, &QAction::triggered, this, &MainWindow::PatternProperties);
     ui->actionPattern_properties->setEnabled(false);
     connect(ui->actionEdit_pattern_code, &QAction::triggered, this, &MainWindow::EditPatternCode);
@@ -2254,23 +2266,26 @@ void MainWindow::LoadPattern(const QString &fileName)
 
     FullParseFile();
 
-    bool patternModified = this->isWindowModified();
-    setCurrentFile(fileName);
-    if (patternModified)
-    {
-        //For situation where was fixed wrong formula need return for document status was modified.
-        PatternWasModified(!patternModified);
+    if (guiEnabled)
+    { // No errors occurred
+        bool patternModified = this->isWindowModified();
+        setCurrentFile(fileName);
+        if (patternModified)
+        {
+            //For situation where was fixed wrong formula need return for document status was modified.
+            PatternWasModified(!patternModified);
+        }
+        helpLabel->setText(tr("File loaded"));
+
+        qApp->setOpeningPattern();// End opening file
+
+        //Fit scene size to best size for first show
+        ZoomFirstShow();
     }
-    helpLabel->setText(tr("File loaded"));
-
-    qApp->setOpeningPattern();// End opening file
-
-    //Fit scene size to best size for first show
-    ZoomFirstShow();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::ReopenFilesAfterCrash()
+void MainWindow::ReopenFilesAfterCrash(QStringList &args)
 {
     QStringList files = qApp->getSettings()->value("restoreFileList").toStringList();
     if (files.size() > 0)
@@ -2304,6 +2319,7 @@ void MainWindow::ReopenFilesAfterCrash()
                         QFile autoFile(restoreFiles.at(i) +".autosave");
                         autoFile.remove();
                         LoadPattern(restoreFiles.at(i));
+                        args.removeAll(restoreFiles.at(i));// Do not open file twice after we restore him.
                     }
                     else
                     {
@@ -2389,6 +2405,7 @@ void MainWindow::ChangePP(int index, bool zoomBestFit)
     {
         doc->ChangeActivPP(comboBoxDraws->itemText(index));
         doc->setCurrentData();
+        emit RefreshHistory();
         if (drawMode)
         {
             ArrowTool();
