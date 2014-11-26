@@ -1,3 +1,4 @@
+
 #-------------------------------------------------
 #
 # Project created by QtCreator 2013-06-18T12:36:43
@@ -309,21 +310,25 @@ unix{
             TRANSLATION_nl_NL.path = "$$RESOURCES_DIR/translations/nl_NL.lproj"
             QMAKE_BUNDLE_DATA += TRANSLATION_nl_NL
         }
-        frameworks.path = $$FRAMEWORKS_DIR
-        frameworks.files += $$files($${OUT_PWD}/../libs/qmuparser/$${DESTDIR}/*)
-        frameworks.files += $$files($${OUT_PWD}/../libs/vpropertyexplorer/$${DESTDIR}/*)
-        message( framework files $$frameworks.files )
-        # logo on macx.
-        ICON = ../../dist/Valentina.icns
+
+    qmuparser.path = $$FRAMEWORKS_DIR
+    qmuparser.files = $${OUT_PWD}/../libs/qmuparser/$${DESTDIR}/
+    vpropertyexplorer.path = $$FRAMEWORKS_DIR
+    vpropertyexplorer.files = $${OUT_PWD}/../libs/vpropertyexplorer/$${DESTDIR}/
 
 
-        # Copy to bundle standard measurements files
-        standard.path = $$RESOURCES_DIR/tables/standard/
-        standard.files = $$INSTALL_STANDARD_MEASHUREMENTS
+    # logo on macx.
+    ICON = ../../dist/Valentina.icns
 
-        QMAKE_BUNDLE_DATA += \
-            standard \
-            frameworks
+    # Copy to bundle standard measurements files
+    standard.path = $$RESOURCES_DIR/tables/standard/
+    standard.files = $$INSTALL_STANDARD_MEASHUREMENTS
+
+    QMAKE_BUNDLE_DATA += \
+        standard \
+        qmuparser \
+        vpropertyexplorer
+
     }
 }
 
