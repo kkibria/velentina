@@ -712,7 +712,27 @@ void MainWindow::ToolPointOfIntersectionCircles(bool checked)
                                                              "://cursor/point_of_intersection_circles.png",
                                                              tr("Select first circle center "),
                                                     &MainWindow::ClosedDialogWithApply<VToolPointOfIntersectionCircles>,
-                                                          &MainWindow::ApplyDialog<VToolPointOfIntersectionCircles>);
+                                                             &MainWindow::ApplyDialog<VToolPointOfIntersectionCircles>);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolPointFromCircleAndTangent(bool checked)
+{
+    SetToolButtonWithApply<DialogPointFromCircleAndTangent>(checked, Tool::PointFromCircleAndTangent,
+                                                            "://cursor/point_from_circle_and_tangent_cursor.png",
+                                                            tr("Select point on tangent "),
+                                                    &MainWindow::ClosedDialogWithApply<VToolPointFromCircleAndTangent>,
+                                                            &MainWindow::ApplyDialog<VToolPointFromCircleAndTangent>);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolPointFromArcAndTangent(bool checked)
+{
+    SetToolButtonWithApply<DialogPointFromArcAndTangent>(checked, Tool::PointFromArcAndTangent,
+                                                         "://cursor/point_from_arc_and_tangent_cursor.png",
+                                                         tr("Select point on tangent "),
+                                                        &MainWindow::ClosedDialogWithApply<VToolPointFromArcAndTangent>,
+                                                         &MainWindow::ApplyDialog<VToolPointFromArcAndTangent>);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1014,6 +1034,9 @@ void MainWindow::InitToolButtons()
             &MainWindow::ToolPointOfIntersectionArcs);
     connect(ui->toolButtonPointOfIntersectionCircles, &QToolButton::clicked, this,
             &MainWindow::ToolPointOfIntersectionCircles);
+    connect(ui->toolButtonPointFromCircleAndTangent, &QToolButton::clicked, this,
+            &MainWindow::ToolPointFromCircleAndTangent);
+    connect(ui->toolButtonPointFromArcAndTangent, &QToolButton::clicked, this, &MainWindow::ToolPointFromArcAndTangent);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2160,6 +2183,8 @@ void MainWindow::SetEnableTool(bool enable)
     ui->toolButtonArcIntersectAxis->setEnabled(drawTools);
     ui->toolButtonPointOfIntersectionArcs->setEnabled(drawTools);
     ui->toolButtonPointOfIntersectionCircles->setEnabled(drawTools);
+    ui->toolButtonPointFromCircleAndTangent->setEnabled(drawTools);
+    ui->toolButtonPointFromArcAndTangent->setEnabled(drawTools);
 
     ui->actionLast_tool->setEnabled(drawTools);
 
@@ -2525,6 +2550,14 @@ void MainWindow::LastUsedTool()
         case Tool::PointOfIntersectionCircles:
             ui->toolButtonPointOfIntersectionCircles->setChecked(true);
             ToolPointOfIntersectionCircles(true);
+            break;
+        case Tool::PointFromCircleAndTangent:
+            ui->toolButtonPointFromCircleAndTangent->setChecked(true);
+            ToolPointFromCircleAndTangent(true);
+            break;
+        case Tool::PointFromArcAndTangent:
+            ui->toolButtonPointFromArcAndTangent->setChecked(true);
+            ToolPointFromArcAndTangent(true);
             break;
         case Tool::NodePoint:
         case Tool::NodeArc:
