@@ -34,6 +34,8 @@
 #include "../vwidgets/vmaingraphicsview.h"
 #include "../vpatterndb/vtranslatevars.h"
 #include "vsettings.h"
+#include "vcmdexport.h"
+
 
 class VApplication;// use in define
 class VMainGraphicsView;
@@ -52,6 +54,7 @@ class VApplication : public VAbstractApplication
 {
     Q_OBJECT
 public:
+
     VApplication(int &argc, char ** argv);
     virtual ~VApplication() Q_DECL_OVERRIDE;
     static void        NewValentina(const QString &fileName = QString());
@@ -77,6 +80,7 @@ public:
     static void        DrMingw();
     void               CollectReports() const;
 #endif // defined(Q_OS_WIN) && defined(Q_CC_GNU)
+    bool static CheckGUI();
 
     virtual void OpenSettings() Q_DECL_OVERRIDE;
     VSettings *ValentinaSettings();
@@ -113,6 +117,10 @@ private:
     void               CreateLogDir()const;
     void               BeginLogging();
     void               ClearOldLogs()const;
+
+public:
+    //moved to the end of class so merge should go
+    const VCommandLinePtr     CommandLine() const;
 };
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -126,5 +134,7 @@ inline void VApplication::setAutoSaveTimer(QTimer *value)
 {
     autoSaveTimer = value;
 }
+//---------------------------------------------------------------------------------------------------------------------
+
 
 #endif // VAPPLICATION_H

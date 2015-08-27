@@ -874,7 +874,7 @@ void MainWindow::ToolTrueDarts(bool checked)
                                                 "://cursor/true_darts_cursor.png",
                                                 tr("Select the first base line point"),
                                                 &MainWindow::ClosedDialogWithApply<VToolTrueDarts>,
-                                                &MainWindow::ApplyDialog<VToolTrueDarts>);
+                                            &MainWindow::ApplyDialog<VToolTrueDarts>);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1328,6 +1328,7 @@ void MainWindow::InitToolButtons()
     connect(ui->toolButtonPointFromArcAndTangent, &QToolButton::clicked, this, &MainWindow::ToolPointFromArcAndTangent);
     connect(ui->toolButtonArcWithLength, &QToolButton::clicked, this, &MainWindow::ToolArcWithLength);
     connect(ui->toolButtonTrueDarts, &QToolButton::clicked, this, &MainWindow::ToolTrueDarts);
+
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3023,7 +3024,7 @@ MainWindow::~MainWindow()
  * @brief LoadPattern open pattern file.
  * @param fileName name of file.
  */
-void MainWindow::LoadPattern(const QString &fileName)
+void MainWindow::LoadPattern(const QString &fileName, const QString& customMeasureFile)
 {
     qCDebug(vMainWindow, "Loading new file %s.", fileName.toUtf8().constData());
 
@@ -3077,7 +3078,10 @@ void MainWindow::LoadPattern(const QString &fileName)
 
         VDomDocument::ValidateXML(VPatternConverter::CurrentSchema, fileName);
         doc->setXMLContent(fileName);
-
+        if (!customMeasureFile.isEmpty())
+        {
+            doc->SetPath(customMeasureFile);
+        }
         qApp->setPatternUnit(doc->MUnit());
         QString path = doc->MPath();
 
@@ -3436,4 +3440,25 @@ void MainWindow::ZoomFirstShow()
 
     ActionDraw(true);
     ui->view->ZoomFitBest();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::DoExport(const VCommandLinePtr &expParams)
+{
+    auto settings = expParams->DefaultGenerator();
+
+    const QHash<quint32, VDetail> *details = pattern->DataDetails();
+    if(not qApp->getOpeningPattern())
+    {
+        if (details->count() == 0)
+        {
+            AppAbort(tr("You can't export empty scene."));
+            return;
+        }
+    }
+    PrepareDetailsForLayout(details);
+    LayoutSettings(*settings.get());
+    DialogSaveLayout dialog(scenes.size(), expParams->OptExportPath(), this);
+    dialog.SelectFormate(expParams->OptExportType());
+    ExportLayout(dialog);
 }

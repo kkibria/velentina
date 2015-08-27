@@ -28,20 +28,14 @@
 
 #include "mainwindow.h"
 #include "core/vapplication.h"
-
 #include <QMessageBox> // For QT_REQUIRE_VERSION
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 2, 0)
-#   include "../../libs/vmisc/backport/qcommandlineparser.h"
-#else
-#   include <QCommandLineParser>
-#endif
-
 // Lock producing random attribute order in XML
-// https://stackoverflow.com/questions/27378143/qt-5-produce-random-attribute-order-in-xml
-extern Q_CORE_EXPORT QBasicAtomicInt qt_qhash_seed;
+ // https://stackoverflow.com/questions/27378143/qt-5-produce-random-attribute-order-in-xml
+ extern Q_CORE_EXPORT QBasicAtomicInt qt_qhash_seed;
 
 //---------------------------------------------------------------------------------------------------------------------
+
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(cursor);
@@ -57,30 +51,31 @@ int main(int argc, char *argv[])
     qt_qhash_seed.store(0); // Lock producing random attribute order in XML
 
     VApplication app(argc, argv);
+
     app.InitOptions();
 
     MainWindow w;
     app.setWindowIcon(QIcon(":/icon/64x64/icon64x64.png"));
     app.setMainWindow(&w);
 
-    QCommandLineParser parser;
-    parser.setApplicationDescription(QCoreApplication::translate("main", "Pattern making program."));
-    parser.addHelpOption();
-    parser.addVersionOption();
-    parser.addPositionalArgument("filename", QCoreApplication::translate("main", "Pattern file."));
-    // Process the actual command line arguments given by the user
-    parser.process(app);
-    QStringList args = parser.positionalArguments();
+    auto args = app.CommandLine()->OptInputFileNames();
 
     //Before we load pattern show window.
-    w.show();
-
-    w.ReopenFilesAfterCrash(args);
-
-    for (int i=0;i<args.size();++i)
+    if (VApplication::CheckGUI())
     {
-        w.LoadPattern(args.at(i));
+        w.show();
+        w.ReopenFilesAfterCrash(args);
     }
 
-    return app.exec();
+    for (size_t i=0, sz = args.size(); i < sz;++i)
+    {
+        w.LoadPattern(args.at(static_cast<int>(i)), app.CommandLine()->OptMeasurePath());
+        if (app.CommandLine()->IsExportEnabled())
+        {            
+            w.DoExport(app.CommandLine());
+            break;
+        }
+    }
+
+    return (VApplication::CheckGUI()) ? app.exec() : 0; // single return point is always better than more
 }

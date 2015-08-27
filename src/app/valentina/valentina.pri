@@ -13,6 +13,7 @@ SOURCES += \
         $$PWD/stable.cpp \
         $$PWD/mainwindowsnogui.cpp
 
+
 # Some header files
 HEADERS  += \
         $$PWD/mainwindow.h \
@@ -20,7 +21,6 @@ HEADERS  += \
         $$PWD/stable.h \
         $$PWD/version.h \
         $$PWD/mainwindowsnogui.h
-
 # Main forms
 FORMS    += \
         $$PWD/mainwindow.ui
