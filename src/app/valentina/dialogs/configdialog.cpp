@@ -92,8 +92,8 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
 
     setWindowTitle(tr("Config Dialog"));
 
-    this->setFixedSize(QSize(750, 550));
-    qApp->ValentinaSettings()->GetOsSeparator() ? setLocale(QLocale::system()) : setLocale(QLocale(QLocale::C));
+    this->setFixedSize(QSize(750, 565));
+    qApp->Settings()->GetOsSeparator() ? setLocale(QLocale::system()) : setLocale(QLocale(QLocale::C));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

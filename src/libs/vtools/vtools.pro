@@ -51,8 +51,6 @@ $$enable_ccache()
 # Set precompiled headers. Function set_PCH() defined in common.pri.
 $$set_PCH()
 
-INCLUDEPATH += $$PWD/../vpatterndb
-
 CONFIG(debug, debug|release){
     # Debug mode
     unix {

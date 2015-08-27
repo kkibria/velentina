@@ -57,7 +57,6 @@ DialogNewPattern::DialogNewPattern(VContainer *data, const QString &patternPiece
     CheckState();
     connect(ui->lineEditName, &QLineEdit::textChanged, this, &DialogNewPattern::CheckState);
 
-    adjustSize();
     setMaximumSize(size());
     setMinimumSize(size());
 }
