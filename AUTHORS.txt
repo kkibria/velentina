@@ -1,0 +1,29 @@
+This file contains a list of people who have made contributions
+to the Valentina project.
+
+Maintainer and founder of the project:
+	Roman Telezhynskyi <dismine@gmail.com>
+	    
+Community manager, web site:
+	Susan Spencer <susan.spencer@gmail.com>
+	    
+Patch contributors:
+	Patrick Proy <patrick@proy.org>
+		* Developing.
+	Christine Neupert <enaisoc@googlemail.com>
+	    * Testing. 
+		* Translation.
+	Lindsay Williams <linzkitt@gmail.com>
+        * Design logo.
+	Sabine Schmaltz <sabineschmaltz@gmail.com >
+	    * Developing. 
+		* Documantation.
+	Felix Ulber <felix.ulber@gmx.de >
+	    * Developing. 
+        * Translation.
+	Mischa Krempel
+		* Developing.
+		* Mac OS package.
+	Peter Gsellmann
+		* Testing
+
