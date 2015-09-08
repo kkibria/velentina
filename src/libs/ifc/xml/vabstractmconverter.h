@@ -1,8 +1,8 @@
 /************************************************************************
  **
- **  @file   vmeasurementconverter.h
+ **  @file   vabstractmconverter.h
  **  @author Roman Telezhynskyi <dismine(at)gmail.com>
- **  @date   15 7, 2015
+ **  @date   5 9, 2015
  **
  **  @brief
  **  @copyright
@@ -26,41 +26,23 @@
  **
  *************************************************************************/
 
-#ifndef VMEASUREMENTCONVERTER_H
-#define VMEASUREMENTCONVERTER_H
+#ifndef VABSTRACTMCONVERTER_H
+#define VABSTRACTMCONVERTER_H
 
-#include "vabstractmconverter.h"
+#include "vabstractconverter.h"
 
-class VVSTConverter : public VAbstractMConverter
+class VAbstractMConverter : public VAbstractConverter
 {
-    Q_DECLARE_TR_FUNCTIONS(VVSTConverter)
 public:
-    VVSTConverter(const QString &fileName);
-    virtual ~VVSTConverter() Q_DECL_OVERRIDE;
-
-    static const QString    MeasurementMaxVerStr;
-    static const QString    CurrentSchema;
+    VAbstractMConverter(const QString &fileName);
+    virtual ~VAbstractMConverter() Q_DECL_OVERRIDE;
 
 protected:
-    virtual int     MinVer() const Q_DECL_OVERRIDE;
-    virtual int     MaxVer() const Q_DECL_OVERRIDE;
-
-    virtual QString MinVerStr() const Q_DECL_OVERRIDE;
-    virtual QString MaxVerStr() const Q_DECL_OVERRIDE;
-
-    QString         XSDSchema(int ver) const;
-    virtual void    ApplyPatches() Q_DECL_OVERRIDE;
+    void AddRootComment();
+    static QMultiMap<QString, QString> OldNamesToNewNames_InV0_3_0();
 
 private:
-    Q_DISABLE_COPY(VVSTConverter)
-    static const QString    MeasurementMinVerStr;
-
-    void AddNewTagsForV0_4_0();
-    void RemoveTagsForV0_4_0();
-    void ConvertMeasurementsToV0_4_0();
-    QDomElement AddMV0_4_0(const QString &name, qreal value, qreal sizeIncrease, qreal heightIncrease);
-
-    void ToV0_4_0();
+    Q_DISABLE_COPY(VAbstractMConverter)
 };
 
-#endif // VMEASUREMENTCONVERTER_H
+#endif // VABSTRACTMCONVERTER_H

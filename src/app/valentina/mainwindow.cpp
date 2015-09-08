@@ -261,12 +261,20 @@ bool MainWindow::LoadMeasurements(const QString &path)
 
         if (m->Type() == MeasurementsType::Standard)
         {
+            VVSTConverter converter(path);
+            converter.Convert();
+
             VDomDocument::ValidateXML(VVSTConverter::CurrentSchema, path);
         }
         else
         {
+            VVITConverter converter(path);
+            converter.Convert();
+
             VDomDocument::ValidateXML(VVITConverter::CurrentSchema, path);
         }
+
+        m->setXMLContent(path);// Read again after conversion
 
         const QStringList mList = m->ListAll();
         const QStringList pList = doc->ListMeasurements();
@@ -1083,7 +1091,9 @@ void MainWindow::LoadStandard()
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::CreateMeasurements()
 {
-    QProcess::startDetached(qApp->TapeFilePath());
+    const QString tape = qApp->TapeFilePath();
+    const QString workingDirectory = QFileInfo(tape).absoluteDir().absolutePath();
+    QProcess::startDetached(tape, QStringList(), workingDirectory);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1093,20 +1103,27 @@ void MainWindow::ShowMeasurements()
     {
         const QString absoluteMPath = AbsoluteMPath(curFile, doc->MPath());
 
-        QString run;
+        QStringList arguments;
         if (qApp->patternType() == MeasurementsType::Standard)
         {
-            run = QString("\"%1\" \"%2\" -u %3 -h %4 -s %5").arg(qApp->TapeFilePath()).arg(absoluteMPath)
-                    .arg(VDomDocument::UnitsToStr(qApp->patternUnit()))
-                    .arg(static_cast<int>(pattern->height()))
-                    .arg(static_cast<int>(pattern->size()));
+            arguments = QStringList()
+                    << absoluteMPath
+                    << "-u"
+                    << VDomDocument::UnitsToStr(qApp->patternUnit())
+                    << "-e"
+                    << QString().setNum(static_cast<int>(UnitConvertor(pattern->height(), doc->MUnit(), Unit::Cm)))
+                    << "-s"
+                    << QString().setNum(static_cast<int>(UnitConvertor(pattern->size(), doc->MUnit(), Unit::Cm)));
         }
         else
         {
-            run = QString("\"%1\" \"%2\" -u %3").arg(qApp->TapeFilePath()).arg(absoluteMPath)
-                    .arg(VDomDocument::UnitsToStr(qApp->patternUnit()));
+            arguments = QStringList() << absoluteMPath
+                                      << "-u"
+                                      << VDomDocument::UnitsToStr(qApp->patternUnit());
         }
-        QProcess::startDetached(run);
+        const QString tape = qApp->TapeFilePath();
+        const QString workingDirectory = QFileInfo(tape).absoluteDir().absolutePath();
+        QProcess::startDetached(tape, arguments, workingDirectory);
     }
     else
     {
@@ -3128,7 +3145,7 @@ bool MainWindow::LoadPattern(const QString &fileName, const QString& customMeasu
         {
             OUT_FILE_ERROR;
         }
-        Clear();        
+        Clear();
         return false;
     }
 
@@ -3379,12 +3396,20 @@ QString MainWindow::CheckPathToMeasurements(const QString &patternPath, const QS
 
                 if (patternType == MeasurementsType::Standard)
                 {
+                    VVSTConverter converter(mPath);
+                    converter.Convert();
+
                     VDomDocument::ValidateXML(VVSTConverter::CurrentSchema, mPath);
                 }
                 else
                 {
+                    VVITConverter converter(mPath);
+                    converter.Convert();
+
                     VDomDocument::ValidateXML(VVITConverter::CurrentSchema, mPath);
                 }
+
+                m->setXMLContent(mPath);// Read again after conversion
 
                 const QStringList mList = m->ListAll();
                 const QStringList pList = doc->ListMeasurements();

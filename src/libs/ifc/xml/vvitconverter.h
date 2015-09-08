@@ -29,9 +29,9 @@
 #ifndef VVITCONVERTER_H
 #define VVITCONVERTER_H
 
-#include "vabstractconverter.h"
+#include "vabstractmconverter.h"
 
-class VVITConverter : public VAbstractConverter
+class VVITConverter : public VAbstractMConverter
 {
     Q_DECLARE_TR_FUNCTIONS(VVITConverter)
 public:
@@ -54,6 +54,11 @@ protected:
 private:
     Q_DISABLE_COPY(VVITConverter)
     static const QString    MeasurementMinVerStr;
+
+    void AddNewTagsForV0_3_0();
+    QString MUnitV0_2_0();
+    void ConvertMeasurementsToV0_3_0();
+    QDomElement AddMV0_3_0(const QString &name, qreal value);
 
     void ToV0_3_0();
 };
