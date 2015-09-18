@@ -1,0 +1,91 @@
+syntax: glob
+# This line is a comment, and will be skipped.
+# Empty lines are skipped too.
+
+# Backup files left behind by the Emacs editor.
+*~
+
+# Lock files used by the Emacs editor.
+# Notice that the "#" character is quoted with a backslash.
+# This prevents it from being interpreted as starting a comment.
+.\#*
+
+# Temporary files used by the vim editor.
+.*.swp
+
+# A hidden files created by the Mac OS X Finder.
+.DS_Store
+._.DS_Store
+
+# Ignore this directory.
+html/
+latex/
+bin/
+moc/
+obj/
+uic/
+rcc/
+man/
+build/
+
+# Ignore Coverity Scan Build Tool
+cov-int/
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Qt-es
+/.qmake.cache
+/.qmake.stash
+*.pro.user
+*.pro.user.*
+*.moc
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+Makefile*
+*-build-*
+
+# Ignore Qt translation file .
+*.qm
+
+# QtCreator
+*.autosave
+
+# Ignore Mercurial .orig files
+*.orig
+
+*.rej
+
+# QtCtreator Qml
+*.qmlproject.user
+*.qmlproject.user.*
+
+# Xcode project
+*.xcodeproj
