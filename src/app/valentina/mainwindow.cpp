@@ -1185,17 +1185,40 @@ void MainWindow::SyncMeasurements()
 void MainWindow::ToolBarOption()
 {
     ui->toolBarOption->clear();
+    if (not mouseCoordinate.isNull())
+    {
+        delete mouseCoordinate;
+    }
+    if (not gradationHeights.isNull())
+    {
+        delete gradationHeights;
+    }
+    if (not gradationSizes.isNull())
+    {
+        delete gradationSizes;
+    }
+    if (not gradationHeightsLabel.isNull())
+    {
+        delete gradationHeightsLabel;
+    }
+    if (not gradationSizesLabel.isNull())
+    {
+        delete gradationSizesLabel;
+    }
+
     if (qApp->patternType() == MeasurementsType::Standard)
     {
         const QStringList listHeights = VMeasurement::ListHeights(doc->GetGradationHeights(), qApp->patternUnit());
         const QStringList listSizes = VMeasurement::ListSizes(doc->GetGradationSizes(), qApp->patternUnit());
 
-        gradationHeights = SetGradationList(tr("Height: "), listHeights);
+        gradationHeightsLabel = new QLabel(tr("Height: "), this);
+        gradationHeights = SetGradationList(gradationHeightsLabel, listHeights);
         SetDefaultHeight(static_cast<int>(pattern->height()));
         connect(gradationHeights, static_cast<void (QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
                 this, &MainWindow::ChangedHeight);
 
-        gradationSizes = SetGradationList(tr("Size: "), listSizes);
+        gradationSizesLabel = new QLabel(tr("Size: "), this);
+        gradationSizes = SetGradationList(gradationSizesLabel, listSizes);
         SetDefaultSize(static_cast<int>(pattern->size()));
         connect(gradationSizes, static_cast<void (QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
                 this, &MainWindow::ChangedSize);
@@ -1203,14 +1226,14 @@ void MainWindow::ToolBarOption()
         ui->toolBarOption->addSeparator();
     }
 
-    mouseCoordinate = new QLabel(QString("0, 0 (%1)").arg(doc->UnitsToStr(qApp->patternUnit())));
+    mouseCoordinate = new QLabel(QString("0, 0 (%1)").arg(doc->UnitsToStr(qApp->patternUnit(), true)));
     ui->toolBarOption->addWidget(mouseCoordinate);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-QComboBox *MainWindow::SetGradationList(const QString &label, const QStringList &list)
+QComboBox *MainWindow::SetGradationList(QLabel *label, const QStringList &list)
 {
-    ui->toolBarOption->addWidget(new QLabel(label, this));
+    ui->toolBarOption->addWidget(label);
 
     QComboBox *comboBox = new QComboBox(this);
     comboBox->addItems(list);
@@ -2358,6 +2381,9 @@ void MainWindow::New()
         VMainGraphicsView::NewSceneRect(sceneDetails, ui->view);
 
         AddPP(patternPieceName);
+
+        mouseCoordinate = new QLabel(QString("0, 0 (%1)").arg(doc->UnitsToStr(qApp->patternUnit(), true)));
+        ui->toolBarOption->addWidget(mouseCoordinate);
     }
     else
     {

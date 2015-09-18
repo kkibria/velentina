@@ -38,6 +38,7 @@
 #include "tools/drawTools/drawtools.h"
 #include "core/vcmdexport.h"
 #include "../vmisc/vlockguard.h"
+#include <QPointer>
 
 #include <QFileSystemWatcher>
 
@@ -189,7 +190,7 @@ private:
     VMainGraphicsScene *sceneDetails;
 
     /** @brief mouseCoordinate pointer to label who show mouse coordinate. */
-    QLabel             *mouseCoordinate;
+    QPointer<QLabel>    mouseCoordinate;
 
     /** @brief helpLabel help show tooltip. */
     QLabel             *helpLabel;
@@ -224,8 +225,10 @@ private:
     QLabel             *rightGoToStage;
     QTimer             *autoSaveTimer;
     bool               guiEnabled;
-    QComboBox          *gradationHeights;
-    QComboBox          *gradationSizes;
+    QPointer<QComboBox> gradationHeights;
+    QPointer<QComboBox> gradationSizes;
+    QPointer<QLabel>   gradationHeightsLabel;
+    QPointer<QLabel>   gradationSizesLabel;
     VToolOptionsPropertyBrowser *toolOptions;
     VLockGuardPtr<char> lock;
 
@@ -271,7 +274,7 @@ private:
     void               InitAutoSave();
     QString            PatternPieceName(const QString &text);
     QString            CheckPathToMeasurements(const QString &patternPath, const QString &path);
-    QComboBox          *SetGradationList(const QString &label, const QStringList &list);
+    QComboBox          *SetGradationList(QLabel *label, const QStringList &list);
     void               ChangePP(int index, bool zoomBestFit = true);
     /**
      * @brief EndVisualization try show dialog after and working with tool visualization.
