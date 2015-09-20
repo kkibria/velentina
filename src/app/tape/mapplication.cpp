@@ -29,10 +29,16 @@
 #include "mapplication.h"
 #include "version.h"
 #include "tmainwindow.h"
+#include "../ifc/exception/vexceptionobjecterror.h"
+#include "../ifc/exception/vexceptionbadid.h"
+#include "../ifc/exception/vexceptionconversionerror.h"
+#include "../ifc/exception/vexceptionemptyparameter.h"
+#include "../ifc/exception/vexceptionwrongid.h"
+#include "../vmisc/logging.h"
+#include "../qmuparser/qmuparsererror.h"
 
 #include <QDir>
 #include <QFileOpenEvent>
-#include <QLibraryInfo>
 #include <QLocalSocket>
 #include <QResource>
 #include <QTranslator>
@@ -40,6 +46,8 @@
 #include <QLocalServer>
 #include <QMessageBox>
 #include <iostream>
+
+Q_LOGGING_CATEGORY(mApp, "m.application")
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 2, 0)
 #   include "../../libs/vmisc/backport/qcommandlineparser.h"
@@ -138,11 +146,7 @@ MApplication::MApplication(int &argc, char **argv)
       mainWindows(),
       localServer(nullptr),
       trVars(nullptr),
-      dataBase(QPointer<DialogMDataBase>()),
-      qtTranslator(nullptr),
-      qtxmlTranslator(nullptr),
-      appTranslator(nullptr),
-      pmsTranslator(nullptr)
+      dataBase(QPointer<DialogMDataBase>())
 {
     setApplicationDisplayName(VER_PRODUCTNAME_STR);
     setApplicationName(VER_INTERNALNAME_STR);
@@ -194,6 +198,65 @@ MApplication::~MApplication()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief notify Reimplemented from QApplication::notify().
+ * @param receiver receiver.
+ * @param event event.
+ * @return value that is returned from the receiver's event handler.
+ */
+// reimplemented from QApplication so we can throw exceptions in slots
+bool MApplication::notify(QObject *receiver, QEvent *event)
+{
+    try
+    {
+        return QApplication::notify(receiver, event);
+    }
+    catch (const VExceptionObjectError &e)
+    {
+        e.CriticalMessageBox(tr("Error parsing file. Program will be terminated."), mainWindow);
+        abort();
+    }
+    catch (const VExceptionBadId &e)
+    {
+        e.CriticalMessageBox(tr("Error bad id. Program will be terminated."), mainWindow);
+        abort();
+    }
+    catch (const VExceptionConversionError &e)
+    {
+        e.CriticalMessageBox(tr("Error can't convert value. Program will be terminated."), mainWindow);
+        abort();
+    }
+    catch (const VExceptionEmptyParameter &e)
+    {
+        e.CriticalMessageBox(tr("Error empty parameter. Program will be terminated."), mainWindow);
+        abort();
+    }
+    catch (const VExceptionWrongId &e)
+    {
+        e.CriticalMessageBox(tr("Error wrong id. Program will be terminated."), mainWindow);
+        abort();
+    }
+    catch (const VException &e)
+    {
+        e.CriticalMessageBox(tr("Something's wrong!!"), mainWindow);
+        return true;
+    }
+    // These last two cases special. I found that we can't show here modal dialog with error message.
+    // Somehow program doesn't waite untile an error dialog will be closed. But if ignore this program will hang.
+    catch (const qmu::QmuParserError &e)
+    {
+        qCDebug(mApp, "Parser error: %s", e.GetMsg().toUtf8().constData());
+        abort();
+    }
+    catch (std::exception& e)
+    {
+        qCDebug(mApp, "Critical error! Exception thrown: %s", e.what());
+        abort();
+    }
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 bool MApplication::IsTheOnly() const
 {
     return (localServer != 0);
@@ -236,7 +299,7 @@ void MApplication::InitOptions()
     qDebug()<<"Command-line arguments:"<<this->arguments();
     qDebug()<<"Process ID:"<<this->applicationPid();
 
-    LoadTranslation();
+    LoadTranslation(TapeSettings()->GetLocale());
 
     static const char * GENERIC_ICON_TO_CHECK = "document-open";
     if (QIcon::hasThemeIcon(GENERIC_ICON_TO_CHECK) == false)
@@ -249,43 +312,6 @@ void MApplication::InitOptions()
     }
 
     QResource::registerResource(diagramsPath());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MApplication::LoadTranslation()
-{
-    const QString checkedLocale = TapeSettings()->GetLocale();
-    qDebug()<<"Checked locale:"<<checkedLocale;
-
-    ClearTranslation();
-
-    qtTranslator = new QTranslator(this);
-#if defined(Q_OS_WIN)
-    qtTranslator->load("qt_" + checkedLocale, translationsPath());
-#else
-    qtTranslator->load("qt_" + checkedLocale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-#endif
-    installTranslator(qtTranslator);
-
-    qtxmlTranslator = new QTranslator(this);
-#if defined(Q_OS_WIN)
-    qtxmlTranslator->load("qtxmlpatterns_" + checkedLocale, translationsPath());
-#else
-    qtxmlTranslator->load("qtxmlpatterns_" + checkedLocale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-#endif
-    installTranslator(qtxmlTranslator);
-
-    appTranslator = new QTranslator(this);
-    bool result = appTranslator->load("valentina_" + checkedLocale, translationsPath());
-    installTranslator(appTranslator);
-
-    const QString checkedSystem = TapeSettings()->GetPMSystemCode();
-
-    pmsTranslator = new QTranslator(this);
-    result = pmsTranslator->load("measurements_" + checkedSystem + "_" + checkedLocale, translationsPath());
-    installTranslator(pmsTranslator);
-
-    InitTrVars();//Very important do it after load QM files.
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -643,37 +669,5 @@ void MApplication::Clean()
         {
             mainWindows.removeAt(i);
         }
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void MApplication::ClearTranslation()
-{
-    if (qtTranslator != nullptr)
-    {
-        removeTranslator(qtTranslator);
-        delete qtTranslator;
-        qtTranslator = nullptr;
-    }
-
-    if (qtxmlTranslator != nullptr)
-    {
-        removeTranslator(qtxmlTranslator);
-        delete qtxmlTranslator;
-        qtxmlTranslator = nullptr;
-    }
-
-    if (appTranslator != nullptr)
-    {
-        removeTranslator(appTranslator);
-        delete appTranslator;
-        appTranslator = nullptr;
-    }
-
-    if (pmsTranslator != nullptr)
-    {
-        removeTranslator(pmsTranslator);
-        delete pmsTranslator;
-        pmsTranslator = nullptr;
     }
 }
