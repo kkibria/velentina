@@ -50,47 +50,29 @@ Half Back = (Across Back / 2)
         <email/>
     </personal>
     <body-measurements>
-        <m full_name="" value="0" description="" name="height"/>
-        <m full_name="" value="0" description="" name="neck_circ"/>
-        <m full_name="" value="0" description="" name="bust_circ"/>
-        <m full_name="" value="0" description="" name="waist_circ"/>
-        <m full_name="" value="0" description="" name="hip_circ"/>
-        <m full_name="" value="0" description="" name="neck_back_to_waist_b"/>
-        <m full_name="" value="0" description="" name="neck_back_to_highbust_b"/>
-        <m full_name="" value="0" description="" name="shoulder_length"/>
-        <m full_name="" value="0" description="" name="across_back_b"/>
-        <m full_name="" value="(across_back_b/2)" description="" name="across_back_half_b"/>
-        <m full_name="" value="0" description="" name="arm_shoulder_tip_to_wrist_bent"/>
-        <m full_name="" value="0" description="" name="arm_upper_circ"/>
-        <m full_name="" value="0" description="" name="arm_wrist_circ"/>
-        <m full_name="" value="0" description="" name="leg_crotch_to_floor"/>
-        <m full_name="" value="0" description="" name="arm_armscye_back_center_to_wrist_bent"/>
-        <m full_name="" value="0" description="" name="leg_waist_side_to_floor"/>
-        <m full_name="" value="0" description="" name="rise_length_side"/>
-        <m full_name="" value="0" description="" name="waist_natural_circ"/>
-        <m full_name="" value="0" description="" name="arm_neck_back_to_wrist_bent"/>
-        <m full_name="Height" value="(height)" description="Winnifred Aldrich /Men/ field" name="@height"/>
-        <m full_name="Chest" value="(bust_circ)" description="Winnifred Aldrich /Men/ field" name="@chest"/>
-        <m full_name="Natural Waist" value="(waist_circ)" description="Winnifred Aldrich /Men/ field" name="@natural_waist"/>
-        <m full_name="Trouser Waist" value="(waist_natural_circ)" description="Winnifred Aldrich /Men/ field" name="@trouser_waist"/>
-        <m full_name="Half Back" value="(across_back_half_b)" description="Winnifred Aldrich /Men/ field" name="@half_back"/>
-        <m full_name="Natural Waist Length" value="(neck_back_to_waist_b)" description="Winnifred Aldrich /Men/ field" name="@natural_waist_length"/>
-        <m full_name="Scye Depth" value="(neck_back_to_highbust_b)" description="Winnifred Aldrich /Men/ field" name="@scye_depth"/>
-        <m full_name="Neck Size" value="(neck_circ)" description="Winnifred Aldrich /Men/ field" name="@neck_size"/>
-        <m full_name="Sleeve Length, one piece" value="(arm_shoulder_tip_to_wrist_bent)" description="Winnifred Aldrich /Men/ field" name="@sleeve_length_one_piece"/>
-        <m full_name="Sleeve Length, two piece" value="(arm_armscye_back_center_to_wrist_bent)" description="Winnifred Aldrich /Men/ field" name="@sleeve_length_two_piece"/>
-        <m full_name="Inside Leg" value="(leg_crotch_to_floor)" description="Winnifred Aldrich /Men/ field" name="@inside_leg"/>
-        <m full_name="Body Rise" value="(rise_length_side)" description="Winnifred Aldrich /Men/ field" name="@body_rise"/>
-        <m full_name="Close Wrist Measurement" value="(arm_wrist_circ)" description="Winnifred Aldrich /Men/ field" name="@close_wrist_measurement"/>
-        <m full_name="Seat" value="(hip_circ)" description="Winnifred Aldrich /Men/ field" name="@seat"/>
-        <m full_name="Shoulder" value="(shoulder_length)" description="Winnifred Aldrich /Men/ field" name="@shoulder"/>
-        <m full_name="Arm Circumference" value="(arm_upper_circ)" description="Winnifred Aldrich /Men/ field" name="@arm_circumference"/>
-        <m full_name="Sleeve Length for Shirt" value="(arm_neck_back_to_wrist_bent)" description="Winnifred Aldrich /Men/ field" name="@sleeve_length_for_shirt"/>
-        <m full_name="Side Seam Length for Trousers" value="(leg_waist_side_to_floor)" description="Winnifred Aldrich /Men/ field" name="@side_seam_length_trousers"/>
-        <m full_name="Cuff Size, two piece sleeve" value="(1.72*arm_wrist_circ)" description="Winnifred Aldrich /Men/ field&#xa;The one piece sleeve cuff is 1.72 times the Close Wrist Measurement." name="@cuff_two_piece"/>
-        <m full_name="Cuff Size, one piece sleeve" value="(1.4*arm_wrist_circ)" description="Winnifred Aldrich /Men/ field&#xa;The one piece sleeve cuff is 1.4 times the Close Wrist Measurement." name="@cuff_one_piece"/>
-        <m full_name="Shirt Length" value="(0.56*neck_back_to_waist_b)" description="Winnifred Aldrich /Men/ field&#xa;The Shirt Length measurement is the length from waist to hem. 0.56 times the Natural Waist Length." name="@shirt_length"/>
-        <m full_name="Trouser Bottom measurement" value="(0.31*leg_crotch_to_floor)" description="Winnifred Aldrich /Men/ field&#xa;Trouser hem width, about 1/3 inseam" name="@trouser_bottom"/>
-        <m full_name="Jeans Bottom Measurement" value="(0.274*leg_crotch_to_floor)" description="Winnifred Aldrich /Men/ field&#xa;Jeans hem width, about 1/4 inseam" name="@jeans_bottom"/>
+        <m name="height" value="0" full_name="Height"/>
+        <m name="neck_circ" value="0"/>
+        <m name="bust_circ" value="0"/>
+        <m name="waist_circ" value="0"/>
+        <m name="hip_circ" value="0"/>
+        <m name="neck_back_to_waist_b" value="0"/>
+        <m name="neck_back_to_highbust_b" value="0"/>
+        <m name="shoulder_length" value="0"/>
+        <m name="across_back_b" value="0"/>
+        <m name="across_back_half_b" value="(across_back_b/2)"/>
+        <m name="arm_shoulder_tip_to_wrist_bent" value="0"/>
+        <m name="arm_upper_circ" value="0"/>
+        <m name="arm_wrist_circ" value="0"/>
+        <m name="leg_crotch_to_floor" value="0"/>
+        <m name="arm_armscye_back_center_to_wrist_bent" value="0"/>
+        <m name="leg_waist_side_to_floor" value="0"/>
+        <m name="rise_length_side" value="0"/>
+        <m name="waist_natural_circ" value="0"/>
+        <m name="arm_neck_back_to_wrist_bent" value="0"/>
+        <m name="@cuff_two_piece" value="(1.72*arm_wrist_circ)" description="Winnifred Aldrich /Men/ field&#xa;The one piece sleeve cuff is 1.72 times the Close Wrist Measurement." full_name="Cuff Size, two piece sleeve"/>
+        <m name="@cuff_one_piece" value="(1.4*arm_wrist_circ)" description="Winnifred Aldrich /Men/ field&#xa;The one piece sleeve cuff is 1.4 times the Close Wrist Measurement." full_name="Cuff Size, one piece sleeve"/>
+        <m name="@shirt_length" value="(0.56*neck_back_to_waist_b)" description="Winnifred Aldrich /Men/ field&#xa;The Shirt Length measurement is the length from waist to hem. 0.56 times the Natural Waist Length." full_name="Shirt Length"/>
+        <m name="@trouser_bottom" value="(0.31*leg_crotch_to_floor)" description="Winnifred Aldrich /Men/ field&#xa;Trouser hem width, about 1/3 inseam" full_name="Trouser Bottom measurement"/>
+        <m name="@jeans_bottom" value="(0.274*leg_crotch_to_floor)" description="Winnifred Aldrich /Men/ field&#xa;Jeans hem width, about 1/4 inseam" full_name="Jeans Bottom Measurement"/>
     </body-measurements>
 </vit>
