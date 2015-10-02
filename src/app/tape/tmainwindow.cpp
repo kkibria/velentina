@@ -166,12 +166,15 @@ void TMainWindow::LoadFile(const QString &path)
     {
         if (not QFileInfo(path).exists())
         {
-            qCritical()<<tr("File '%1' doesn't exist!").arg(path);
+            qCCritical(tMainWindow, "%s", qUtf8Printable(tr("File '%1' doesn't exist!").arg(path)));
             if (qApp->IsTestMode())
             {
                 std::exit(V_EX_NOINPUT);
             }
-            return;
+            else
+            {
+                return;
+            }
         }
 
         // Check if file already opened
@@ -190,9 +193,16 @@ void TMainWindow::LoadFile(const QString &path)
 
         if (lock->GetLockError() == QLockFile::LockFailedError)
         {
-            qCCritical(tMainWindow, "%s", tr("This file already opened in another window.").toUtf8().constData());
+            qCCritical(tMainWindow, "%s", qUtf8Printable(tr("This file already opened in another window.")));
             lock.reset();
-            return;
+            if (qApp->IsTestMode())
+            {
+                std::exit(V_EX_NOINPUT);
+            }
+            else
+            {
+                return;
+            }
         }
 
         try
@@ -257,7 +267,8 @@ void TMainWindow::LoadFile(const QString &path)
         }
         catch (VException &e)
         {
-            e.CriticalMessageBox(tr("File error."), this);
+            qCCritical(tMainWindow, "%s\n\n%s\n\n%s", qUtf8Printable(tr("File error.")),
+                       qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
             ui->labelToolTip->setVisible(true);
             ui->tabWidget->setVisible(false);
             delete m;
@@ -265,7 +276,15 @@ void TMainWindow::LoadFile(const QString &path)
             delete data;
             data = nullptr;
             lock.reset();
-            return;
+
+            if (qApp->IsTestMode())
+            {
+                std::exit(V_EX_NOINPUT);
+            }
+            else
+            {
+                return;
+            }
         }
     }
     else
@@ -497,8 +516,8 @@ void TMainWindow::FileSaveAs()
         {
             if (lock->GetLockError() == QLockFile::LockFailedError)
             {
-                qCCritical(tMainWindow, "%s", tr("Failed to lock. This file already opened in another window.")
-                           .toUtf8().constData());
+                qCCritical(tMainWindow, "%s",
+                           qUtf8Printable(tr("Failed to lock. This file already opened in another window.")));
                 return;
             }
         }
@@ -525,8 +544,8 @@ void TMainWindow::FileSaveAs()
 
     if (lock->GetLockError() == QLockFile::LockFailedError)
     {
-        qCCritical(tMainWindow, "%s", tr("Failed to lock. This file already opened in another window. "
-                                         "Expect collissions when run 2 copies of the program.").toUtf8().constData());
+        qCCritical(tMainWindow, "%s", qUtf8Printable(tr("Failed to lock. This file already opened in another window. "
+                                                        "Expect collissions when run 2 copies of the program.")));
         lock.reset();
         return;
     }
@@ -780,7 +799,9 @@ void TMainWindow::Fx()
     }
     catch(const VExceptionBadId & e)
     {
-        e.CriticalMessageBox(tr("Can't find measurement."), this);
+        qCCritical(tMainWindow, "%s\n\n%s\n\n%s",
+                   qUtf8Printable(tr("Can't find measurement '%1'.").arg(nameField->text())),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         return;
     }
 
@@ -931,7 +952,7 @@ void TMainWindow::ImportFromPattern()
 
     if (tmp.GetLockError() == QLockFile::LockFailedError)
     {
-        qCCritical(tMainWindow, "%s", tr("This file already opened in another window.").toUtf8().constData());
+        qCCritical(tMainWindow, "%s", qUtf8Printable(tr("This file already opened in another window.")));
         return;
     }
 
@@ -953,7 +974,8 @@ void TMainWindow::ImportFromPattern()
     }
     catch (VException &e)
     {
-        e.CriticalMessageBox(tr("File error."), this);
+        qCCritical(tMainWindow, "%s\n\n%s\n\n%s", qUtf8Printable(tr("File error.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         return;
     }
 
@@ -1151,9 +1173,11 @@ void TMainWindow::SaveMName()
         // Translate to internal look.
         meash = data->GetVariable<VMeasurement>(nameField->data(Qt::UserRole).toString());
     }
-    catch(const VExceptionBadId & e)
+    catch(const VExceptionBadId &e)
     {
-        e.CriticalMessageBox(tr("Can't find measurement."), this);
+        qCWarning(tMainWindow, "%s\n\n%s\n\n%s",
+                  qUtf8Printable(tr("Can't find measurement '%1'.").arg(nameField->text())),
+                  qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         return;
     }
 
@@ -1180,7 +1204,7 @@ void TMainWindow::SaveMName()
     }
     else
     {
-        qWarning() << tr("The name of known measurement forbidden to change.");
+        qCWarning(tMainWindow, "%s", qUtf8Printable(tr("The name of known measurement forbidden to change.")));
     }
 }
 
@@ -1224,7 +1248,9 @@ void TMainWindow::SaveMValue()
     }
     catch(const VExceptionBadId & e)
     {
-        e.CriticalMessageBox(tr("Can't find measurement."), this);
+        qCWarning(tMainWindow, "%s\n\n%s\n\n%s",
+                  qUtf8Printable(tr("Can't find measurement '%1'.").arg(nameField->text())),
+                  qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         return;
     }
 
@@ -1720,7 +1746,7 @@ bool TMainWindow::MaybeSave()
 
         QMessageBox::StandardButton ret;
         ret = QMessageBox::warning(this, tr("Unsaved changes"), tr("Measurements have been modified.\n"
-                                                             "Do you want to save your changes?"),
+                                                                   "Do you want to save your changes?"),
                                    QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         if (ret == QMessageBox::Save)
         {

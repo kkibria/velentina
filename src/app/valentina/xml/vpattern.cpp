@@ -172,7 +172,7 @@ void VPattern::Parse(const Document &parse)
                         qCDebug(vXML, "Tag gradation.");
                         break;
                     default:
-                        qCDebug(vXML, "Wrong tag name %s", domElement.tagName().toUtf8().constData());
+                        qCDebug(vXML, "Wrong tag name %s", qUtf8Printable(domElement.tagName()));
                         break;
                 }
             }
@@ -197,7 +197,7 @@ void VPattern::setCurrentData()
         if (CountPP() > 1)//don't need upadate data if we have only one pattern piece
         {
             qCDebug(vXML, "Setting current data");
-            qCDebug(vXML, "Current PP name %s", nameActivPP.toUtf8().constData());
+            qCDebug(vXML, "Current PP name %s", qUtf8Printable(nameActivPP));
             qCDebug(vXML, "PP count %d", CountPP());
 
             quint32 id = 0;
@@ -218,11 +218,11 @@ void VPattern::setCurrentData()
             if (id == NULL_ID)
             {
                 qCDebug(vXML, "Could not find record for this current pattern piece %s",
-                        nameActivPP.toUtf8().constData());
+                        qUtf8Printable(nameActivPP));
 
                 const VToolRecord tool = history.at(history.size()-1);
                 id = tool.getId();
-                qCDebug(vXML, "Taking record with id %u from PP %s", id, tool.getNameDraw().toUtf8().constData());
+                qCDebug(vXML, "Taking record with id %u from PP %s", id, qUtf8Printable(tool.getNameDraw()));
                 if (id == NULL_ID)
                 {
                     qCDebug(vXML, "Bad id for last record in history.");
@@ -307,7 +307,8 @@ bool VPattern::SaveDocument(const QString &fileName, QString &error) const
     }
     catch (const VExceptionWrongId &e)
     {
-        e.CriticalMessageBox(tr("Error no unique id."), qApp->getMainWindow());
+        qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error no unique id.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         return false;
     }
 
@@ -351,51 +352,49 @@ void VPattern::LiteParseTree(const Document &parse)
     }
     catch (const VExceptionObjectError &e)
     {
-        e.CriticalMessageBox(tr("Error parsing file."), qApp->getMainWindow());
+        qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error parsing file.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         emit SetEnabledGUI(false);
         return;
     }
     catch (const VExceptionConversionError &e)
     {
-        e.CriticalMessageBox(tr("Error can't convert value."), qApp->getMainWindow());
+        qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error can't convert value.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         emit SetEnabledGUI(false);
         return;
     }
     catch (const VExceptionEmptyParameter &e)
     {
-        e.CriticalMessageBox(tr("Error empty parameter."), qApp->getMainWindow());
+        qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error empty parameter.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         emit SetEnabledGUI(false);
         return;
     }
     catch (const VExceptionWrongId &e)
     {
-        e.CriticalMessageBox(tr("Error wrong id."), qApp->getMainWindow());
+        qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error wrong id.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         emit SetEnabledGUI(false);
         return;
     }
     catch (VException &e)
     {
-        e.CriticalMessageBox(tr("Error parsing file."), qApp->getMainWindow());
+        qCCritical(vXML, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error parsing file.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         emit SetEnabledGUI(false);
         return;
     }
     catch (const std::bad_alloc &)
     {
-#ifndef QT_NO_CURSOR
-        QApplication::restoreOverrideCursor();
-#endif
-        QMessageBox::critical(qApp->getMainWindow(), tr("Critical error!"), tr("Error parsing file (std::bad_alloc)."),
-                              QMessageBox::Ok, QMessageBox::Ok);
-#ifndef QT_NO_CURSOR
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-#endif
+        qCCritical(vXML, "%s", qUtf8Printable(tr("Error parsing file (std::bad_alloc).")));
         emit SetEnabledGUI(false);
         return;
     }
 
     // Restore name current pattern piece
     nameActivPP = namePP;
-    qCDebug(vXML, "Current pattern piece %s", nameActivPP.toUtf8().constData());
+    qCDebug(vXML, "Current pattern piece %s", qUtf8Printable(nameActivPP));
     setCurrentData();
     emit FullUpdateFromFile();
     // Recalculate scene rect
@@ -2376,7 +2375,7 @@ QString VPattern::GenerateLabel(const LabelType &type, const QString &reservedNa
             }
             ++i;
         }
-        qCDebug(vXML, "Point label: %s", name.toUtf8().constData());
+        qCDebug(vXML, "Point label: %s", qUtf8Printable(name));
         return name;
     }
     else if (type == LabelType::NewLabel)
@@ -2384,7 +2383,7 @@ QString VPattern::GenerateLabel(const LabelType &type, const QString &reservedNa
         if (drawList.isEmpty())
         {
             const QString label = GetLabelBase(0);
-            qCDebug(vXML, "Point label: %s", label.toUtf8().constData());
+            qCDebug(vXML, "Point label: %s", qUtf8Printable(label));
             return label;
         }
 
@@ -2412,7 +2411,7 @@ QString VPattern::GenerateLabel(const LabelType &type, const QString &reservedNa
                 break;
             }
         } while (data->IsUnique(name) == false || name == reservedName);
-        qCDebug(vXML, "Point label: %s", name.toUtf8().constData());
+        qCDebug(vXML, "Point label: %s", qUtf8Printable(name));
         return name;
     }
     qCDebug(vXML, "Got unknow type %d", static_cast<int>(type));
