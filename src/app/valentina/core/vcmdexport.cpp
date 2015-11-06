@@ -82,17 +82,15 @@ VCommandLine::VCommandLine() : parser(), optionsUsed(InitOptionsUsed()), isGuiEn
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-int VCommandLine::Lo2Px(const QString &src, const DialogLayoutSettings &converter)
+qreal VCommandLine::Lo2Px(const QString &src, const DialogLayoutSettings &converter)
 {
-    //that is dirty-dirty hack ...eventually number is converted float <--> int 3 or 4 times including inside dialog ...
-    // that will loose precision for sure
-    return converter.LayoutToPixels(src.toFloat());
+    return converter.LayoutToPixels(src.toDouble());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-int VCommandLine::Pg2Px(const QString& src, const DialogLayoutSettings& converter)
+qreal VCommandLine::Pg2Px(const QString& src, const DialogLayoutSettings& converter)
 {
-    return converter.PageToPixels(src.toFloat());
+    return converter.PageToPixels(src.toDouble());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -260,20 +258,29 @@ VLayoutGeneratorPtr VCommandLine::DefaultGenerator() const
 
     }
 
-    //fixme: not really sure ...if shift length must be set with shift units ...or separated, will comment for now.
-    //Uncomment if need them both only.
+    {
+        //just anonymous namespace ...don' like to have a,b,c,d everywhere defined
+        bool a = parser.isSet(*optionsUsed.value(LONG_OPTION_SHIFTLENGTH));
+        bool b = parser.isSet(*optionsUsed.value(LONG_OPTION_SHIFTUNITS));
 
-//    {
-//        //just anonymous namespace ...don' like to have a,b,c,d everywhere defined
-//        bool a = parser.isSet(optionsUsed.value(LONG_OPTION_SHIFTLENGTH));
-//        bool b = parser.isSet(optionsUsed.value(LONG_OPTION_SHIFTUNITS));
+        if ((a || b) && !(a && b))
+        {
+            qCritical() << translate("VCommandLine", "Shift length must be used together with shift units.") << "\n";
+            const_cast<VCommandLine*>(this)->parser.showHelp(V_EX_USAGE);
+        }
+    }
 
-//        if ((a || b) && !(a && b))
-//        {
-//            qCritical() << translate("VCommandLine", "Shift length must be used together with shift units.") << "\n";
-//            const_cast<VCommandLine*>(this)->parser.showHelp(V_EX_USAGE);
-//        }
-//    }
+    {
+        //just anonymous namespace ...don' like to have a,b,c,d everywhere defined
+        bool a = parser.isSet(*optionsUsed.value(LONG_OPTION_GAPWIDTH));
+        bool b = parser.isSet(*optionsUsed.value(LONG_OPTION_SHIFTUNITS));
+
+        if ((a || b) && !(a && b))
+        {
+            qCritical() << translate("VCommandLine", "Gap width must be used together with shift units.") << "\n";
+            const_cast<VCommandLine*>(this)->parser.showHelp(V_EX_USAGE);
+        }
+    }
 
     int rotateDegree = OptRotation();
     diag.SetRotate(rotateDegree != 0 );
@@ -320,12 +327,12 @@ VLayoutGeneratorPtr VCommandLine::DefaultGenerator() const
     if (parser.isSet(*optionsUsed.value(LONG_OPTION_SHIFTLENGTH)))
     {
 
-        diag.SetShift(static_cast<quint32>(Lo2Px(parser.value(*optionsUsed.value(LONG_OPTION_SHIFTLENGTH)), diag)));
+        diag.SetShift(Lo2Px(parser.value(*optionsUsed.value(LONG_OPTION_SHIFTLENGTH)), diag));
     }
 
     if (parser.isSet(*optionsUsed.value(LONG_OPTION_GAPWIDTH)))
     {
-        diag.SetLayoutWidth(static_cast<quint32>(Lo2Px(parser.value(*optionsUsed.value(LONG_OPTION_GAPWIDTH)), diag)));
+        diag.SetLayoutWidth(Lo2Px(parser.value(*optionsUsed.value(LONG_OPTION_GAPWIDTH)), diag));
     }
 
     diag.SetAutoCrop(parser.isSet(*optionsUsed.value(LONG_OPTION_CROP)));

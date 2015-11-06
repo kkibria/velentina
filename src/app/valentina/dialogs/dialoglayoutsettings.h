@@ -58,21 +58,22 @@ public:
                                           Roll30in,     // Used also for showing icon
                                           Roll36in,
                                           Roll42in,
-                                          Roll44in = 11};
+                                          Roll44in = 11,
+                                          Custom = 12};
     explicit DialogLayoutSettings(VLayoutGenerator *generator, QWidget *parent = nullptr, bool disableSettings = false);
     ~DialogLayoutSettings();
 
-    int GetPaperHeight() const;
-    void SetPaperHeight(int value);
+    qreal GetPaperHeight() const;
+    void SetPaperHeight(qreal value);
 
-    int GetPaperWidth() const;
-    void SetPaperWidth(int value);
+    qreal GetPaperWidth() const;
+    void SetPaperWidth(qreal value);
 
-    quint32 GetShift() const;
-    void SetShift(quint32 value);
+    qreal GetShift() const;
+    void SetShift(qreal value);
 
-    quint32 GetLayoutWidth() const;
-    void SetLayoutWidth(quint32 value);
+    qreal GetLayoutWidth() const;
+    void SetLayoutWidth(qreal value);
 
     Cases GetGroup() const;
     void SetGroup(const Cases &value);
@@ -97,14 +98,17 @@ public:
     static QString MakeHelpTemplateList();
     bool SelectPaperUnit(const QString& units);
     bool SelectLayoutUnit(const QString& units);
-    int  LayoutToPixels(qreal value) const;
-    int  PageToPixels(qreal value) const;
+    qreal LayoutToPixels(qreal value) const;
+    qreal PageToPixels(qreal value) const;
     static QString MakeGroupsHelp();
+protected:
+    virtual void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
 public slots:
     void ConvertPaperSize();
     void ConvertLayoutSize();
 
     void TemplateSelected();
+    void FindTemplate();
     void PaperSizeChanged();
     void Swap(bool checked);
 
@@ -123,11 +127,14 @@ private:
     Unit oldPaperUnit;
     Unit oldLayoutUnit;
     VLayoutGenerator *generator;
+    bool isInitialized;
 
     void InitPaperUnits();
     void InitLayoutUnits();
     void InitTemplates();
     QSizeF Template();
+    QSizeF TemplateSize(const PaperSizeTemplate &tmpl) const;
+    QSizeF RoundTemplateSize(qreal width, qreal height) const;
 
     Unit PaperUnit() const;
     Unit LayoutUnit() const;

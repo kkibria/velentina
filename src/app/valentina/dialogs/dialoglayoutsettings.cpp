@@ -53,12 +53,13 @@ const DialogLayoutSettings::FormatsVector DialogLayoutSettings::pageFormatNames 
                                                << QApplication::translate("DialogLayoutSettings", "Roll 30in")
                                                << QApplication::translate("DialogLayoutSettings", "Roll 36in")
                                                << QApplication::translate("DialogLayoutSettings", "Roll 42in")
-                                               << QApplication::translate("DialogLayoutSettings", "Roll 44in");
+                                               << QApplication::translate("DialogLayoutSettings", "Roll 44in")
+                                               << QApplication::translate("DialogLayoutSettings", "Custom");
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogLayoutSettings::DialogLayoutSettings(VLayoutGenerator *generator, QWidget *parent, bool disableSettings)
     : QDialog(parent), disableSettings(disableSettings), ui(new Ui::DialogLayoutSettings), oldPaperUnit(Unit::Mm),
-      oldLayoutUnit(Unit::Mm), generator(generator)
+      oldLayoutUnit(Unit::Mm), generator(generator), isInitialized(false)
 {
     ui->setupUi(this);
 
@@ -86,10 +87,17 @@ DialogLayoutSettings::DialogLayoutSettings(VLayoutGenerator *generator, QWidget 
             this, &DialogLayoutSettings::TemplateSelected);
     connect(ui->comboBoxPaperSizeUnit,  static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
             this, &DialogLayoutSettings::ConvertPaperSize);
+
     connect(ui->doubleSpinBoxPaperWidth,  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
             this, &DialogLayoutSettings::PaperSizeChanged);
     connect(ui->doubleSpinBoxPaperHeight,  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
             this, &DialogLayoutSettings::PaperSizeChanged);
+
+    connect(ui->doubleSpinBoxPaperWidth,  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+            this, &DialogLayoutSettings::FindTemplate);
+    connect(ui->doubleSpinBoxPaperHeight,  static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+            this, &DialogLayoutSettings::FindTemplate);
+
     connect(ui->toolButtonPortrate, &QToolButton::toggled, this, &DialogLayoutSettings::Swap);
     connect(ui->toolButtonLandscape, &QToolButton::toggled, this, &DialogLayoutSettings::Swap);
     connect(ui->comboBoxLayoutUnit,  static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
@@ -100,9 +108,6 @@ DialogLayoutSettings::DialogLayoutSettings(VLayoutGenerator *generator, QWidget 
 
     QPushButton *bRestoreDefaults = ui->buttonBox->button(QDialogButtonBox::RestoreDefaults);
     connect(bRestoreDefaults, &QPushButton::clicked, this, &DialogLayoutSettings::RestoreDefaults);
-
-    setMaximumSize(size());
-    setMinimumSize(size());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -112,49 +117,49 @@ DialogLayoutSettings::~DialogLayoutSettings()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-int DialogLayoutSettings::GetPaperHeight() const
+qreal DialogLayoutSettings::GetPaperHeight() const
 {
-    return qFloor(UnitConvertor(ui->doubleSpinBoxPaperHeight->value(), oldPaperUnit, Unit::Px));
+    return UnitConvertor(ui->doubleSpinBoxPaperHeight->value(), oldPaperUnit, Unit::Px);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogLayoutSettings::SetPaperHeight(int value)
+void DialogLayoutSettings::SetPaperHeight(qreal value)
 {
     ui->doubleSpinBoxPaperHeight->setValue(UnitConvertor(value, Unit::Px, PaperUnit()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-int DialogLayoutSettings::GetPaperWidth() const
+qreal DialogLayoutSettings::GetPaperWidth() const
 {
-    return qFloor(UnitConvertor(ui->doubleSpinBoxPaperWidth->value(), oldPaperUnit, Unit::Px));
+    return UnitConvertor(ui->doubleSpinBoxPaperWidth->value(), oldPaperUnit, Unit::Px);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogLayoutSettings::SetPaperWidth(int value)
+void DialogLayoutSettings::SetPaperWidth(qreal value)
 {
     ui->doubleSpinBoxPaperWidth->setValue(UnitConvertor(value, Unit::Px, PaperUnit()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-quint32 DialogLayoutSettings::GetShift() const
+qreal DialogLayoutSettings::GetShift() const
 {
-    return static_cast<quint32>(qFloor(UnitConvertor(ui->doubleSpinBoxShift->value(), oldLayoutUnit, Unit::Px)));
+    return UnitConvertor(ui->doubleSpinBoxShift->value(), oldLayoutUnit, Unit::Px);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogLayoutSettings::SetShift(quint32 value)
+void DialogLayoutSettings::SetShift(qreal value)
 {
     ui->doubleSpinBoxShift->setValue(UnitConvertor(value, Unit::Px, LayoutUnit()));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-quint32 DialogLayoutSettings::GetLayoutWidth() const
+qreal DialogLayoutSettings::GetLayoutWidth() const
 {
-    return static_cast<quint32>(qFloor(UnitConvertor(ui->doubleSpinBoxLayoutWidth->value(), oldLayoutUnit, Unit::Px)));
+    return UnitConvertor(ui->doubleSpinBoxLayoutWidth->value(), oldLayoutUnit, Unit::Px);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogLayoutSettings::SetLayoutWidth(quint32 value)
+void DialogLayoutSettings::SetLayoutWidth(qreal value)
 {
     ui->doubleSpinBoxLayoutWidth->setValue(UnitConvertor(value, Unit::Px, LayoutUnit()));
 }
@@ -273,20 +278,61 @@ void DialogLayoutSettings::TemplateSelected()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void DialogLayoutSettings::FindTemplate()
+{
+    const qreal width = ui->doubleSpinBoxPaperWidth->value();
+    const qreal height = ui->doubleSpinBoxPaperHeight->value();
+    QSizeF size(width, height);
+
+    const int max = static_cast<int>(PaperSizeTemplate::Custom);
+    for (int i=0; i < max; ++i)
+    {
+        const QSizeF tmplSize = TemplateSize(static_cast<PaperSizeTemplate>(i));
+        if (size == tmplSize)
+        {
+            ui->comboBoxTemplates->blockSignals(true);
+            const int index = ui->comboBoxTemplates->findData(i);
+            if (index != -1)
+            {
+                ui->comboBoxTemplates->setCurrentIndex(index);
+            }
+            ui->comboBoxTemplates->blockSignals(false);
+            return;
+        }
+    }
+
+    ui->comboBoxTemplates->blockSignals(true);
+    const int index = ui->comboBoxTemplates->findData(max);
+    if (index != -1)
+    {
+        ui->comboBoxTemplates->setCurrentIndex(index);
+    }
+    ui->comboBoxTemplates->blockSignals(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogLayoutSettings::ConvertPaperSize()
 {
     const Unit paperUnit = PaperUnit();
     const qreal width = ui->doubleSpinBoxPaperWidth->value();
     const qreal height = ui->doubleSpinBoxPaperHeight->value();
 
+    ui->doubleSpinBoxPaperWidth->blockSignals(true);
+    ui->doubleSpinBoxPaperHeight->blockSignals(true);
     ui->doubleSpinBoxPaperWidth->setMaximum(FromPixel(QIMAGE_MAX, paperUnit));
     ui->doubleSpinBoxPaperHeight->setMaximum(FromPixel(QIMAGE_MAX, paperUnit));
+    ui->doubleSpinBoxPaperWidth->blockSignals(false);
+    ui->doubleSpinBoxPaperHeight->blockSignals(false);
 
-    ui->doubleSpinBoxPaperWidth->setValue(UnitConvertor(width, oldPaperUnit, paperUnit));
-    ui->doubleSpinBoxPaperHeight->setValue(UnitConvertor(height, oldPaperUnit, paperUnit));
+    const qreal newWidth = UnitConvertor(width, oldPaperUnit, paperUnit);
+    const qreal newHeight = UnitConvertor(height, oldPaperUnit, paperUnit);
+
     oldPaperUnit = paperUnit;
     CorrectPaperDecimals();
     MinimumPaperSize();
+
+    ui->doubleSpinBoxPaperWidth->setValue(newWidth);
+    ui->doubleSpinBoxPaperHeight->setValue(newHeight);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -312,15 +358,15 @@ bool DialogLayoutSettings::SelectLayoutUnit(const QString &units)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-int DialogLayoutSettings::LayoutToPixels(qreal value) const
+qreal DialogLayoutSettings::LayoutToPixels(qreal value) const
 {
-    return qFloor(UnitConvertor(value, LayoutUnit(), Unit::Px));
+    return UnitConvertor(value, LayoutUnit(), Unit::Px);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-int DialogLayoutSettings::PageToPixels(qreal value) const
+qreal DialogLayoutSettings::PageToPixels(qreal value) const
 {
-    return qFloor(UnitConvertor(value, PaperUnit(), Unit::Px));
+    return UnitConvertor(value, PaperUnit(), Unit::Px);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -328,6 +374,27 @@ QString DialogLayoutSettings::MakeGroupsHelp()
 {
     //that is REALLY dummy ... can't figure fast how to automate generation... :/
     return tr("\n\tThree groups: big, middle, small = 0\n\tTwo groups: big, small = 1\n\tDescending area = 2\n");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogLayoutSettings::showEvent(QShowEvent *event)
+{
+    QDialog::showEvent( event );
+    if ( event->spontaneous() )
+    {
+        return;
+    }
+
+    if (isInitialized)
+    {
+        return;
+    }
+    // do your init stuff here
+
+    setMaximumSize(size());
+    setMinimumSize(size());
+
+    isInitialized = true;//first show windows are held
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -340,11 +407,15 @@ void DialogLayoutSettings::ConvertLayoutSize()
     ui->doubleSpinBoxLayoutWidth->setMaximum(FromPixel(QIMAGE_MAX, unit));
     ui->doubleSpinBoxShift->setMaximum(FromPixel(QIMAGE_MAX, unit));
 
-    ui->doubleSpinBoxLayoutWidth->setValue(UnitConvertor(layoutWidth, oldLayoutUnit, unit));
-    ui->doubleSpinBoxShift->setValue(UnitConvertor(shift, oldLayoutUnit, unit));
+    const qreal newLayoutWidth = UnitConvertor(layoutWidth, oldLayoutUnit, unit);
+    const qreal newShift = UnitConvertor(shift, oldLayoutUnit, unit);
+
     oldLayoutUnit = unit;
     CorrectLayoutDecimals();
     MinimumLayoutSize();
+
+    ui->doubleSpinBoxLayoutWidth->setValue(newLayoutWidth);
+    ui->doubleSpinBoxShift->setValue(newShift);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -404,9 +475,9 @@ void DialogLayoutSettings::DialogAccepted()
     SCASSERT(generator != nullptr)
     generator->SetLayoutWidth(GetLayoutWidth());
     generator->SetCaseType(GetGroup());
-    generator->SetPaperHeight(GetPaperHeight());
-    generator->SetPaperWidth(GetPaperWidth());
-    generator->SetShift(GetShift());
+    generator->SetPaperHeight(qFloor(GetPaperHeight()));
+    generator->SetPaperWidth(qFloor(GetPaperWidth()));
+    generator->SetShift(qFloor(GetShift()));
     generator->SetRotate(GetRotate());
     generator->SetRotationIncrease(GetIncrease());
     generator->SetAutoCrop(GetAutoCrop());
@@ -479,13 +550,17 @@ void DialogLayoutSettings::InitTemplates()
     auto cntr = static_cast<VIndexType>(PaperSizeTemplate::A0);
     foreach(const auto& v, pageFormatNames)
     {
-        if (cntr <= 6)
+        if (cntr <= static_cast<int>(PaperSizeTemplate::Legal))
         {
             ui->comboBoxTemplates->addItem(icoPaper, v+" "+pdi, QVariant(cntr++));
         }
-        else
+        else if (cntr <= static_cast<int>(PaperSizeTemplate::Roll44in))
         {
             ui->comboBoxTemplates->addItem(icoRoll, v+" "+pdi, QVariant(cntr++));
+        }
+        else
+        {
+            ui->comboBoxTemplates->addItem(v+" "+pdi, QVariant(cntr++));
         }
     }
     ui->comboBoxTemplates->setCurrentIndex(-1);
@@ -494,14 +569,17 @@ void DialogLayoutSettings::InitTemplates()
 //---------------------------------------------------------------------------------------------------------------------
 QString DialogLayoutSettings::MakeHelpTemplateList()
 {
-   QString out = "\n";
+    QString out = "\n";
 
-   auto cntr = static_cast<VIndexType>(PaperSizeTemplate::A0);
-   foreach(const auto& v,  pageFormatNames)
-   {
-        out += "\t"+v+" = "+ QString::number(cntr++)+"\n";
-   }
-   return out;
+    auto cntr = static_cast<VIndexType>(PaperSizeTemplate::A0);
+    foreach(const auto& v,  pageFormatNames)
+    {
+        if (cntr <= static_cast<int>(PaperSizeTemplate::Roll44in))// Don't include custom template
+        {
+            out += "\t"+v+" = "+ QString::number(cntr++)+"\n";
+        }
+    }
+    return out;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -514,89 +592,123 @@ QSizeF DialogLayoutSettings::Template()
 #else
     temp = static_cast<PaperSizeTemplate>(ui->comboBoxTemplates->currentData().toInt());
 #endif
-    const Unit paperUnit = PaperUnit();
-
-    qreal width = 0;
-    qreal height = 0;
 
     switch (temp)
     {
         case PaperSizeTemplate::A0:
-            SetAdditionalOptions(false);
-
-            width = UnitConvertor(841, Unit::Mm, paperUnit);
-            height = UnitConvertor(1189, Unit::Mm, paperUnit);
-            return QSizeF(width, height);
         case PaperSizeTemplate::A1:
-            SetAdditionalOptions(false);
-
-            width = UnitConvertor(594, Unit::Mm, paperUnit);
-            height = UnitConvertor(841, Unit::Mm, paperUnit);
-            return QSizeF(width, height);
         case PaperSizeTemplate::A2:
-            SetAdditionalOptions(false);
-
-            width = UnitConvertor(420, Unit::Mm, paperUnit);
-            height = UnitConvertor(594, Unit::Mm, paperUnit);
-            return QSizeF(width, height);
         case PaperSizeTemplate::A3:
-            SetAdditionalOptions(false);
-
-            width = UnitConvertor(297, Unit::Mm, paperUnit);
-            height = UnitConvertor(420, Unit::Mm, paperUnit);
-            return QSizeF(width, height);
         case PaperSizeTemplate::A4:
-            SetAdditionalOptions(false);
-
-            width = UnitConvertor(210, Unit::Mm, paperUnit);
-            height = UnitConvertor(297, Unit::Mm, paperUnit);
-            return QSizeF(width, height);
         case PaperSizeTemplate::Letter:
             SetAdditionalOptions(false);
-
-            width = UnitConvertor(8.5, Unit::Inch, paperUnit);
-            height = UnitConvertor(11, Unit::Inch, paperUnit);
-            return QSizeF(width, height);
+            return TemplateSize(temp);
         case PaperSizeTemplate::Legal:
-            SetAdditionalOptions(true);
-
-            width = UnitConvertor(11, Unit::Inch, paperUnit);
-            height = UnitConvertor(17, Unit::Inch, paperUnit);
-            return QSizeF(width, height);
         case PaperSizeTemplate::Roll24in:
-            SetAdditionalOptions(true);
-
-            width = UnitConvertor(24, Unit::Inch, paperUnit);
-            height = UnitConvertor(QIMAGE_MAX, Unit::Px, paperUnit);
-            return QSizeF(width, height);
         case PaperSizeTemplate::Roll30in:
-            SetAdditionalOptions(true);
-
-            width = UnitConvertor(30, Unit::Inch, paperUnit);
-            height = UnitConvertor(QIMAGE_MAX, Unit::Px, paperUnit);
-            return QSizeF(width, height);
         case PaperSizeTemplate::Roll36in:
-            SetAdditionalOptions(true);
-
-            width = UnitConvertor(36, Unit::Inch, paperUnit);
-            height = UnitConvertor(QIMAGE_MAX, Unit::Px, paperUnit);
-            return QSizeF(width, height);
         case PaperSizeTemplate::Roll42in:
-            SetAdditionalOptions(true);
-
-            width = UnitConvertor(42, Unit::Inch, paperUnit);
-            height = UnitConvertor(QIMAGE_MAX, Unit::Px, paperUnit);
-            return QSizeF(width, height);
         case PaperSizeTemplate::Roll44in:
             SetAdditionalOptions(true);
-
-            width = UnitConvertor(44, Unit::Inch, paperUnit);
-            height = UnitConvertor(QIMAGE_MAX, Unit::Px, paperUnit);
-            return QSizeF(width, height);
+            return TemplateSize(temp);
+        case PaperSizeTemplate::Custom:
+            return TemplateSize(temp);
         default:
             break;
     }
     return QSizeF();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QSizeF DialogLayoutSettings::TemplateSize(const PaperSizeTemplate &tmpl) const
+{
+    const Unit paperUnit = PaperUnit();
+    qreal width = 0;
+    qreal height = 0;
+
+    switch (tmpl)
+    {
+        case PaperSizeTemplate::A0:
+            width = UnitConvertor(841, Unit::Mm, paperUnit);
+            height = UnitConvertor(1189, Unit::Mm, paperUnit);
+            return RoundTemplateSize(width, height);
+        case PaperSizeTemplate::A1:
+            width = UnitConvertor(594, Unit::Mm, paperUnit);
+            height = UnitConvertor(841, Unit::Mm, paperUnit);
+            return RoundTemplateSize(width, height);
+        case PaperSizeTemplate::A2:
+            width = UnitConvertor(420, Unit::Mm, paperUnit);
+            height = UnitConvertor(594, Unit::Mm, paperUnit);
+            return RoundTemplateSize(width, height);
+        case PaperSizeTemplate::A3:
+            width = UnitConvertor(297, Unit::Mm, paperUnit);
+            height = UnitConvertor(420, Unit::Mm, paperUnit);
+            return RoundTemplateSize(width, height);
+        case PaperSizeTemplate::A4:
+            width = UnitConvertor(210, Unit::Mm, paperUnit);
+            height = UnitConvertor(297, Unit::Mm, paperUnit);
+            return RoundTemplateSize(width, height);
+        case PaperSizeTemplate::Letter:
+            width = UnitConvertor(8.5, Unit::Inch, paperUnit);
+            height = UnitConvertor(11, Unit::Inch, paperUnit);
+            return RoundTemplateSize(width, height);
+        case PaperSizeTemplate::Legal:
+            width = UnitConvertor(11, Unit::Inch, paperUnit);
+            height = UnitConvertor(17, Unit::Inch, paperUnit);
+            return RoundTemplateSize(width, height);
+        case PaperSizeTemplate::Roll24in:
+            width = UnitConvertor(24, Unit::Inch, paperUnit);
+            height = UnitConvertor(QIMAGE_MAX, Unit::Px, paperUnit);
+            return RoundTemplateSize(width, height);
+        case PaperSizeTemplate::Roll30in:
+            width = UnitConvertor(30, Unit::Inch, paperUnit);
+            height = UnitConvertor(QIMAGE_MAX, Unit::Px, paperUnit);
+            return RoundTemplateSize(width, height);
+        case PaperSizeTemplate::Roll36in:
+            width = UnitConvertor(36, Unit::Inch, paperUnit);
+            height = UnitConvertor(QIMAGE_MAX, Unit::Px, paperUnit);
+            return RoundTemplateSize(width, height);
+        case PaperSizeTemplate::Roll42in:
+            width = UnitConvertor(42, Unit::Inch, paperUnit);
+            height = UnitConvertor(QIMAGE_MAX, Unit::Px, paperUnit);
+            return RoundTemplateSize(width, height);
+        case PaperSizeTemplate::Roll44in:
+            width = UnitConvertor(44, Unit::Inch, paperUnit);
+            height = UnitConvertor(QIMAGE_MAX, Unit::Px, paperUnit);
+            return RoundTemplateSize(width, height);
+        case PaperSizeTemplate::Custom:
+            width = ui->doubleSpinBoxPaperWidth->value();
+            height = ui->doubleSpinBoxPaperHeight->value();
+            return RoundTemplateSize(width, height);
+        default:
+            break;
+    }
+    return QSizeF();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QSizeF DialogLayoutSettings::RoundTemplateSize(qreal width, qreal height) const
+{
+    qreal w = 0;
+    qreal h = 0;
+
+    switch (PaperUnit())
+    {
+        case Unit::Cm:
+        case Unit::Mm:
+        case Unit::Px:
+            w = qRound(width * 100.0) / 100.0;
+            h = qRound(height * 100.0) / 100.0;
+            return QSizeF(w, h);
+        case Unit::Inch:
+            w = qRound(width * 100000.0) / 100000.0;
+            h = qRound(height * 100000.0) / 100000.0;
+            return QSizeF(w, h);
+        default:
+            break;
+    }
+
+    return QSizeF(width, height);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -636,8 +748,8 @@ void DialogLayoutSettings::CorrectPaperDecimals()
             ui->doubleSpinBoxPaperHeight->setDecimals(5);
             break;
         case Unit::Px:
-            ui->doubleSpinBoxPaperWidth->setDecimals(0);
-            ui->doubleSpinBoxPaperHeight->setDecimals(0);
+            ui->doubleSpinBoxPaperWidth->setDecimals(2);
+            ui->doubleSpinBoxPaperHeight->setDecimals(2);
             break;
         default:
             break;
@@ -659,8 +771,8 @@ void DialogLayoutSettings::CorrectLayoutDecimals()
             ui->doubleSpinBoxShift->setDecimals(5);
             break;
         case Unit::Px:
-            ui->doubleSpinBoxLayoutWidth->setDecimals(0);
-            ui->doubleSpinBoxShift->setDecimals(0);
+            ui->doubleSpinBoxLayoutWidth->setDecimals(2);
+            ui->doubleSpinBoxShift->setDecimals(2);
             break;
         default:
             break;
@@ -707,6 +819,8 @@ void DialogLayoutSettings::ReadSettings()
     SetAutoCrop(settings->GetLayoutAutoCrop());
     SetSaveLength(settings->GetLayoutSaveLength());
     SetUnitePages(settings->GetLayoutUnitePages());
+
+    FindTemplate();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -251,11 +251,11 @@ void VSettings::SetUserPassword(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-int VSettings::GetLayoutPaperHeight() const
+qreal VSettings::GetLayoutPaperHeight() const
 {
-    const int def = qFloor(UnitConvertor(1189/*A0*/, Unit::Mm, Unit::Px));
+    const qreal def = UnitConvertor(1189/*A0*/, Unit::Mm, Unit::Px);
     bool ok = false;
-    const int height = value(SettingLayoutPaperHeight, def).toInt(&ok);
+    const qreal height = value(SettingLayoutPaperHeight, def).toDouble(&ok);
     if (ok)
     {
         return height;
@@ -267,17 +267,17 @@ int VSettings::GetLayoutPaperHeight() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VSettings::SetLayoutPaperHeight(int value)
+void VSettings::SetLayoutPaperHeight(qreal value)
 {
     setValue(SettingLayoutPaperHeight, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-int VSettings::GetLayoutPaperWidth() const
+qreal VSettings::GetLayoutPaperWidth() const
 {
-    const int def = qFloor(UnitConvertor(841/*A0*/, Unit::Mm, Unit::Px));
+    const qreal def = UnitConvertor(841/*A0*/, Unit::Mm, Unit::Px);
     bool ok = false;
-    const int width = value(SettingLayoutPaperWidth, def).toInt(&ok);
+    const qreal width = value(SettingLayoutPaperWidth, def).toDouble(&ok);
     if (ok)
     {
         return width;
@@ -289,17 +289,17 @@ int VSettings::GetLayoutPaperWidth() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VSettings::SetLayoutPaperWidth(int value)
+void VSettings::SetLayoutPaperWidth(qreal value)
 {
     setValue(SettingLayoutPaperWidth, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-quint32 VSettings::GetLayoutShift() const
+qreal VSettings::GetLayoutShift() const
 {
-    const quint32 def = GetDefLayoutShift();
+    const qreal def = GetDefLayoutShift();
     bool ok = false;
-    const quint32 shift = value(SettingLayoutShift, def).toUInt(&ok);
+    const qreal shift = value(SettingLayoutShift, def).toDouble(&ok);
     if (ok)
     {
         return shift;
@@ -311,23 +311,23 @@ quint32 VSettings::GetLayoutShift() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-quint32 VSettings::GetDefLayoutShift()
+qreal VSettings::GetDefLayoutShift()
 {
-    return static_cast<quint32>(UnitConvertor(50, Unit::Mm, Unit::Px));
+    return UnitConvertor(50, Unit::Mm, Unit::Px);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VSettings::SetLayoutShift(quint32 value)
+void VSettings::SetLayoutShift(qreal value)
 {
     setValue(SettingLayoutShift, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-quint32 VSettings::GetLayoutWidth() const
+qreal VSettings::GetLayoutWidth() const
 {
-    const quint32 def = GetDefLayoutWidth();
+    const qreal def = GetDefLayoutWidth();
     bool ok = false;
-    const quint32 lWidth = value(SettingLayoutWidth, def).toUInt(&ok);
+    const qreal lWidth = value(SettingLayoutWidth, def).toDouble(&ok);
     if (ok)
     {
         return lWidth;
@@ -339,13 +339,13 @@ quint32 VSettings::GetLayoutWidth() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-quint32 VSettings::GetDefLayoutWidth()
+qreal VSettings::GetDefLayoutWidth()
 {
-    return static_cast<quint32>(UnitConvertor(2.5, Unit::Mm, Unit::Px));
+    return UnitConvertor(2.5, Unit::Mm, Unit::Px);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VSettings::SetLayoutWidth(quint32 value)
+void VSettings::SetLayoutWidth(qreal value)
 {
     setValue(SettingLayoutWidth, value);
 }
