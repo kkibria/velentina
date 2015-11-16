@@ -57,16 +57,8 @@ OTHER_FILES += \
     share/resources/icon/64x64/icon64x64.ico # Valentina's logo.
 
 # Set using ccache. Function enable_ccache() defined in common.pri.
-macx {
-    CONFIG(debug, debug|release){
-        $$enable_ccache()# Use only in debug mode on Mac
-    }
-} else {
-    $$enable_ccache()
-}
+$$enable_ccache()
 
-# Set precompiled headers. Function set_PCH() defined in common.pri.
-$$set_PCH()
 
 CONFIG(debug, debug|release){
     # Debug mode
@@ -273,7 +265,7 @@ unix{
         libraries.files += $${OUT_PWD}/../../libs/vpropertyexplorer/$${DESTDIR}/libvpropertyexplorer.1.dylib
 
         tape.path = $$MACOS_DIR
-        tape.files += $${OUT_PWD}/../tape/$${DESTDIR}/tape.app
+        tape.files += $${OUT_PWD}/../tape/$${DESTDIR}/tape
 
         # Utility pdftops need for saving a layout image to PS and EPS formates.
         xpdf.path = $$MACOS_DIR
@@ -281,6 +273,8 @@ unix{
 
         # logo on macx.
         ICON = ../../../dist/Valentina.icns
+
+        QMAKE_INFO_PLIST = $$PWD/../../../dist/macx/Info.plist
 
         # Copy to bundle standard measurements files
         standard.path = $$RESOURCES_DIR/tables/standard/
@@ -294,13 +288,17 @@ unix{
         diagrams.path = $$RESOURCES_DIR/
         diagrams.files = $${OUT_PWD}/../tape/$${DESTDIR}/diagrams.rcc
 
+        format.path = $$RESOURCES_DIR/
+        format.files = $$PWD/../../../dist/macx/measurements.icns
+
         QMAKE_BUNDLE_DATA += \
             templates \
             standard \
             libraries \
             tape \
             xpdf \
-            diagrams
+            diagrams \
+            format
     }
 }
 
@@ -660,5 +658,5 @@ noDebugSymbols{ # For enable run qmake with CONFIG+=noDebugSymbols
 
 macx{
    # run macdeployqt to include all qt libraries in packet
-   QMAKE_POST_LINK += $$[QT_INSTALL_BINS]/macdeployqt $${OUT_PWD}/$${DESTDIR}/$${TARGET}.app
+   QMAKE_POST_LINK += $$[QT_INSTALL_BINS]/macdeployqt $${OUT_PWD}/$${DESTDIR}/$${TARGET}.app -executable=$${OUT_PWD}/$${DESTDIR}/$${TARGET}.app/$$MACOS_DIR/tape
 }
