@@ -67,6 +67,11 @@
 #include <chrono>
 #include <thread>
 
+#if defined(Q_OS_MAC)
+#include <QMimeData>
+#include <QDrag>
+#endif //defined(Q_OS_MAC)
+
 #if defined(Q_CC_CLANG)
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wmissing-prototypes"
@@ -138,6 +143,11 @@ MainWindow::MainWindow(QWidget *parent)
     setCurrentFile("");
     WindowsLocale();
 
+    connect(ui->listWidget, &QListWidget::currentRowChanged, this, &MainWindow::ShowPaper);
+    ui->dockWidgetLayoutPages->setVisible(false);
+
+    connect(watcher, &QFileSystemWatcher::fileChanged, this, &MainWindow::MeasurementsChanged);
+
 #if defined(Q_OS_MAC)
     // On Mac deafault icon size is 32x32.
     ui->toolBarArrows->setIconSize(QSize(24, 24));
@@ -145,12 +155,31 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBarOption->setIconSize(QSize(24, 24));
     ui->toolBarStages->setIconSize(QSize(24, 24));
     ui->toolBarTools->setIconSize(QSize(24, 24));
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 2)
+    // Mac OS Dock Menu
+    QMenu *menu = new QMenu(this);
+
+    QAction *actionNewPattern = menu->addAction(tr("New pattern"));
+    actionNewPattern->setMenuRole(QAction::NoRole);
+    connect(actionNewPattern, &QAction::triggered, this, &MainWindow::New);
+
+    QAction *actionOpenPattern = menu->addAction(tr("Open pattern"));
+    actionOpenPattern->setMenuRole(QAction::NoRole);
+    connect(actionOpenPattern, &QAction::triggered, this, &MainWindow::Open);
+
+    QAction *actionOpenTape = menu->addAction(tr("Create/Edit measurements"));
+    actionOpenTape->setMenuRole(QAction::NoRole);
+    connect(actionOpenTape, &QAction::triggered, this, &MainWindow::CreateMeasurements);
+
+    QAction *actionPreferences = menu->addAction(tr("Preferences"));
+    actionPreferences->setMenuRole(QAction::NoRole);
+    connect(actionPreferences, &QAction::triggered, this, &MainWindow::Preferences);
+
+    extern void qt_mac_set_dock_menu(QMenu *);
+    qt_mac_set_dock_menu(menu);
 #endif
-
-    connect(ui->listWidget, &QListWidget::currentRowChanged, this, &MainWindow::ShowPaper);
-    ui->dockWidgetLayoutPages->setVisible(false);
-
-    connect(watcher, &QFileSystemWatcher::fileChanged, this, &MainWindow::MeasurementsChanged);
+#endif //defined(Q_OS_MAC)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -221,6 +250,7 @@ void MainWindow::AddPP(const QString &PPName)
 
     // Show best for new PP
     ui->view->fitInView(doc->ActiveDrawBoundingRect(), Qt::KeepAspectRatio);
+    VMainGraphicsView::NewSceneRect(ui->view->scene(), ui->view);
     ui->view->NewFactor(ui->view->transform().m11());
 
     ui->actionNewDraw->setEnabled(true);
@@ -1304,6 +1334,21 @@ void MainWindow::SyncMeasurements()
 
     ToggleMSync(false);
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+#if defined(Q_OS_MAC)
+void MainWindow::OpenAt(QAction *where)
+{
+    const QString path = curFile.left(curFile.indexOf(where->text())) + where->text();
+    if (path == curFile)
+    {
+        return;
+    }
+    QProcess process;
+    process.start(QStringLiteral("/usr/bin/open"), QStringList() << path, QIODevice::ReadOnly);
+    process.waitForFinished();
+}
+#endif //defined(Q_OS_MAC)
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -2909,17 +2954,31 @@ bool MainWindow::MaybeSave()
 {
     if (this->isWindowModified() && guiEnabled)
     {
-        QMessageBox::StandardButton ret;
-        ret = QMessageBox::warning(this, tr("Unsaved changes"), tr("The pattern has been modified.\n"
-                                                                   "Do you want to save your changes?"),
-                                   QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        if (ret == QMessageBox::Save)
+        QMessageBox *messageBox = new QMessageBox(tr("Unsaved changes"),
+                                                  tr("The pattern has been modified.\n"
+                                                     "Do you want to save your changes?"),
+                                                  QMessageBox::Warning, QMessageBox::Yes, QMessageBox::No,
+                                                  QMessageBox::Cancel, this, Qt::Sheet);
+
+        messageBox->setDefaultButton(QMessageBox::Yes);
+        messageBox->setEscapeButton(QMessageBox::Cancel);
+
+        messageBox->setButtonText(QMessageBox::Yes, curFile.isEmpty() ? tr("Save...") : tr("Save"));
+        messageBox->setButtonText(QMessageBox::No, tr("Don't Save"));
+
+        messageBox->setWindowModality(Qt::ApplicationModal);
+        const QMessageBox::StandardButton ret = static_cast<QMessageBox::StandardButton>(messageBox->exec());
+
+        switch (ret)
         {
-            return Save();
-        }
-        else if (ret == QMessageBox::Cancel)
-        {
-            return false;
+            case QMessageBox::Yes:
+                return Save();
+            case QMessageBox::No:
+                return true;
+            case QMessageBox::Cancel:
+                return false;
+            default:
+                break;
         }
     }
     return true;
@@ -3972,4 +4031,29 @@ QString MainWindow::GetMeasurementFileName()
 void MainWindow::UpdateWindowTitle()
 {
     setWindowTitle(GetPatternFileName()+GetMeasurementFileName());
+    setWindowFilePath(curFile);
+
+#if defined(Q_OS_MAC)
+    static QIcon fileIcon = QIcon(QApplication::applicationDirPath() +
+                                  QLatin1Literal("/../Resources/Valentina.icns"));
+    QIcon icon;
+    if (not curFile.isEmpty())
+    {
+        if (not isWindowModified())
+        {
+            icon = fileIcon;
+        }
+        else
+        {
+            static QIcon darkIcon;
+
+            if (darkIcon.isNull())
+            {
+                darkIcon = QIcon(darkenPixmap(fileIcon.pixmap(16, 16)));
+            }
+            icon = darkIcon;
+        }
+    }
+    setWindowIcon(icon);
+#endif //defined(Q_OS_MAC)
 }

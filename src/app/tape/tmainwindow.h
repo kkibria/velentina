@@ -83,6 +83,11 @@ private slots:
     void AboutApplication();
     void AboutQt();
 
+#if defined(Q_OS_MAC)
+    void AboutToShowDockMenu();
+    void OpenAt(QAction *where);
+#endif //defined(Q_OS_MAC)
+
     void SaveGivenName();
     void SaveFamilyName();
     void SaveEmail();
@@ -193,6 +198,8 @@ private:
     void UpdatePatternUnit();
 
     bool LoadFromExistingFile(const QString &path);
+
+    void CreateWindowMenu(QMenu *menu);
 };
 
 #endif // TMAINWINDOW_H

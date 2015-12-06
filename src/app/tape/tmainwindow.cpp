@@ -51,6 +51,11 @@
 #include <QComboBox>
 #include <QProcess>
 
+#if defined(Q_OS_MAC)
+#include <QMimeData>
+#include <QDrag>
+#endif //defined(Q_OS_MAC)
+
 #define DIALOG_MAX_FORMULA_HEIGHT 64
 
 #if defined(Q_CC_CLANG)
@@ -111,7 +116,17 @@ TMainWindow::TMainWindow(QWidget *parent)
 #if defined(Q_OS_MAC)
     // On Mac deafault icon size is 32x32.
     ui->toolBarGradation->setIconSize(QSize(24, 24));
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 2)
+    // Mac OS Dock Menu
+    QMenu *menu = new QMenu(this);
+    connect(menu, &QMenu::aboutToShow, this, &TMainWindow::AboutToShowDockMenu);
+    AboutToShowDockMenu();
+
+    extern void qt_mac_set_dock_menu(QMenu *);
+    qt_mac_set_dock_menu(menu);
 #endif
+#endif //defined(Q_OS_MAC)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -204,7 +219,7 @@ bool TMainWindow::LoadFile(const QString &path)
             }
         }
 
-        VlpCreateLock(lock, QFileInfo(path).fileName());
+        VlpCreateLock(lock, path);
 
         if (not lock->IsLocked())
         {
@@ -652,31 +667,7 @@ void TMainWindow::FileSaveAs()
 void TMainWindow::AboutToShowWindowMenu()
 {
     ui->menuWindow->clear();
-    QAction *action = ui->menuWindow->addAction(tr("&New Window"), this, SLOT(NewWindow()));
-    action->setMenuRole(QAction::NoRole);
-    ui->menuWindow->addSeparator();
-
-    QList<TMainWindow*> windows = qApp->MainWindows();
-    for (int i = 0; i < windows.count(); ++i)
-    {
-        TMainWindow *window = windows.at(i);
-
-        QString title = window->windowTitle();
-        const int index = title.lastIndexOf("[*]");
-        if (index != -1)
-        {
-            window->isWindowModified() ? title.replace(index, 3, "*") : title.replace(index, 3, "");
-        }
-
-        QAction *action = ui->menuWindow->addAction(title, this, SLOT(ShowWindow()));
-        action->setData(i);
-        action->setCheckable(true);
-        action->setMenuRole(QAction::NoRole);
-        if (window == this)
-        {
-            action->setChecked(true);
-        }
-    }
+    CreateWindowMenu(ui->menuWindow);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -689,6 +680,7 @@ void TMainWindow::ShowWindow()
         {
             const int offset = qvariant_cast<int>(v);
             QList<TMainWindow*> windows = qApp->MainWindows();
+            windows.at(offset)->raise();
             windows.at(offset)->activateWindow();
         }
     }
@@ -707,6 +699,43 @@ void TMainWindow::AboutQt()
 {
     QMessageBox::aboutQt(this, tr("About Qt"));
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+#if defined(Q_OS_MAC)
+void TMainWindow::AboutToShowDockMenu()
+{
+    if (QMenu *menu = qobject_cast<QMenu *>(sender()))
+    {
+        menu->clear();
+        CreateWindowMenu(menu);
+
+        menu->addSeparator();
+
+        menu->addAction(ui->actionOpenIndividual);
+        menu->addAction(ui->actionOpenStandard);
+        menu->addAction(ui->actionOpenTemplate);
+
+        menu->addSeparator();
+
+        QAction *actionPreferences = menu->addAction(tr("Preferences"));
+        actionPreferences->setMenuRole(QAction::NoRole);
+        connect(actionPreferences, &QAction::triggered, this, &TMainWindow::Preferences);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TMainWindow::OpenAt(QAction *where)
+{
+    const QString path = curFile.left(curFile.indexOf(where->text())) + where->text();
+    if (path == curFile)
+    {
+        return;
+    }
+    QProcess process;
+    process.start(QStringLiteral("/usr/bin/open"), QStringList() << path, QIODevice::ReadOnly);
+    process.waitForFinished();
+}
+#endif //defined(Q_OS_MAC)
 
 //---------------------------------------------------------------------------------------------------------------------
 void TMainWindow::SaveGivenName()
@@ -1100,7 +1129,7 @@ void TMainWindow::ImportFromPattern()
         return;
     }
 
-    VLockGuard<char> tmp(QFileInfo(mPath).fileName());
+    VLockGuard<char> tmp(mPath);
     if (not tmp.IsLocked())
     {
         qCCritical(tMainWindow, "%s", qUtf8Printable(tr("This file already opened in another window.")));
@@ -1990,6 +2019,31 @@ void TMainWindow::SetCurrentFile(const QString &fileName)
     }
     shownName += "[*]";
     setWindowTitle(shownName);
+    setWindowFilePath(curFile);
+
+#if defined(Q_OS_MAC)
+    static QIcon fileIcon = QIcon(QApplication::applicationDirPath() +
+                                  QLatin1Literal("/../Resources/measurements.icns"));
+    QIcon icon;
+    if (not curFile.isEmpty())
+    {
+        if (not isWindowModified())
+        {
+            icon = fileIcon;
+        }
+        else
+        {
+            static QIcon darkIcon;
+
+            if (darkIcon.isNull())
+            {
+                darkIcon = QIcon(darkenPixmap(fileIcon.pixmap(16, 16)));
+            }
+            icon = darkIcon;
+        }
+    }
+    setWindowIcon(icon);
+#endif //defined(Q_OS_MAC)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -2014,17 +2068,32 @@ bool TMainWindow::MaybeSave()
             return true;// Don't ask if file was created without modifications.
         }
 
-        QMessageBox::StandardButton ret;
-        ret = QMessageBox::warning(this, tr("Unsaved changes"), tr("Measurements have been modified.\n"
-                                                                   "Do you want to save your changes?"),
-                                   QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        if (ret == QMessageBox::Save)
+        QMessageBox *messageBox = new QMessageBox(tr("Unsaved changes"),
+                                                  tr("Measurements have been modified.\n"
+                                                     "Do you want to save your changes?"),
+                                                  QMessageBox::Warning, QMessageBox::Yes, QMessageBox::No,
+                                                  QMessageBox::Cancel, this, Qt::Sheet);
+
+        messageBox->setDefaultButton(QMessageBox::Yes);
+        messageBox->setEscapeButton(QMessageBox::Cancel);
+
+        messageBox->setButtonText(QMessageBox::Yes, curFile.isEmpty() ? tr("Save...") : tr("Save"));
+        messageBox->setButtonText(QMessageBox::No, tr("Don't Save"));
+
+        messageBox->setWindowModality(Qt::ApplicationModal);
+        const QMessageBox::StandardButton ret = static_cast<QMessageBox::StandardButton>(messageBox->exec());
+
+        switch (ret)
         {
-            FileSave();
-        }
-        else if (ret == QMessageBox::Cancel)
-        {
-            return false;
+            case QMessageBox::Yes:
+                FileSave();
+                return true;
+            case QMessageBox::No:
+                return true;
+            case QMessageBox::Cancel:
+                return false;
+            default:
+                break;
         }
     }
     return true;
@@ -2515,7 +2584,7 @@ bool TMainWindow::LoadFromExistingFile(const QString &path)
             }
         }
 
-        VlpCreateLock(lock, QFileInfo(path).fileName());
+        VlpCreateLock(lock, path);
 
         if (not lock->IsLocked())
         {
@@ -2612,6 +2681,38 @@ bool TMainWindow::LoadFromExistingFile(const QString &path)
     }
 
     return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TMainWindow::CreateWindowMenu(QMenu *menu)
+{
+    SCASSERT(menu != nullptr);
+
+    QAction *action = menu->addAction(tr("&New Window"), this, SLOT(NewWindow()));
+    action->setMenuRole(QAction::NoRole);
+    menu->addSeparator();
+
+    QList<TMainWindow*> windows = qApp->MainWindows();
+    for (int i = 0; i < windows.count(); ++i)
+    {
+        TMainWindow *window = windows.at(i);
+
+        QString title = QString("%1. %2").arg(i+1).arg(window->windowTitle());
+        const int index = title.lastIndexOf("[*]");
+        if (index != -1)
+        {
+            window->isWindowModified() ? title.replace(index, 3, "*") : title.replace(index, 3, "");
+        }
+
+        QAction *action = menu->addAction(title, this, SLOT(ShowWindow()));
+        action->setData(i);
+        action->setCheckable(true);
+        action->setMenuRole(QAction::NoRole);
+        if (window->isActiveWindow())
+        {
+            action->setChecked(true);
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

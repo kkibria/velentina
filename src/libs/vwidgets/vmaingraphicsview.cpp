@@ -194,25 +194,22 @@ void GraphicsViewZoom::FictiveSceneRect(QGraphicsScene *sc, QGraphicsView *view)
     const QPointF b = view->mapToScene(view->viewport()->width(), view->viewport()->height());
     QRectF viewRect = QRectF( a, b );
 
+    //Scale view
+    QLineF topLeftRay(viewRect.center(), viewRect.topLeft());
+    topLeftRay.setLength(topLeftRay.length()*2);
+
+    QLineF bottomRightRay(viewRect.center(), viewRect.bottomRight());
+    bottomRightRay.setLength(bottomRightRay.length()*2);
+
+    viewRect = QRectF(topLeftRay.p2(), bottomRightRay.p2());
+
     //Calculate scene rect
     const QRectF sceneRect = sc->sceneRect();
 
-    if (not sceneRect.contains(viewRect))
-    {//Scene less than view
-        //Scale view
-        QLineF topLeftRay(viewRect.center(), viewRect.topLeft());
-        topLeftRay.setLength(topLeftRay.length()*2);
+    //Unite two rects
+    const QRectF newRect = sceneRect.united(viewRect);
 
-        QLineF bottomRightRay(viewRect.center(), viewRect.bottomRight());
-        bottomRightRay.setLength(bottomRightRay.length()*2);
-
-        viewRect = QRectF(topLeftRay.p2(), bottomRightRay.p2());
-
-        //Unite two rects
-        const QRectF newRect = sceneRect.united(viewRect);
-
-        sc->setSceneRect(newRect);
-    }
+    sc->setSceneRect(newRect);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -355,7 +352,7 @@ void VMainGraphicsView::NewSceneRect(QGraphicsScene *sc, QGraphicsView *view)
     //Calculate view rect
     //to receive the currently visible area, map the widgets bounds to the scene
     const QPointF a = view->mapToScene(0, 0 );
-    const QPointF b = view->mapToScene(view->viewport()->width(), view->viewport()->height());
+    const QPointF b = view->mapToScene(view->width(), view->height());
     const QRectF viewRect = QRectF( a, b );
 
     //Calculate scene rect

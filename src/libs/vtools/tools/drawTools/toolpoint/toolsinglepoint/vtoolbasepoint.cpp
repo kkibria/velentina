@@ -128,19 +128,6 @@ QVariant VToolBasePoint::itemChange(QGraphicsItem::GraphicsItemChange change, co
 {
     if (change == ItemPositionChange && scene())
     {
-        // value - this is new position.
-        QPointF newPos = value.toPointF();
-        QRectF rect = scene()->sceneRect();
-        if (rect.contains(newPos) == false)
-        {
-            // Save element into rect of scene.
-            newPos.setX(qMin(rect.right(), qMax(newPos.x(), rect.left())));
-            newPos.setY(qMin(rect.bottom(), qMax(newPos.y(), rect.top())));
-            return newPos;
-        }
-    }
-    if (change == ItemPositionHasChanged && scene())
-    {
         // Each time we move something we call recalculation scene rect. In some cases this can cause moving
         // objects positions. And this cause infinite redrawing. That's why we wait the finish of saving the last move.
         static bool changeFinished = true;
@@ -153,9 +140,10 @@ QVariant VToolBasePoint::itemChange(QGraphicsItem::GraphicsItemChange change, co
             MoveSPoint *moveSP = new MoveSPoint(doc, newPos.x(), newPos.y(), id, this->scene());
             connect(moveSP, &MoveSPoint::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
             qApp->getUndoStack()->push(moveSP);
-            if (scene())
+            const QList<QGraphicsView *> viewList = scene()->views();
+            if (not viewList.isEmpty())
             {
-                if (QGraphicsView *view = scene()->views().at(0))
+                if (QGraphicsView *view = viewList.at(0))
                 {
                     view->ensureVisible(this);
                 }
@@ -163,7 +151,7 @@ QVariant VToolBasePoint::itemChange(QGraphicsItem::GraphicsItemChange change, co
             changeFinished = true;
         }
     }
-    return QGraphicsItem::itemChange(change, value);
+    return VToolSinglePoint::itemChange(change, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
