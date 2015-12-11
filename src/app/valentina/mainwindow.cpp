@@ -1054,7 +1054,7 @@ void MainWindow::OpenRecentFile()
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::PatternProperties()
 {
-    DialogPatternProperties proper(doc, this);
+    DialogPatternProperties proper(doc, pattern, this);
     connect(&proper, &DialogPatternProperties::UpdateGradation, this, &MainWindow::UpdateGradation);
     proper.exec();
 }
@@ -1387,17 +1387,7 @@ void MainWindow::ToolBarOption()
         gradationHeights = SetGradationList(gradationHeightsLabel, listHeights);
 
         // set default height
-        {
-            const qint32 index = gradationHeights->findText(QString("%1").arg(static_cast<int>(pattern->height())));
-            if (index != -1)
-            {
-                gradationHeights->setCurrentIndex(index);
-            }
-            else
-            {
-                pattern->SetHeight(gradationHeights->currentText().toInt());
-            }
-        }
+        SetDefaultHeight();
 
         connect(gradationHeights.data(),
                 static_cast<void (QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
@@ -1407,17 +1397,7 @@ void MainWindow::ToolBarOption()
         gradationSizes = SetGradationList(gradationSizesLabel, listSizes);
 
         // set default size
-        {
-            const qint32 index = gradationSizes->findText(QString("%1").arg(static_cast<int>(pattern->size())));
-            if (index != -1)
-            {
-                gradationSizes->setCurrentIndex(index);
-            }
-            else
-            {
-                pattern->SetSize(gradationSizes->currentText().toInt());
-            }
-        }
+        SetDefaultSize();
 
         connect(gradationSizes.data(),
                 static_cast<void (QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
@@ -2654,6 +2634,56 @@ void MainWindow::ChangedHeight(const QString &text)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::SetDefaultHeight()
+{
+    const QString defHeight = QString().setNum(static_cast<int>(UnitConvertor(doc->GetDefCustomHeight(),
+                                                                           *pattern->GetPatternUnit(), Unit::Cm)));
+    int index = gradationHeights->findText(defHeight);
+    if (index != -1)
+    {
+        gradationHeights->setCurrentIndex(index);
+    }
+    else
+    {
+        const int height = static_cast<int>(UnitConvertor(pattern->height(), *pattern->GetPatternUnit(), Unit::Cm));
+        index = gradationHeights->findText(QString().setNum(height));
+        if (index != -1)
+        {
+            gradationHeights->setCurrentIndex(index);
+        }
+        else
+        {
+            pattern->SetHeight(gradationHeights->currentText().toInt());
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::SetDefaultSize()
+{
+    const QString defSize = QString().setNum(static_cast<int>(UnitConvertor(doc->GetDefCustomSize(),
+                                                                         *pattern->GetPatternUnit(), Unit::Cm)));
+    int index = gradationSizes->findText(defSize);
+    if (index != -1)
+    {
+        gradationSizes->setCurrentIndex(index);
+    }
+    else
+    {
+        const int size = static_cast<int>(UnitConvertor(pattern->size(), *pattern->GetPatternUnit(), Unit::Cm));
+        index = gradationSizes->findText(QString().setNum(size));
+        if (index != -1)
+        {
+            gradationSizes->setCurrentIndex(index);
+        }
+        else
+        {
+            pattern->SetSize(gradationSizes->currentText().toInt());
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief ActionTable show table with variables.
  * @param checked true - button checked.
@@ -3854,7 +3884,7 @@ void MainWindow::DoExport(const VCommandLinePtr &expParams)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::SetSize(const QString &text)
+bool MainWindow::SetSize(const QString &text)
 {
     if (not qApp->IsGUIMode())
     {
@@ -3870,29 +3900,34 @@ void MainWindow::SetSize(const QString &text)
                 }
                 else
                 {
-                    qCWarning(vMainWindow, "%s",
+                    qCCritical(vMainWindow, "%s",
                               qUtf8Printable(tr("Not supported size value '%1' for this pattern file.").arg(text)));
+                    return false;
                 }
             }
             else
             {
-                qCWarning(vMainWindow, "%s",
+                qCCritical(vMainWindow, "%s",
                           qUtf8Printable(tr("Couldn't set size. Need a file with standard measurements.")));
+                return false;
             }
         }
         else
         {
-            qCWarning(vMainWindow, "%s", qUtf8Printable(tr("Couldn't set size. File wasn't opened.")));
+            qCCritical(vMainWindow, "%s", qUtf8Printable(tr("Couldn't set size. File wasn't opened.")));
+            return false;
         }
     }
     else
     {
         qCWarning(vMainWindow, "%s", qUtf8Printable(tr("The method %1 does nothing in GUI mode").arg(Q_FUNC_INFO)));
+        return false;
     }
+    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::SetHeight(const QString &text)
+bool MainWindow::SetHeight(const QString &text)
 {
     if (not qApp->IsGUIMode())
     {
@@ -3908,25 +3943,30 @@ void MainWindow::SetHeight(const QString &text)
                 }
                 else
                 {
-                    qCWarning(vMainWindow, "%s",
+                    qCCritical(vMainWindow, "%s",
                               qUtf8Printable(tr("Not supported height value '%1' for this pattern file.").arg(text)));
+                    return false;
                 }
             }
             else
             {
-                qCWarning(vMainWindow, "%s",
+                qCCritical(vMainWindow, "%s",
                           qUtf8Printable(tr("Couldn't set height. Need a file with standard measurements.")));
+                return false;
             }
         }
         else
         {
-            qCWarning(vMainWindow, "%s", qUtf8Printable(tr("Couldn't set height. File wasn't opened.")));
+            qCCritical(vMainWindow, "%s", qUtf8Printable(tr("Couldn't set height. File wasn't opened.")));
+            return false;
         }
     }
     else
     {
         qCWarning(vMainWindow, "%s", qUtf8Printable(tr("The method %1 does nothing in GUI mode").arg(Q_FUNC_INFO)));
+        return false;
     }
+    return true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3960,16 +4000,18 @@ void MainWindow::ProcessCMD()
             return; // process only one input file
         }
 
+        bool hSetted = true;
+        bool sSetted = true;
         if (loaded && (cmd->IsTestModeEnabled() || cmd->IsExportEnabled()))
         {
             if (cmd->IsSetGradationSize())
             {
-                SetSize(cmd->OptGradationSize());
+                sSetted = SetSize(cmd->OptGradationSize());
             }
 
             if (cmd->IsSetGradationHeight())
             {
-                SetHeight(cmd->OptGradationHeight());
+                hSetted = SetHeight(cmd->OptGradationHeight());
             }
         }
 
@@ -3977,10 +4019,15 @@ void MainWindow::ProcessCMD()
         {
             if (cmd->IsExportEnabled())
             {
-                if (loaded)
+                if (loaded && hSetted && sSetted)
                 {
                     DoExport(cmd);
                     return; // process only one input file
+                }
+                else
+                {
+                    qApp->exit(V_EX_DATAERR);
+                    return;
                 }
                 break;
             }

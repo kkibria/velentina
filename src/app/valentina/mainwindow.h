@@ -240,6 +240,9 @@ private:
     VToolOptionsPropertyBrowser *toolOptions;
     std::shared_ptr<VLockGuard<char>> lock;
 
+    void               SetDefaultHeight();
+    void               SetDefaultSize();
+
     void               ToolBarOption();
     void               ToolBarStages();
     void               ToolBarDraws();
@@ -312,8 +315,8 @@ private:
     void               ReopenFilesAfterCrash(QStringList &args);
     void               DoExport(const VCommandLinePtr& expParams);
 
-    void               SetSize(const QString &text);
-    void               SetHeight(const QString & text);
+    bool               SetSize(const QString &text);
+    bool               SetHeight(const QString & text);
 
     QString            GetPatternFileName();
     QString            GetMeasurementFileName();
