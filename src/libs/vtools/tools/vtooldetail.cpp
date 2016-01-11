@@ -28,9 +28,9 @@
 
 #include "vtooldetail.h"
 #include "nodeDetails/nodedetails.h"
-#include "../../vgeometry/varc.h"
-#include "../../vgeometry/vsplinepath.h"
-#include "../../vwidgets/vmaingraphicsscene.h"
+#include "../vgeometry/varc.h"
+#include "../vgeometry/vsplinepath.h"
+#include "../vwidgets/vmaingraphicsscene.h"
 #include "../dialogs/tools/dialogtool.h"
 #include "../dialogs/tools/dialogdetail.h"
 #include "../undocommands/savedetailoptions.h"
@@ -74,8 +74,9 @@ const QString VToolDetail::NodeSplinePath   = QStringLiteral("NodeSplinePath");
  * @param parent parent object
  */
 VToolDetail::VToolDetail(VAbstractPattern *doc, VContainer *data, const quint32 &id, const Source &typeCreation,
-                         VMainGraphicsScene *scene, QGraphicsItem *parent)
-    :VAbstractTool(doc, data, id), QGraphicsPathItem(parent), dialog(nullptr), sceneDetails(scene)
+                         VMainGraphicsScene *scene, const QString &drawName, QGraphicsItem *parent)
+    :VAbstractTool(doc, data, id), VNoBrushScalePathItem(parent), dialog(nullptr), sceneDetails(scene),
+      drawName(drawName), seamAllowance(new VNoBrushScalePathItem(this))
 {
     VDetail detail = data->GetDetail(id);
     for (int i = 0; i< detail.CountNode(); ++i)
@@ -102,6 +103,10 @@ VToolDetail::VToolDetail(VAbstractPattern *doc, VContainer *data, const quint32 
     this->setFlag(QGraphicsItem::ItemIsMovable, true);
     this->setFlag(QGraphicsItem::ItemIsSelectable, true);
     RefreshGeometry();
+
+    this->setBrush(QBrush(Qt::Dense7Pattern));
+    seamAllowance->setBrush(QBrush(Qt::FDiagPattern));
+
     this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     this->setFlag(QGraphicsItem::ItemIsFocusable, true);
 
@@ -208,7 +213,7 @@ void VToolDetail::Create(DialogTool *dialog, VMainGraphicsScene *scene, VAbstrac
  * @param typeCreation way we create this tool.
  */
 void VToolDetail::Create(const quint32 &_id, const VDetail &newDetail, VMainGraphicsScene *scene, VAbstractPattern *doc,
-                         VContainer *data, const Document &parse, const Source &typeCreation)
+                         VContainer *data, const Document &parse, const Source &typeCreation, const QString &drawName)
 {
     quint32 id = _id;
     if (typeCreation == Source::FromGui || typeCreation == Source::FromTool)
@@ -226,7 +231,7 @@ void VToolDetail::Create(const quint32 &_id, const VDetail &newDetail, VMainGrap
     VAbstractTool::AddRecord(id, Tool::Detail, doc);
     if (parse == Document::FullParse)
     {
-        VToolDetail *detail = new VToolDetail(doc, data, id, typeCreation, scene);
+        VToolDetail *detail = new VToolDetail(doc, data, id, typeCreation, scene, drawName);
         scene->addItem(detail);
         connect(detail, &VToolDetail::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
         QHash<quint32, VDataTool*>* tools = doc->getTools();
@@ -305,7 +310,7 @@ void VToolDetail::AddToFile()
        AddNode(doc, domElement, detail.at(i));
     }
 
-    AddDet *addDet = new AddDet(domElement, doc, detail);
+    AddDet *addDet = new AddDet(domElement, doc, detail, drawName);
     connect(addDet, &AddDet::NeedFullParsing, doc, &VAbstractPattern::NeedFullParsing);
     qApp->getUndoStack()->push(addDet);
 }
@@ -404,7 +409,7 @@ void VToolDetail::mousePressEvent(QGraphicsSceneMouseEvent *event)
             event->accept();
         }
     }
-    QGraphicsPathItem::mousePressEvent(event);
+    VNoBrushScalePathItem::mousePressEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -565,9 +570,23 @@ void VToolDetail::ShowVisualization(bool show)
 void VToolDetail::RefreshGeometry()
 {
     this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
-    VDetail detail = VAbstractTool::data.GetDetail(id);
-    this->setPath(detail.ContourPath(this->getData()));
+
+    const VDetail detail = VAbstractTool::data.GetDetail(id);
+    QPainterPath mainPath = detail.ContourPath(this->getData());
+    this->setPath(mainPath);
     this->setPos(detail.getMx(), detail.getMy());
+
+    if (detail.getSeamAllowance())
+    {
+        mainPath.addPath(detail.SeamAllowancePath(this->getData()));
+        mainPath.setFillRule(Qt::OddEvenFill);
+        seamAllowance->setPath(mainPath);
+    }
+    else
+    {
+        seamAllowance->setPath(QPainterPath());
+    }
+
     this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 }
 
@@ -602,6 +621,7 @@ void VToolDetail::InitTool(VMainGraphicsScene *scene, const VNodeDetail &node)
     SCASSERT(tool != nullptr);
     connect(tool, &Tool::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
     tool->setParentItem(this);
+    tool->SetParentType(ParentType::Item);
     doc->IncrementReferens(node.getId());
 }
 

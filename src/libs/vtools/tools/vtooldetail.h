@@ -30,7 +30,7 @@
 #define VTOOLDETAIL_H
 
 #include "vabstracttool.h"
-#include <QGraphicsPathItem>
+#include "../vwidgets/vnobrushscalepathitem.h"
 
 class VMainGraphicsScene;
 class DialogTool;
@@ -38,12 +38,12 @@ class DialogTool;
 /**
  * @brief The VToolDetail class for working with detail.
  */
-class VToolDetail: public VAbstractTool, public QGraphicsPathItem
+class VToolDetail: public VAbstractTool, public VNoBrushScalePathItem
 {
     Q_OBJECT
 public:
     VToolDetail(VAbstractPattern *doc, VContainer *data, const quint32 &id, const Source &typeCreation,
-                VMainGraphicsScene *scene, QGraphicsItem * parent = nullptr);
+                VMainGraphicsScene *scene, const QString &drawName, QGraphicsItem * parent = nullptr);
     ~VToolDetail();
 
     virtual void       setDialog();
@@ -65,7 +65,7 @@ public:
     static void        Create(DialogTool *dialog, VMainGraphicsScene *scene, VAbstractPattern *doc, VContainer *data);
     static void        Create(const quint32 &_id, const VDetail &newDetail, VMainGraphicsScene  *scene,
                               VAbstractPattern *doc, VContainer *data, const Document &parse,
-                              const Source &typeCreation);
+                              const Source &typeCreation, const QString &drawName = QString());
     static const QString TagName;
     static const QString TagNode;
     static const QString AttrSupplement;
@@ -109,6 +109,9 @@ private:
 
     /** @brief sceneDetails pointer to the scene. */
     VMainGraphicsScene *sceneDetails;
+    QString            drawName;
+
+    VNoBrushScalePathItem *seamAllowance;
 
     void               RefreshGeometry ();
     template <typename Tool>

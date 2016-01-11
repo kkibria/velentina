@@ -2264,7 +2264,7 @@ void VPattern::ParseToolsElement(VMainGraphicsScene *scene, const QDomElement &d
                 const QVector<VDetail> vector = VToolUnionDetails::GetDetailFromFile(this, domElement);
 
                 VToolUnionDetails::Create(id, vector[0], vector[1], 0, 0, indexD1, indexD2, scene, this, data, parse,
-                                        Source::FromFile);
+                                          Source::FromFile);
             }
             catch (const VExceptionBadId &e)
             {
@@ -2547,7 +2547,16 @@ void VPattern::SetDefCustom(bool value)
     QDomElement domElement = domNode.toElement();
     if (domElement.isNull() == false)
     {
-        SetAttribute(domElement, AttrCustom, value);
+        if (value == false)
+        {
+            domElement.removeAttribute(AttrDefHeight);
+            SetDefCustomHeight(0);
+            SetDefCustomSize(0);
+        }
+        else
+        {
+            SetAttribute(domElement, AttrCustom, value);
+        }
         modified = true;
     }
     else

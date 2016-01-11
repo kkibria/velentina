@@ -52,7 +52,8 @@ SOURCES += \
     tst_vlockguard.cpp \
     tst_misc.cpp \
     tst_vcommandline.cpp \
-    tst_tstranslation.cpp
+    tst_tstranslation.cpp \
+    tst_vdetail.cpp
 
 HEADERS += \
     tst_vposter.h \
@@ -72,7 +73,8 @@ HEADERS += \
     tst_vlockguard.h \
     tst_misc.h \
     tst_vcommandline.h \
-    tst_tstranslation.h
+    tst_tstranslation.h \
+    tst_vdetail.h
 
 # Set using ccache. Function enable_ccache() defined in common.pri.
 $$enable_ccache()
@@ -250,7 +252,28 @@ VALENTINA_TEST_FILES += \
 
 COLLECTION_FILES += \
     $${PWD}/../../app/share/tables/standard/GOST_man_ru.vst \
-    $${PWD}/../../app/share/collection/jacketМ6_30-110.val
+    $${PWD}/../../app/share/collection/bra.val \
+    $${PWD}/../../app/share/collection/bra.vit \
+    $${PWD}/../../app/share/collection/jacketМ1_52-176.val \
+    $${PWD}/../../app/share/collection/jacketМ2_40-146.val \
+    $${PWD}/../../app/share/collection/jacketМ3_40-146.val \
+    $${PWD}/../../app/share/collection/jacketМ4_40-146.val \
+    $${PWD}/../../app/share/collection/jacketМ5_30-110.val \
+    $${PWD}/../../app/share/collection/jacketМ6_30-110.val \
+    $${PWD}/../../app/share/collection/pantsМ1_52-176.val \
+    $${PWD}/../../app/share/collection/pantsМ2_40-146.val \
+    $${PWD}/../../app/share/collection/pantsМ7.val \
+    $${PWD}/../../app/share/collection/TShirt_test.val \
+    $${PWD}/../../app/share/collection/TestDart.val \
+    $${PWD}/../../app/share/collection/patrón_blusa.val \
+    $${PWD}/../../app/share/collection/blusa.vit \
+    $${PWD}/../../app/share/collection/PajamaTopWrap2.val \
+    $${PWD}/../../app/share/collection/Susan.vit \
+    $${PWD}/../../app/share/collection/Moulage_0.5_armhole_neckline.val \
+    $${PWD}/../../app/share/collection/0.7_Armhole_adjustment_0.10.val \
+    $${PWD}/../../app/share/collection/my_calculated_measurements_for_val.vit \
+    $${PWD}/../../app/share/collection/Keiko_skirt.val \
+    $${PWD}/../../app/share/collection/keiko.vit
 
 
 # Compilation will fail without this files after we added them to this section.

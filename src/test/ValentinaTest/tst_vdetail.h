@@ -1,14 +1,14 @@
 /************************************************************************
  **
- **  @file   adduniondetails.h
+ **  @file   tst_vdetail.h
  **  @author Roman Telezhynskyi <dismine(at)gmail.com>
- **  @date   15 6, 2014
+ **  @date   9 1, 2016
  **
  **  @brief
  **  @copyright
  **  This source code is part of the Valentine project, a pattern making
  **  program, whose allow create and modeling patterns of clothing.
- **  Copyright (C) 2013-2015 Valentina project
+ **  Copyright (C) 2016 Valentina project
  **  <https://bitbucket.org/dismine/valentina> All Rights Reserved.
  **
  **  Valentina is free software: you can redistribute it and/or modify
@@ -26,21 +26,22 @@
  **
  *************************************************************************/
 
-#ifndef ADDUNIONDETAILS_H
-#define ADDUNIONDETAILS_H
+#ifndef TST_VDETAIL_H
+#define TST_VDETAIL_H
 
-#include "vundocommand.h"
+#include "abstracttest.h"
 
-class AddUnionDetails : public VUndoCommand
+class TST_VDetail : public AbstractTest
 {
     Q_OBJECT
 public:
-    AddUnionDetails(const QDomElement &xml, VAbstractPattern *doc, QUndoCommand *parent = 0);
-    virtual ~AddUnionDetails() Q_DECL_OVERRIDE;
-    virtual void undo() Q_DECL_OVERRIDE;
-    virtual void redo() Q_DECL_OVERRIDE;
+    explicit TST_VDetail(QObject *parent = nullptr);
+
+private slots:
+    void ClearLoop();
+
 private:
-    Q_DISABLE_COPY(AddUnionDetails)
+    Q_DISABLE_COPY(TST_VDetail)
 };
 
-#endif // ADDUNIONDETAILS_H
+#endif // TST_VDETAIL_H

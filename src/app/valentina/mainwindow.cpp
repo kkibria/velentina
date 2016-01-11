@@ -2537,6 +2537,11 @@ void MainWindow::Layout()
         {
             ActionDraw(true);
         }
+        else
+        {
+            ui->actionDetails->setChecked(false);
+            ui->actionLayout->setChecked(false);
+        }
         SetLayoutModeActions(false);
     }
 }
@@ -2713,8 +2718,7 @@ void MainWindow::ChangedHeight(const QString &text)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::SetDefaultHeight()
 {
-    const QString defHeight = QString().setNum(static_cast<int>(UnitConvertor(doc->GetDefCustomHeight(),
-                                                                           *pattern->GetPatternUnit(), Unit::Cm)));
+    const QString defHeight = QString().setNum(doc->GetDefCustomHeight());
     int index = gradationHeights->findText(defHeight);
     if (index != -1)
     {
@@ -2727,18 +2731,14 @@ void MainWindow::SetDefaultHeight()
         {
             gradationHeights->setCurrentIndex(index);
         }
-        else
-        {
-            pattern->SetHeight(gradationHeights->currentText().toInt());
-        }
     }
+    pattern->SetHeight(gradationHeights->currentText().toInt());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::SetDefaultSize()
 {
-    const QString defSize = QString().setNum(static_cast<int>(UnitConvertor(doc->GetDefCustomSize(),
-                                                                         *pattern->GetPatternUnit(), Unit::Cm)));
+    const QString defSize = QString().setNum(doc->GetDefCustomSize());
     int index = gradationSizes->findText(defSize);
     if (index != -1)
     {
@@ -2751,11 +2751,8 @@ void MainWindow::SetDefaultSize()
         {
             gradationSizes->setCurrentIndex(index);
         }
-        else
-        {
-            pattern->SetSize(gradationSizes->currentText().toInt());
-        }
     }
+    pattern->SetSize(gradationSizes->currentText().toInt());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -4052,10 +4049,8 @@ void MainWindow::ProcessCMD()
     const VCommandLinePtr cmd = qApp->CommandLine();
     auto args = cmd->OptInputFileNames();
 
-    //Before we load pattern show window.
     if (VApplication::IsGUIMode())
     {
-        show();
         ReopenFilesAfterCrash(args);
     }
     else
