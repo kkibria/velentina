@@ -29,10 +29,10 @@
 #include "dialogpointfromarcandtangent.h"
 #include "ui_dialogpointfromarcandtangent.h"
 
-#include "../../libs/vgeometry/vpointf.h"
-#include "../../libs/vpatterndb/vcontainer.h"
+#include "../vgeometry/vpointf.h"
+#include "../vpatterndb/vcontainer.h"
 #include "../../visualization/vistoolpointfromarcandtangent.h"
-#include "../../libs/vwidgets/vmaingraphicsscene.h"
+#include "../vwidgets/vmaingraphicsscene.h"
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogPointFromArcAndTangent::DialogPointFromArcAndTangent(const VContainer *data, const quint32 &toolId,
@@ -40,6 +40,10 @@ DialogPointFromArcAndTangent::DialogPointFromArcAndTangent(const VContainer *dat
     :DialogTool(data, toolId, parent), ui(new Ui::DialogPointFromArcAndTangent)
 {
     ui->setupUi(this);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    ui->lineEditNamePoint->setClearButtonEnabled(true);
+#endif
 
     ui->lineEditNamePoint->setText(qApp->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
     labelEditNamePoint = ui->labelEditNamePoint;
@@ -54,8 +58,6 @@ DialogPointFromArcAndTangent::DialogPointFromArcAndTangent(const VContainer *dat
     connect(ui->lineEditNamePoint, &QLineEdit::textChanged, this, &DialogPointFromArcAndTangent::NamePointChanged);
 
     vis = new VisToolPointFromArcAndTangent(data);
-
-    FixateSize();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -111,7 +113,7 @@ CrossCirclesPoint DialogPointFromArcAndTangent::GetCrossCirclesPoint() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogPointFromArcAndTangent::SetCrossCirclesPoint(CrossCirclesPoint &p)
+void DialogPointFromArcAndTangent::SetCrossCirclesPoint(const CrossCirclesPoint &p)
 {
     const qint32 index = ui->comboBoxResult->findData(static_cast<int>(p));
     if (index != -1)

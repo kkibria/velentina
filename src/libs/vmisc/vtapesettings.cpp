@@ -31,138 +31,16 @@
 #include <QApplication>
 #include <QDir>
 
-const QString VTapeSettings::SettingPathsTemplates      = QStringLiteral("paths/templates");
 const QString VTapeSettings::SettingDataBaseGeometry    = QStringLiteral("database/geometry");
+
+const QString VTapeSettings::SettingDefHeight = QStringLiteral("gradation/defHeight");
+const QString VTapeSettings::SettingDefSize   = QStringLiteral("gradation/defHeight");
 
 //---------------------------------------------------------------------------------------------------------------------
 VTapeSettings::VTapeSettings(Format format, Scope scope, const QString &organization, const QString &application,
                              QObject *parent)
     :VCommonSettings(format, scope, organization, application, parent)
 {
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-QString VTapeSettings::StandardTablesPath() const
-{
-    const QString stPath = QStringLiteral("/tables/standard");
-#ifdef Q_OS_WIN
-    QDir dir(QApplication::applicationDirPath() + stPath);
-    if (dir.exists())
-    {
-        return dir.absolutePath();
-    }
-    else
-    {
-        return QApplication::applicationDirPath() + "../../valentina/bin" + stPath;
-    }
-#elif defined(Q_OS_MAC)
-    QDir dirBundle(QApplication::applicationDirPath() + QStringLiteral("/../Resources") + stPath);
-    if (dirBundle.exists())
-    {
-        return dirBundle.absolutePath();
-    }
-    else
-    {
-        QDir dir1(QApplication::applicationDirPath() + stPath);
-        if (dir1.exists())
-        {
-            return dir1.absolutePath();
-        }
-
-        QDir dir2(QApplication::applicationDirPath() + "../../valentina/bin" + stPath);
-        if (dir2.exists())
-        {
-            return dir2.absolutePath();
-        }
-        else
-        {
-            return QStringLiteral("/usr/share/valentina/tables/standard");
-        }
-    }
-#else // Unix
-    #ifdef QT_DEBUG
-        QDir dir(QApplication::applicationDirPath() + stPath);
-        if (dir.exists())
-        {
-            return dir.absolutePath();
-        }
-        else
-        {
-            return QApplication::applicationDirPath() + "../../valentina/bin" + stPath;
-        }
-    #else
-        QDir dir1(QApplication::applicationDirPath() + stPath);
-        if (dir1.exists())
-        {
-            return dir1.absolutePath();
-        }
-
-        QDir dir2(QApplication::applicationDirPath() + "../../valentina/bin" + stPath);
-        if (dir2.exists())
-        {
-            return dir2.absolutePath();
-        }
-        else
-        {
-            return QStringLiteral("/usr/share/valentina/tables/standard");
-        }
-    #endif
-#endif
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-QString VTapeSettings::TemplatesPath() const
-{
-    const QString stPath = QStringLiteral("/tables/templates");
-    const QString unixFullPath = QStringLiteral("/usr/share/valentina/tables/templates");
-#ifdef Q_OS_WIN
-    return QApplication::applicationDirPath() + stPath;
-#elif defined(Q_OS_MAC)
-    QDir dirBundle(QApplication::applicationDirPath() + QStringLiteral("/../Resources") + stPath);
-    if (dirBundle.exists())
-    {
-        return dirBundle.absolutePath();
-    }
-    else
-    {
-        QDir dir(QApplication::applicationDirPath() + stPath);
-        if (dir.exists())
-        {
-            return dir.absolutePath();
-        }
-        else
-        {
-            return unixFullPath;
-        }
-    }
-#else // Unix
-    #ifdef QT_DEBUG
-        Q_UNUSED(unixFullPath);
-        return QApplication::applicationDirPath() + stPath;
-    #else
-        QDir dir(QApplication::applicationDirPath() + stPath);
-        if (dir.exists())
-        {
-            return dir.absolutePath();
-        }
-        else
-        {
-            return unixFullPath;
-        }
-    #endif
-#endif
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-QString VTapeSettings::GetPathTemplate() const
-{
-    return value(SettingPathsTemplates, TemplatesPath()).toString();
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VTapeSettings::SetPathTemplate(const QString &value)
-{
-    setValue(SettingPathsTemplates, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -175,4 +53,28 @@ QByteArray VTapeSettings::GetDataBaseGeometry() const
 void VTapeSettings::SetDataBaseGeometry(const QByteArray &value)
 {
     setValue(SettingDataBaseGeometry, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VTapeSettings::SetDefHeight(int value)
+{
+    setValue(SettingDefHeight, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+int VTapeSettings::GetDefHeight() const
+{
+    return value(SettingDefHeight, 176).toInt();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VTapeSettings::SetDefSize(int value)
+{
+    setValue(SettingDefSize, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+int VTapeSettings::GetDefSize() const
+{
+    return value(SettingDefSize, 50).toInt();
 }

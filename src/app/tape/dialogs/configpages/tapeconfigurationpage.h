@@ -30,6 +30,7 @@
 #define CONFIGURATIONPAGE_H
 
 #include <QObject>
+#include <QPlainTextEdit>
 #include <QWidget>
 
 class QCheckBox;
@@ -42,11 +43,12 @@ class TapeConfigurationPage : public QWidget
 {
     Q_OBJECT
 public:
-    TapeConfigurationPage(QWidget *parent = nullptr);
+    explicit TapeConfigurationPage(QWidget *parent = nullptr);
     void      Apply();
 public slots:
     void      LangChanged();
     void      SystemChanged();
+    void      DefGradationChanged();
     void      UnitChanged();
     void      LabelLangChanged();
 protected:
@@ -60,24 +62,34 @@ private:
     QCheckBox *osOptionCheck;
     bool      langChanged;
     bool      systemChanged;
+    bool      defGradationChanged;
     bool      unitChanged;
     bool      labelLangChanged;
     QCheckBox *sendReportCheck;
     QCheckBox *askPointDeletionCheck;
     QCheckBox *toolBarStyleCheck;
     QLabel    *systemAuthorValueLabel;
-    QLabel    *systemBookValueLabel;
+    QPlainTextEdit *systemBookValueLabel;
 
     QGroupBox *langGroup;
     QLabel    *guiLabel;
+    QLabel    *separatorLabel;
+
+    QGroupBox *pmSystemGroup;
     QLabel    *systemLabel;
     QLabel    *systemAuthorLabel;
     QLabel    *systemBookLabel;
-    QLabel    *separatorLabel;
+
+    QGroupBox *gradationGroup;
+    QLabel    *defHeightLabel;
+    QLabel    *defSizeLabel;
+    QComboBox *defHeightCombo;
+    QComboBox *defSizeCombo;
 
     QGroupBox *LangGroup();
+    QGroupBox *PMSystemGroup();
+    QGroupBox *GradationGroup();
     void      SetLabelComboBox(const QStringList &list);
-    void      InitPMSystems(QComboBox *systemCombo);
     void      RetranslateUi();
 };
 

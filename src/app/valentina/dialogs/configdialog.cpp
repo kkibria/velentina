@@ -38,13 +38,15 @@
 //---------------------------------------------------------------------------------------------------------------------
 ConfigDialog::ConfigDialog(QWidget *parent) :
     QDialog(parent), contentsWidget(nullptr), pagesWidget(nullptr), configurationPage(nullptr), patternPage(nullptr),
-    communityPage(nullptr), pathPage(nullptr)
+    communityPage(nullptr), pathPage(nullptr), applyButton(nullptr), cancelButton(nullptr), okButton(nullptr),
+    isInitialized(false)
 {
     contentsWidget = new QListWidget;
     contentsWidget->setViewMode(QListView::IconMode);
     contentsWidget->setIconSize(QSize(96, 84));
     contentsWidget->setMovement(QListView::Static);
     contentsWidget->setMaximumWidth(128);
+    contentsWidget->setMinimumWidth(128);
     contentsWidget->setMinimumHeight(500);
     contentsWidget->setSpacing(12);
 
@@ -62,14 +64,14 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     pathPage = new PathPage();
     pagesWidget->addWidget(pathPage);
 
-    QPushButton *applyButton = new QPushButton(tr("Apply"));
-    QPushButton *canselButton = new QPushButton(tr("&Cancel"));
-    QPushButton *okButton = new QPushButton(tr("&Ok"));
+    applyButton = new QPushButton(tr("Apply"));
+    cancelButton = new QPushButton(tr("&Cancel"));
+    okButton = new QPushButton(tr("&Ok"));
 
     createIcons();
     contentsWidget->setCurrentRow(0);
 
-    connect(canselButton, &QPushButton::clicked, this, &ConfigDialog::close);
+    connect(cancelButton, &QPushButton::clicked, this, &ConfigDialog::close);
     connect(applyButton, &QPushButton::clicked, this, &ConfigDialog::Apply);
     connect(okButton, &QPushButton::clicked, this, &ConfigDialog::Ok);
 
@@ -80,7 +82,7 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
     buttonsLayout->addStretch(1);
     buttonsLayout->addWidget(applyButton);
-    buttonsLayout->addWidget(canselButton);
+    buttonsLayout->addWidget(cancelButton);
     buttonsLayout->addWidget(okButton);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -92,7 +94,6 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
 
     setWindowTitle(tr("Config Dialog"));
 
-    this->setFixedSize(QSize(750, 565));
     qApp->Settings()->GetOsSeparator() ? setLocale(QLocale::system()) : setLocale(QLocale(QLocale::C));
 }
 
@@ -114,6 +115,40 @@ void ConfigDialog::closeEvent(QCloseEvent *event)
         done(QDialog::Accepted);
     }
     event->accept();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ConfigDialog::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        // retranslate designer form (single inheritance approach)
+        RetranslateUi();
+    }
+
+    // remember to call base class implementation
+    QDialog::changeEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void ConfigDialog::showEvent(QShowEvent *event)
+{
+    QDialog::showEvent( event );
+    if ( event->spontaneous() )
+    {
+        return;
+    }
+
+    if (isInitialized)
+    {
+        return;
+    }
+    // do your init stuff here
+
+    setMaximumSize(size());
+    setMinimumSize(size());
+
+    isInitialized = true;//first show windows are held
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -168,3 +203,17 @@ void ConfigDialog::Ok()
     Apply();
     done(QDialog::Accepted);
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+void ConfigDialog::RetranslateUi()
+{
+    applyButton->setText(tr("Apply"));
+    cancelButton->setText(tr("&Cancel"));
+    okButton->setText(tr("&Ok"));
+    setWindowTitle(tr("Config Dialog"));
+    contentsWidget->item(0)->setText(tr("Configuration"));
+    contentsWidget->item(1)->setText(tr("Pattern"));
+    contentsWidget->item(2)->setText(tr("Community"));
+    contentsWidget->item(3)->setText(tr("Paths"));
+}
+

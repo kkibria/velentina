@@ -48,7 +48,7 @@ qreal VisLine::CorrectAngle(const qreal &angle) const
     qreal ang = angle;
     if (angle > 360)
     {
-        ang = angle - 360 * qFloor(angle/360);
+        ang = angle - 360.0 * qFloor(angle/360);
     }
 
     switch (qFloor((qAbs(ang)+22.5)/45))
@@ -85,6 +85,16 @@ QPointF VisLine::Ray(const QPointF &firstPoint, const qreal &angle) const
     }
 
     QRectF scRect = this->scene()->sceneRect();
+
+    //Limit size of the scene rect. Axis that has same size as scene rect cause scene size growth.
+    QLineF line1 = QLineF(scRect.topLeft(), scRect.bottomRight());
+    line1.setLength(2);
+
+    QLineF line2 = QLineF(scRect.bottomRight(), scRect.topLeft());
+    line2.setLength(2);
+
+    scRect = QRectF(line1.p2(), line2.p2());
+
     if (QGuiApplication::keyboardModifiers() == Qt::ShiftModifier)
     {
         return VGObject::BuildRay(firstPoint, CorrectAngle(angle), scRect);

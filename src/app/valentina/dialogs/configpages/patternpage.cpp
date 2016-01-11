@@ -38,10 +38,19 @@
 #include <QSpinBox>
 #include <QLineEdit>
 #include <QVBoxLayout>
+#include <QFormLayout>
 
 //---------------------------------------------------------------------------------------------------------------------
 PatternPage::PatternPage(QWidget *parent):
-    QWidget(parent), userName(nullptr), graphOutputCheck(nullptr), undoCount(nullptr)
+    QWidget(parent),
+    userGroup(nullptr),
+    userName(nullptr),
+    userNameLabel(nullptr),
+    graphOutputGroup(nullptr),
+    graphOutputCheck(nullptr),
+    undoGroup(nullptr),
+    undoCount(nullptr),
+    countStepsLabel(nullptr)
 {
     QGroupBox *userGroup = UserGroup();
     QGroupBox *graphOutputGroup = GraphOutputGroup();
@@ -58,31 +67,48 @@ PatternPage::PatternPage(QWidget *parent):
 //---------------------------------------------------------------------------------------------------------------------
 void PatternPage::Apply()
 {
-    qApp->ValentinaSettings()->SetUser(userName->text());
+    VSettings *settings = qApp->ValentinaSettings();
+    settings->SetUser(userName->text());
 
     // Scene antialiasing
-    qApp->ValentinaSettings()->SetGraphicalOutput(graphOutputCheck->isChecked());
+    settings->SetGraphicalOutput(graphOutputCheck->isChecked());
     qApp->getSceneView()->setRenderHint(QPainter::Antialiasing, graphOutputCheck->isChecked());
     qApp->getSceneView()->setRenderHint(QPainter::SmoothPixmapTransform, graphOutputCheck->isChecked());
 
     /* Maximum number of commands in undo stack may only be set when the undo stack is empty, since setting it on a
      * non-empty stack might delete the command at the current index. Calling setUndoLimit() on a non-empty stack
      * prints a warning and does nothing.*/
-    qApp->ValentinaSettings()->SetUndoCount(undoCount->value());
+    settings->SetUndoCount(undoCount->value());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void PatternPage::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        // retranslate designer form (single inheritance approach)
+        RetranslateUi();
+    }
+
+    // remember to call base class implementation
+    QWidget::changeEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 QGroupBox *PatternPage::UserGroup()
 {
-    QGroupBox *userGroup = new QGroupBox(tr("User"));
-    QLabel *nameLabel = new QLabel(tr("User name"));
+    userGroup = new QGroupBox(tr("User"));
 
     userName = new QLineEdit;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    userName->setClearButtonEnabled(true);
+#endif
     userName->setText(qApp->ValentinaSettings()->GetUser());
 
-    QHBoxLayout *nameLayout = new QHBoxLayout;
-    nameLayout->addWidget(nameLabel);
-    nameLayout->addWidget(userName);
+    QFormLayout *nameLayout = new QFormLayout;
+    userNameLabel = new QLabel(tr("User name:"));
+    nameLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+    nameLayout->addRow(userNameLabel, userName);
 
     QVBoxLayout *userLayout = new QVBoxLayout;
     userLayout->addLayout(nameLayout);
@@ -93,7 +119,7 @@ QGroupBox *PatternPage::UserGroup()
 //---------------------------------------------------------------------------------------------------------------------
 QGroupBox *PatternPage::GraphOutputGroup()
 {
-    QGroupBox *graphOutputGroup = new QGroupBox(tr("Graphical output"));
+    graphOutputGroup = new QGroupBox(tr("Graphical output"));
 
     graphOutputCheck = new QCheckBox(tr("Use antialiasing"));
     graphOutputCheck->setChecked(qApp->ValentinaSettings()->GetGraphicalOutput());
@@ -110,18 +136,29 @@ QGroupBox *PatternPage::GraphOutputGroup()
 //---------------------------------------------------------------------------------------------------------------------
 QGroupBox *PatternPage::UndoGroup()
 {
-    QGroupBox *undoGroup = new QGroupBox(tr("Undo"));
-    QLabel *undoLabel = new QLabel(tr("Count steps (0 - no limit)"));
+    undoGroup = new QGroupBox(tr("Undo"));
     undoCount = new QSpinBox;
     undoCount->setMinimum(0);
     undoCount->setValue(qApp->ValentinaSettings()->GetUndoCount());
 
-    QHBoxLayout *countLayout = new QHBoxLayout;
-    countLayout->addWidget(undoLabel);
-    countLayout->addWidget(undoCount);
+    QFormLayout *countLayout = new QFormLayout;
+    countStepsLabel = new QLabel(tr("Count steps (0 - no limit):"));
+    countLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+    countLayout->addRow(countStepsLabel, undoCount);
 
     QVBoxLayout *undoLayout = new QVBoxLayout;
     undoLayout->addLayout(countLayout);
     undoGroup->setLayout(undoLayout);
     return undoGroup;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void PatternPage::RetranslateUi()
+{
+    userGroup->setTitle(tr("User"));
+    userNameLabel->setText(tr("User name:"));
+    graphOutputGroup->setTitle(tr("Graphical output"));
+    graphOutputCheck->setText(tr("Use antialiasing"));
+    undoGroup->setTitle(tr("Undo"));
+    countStepsLabel->setText(tr("Count steps (0 - no limit):"));
 }

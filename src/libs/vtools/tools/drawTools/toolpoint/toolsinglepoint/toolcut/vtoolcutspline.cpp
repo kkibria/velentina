@@ -53,9 +53,6 @@ VToolCutSpline::VToolCutSpline(VAbstractPattern *doc, VContainer *data, const qu
                                const QString &color, const Source &typeCreation, QGraphicsItem *parent)
     :VToolCut(doc, data, id, formula, splineId, spl1id, spl2id, color, parent)
 {
-    RefreshCurve(firstCurve, curve1id, SimpleCurvePoint::ForthPoint);
-    RefreshCurve(secondCurve, curve2id, SimpleCurvePoint::FirstPoint);
-
     ToolCreation(typeCreation);
 }
 
@@ -94,9 +91,8 @@ VToolCutSpline* VToolCutSpline::Create(DialogTool *dialog, VMainGraphicsScene *s
     QString formula = dialogTool->GetFormula();
     const quint32 splineId = dialogTool->getSplineId();
     const QString color = dialogTool->GetColor();
-    VToolCutSpline* point = nullptr;
-    point = Create(0, pointName, formula, splineId, 5, 10, color, scene, doc, data, Document::FullParse,
-                   Source::FromGui);
+    VToolCutSpline* point = Create(0, pointName, formula, splineId, 5, 10, color, scene, doc, data, Document::FullParse,
+                                   Source::FromGui);
     if (point != nullptr)
     {
         point->dialog=dialogTool;
@@ -196,22 +192,20 @@ void VToolCutSpline::ShowVisualization(bool show)
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief CurveChoosed send signal about selection from spline.
- * @param id object id in container.
- */
-void VToolCutSpline::CurveChoosed(quint32 id)
-{
-    emit ChoosedTool(id, SceneObject::Spline);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
  * @brief contextMenuEvent handle context menu events.
  * @param event context menu event.
  */
 void VToolCutSpline::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    ContextMenu<DialogCutSpline>(this, event);
+    try
+    {
+        ContextMenu<DialogCutSpline>(this, event);
+    }
+    catch(const VExceptionToolWasDeleted &e)
+    {
+        Q_UNUSED(e);
+        return;//Leave this method immediately!!!
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -227,31 +221,6 @@ void VToolCutSpline::SaveDialog(QDomElement &domElement)
     doc->SetAttribute(domElement, AttrLength, dialogTool->GetFormula());
     doc->SetAttribute(domElement, AttrSpline, QString().setNum(dialogTool->getSplineId()));
     doc->SetAttribute(domElement, AttrColor, dialogTool->GetColor());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief RefreshCurve refresh curve on scene.
- * @param curve curve.
- * @param curveId curve id.
- */
-void VToolCutSpline::RefreshCurve(VSimpleCurve *curve, quint32 curveId, SimpleCurvePoint curvePosition,
-                                  PathDirection direction)
-{
-    const QSharedPointer<VSpline> spl = VAbstractTool::data.GeometricObject<VSpline>(curveId);
-    QPainterPath path;
-    path.addPath(spl->GetPath(direction));
-    path.setFillRule( Qt::WindingFill );
-    if (curvePosition == SimpleCurvePoint::FirstPoint)
-    {
-        path.translate(-spl->GetP1().toQPointF().x(), -spl->GetP1().toQPointF().y());
-    }
-    else
-    {
-        path.translate(-spl->GetP4().toQPointF().x(), -spl->GetP4().toQPointF().y());
-    }
-    curve->SetCurrentColor(QColor(lineColor));
-    curve->setPath(path);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

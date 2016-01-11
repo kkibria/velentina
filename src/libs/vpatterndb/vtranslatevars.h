@@ -34,13 +34,15 @@
 class VTranslateVars : public VTranslateMeasurements
 {
 public:
-    VTranslateVars(bool osSeparator);
+    explicit VTranslateVars(bool osSeparator);
     virtual ~VTranslateVars() Q_DECL_OVERRIDE;
 
     bool VariablesFromUser(QString &newFormula, int position, const QString &token, int &bias) const;
     bool PostfixOperatorsFromUser(QString &newFormula, int position, const QString &token, int &bias) const;
     bool FunctionsFromUser(QString &newFormula, int position, const QString &token, int &bias) const;
     bool VariablesToUser(QString &newFormula, int position, const QString &token, int &bias) const;
+
+    QString InternalVarToUser(const QString &var) const;
 
     QString VarToUser(const QString &var) const;
     QString VarFromUser(const QString &var) const;

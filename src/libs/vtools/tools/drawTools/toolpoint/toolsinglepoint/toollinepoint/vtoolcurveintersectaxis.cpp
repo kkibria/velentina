@@ -84,9 +84,9 @@ VToolCurveIntersectAxis *VToolCurveIntersectAxis::Create(DialogTool *dialog, VMa
     const quint32 basePointId = dialogTool->GetBasePointId();
     const quint32 curveId = dialogTool->getCurveId();
 
-    VToolCurveIntersectAxis *point = nullptr;
-    point=Create(0, pointName, typeLine, lineColor, formulaAngle, basePointId, curveId, 5, 10, scene, doc, data,
-                 Document::FullParse, Source::FromGui);
+    VToolCurveIntersectAxis *point = Create(0, pointName, typeLine, lineColor, formulaAngle, basePointId,
+                                            curveId, 5, 10, scene, doc, data, Document::FullParse,
+                                            Source::FromGui);
     if (point != nullptr)
     {
         point->dialog=dialogTool;
@@ -146,7 +146,7 @@ QPointF VToolCurveIntersectAxis::FindPoint(const QPointF &point, qreal angle,
                                            const QSharedPointer<VAbstractCurve> &curve)
 {
     QRectF rec = QRectF(0, 0, INT_MAX, INT_MAX);
-    rec.translate(static_cast<qreal>(-INT_MAX/2), static_cast<qreal>(-INT_MAX/2));
+    rec.translate(-INT_MAX/2.0, -INT_MAX/2.0);
 
     const QLineF axis = VGObject::BuildAxis(point, angle, rec);
     QVector<QPointF> points = curve->IntersectLine(axis);
@@ -224,7 +224,15 @@ void VToolCurveIntersectAxis::ShowVisualization(bool show)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolCurveIntersectAxis::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    ContextMenu<DialogCurveIntersectAxis>(this, event);
+    try
+    {
+        ContextMenu<DialogCurveIntersectAxis>(this, event);
+    }
+    catch(const VExceptionToolWasDeleted &e)
+    {
+        Q_UNUSED(e);
+        return;//Leave this method immediately!!!
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

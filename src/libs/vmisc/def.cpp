@@ -27,13 +27,15 @@
  *************************************************************************/
 
 #include "def.h"
+#include "vabstractapplication.h"
+#include "../vpatterndb/vtranslatevars.h"
 
-#include <QApplication>
+#include <QComboBox>
+#include <QDir>
+#include <QPrinterInfo>
 
 // Keep synchronize all names with initialization in VTranslateVars class!!!!!
 //measurements
-// Need for standard table
-const QString size_M = QStringLiteral("size");
 // A
 const QString height_M                    = QStringLiteral("height");                         // A01
 const QString heightNeckBack_M            = QStringLiteral("height_neck_back");               // A02
@@ -131,6 +133,7 @@ const QString hipWithAbdomenArcF_M = QStringLiteral("hip_with_abdomen_arc_f"); /
 const QString bodyArmfoldCirc_M    = QStringLiteral("body_armfold_circ");      // G43
 const QString bodyBustCirc_M       = QStringLiteral("body_bust_circ");         // G44
 const QString bodyTorsoCirc_M      = QStringLiteral("body_torso_circ");        // G45
+const QString hipCircWithAbdomen_M = QStringLiteral("hip_circ_with_abdomen");  // G46
 // H
 const QString neckFrontToWaistF_M             = QStringLiteral("neck_front_to_waist_f");             // H01
 const QString neckFrontToWaistFlatF_M         = QStringLiteral("neck_front_to_waist_flat_f");        // H02
@@ -172,6 +175,8 @@ const QString shoulderSlopeNeckSideLength_M   = QStringLiteral("shoulder_slope_n
 const QString shoulderSlopeNeckBackAngle_M    = QStringLiteral("shoulder_slope_neck_back_angle");    // H38
 const QString shoulderSlopeNeckBackHeight_M   = QStringLiteral("shoulder_slope_neck_back_height");   // H39
 const QString shoulderSlopeShoulderTipAngle_M = QStringLiteral("shoulder_slope_shoulder_tip_angle"); // H40
+const QString neckBackToAcrossBack_M          = QStringLiteral("neck_back_to_across_back");          // H41
+const QString acrossBackToWaistB_M            = QStringLiteral("across_back_to_waist_b");            // H42
 // I
 const QString shoulderLength_M                = QStringLiteral("shoulder_length");                     // I01
 const QString shoulderTipToShoulderTipF_M     = QStringLiteral("shoulder_tip_to_shoulder_tip_f");      // I02
@@ -233,6 +238,7 @@ const QString armNeckSideToFingerTip_M      = QStringLiteral("arm_neck_side_to_f
 const QString armscyeCirc_M                 = QStringLiteral("armscye_circ");                     // L19
 const QString armscyeLength_M               = QStringLiteral("armscye_length");                   // L20
 const QString armscyeWidth_M                = QStringLiteral("armscye_width");	                  // L21
+const QString armNeckSideToOuterElbow_M     = QStringLiteral("arm_neck_side_to_outer_elbow");     // L22
 // M
 const QString legCrotchToFloor_M    = QStringLiteral("leg_crotch_to_floor");     // M01
 const QString legWaistSideToFloor_M = QStringLiteral("leg_waist_side_to_floor"); // M02
@@ -249,13 +255,14 @@ const QString legCrotchToAnkle_M    = QStringLiteral("leg_crotch_to_ankle");    
 const QString legWaistSideToAnkle_M = QStringLiteral("leg_waist_side_to_ankle"); // M13
 const QString legWaistSideToKnee_M  = QStringLiteral("leg_waist_side_to_knee");  // M14
 // N
-const QString crotchLength_M   = QStringLiteral("crotch_length");    // N01
-const QString crotchLengthB_M  = QStringLiteral("crotch_length_b");  // N02
-const QString crotchLengthF_M  = QStringLiteral("crotch_length_f");  // N03
-const QString riseLengthSide_M = QStringLiteral("rise_length_side"); // N04
-const QString riseLengthDiag_M = QStringLiteral("rise_length_diag"); // N05
-const QString riseLengthB_M    = QStringLiteral("rise_length_b");    // N06
-const QString riseLengthF_M    = QStringLiteral("rise_length_f");    // N07
+const QString crotchLength_M          = QStringLiteral("crotch_length");            // N01
+const QString crotchLengthB_M         = QStringLiteral("crotch_length_b");          // N02
+const QString crotchLengthF_M         = QStringLiteral("crotch_length_f");          // N03
+const QString riseLengthSideSitting_M = QStringLiteral("rise_length_side_sitting"); // N04
+const QString riseLengthDiag_M        = QStringLiteral("rise_length_diag");         // N05
+const QString riseLengthB_M           = QStringLiteral("rise_length_b");            // N06
+const QString riseLengthF_M           = QStringLiteral("rise_length_f");            // N07
+const QString riseLengthSide_M        = QStringLiteral("rise_length_side");         // N08
 // O
 const QString neckBackToWaistFront_M            = QStringLiteral("neck_back_to_waist_front");	           // O01
 const QString waistToWaistHalter_M              = QStringLiteral("waist_to_waist_halter");	               // O02
@@ -349,6 +356,7 @@ const QString p51_S = QStringLiteral("p51");
 const QString p52_S = QStringLiteral("p52");
 const QString p53_S = QStringLiteral("p53");
 const QString p54_S = QStringLiteral("p54");
+const QString p998_S = QStringLiteral("p998");
 
 //functions
 const QString sin_F   = QStringLiteral("sin");
@@ -418,6 +426,10 @@ void SetOverrideCursor(const QString &pixmapPath, int hotX, int hotY)
     {
         QApplication::setOverrideCursor(QCursor(newPixmap, hotX, hotY));
     }
+#else
+    Q_UNUSED(pixmapPath);
+    Q_UNUSED(hotX);
+    Q_UNUSED(hotY);
 #endif
 }
 
@@ -439,6 +451,8 @@ void RestoreOverrideCursor(const QString &pixmapPath)
     {
         QApplication::restoreOverrideCursor();
     }
+#else
+    Q_UNUSED(pixmapPath);
 #endif
 }
 
@@ -651,51 +665,52 @@ QStringList ListGroupF()
 //---------------------------------------------------------------------------------------------------------------------
 QStringList ListGroupG()
 {
-    const QStringList list = QStringList() << neckMidCirc_M        // G01
-                                           << neckCirc_M           // G02
-                                           << highbustCirc_M       // G03
-                                           << bustCirc_M           // G04
-                                           << lowbustCirc_M        // G05
-                                           << ribCirc_M            // G06
-                                           << waistCirc_M          // G07
-                                           << highhipCirc_M        // G08
-                                           << hipCirc_M            // G09
-                                           << neckArcF_M           // G10
-                                           << highbustArcF_M       // G11
-                                           << bustArcF_M           // G12
-                                           << lowbustArcF_M        // G13
-                                           << ribArcF_M            // G14
-                                           << waistArcF_M          // G15
-                                           << highhipArcF_M        // G16
-                                           << hipArcF_M            // G17
-                                           << neckArcHalfF_M       // G18
-                                           << highbustArcHalfF_M   // G19
-                                           << bustArcHalfF_M       // G20
-                                           << lowbustArcHalfF_M    // G21
-                                           << ribArcHalfF_M        // G22
-                                           << waistArcHalfF_M      // G23
-                                           << highhipArcHalfF_M    // G24
-                                           << hipArcHalfF_M        // G25
-                                           << neckArcB_M           // G26
-                                           << highbustArcB_M       // G27
-                                           << bustArcB_M           // G28
-                                           << lowbustArcB_M        // G29
-                                           << ribArcB_M            // G30
-                                           << waistArcB_M          // G31
-                                           << highhipArcB_M        // G32
-                                           << hipArcB_M            // G33
-                                           << neckArcHalfB_M       // G34
-                                           << highbustArcHalfB_M   // G35
-                                           << bustArcHalfB_M       // G36
-                                           << lowbustArcHalfB_M    // G37
-                                           << ribArcHalfB_M        // G38
-                                           << waistArcHalfB_M      // G39
-                                           << highhipArcHalfB_M    // G40
-                                           << hipArcHalfB_M        // G41
-                                           << hipWithAbdomenArcF_M // G42
-                                           << bodyArmfoldCirc_M    // G43
-                                           << bodyBustCirc_M       // G44
-                                           << bodyTorsoCirc_M;     // G45
+    const QStringList list = QStringList() << neckMidCirc_M         // G01
+                                           << neckCirc_M            // G02
+                                           << highbustCirc_M        // G03
+                                           << bustCirc_M            // G04
+                                           << lowbustCirc_M         // G05
+                                           << ribCirc_M             // G06
+                                           << waistCirc_M           // G07
+                                           << highhipCirc_M         // G08
+                                           << hipCirc_M             // G09
+                                           << neckArcF_M            // G10
+                                           << highbustArcF_M        // G11
+                                           << bustArcF_M            // G12
+                                           << lowbustArcF_M         // G13
+                                           << ribArcF_M             // G14
+                                           << waistArcF_M           // G15
+                                           << highhipArcF_M         // G16
+                                           << hipArcF_M             // G17
+                                           << neckArcHalfF_M        // G18
+                                           << highbustArcHalfF_M    // G19
+                                           << bustArcHalfF_M        // G20
+                                           << lowbustArcHalfF_M     // G21
+                                           << ribArcHalfF_M         // G22
+                                           << waistArcHalfF_M       // G23
+                                           << highhipArcHalfF_M     // G24
+                                           << hipArcHalfF_M         // G25
+                                           << neckArcB_M            // G26
+                                           << highbustArcB_M        // G27
+                                           << bustArcB_M            // G28
+                                           << lowbustArcB_M         // G29
+                                           << ribArcB_M             // G30
+                                           << waistArcB_M           // G31
+                                           << highhipArcB_M         // G32
+                                           << hipArcB_M             // G33
+                                           << neckArcHalfB_M        // G34
+                                           << highbustArcHalfB_M    // G35
+                                           << bustArcHalfB_M        // G36
+                                           << lowbustArcHalfB_M     // G37
+                                           << ribArcHalfB_M         // G38
+                                           << waistArcHalfB_M       // G39
+                                           << highhipArcHalfB_M     // G40
+                                           << hipArcHalfB_M         // G41
+                                           << hipWithAbdomenArcF_M  // G42
+                                           << bodyArmfoldCirc_M     // G43
+                                           << bodyBustCirc_M        // G44
+                                           << bodyTorsoCirc_M       // G45
+                                           << hipCircWithAbdomen_M; // G46
 
     return list;
 }
@@ -742,7 +757,9 @@ QStringList ListGroupH()
                                            << shoulderSlopeNeckSideLength_M    // H37
                                            << shoulderSlopeNeckBackAngle_M     // H38
                                            << shoulderSlopeNeckBackHeight_M    // H39
-                                           << shoulderSlopeShoulderTipAngle_M; // H40
+                                           << shoulderSlopeShoulderTipAngle_M  // H40
+                                           << neckBackToAcrossBack_M           // H41
+                                           << acrossBackToWaistB_M;            // H42
 
     return list;
 }
@@ -827,7 +844,8 @@ QStringList ListGroupL()
                                            << armNeckSideToFingerTip_M      // L18
                                            << armscyeCirc_M                 // L19
                                            << armscyeLength_M               // L20
-                                           << armscyeWidth_M;	            // L21
+                                           << armscyeWidth_M 	            // L21
+                                           << armNeckSideToOuterElbow_M;    // L22
 
     return list;
 }
@@ -856,13 +874,14 @@ QStringList ListGroupM()
 //---------------------------------------------------------------------------------------------------------------------
 QStringList ListGroupN()
 {
-    const QStringList list = QStringList() << crotchLength_M   // N01
-                                           << crotchLengthB_M  // N02
-                                           << crotchLengthF_M  // N03
-                                           << riseLengthSide_M // N04
-                                           << riseLengthDiag_M // N05
-                                           << riseLengthB_M    // N06
-                                           << riseLengthF_M;   // N07
+    const QStringList list = QStringList() << crotchLength_M          // N01
+                                           << crotchLengthB_M         // N02
+                                           << crotchLengthF_M         // N03
+                                           << riseLengthSideSitting_M // N04
+                                           << riseLengthDiag_M        // N05
+                                           << riseLengthB_M           // N06
+                                           << riseLengthF_M           // N07
+                                           << riseLengthSide_M;       // N08
 
     return list;
 }
@@ -920,18 +939,21 @@ QStringList ListGroupQ()
 //---------------------------------------------------------------------------------------------------------------------
 QStringList SupportedLocales()
 {
-    const QStringList locales = {QStringLiteral("ru_RU"),
-                                 QStringLiteral("uk_UA"),
-                                 QStringLiteral("de_DE"),
-                                 QStringLiteral("cs_CZ"),
-                                 QStringLiteral("he_IL"),
-                                 QStringLiteral("fr_FR"),
-                                 QStringLiteral("it_IT"),
-                                 QStringLiteral("nl_NL"),
-                                 QStringLiteral("id_ID"),
-                                 QStringLiteral("es_ES"),
-                                 QStringLiteral("fi_FI"),
-                                 QStringLiteral("en_US")};
+    const QStringList locales = QStringList() << QStringLiteral("ru_RU")
+                                              << QStringLiteral("uk_UA")
+                                              << QStringLiteral("de_DE")
+                                              << QStringLiteral("cs_CZ")
+                                              << QStringLiteral("he_IL")
+                                              << QStringLiteral("fr_FR")
+                                              << QStringLiteral("it_IT")
+                                              << QStringLiteral("nl_NL")
+                                              << QStringLiteral("id_ID")
+                                              << QStringLiteral("es_ES")
+                                              << QStringLiteral("fi_FI")
+                                              << QStringLiteral("en_US")
+                                              << QStringLiteral("en_CA")
+                                              << QStringLiteral("en_IN")
+                                              << QStringLiteral("ro_RO");
 
     return locales;
 }
@@ -958,4 +980,809 @@ QStringList AllGroupNames()
                                                     << ListGroupQ();
 
     return originalNames;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void InitPMSystems(QComboBox *systemCombo)
+{
+    const QStringList listSystems = ListPMSystems();
+    QMap<QString, QString> systems;
+    for (int i = 0; i < listSystems.size()-1; ++i)
+    {
+        systems.insert(qApp->TrVars()->PMSystemName(listSystems.at(i)), listSystems.at(i));
+    }
+
+// * The default option (blank field or 'None') should appear at the top of the list.
+// * The list should be sorted alphabetically so users can find their system easily.
+
+    SCASSERT(systemCombo != nullptr);
+    systemCombo->addItem(qApp->TrVars()->PMSystemName(listSystems.at(listSystems.size()-1)),
+                         listSystems.at(listSystems.size()-1));
+
+    QMap<QString, QString>::const_iterator i = systems.constBegin();
+    while (i != systems.constEnd())
+    {
+        systemCombo->addItem(i.key(), i.value());
+        ++i;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QStringList ListPMSystems()
+{
+    QStringList list;
+    list << p0_S
+         << p1_S
+         << p2_S
+         << p3_S
+         << p4_S
+         << p5_S
+         << p6_S
+         << p7_S
+         << p8_S
+         << p9_S
+         << p10_S
+         << p11_S
+         << p12_S
+         << p13_S
+         << p14_S
+         << p15_S
+         << p16_S
+         << p17_S
+         << p18_S
+         << p19_S
+         << p20_S
+         << p21_S
+         << p22_S
+         << p23_S
+         << p24_S
+         << p25_S
+         << p26_S
+         << p27_S
+         << p28_S
+         << p29_S
+         << p30_S
+         << p31_S
+         << p32_S
+         << p33_S
+         << p34_S
+         << p35_S
+         << p36_S
+         << p37_S
+         << p38_S
+         << p39_S
+         << p40_S
+         << p41_S
+         << p42_S
+         << p43_S
+         << p44_S
+         << p45_S
+         << p46_S
+         << p47_S
+         << p48_S
+         << p49_S
+         << p50_S
+         << p51_S
+         << p52_S
+         << p53_S
+         << p54_S
+         << p998_S;
+
+    return list;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QStringList ListNumbers(const QStringList &listMeasurements)
+{
+    QStringList numbers;
+    for (int i=0; i < listMeasurements.size(); ++i)
+    {
+        numbers.append(qApp->TrVars()->MNumber(listMeasurements.at(i)));
+    }
+    return numbers;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QString MapDiagrams(const QString &number)
+{
+    switch (ListNumbers(ListGroupA()).indexOf(number))
+    {
+        // A
+        case 0: // A01
+            V_FALLTHROUGH
+        case 1: // A02
+            V_FALLTHROUGH
+        case 2: // A03
+            V_FALLTHROUGH
+        case 3: // A04
+            V_FALLTHROUGH
+        case 4: // A05
+            V_FALLTHROUGH
+        case 5: // A06
+            V_FALLTHROUGH
+        case 6: // A07
+            V_FALLTHROUGH
+        case 7: // A08
+            V_FALLTHROUGH
+        case 8: // A09
+            V_FALLTHROUGH
+        case 9: // A10
+            V_FALLTHROUGH
+        case 10: // A11
+            V_FALLTHROUGH
+        case 11: // A12
+            V_FALLTHROUGH
+        case 12: // A13
+            V_FALLTHROUGH
+        case 13: // A14
+            V_FALLTHROUGH
+        case 14: // A15
+            V_FALLTHROUGH
+        case 15: // A16
+            V_FALLTHROUGH
+        case 16: // A17
+            return QStringLiteral("Ap1");
+        case 17: // A18
+            V_FALLTHROUGH
+        case 18: // A19
+            V_FALLTHROUGH
+        case 19: // A20
+            V_FALLTHROUGH
+        case 20: // A21
+            V_FALLTHROUGH
+        case 21: // A22
+            return QStringLiteral("Ap2");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupB()).indexOf(number))
+    {
+        // B
+        case 0: // B01
+            V_FALLTHROUGH
+        case 1: // B02
+            V_FALLTHROUGH
+        case 2: // B03
+            V_FALLTHROUGH
+        case 3: // B04
+            return QStringLiteral("Bp1");
+        case 4: // B05
+            return QStringLiteral("Bp2");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupC()).indexOf(number))
+    {
+        // C
+        case 0: // C01
+            return QStringLiteral("Cp1");
+        case 1: // C02
+            V_FALLTHROUGH
+        case 2: // C03
+            return QStringLiteral("Cp2");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupD()).indexOf(number))
+    {
+        // D
+        case 0: // D01
+            V_FALLTHROUGH
+        case 1: // D02
+            V_FALLTHROUGH
+        case 2: // D03
+            return QStringLiteral("Dp1");
+        case 3: // D04
+            return QStringLiteral("Dp2");
+        case 4: // D05
+            return QStringLiteral("Dp3");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupE()).indexOf(number))
+    {
+        // E
+        case 0: // E01
+            return QStringLiteral("Ep1");
+        case 1: // E02
+            V_FALLTHROUGH
+        case 2: // E03
+            V_FALLTHROUGH
+        case 3: // E04
+            return QStringLiteral("Ep2");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupF()).indexOf(number))
+    {
+        // F
+        case 0: // F01
+            V_FALLTHROUGH
+        case 1: // F02
+            V_FALLTHROUGH
+        case 2: // F03
+            return QStringLiteral("Fp1");
+        case 3: // F04
+            return QStringLiteral("Fp2");
+        case 4: // F05
+            V_FALLTHROUGH
+        case 5: // F06
+            return QStringLiteral("Fp3");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupG()).indexOf(number))
+    {
+        // G
+        case 0: // G01
+            V_FALLTHROUGH
+        case 1: // G02
+            V_FALLTHROUGH
+        case 2: // G03
+            V_FALLTHROUGH
+        case 3: // G04
+            V_FALLTHROUGH
+        case 4: // G05
+            V_FALLTHROUGH
+        case 5: // G06
+            V_FALLTHROUGH
+        case 6: // G07
+            V_FALLTHROUGH
+        case 7: // G08
+            V_FALLTHROUGH
+        case 8: // G09
+            return QStringLiteral("Gp1");
+        case 9: // G10
+            V_FALLTHROUGH
+        case 10: // G11
+            V_FALLTHROUGH
+        case 11: // G12
+            V_FALLTHROUGH
+        case 12: // G13
+            V_FALLTHROUGH
+        case 13: // G14
+            V_FALLTHROUGH
+        case 14: // G15
+            V_FALLTHROUGH
+        case 15: // G16
+            V_FALLTHROUGH
+        case 16: // G17
+            return QStringLiteral("Gp2");
+        case 17: // G18
+            V_FALLTHROUGH
+        case 18: // G19
+            V_FALLTHROUGH
+        case 19: // G20
+            V_FALLTHROUGH
+        case 20: // G21
+            V_FALLTHROUGH
+        case 21: // G22
+            V_FALLTHROUGH
+        case 22: // G23
+            V_FALLTHROUGH
+        case 23: // G24
+            V_FALLTHROUGH
+        case 24: // G25
+            return QStringLiteral("Gp3");
+        case 25: // G26
+            V_FALLTHROUGH
+        case 26: // G27
+            V_FALLTHROUGH
+        case 27: // G28
+            V_FALLTHROUGH
+        case 28: // G29
+            V_FALLTHROUGH
+        case 29: // G30
+            V_FALLTHROUGH
+        case 30: // G31
+            V_FALLTHROUGH
+        case 31: // G32
+            V_FALLTHROUGH
+        case 32: // G33
+            return QStringLiteral("Gp4");
+        case 33: // G34
+            V_FALLTHROUGH
+        case 34: // G35
+            V_FALLTHROUGH
+        case 35: // G36
+            V_FALLTHROUGH
+        case 36: // G37
+            V_FALLTHROUGH
+        case 37: // G38
+            V_FALLTHROUGH
+        case 38: // G39
+            V_FALLTHROUGH
+        case 39: // G40
+            V_FALLTHROUGH
+        case 40: // G41
+            return QStringLiteral("Gp5");
+        case 41: // G42
+            return QStringLiteral("Gp6");
+        case 42: // G43
+            V_FALLTHROUGH
+        case 43: // G44
+            return QStringLiteral("Gp7");
+        case 44: // G45
+            return QStringLiteral("Gp8");
+        case 45: // G46
+            return QStringLiteral("Gp9");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupH()).indexOf(number))
+    {
+        // H
+        case 0: // H01
+            return QStringLiteral("Hp1");
+        case 1: // H02
+            return QStringLiteral("Hp2");
+        case 2: // H03
+            V_FALLTHROUGH
+        case 3: // H04
+            V_FALLTHROUGH
+        case 4: // H05
+            V_FALLTHROUGH
+        case 5: // H06
+            return QStringLiteral("Hp3");
+        case 6: // H07
+            V_FALLTHROUGH
+        case 7: // H08
+            V_FALLTHROUGH
+        case 8: // H09
+            V_FALLTHROUGH
+        case 9: // H10
+            V_FALLTHROUGH
+        case 10: // H11
+            V_FALLTHROUGH
+        case 11: // H12
+            return QStringLiteral("Hp4");
+        case 12: // H13
+            V_FALLTHROUGH
+        case 13: // H14
+            V_FALLTHROUGH
+        case 14: // H15
+            V_FALLTHROUGH
+        case 15: // H16
+            return QStringLiteral("Hp5");
+        case 16: // H17
+            V_FALLTHROUGH
+        case 17: // H18
+            V_FALLTHROUGH
+        case 18: // H19
+            V_FALLTHROUGH
+        case 19: // H20
+            return QStringLiteral("Hp6");
+        case 20: // H21
+            V_FALLTHROUGH
+        case 21: // H22
+            V_FALLTHROUGH
+        case 22: // H23
+            V_FALLTHROUGH
+        case 23: // H24
+            V_FALLTHROUGH
+        case 24: // H25
+            return QStringLiteral("Hp7");
+        case 25: // H26
+            V_FALLTHROUGH
+        case 26: // H27
+            V_FALLTHROUGH
+        case 27: // H28
+            V_FALLTHROUGH
+        case 28: // H29
+            return QStringLiteral("Hp8");
+        case 29: // H30
+            V_FALLTHROUGH
+        case 30: // H31
+            V_FALLTHROUGH
+        case 31: // H32
+            return QStringLiteral("Hp9");
+        case 32: // H33
+            V_FALLTHROUGH
+        case 33: // H34
+            V_FALLTHROUGH
+        case 34: // H35
+            return QStringLiteral("Hp10");
+        case 35: // H36
+            V_FALLTHROUGH
+        case 36: // H37
+            V_FALLTHROUGH
+        case 37: // H38
+            V_FALLTHROUGH
+        case 38: // H39
+            return QStringLiteral("Hp11");
+        case 39: // H40
+            return QStringLiteral("Hp12");
+        case 40: // H41
+            V_FALLTHROUGH
+        case 41: // H42
+            return QStringLiteral("Hp13");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupI()).indexOf(number))
+    {
+        // I
+        case 0: // I01
+            V_FALLTHROUGH
+        case 1: // I02
+            V_FALLTHROUGH
+        case 2: // I03
+            V_FALLTHROUGH
+        case 3: // I04
+            return QStringLiteral("Ip1");
+        case 4: // I05
+            V_FALLTHROUGH
+        case 5: // I06
+            return QStringLiteral("Ip2");
+        case 6: // I07
+            V_FALLTHROUGH
+        case 7: // I08
+            V_FALLTHROUGH
+        case 8: // I09
+            return QStringLiteral("Ip3");
+        case 9: // I10
+            V_FALLTHROUGH
+        case 10: // I11
+            return QStringLiteral("Ip4");
+        case 11: // I12
+            return QStringLiteral("Ip5");
+        case 12: // I13
+            return QStringLiteral("Ip6");
+        case 13: // I14
+            return QStringLiteral("Ip7");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupJ()).indexOf(number))
+    {
+        // J
+        case 0: // J01
+            V_FALLTHROUGH
+        case 1: // J02
+            V_FALLTHROUGH
+        case 2: // J03
+            V_FALLTHROUGH
+        case 3: // J04
+            return QStringLiteral("Jp1");
+        case 4: // J05
+            return QStringLiteral("Jp2");
+        case 5: // J06
+            return QStringLiteral("Jp3");
+        case 6: // J07
+            V_FALLTHROUGH
+        case 7: // J08
+            return QStringLiteral("Jp4");
+        case 8: // J09
+            return QStringLiteral("Jp5");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupK()).indexOf(number))
+    {
+        // K
+        case 0: // K01
+            return QStringLiteral("Kp1");
+        case 1: // K02
+            V_FALLTHROUGH
+        case 2: // K03
+            return QStringLiteral("Kp2");
+        case 3: // K04
+            return QStringLiteral("Kp3");
+        case 4: // K05
+            return QStringLiteral("Kp4");
+        case 5: // K06
+            V_FALLTHROUGH
+        case 6: // K07
+            return QStringLiteral("Kp5");
+        case 7: // K08
+            return QStringLiteral("Kp6");
+        case 8: // K09
+            return QStringLiteral("Kp7");
+        case 9: // K10
+            return QStringLiteral("Kp8");
+        case 10: // K11
+            return QStringLiteral("Kp9");
+        case 11: // K12
+            return QStringLiteral("Kp10");
+        case 12: // K13
+            return QStringLiteral("Kp11");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupL()).indexOf(number))
+    {
+        // L
+        case 0: // L01
+            V_FALLTHROUGH
+        case 1: // L02
+            V_FALLTHROUGH
+        case 2: // L03
+            V_FALLTHROUGH
+        case 3: // L04
+            return QStringLiteral("Lp1");
+        case 4: // L05
+            V_FALLTHROUGH
+        case 5: // L06
+            V_FALLTHROUGH
+        case 6: // L07
+            return QStringLiteral("Lp2");
+        case 7: // L08
+            V_FALLTHROUGH
+        case 8: // L09
+            V_FALLTHROUGH
+        case 9: // L10
+            return QStringLiteral("Lp3");
+        case 10: // L11
+            V_FALLTHROUGH
+        case 11: // L12
+            V_FALLTHROUGH
+        case 12: // L13
+            V_FALLTHROUGH
+        case 13: // L14
+            V_FALLTHROUGH
+        case 14: // L15
+            return QStringLiteral("Lp4");
+        case 15: // L16
+            return QStringLiteral("Lp5");
+        case 16: // L17
+            return QStringLiteral("Lp6");
+        case 17: // L18
+            return QStringLiteral("Lp7");
+        case 18: // L19
+            V_FALLTHROUGH
+        case 19: // L20
+            return QStringLiteral("Lp8");
+        case 20: // L21
+            return QStringLiteral("Lp9");
+        case 21: // L22
+            return QStringLiteral("Lp10");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupM()).indexOf(number))
+    {
+        // M
+        case 0: // M01
+            V_FALLTHROUGH
+        case 1: // M02
+            return QStringLiteral("Mp1");
+        case 2: // M03
+            V_FALLTHROUGH
+        case 3: // M04
+            V_FALLTHROUGH
+        case 4: // M05
+            V_FALLTHROUGH
+        case 5: // M06
+            V_FALLTHROUGH
+        case 6: // M07
+            V_FALLTHROUGH
+        case 7: // M08
+            V_FALLTHROUGH
+        case 8: // M09
+            V_FALLTHROUGH
+        case 9: // M10
+            V_FALLTHROUGH
+        case 10: // M11
+            return QStringLiteral("Mp2");
+        case 11: // M12
+            V_FALLTHROUGH
+        case 12: // M13
+            V_FALLTHROUGH
+        case 13: // M14
+            return QStringLiteral("Mp3");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupN()).indexOf(number))
+    {
+        // N
+        case 0: // N01
+            return QStringLiteral("Np1");
+        case 1: // N02
+            V_FALLTHROUGH
+        case 2: // N03
+            return QStringLiteral("Np2");
+        case 3: // N04
+            V_FALLTHROUGH
+        case 4: // N05
+            return QStringLiteral("Np3");
+        case 5: // N06
+            V_FALLTHROUGH
+        case 6: // N07
+            return QStringLiteral("Np4");
+        case 7: // N08
+            return QStringLiteral("Np5");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupO()).indexOf(number))
+    {
+        // O
+        case 0: // O01
+            return QStringLiteral("Op1");
+        case 1: // O02
+            return QStringLiteral("Op2");
+        case 2: // O03
+            return QStringLiteral("Op3");
+        case 3: // O04
+            return QStringLiteral("Op4");
+        case 4: // O05
+            return QStringLiteral("Op5");
+        case 5: // O06
+            return QStringLiteral("Op6");
+        case 6: // O07
+            return QStringLiteral("Op7");
+        case 7: // O08
+            V_FALLTHROUGH
+        case 8: // O09
+            return QStringLiteral("Op8");
+        case 9: // O10
+            V_FALLTHROUGH
+        case 10: // O11
+            return QStringLiteral("Op9");
+        case 11: // O12
+            V_FALLTHROUGH
+        case 12: // O13
+            return QStringLiteral("Op10");
+        case 13: // O14
+            return QStringLiteral("Op11");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupP()).indexOf(number))
+    {
+        // P
+        case 0: // P01
+            return QStringLiteral("Pp1");
+        case 1: // P02
+            return QStringLiteral("Pp2");
+        case 2: // P03
+            return QStringLiteral("Pp3");
+        case 3: // P04
+            return QStringLiteral("Pp4");
+        case 4: // P05
+            return QStringLiteral("Pp5");
+        case 5: // P06
+            return QStringLiteral("Pp6");
+        case 6: // P07
+            return QStringLiteral("Pp7");
+        case 7: // P08
+            return QStringLiteral("Pp8");
+        case 8: // P09
+            return QStringLiteral("Pp9");
+        case 9: // P10
+            return QStringLiteral("Pp10");
+        case 10: // P11
+            return QStringLiteral("Pp11");
+        case 11: // P12
+            return QStringLiteral("Pp12");
+        default:
+            break;
+    }
+
+    switch (ListNumbers(ListGroupQ()).indexOf(number))
+    {
+        // Q
+        case 0: // Q01
+            return QStringLiteral("Qp1");
+        case 1: // Q02
+            return QStringLiteral("Qp2");
+        case 2: // Q03
+            return QStringLiteral("Qp3");
+        default:
+            break;
+    }
+
+    return QString();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief strippedName the function call around curFile to exclude the path to the file.
+ * @param fullFileName full path to the file.
+ * @return file name.
+ */
+QString StrippedName(const QString &fullFileName)
+{
+    return QFileInfo(fullFileName).fileName();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QString RelativeMPath(const QString &patternPath, const QString &absoluteMPath)
+{
+    if (patternPath.isEmpty())
+    {
+        return absoluteMPath;
+    }
+
+    if (absoluteMPath.isEmpty() || QFileInfo(absoluteMPath).isRelative())
+    {
+        return absoluteMPath;
+    }
+
+    QDir dir(QFileInfo(patternPath).absoluteDir());
+    return dir.relativeFilePath(absoluteMPath);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QString AbsoluteMPath(const QString &patternPath, const QString &relativeMPath)
+{
+    if (patternPath.isEmpty())
+    {
+        return relativeMPath;
+    }
+    else
+    {
+        if (relativeMPath.isEmpty() || QFileInfo(relativeMPath).isAbsolute())
+        {
+            return relativeMPath;
+        }
+
+        return QFileInfo(QFileInfo(patternPath).absoluteDir(), relativeMPath).absoluteFilePath();
+    }
+
+    return QString();// should never reach
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QSharedPointer<QPrinter> DefaultPrinter()
+{
+    QPrinterInfo def = QPrinterInfo::defaultPrinter();
+
+    //if there is no default printer set the print preview won't show
+    if(def.isNull() || def.printerName().isEmpty())
+    {
+        if(QPrinterInfo::availablePrinters().isEmpty())
+        {
+            return QSharedPointer<QPrinter>();
+        }
+        else
+        {
+            def = QPrinterInfo::availablePrinters().first();
+        }
+    }
+
+    QSharedPointer<QPrinter> printer = QSharedPointer<QPrinter>(new QPrinter(def, QPrinter::ScreenResolution));
+    printer->setResolution(static_cast<int>(PrintDPI));
+    return printer;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QPixmap darkenPixmap(const QPixmap &pixmap)
+{
+    QImage img = pixmap.toImage().convertToFormat(QImage::Format_ARGB32);
+    const int imgh = img.height();
+    const int imgw = img.width();
+    for (int y = 0; y < imgh; ++y)
+    {
+        for (int x = 0; x < imgw; ++x)
+        {
+            int h, s, v;
+            QRgb pixel = img.pixel(x, y);
+            const int a = qAlpha(pixel);
+            QColor hsvColor(pixel);
+            hsvColor.getHsv(&h, &s, &v);
+            s = qMin(100, s * 2);
+            v = v / 2;
+            hsvColor.setHsv(h, s, v);
+            pixel = hsvColor.rgb();
+            img.setPixel(x, y, qRgba(qRed(pixel), qGreen(pixel), qBlue(pixel), a));
+        }
+    }
+    return QPixmap::fromImage(img);
 }

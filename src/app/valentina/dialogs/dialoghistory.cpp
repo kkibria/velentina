@@ -28,13 +28,13 @@
 
 #include "dialoghistory.h"
 #include "ui_dialoghistory.h"
-#include "../../libs/vgeometry/varc.h"
-#include "../../libs/vgeometry/vsplinepath.h"
-#include "../../libs/vgeometry/vpointf.h"
-#include "../../libs/vtools/tools/vabstracttool.h"
-#include "../../libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.h"
-#include "../../libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.h"
-#include "../../libs/vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.h"
+#include "../vgeometry/varc.h"
+#include "../vgeometry/vsplinepath.h"
+#include "../vgeometry/vpointf.h"
+#include "../vtools/tools/vabstracttool.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutspline.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutsplinepath.h"
+#include "../vtools/tools/drawTools/toolpoint/toolsinglepoint/toolcut/vtoolcutarc.h"
 #include "../xml/vpattern.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -211,7 +211,7 @@ QString DialogHistory::Record(const VToolRecord &tool)
         switch ( tool.getTypeTool() )
         {
             case Tool::Arrow:
-                Q_UNREACHABLE();
+                Q_UNREACHABLE(); //-V501
                 break;
             case Tool::BasePoint:
             {
@@ -501,4 +501,32 @@ void DialogHistory::closeEvent(QCloseEvent *event)
     quint32 id = qvariant_cast<quint32>(item->data(Qt::UserRole));
     emit ShowHistoryTool(id, false);
     DialogTool::closeEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogHistory::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        // retranslate designer form (single inheritance approach)
+        ui->retranslateUi(this);
+        RetranslateUi();
+    }
+
+    // remember to call base class implementation
+    QDialog::changeEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogHistory::RetranslateUi()
+{
+    qint32 currentRow = cursorRow;
+    UpdateHistory();
+
+    QTableWidgetItem *item = ui->tableWidget->item(cursorRow, 0);
+    SCASSERT(item != nullptr);
+    item->setIcon(QIcon(""));
+
+    cursorRow = currentRow;
+    cellClicked(cursorRow, 0);
 }

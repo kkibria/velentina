@@ -29,6 +29,7 @@
 #include "mainwindow.h"
 #include "core/vapplication.h"
 #include <QMessageBox> // For QT_REQUIRE_VERSION
+#include <QTimer>
 
 // Lock producing random attribute order in XML
 // https://stackoverflow.com/questions/27378143/qt-5-produce-random-attribute-order-in-xml
@@ -55,30 +56,20 @@ int main(int argc, char *argv[])
     app.InitOptions();
 
     MainWindow w;
+#if !defined(Q_OS_MAC)
     app.setWindowIcon(QIcon(":/icon/64x64/icon64x64.png"));
+#endif // !defined(Q_OS_MAC)
     app.setMainWindow(&w);
 
-    auto args = app.CommandLine()->OptInputFileNames();
-
+    int msec = 0;
     //Before we load pattern show window.
-    if (VApplication::CheckGUI())
+    if (VApplication::IsGUIMode())
     {
         w.show();
-        w.ReopenFilesAfterCrash(args);
+        msec = 15; // set delay for correct the first fitbest zoom
     }
 
-    for (size_t i=0, sz = args.size(); i < sz;++i)
-    {
-        const bool loaded = w.LoadPattern(args.at(static_cast<int>(i)), app.CommandLine()->OptMeasurePath());
-        if (app.CommandLine()->IsExportEnabled())
-        {
-            if (loaded)
-            {
-                w.DoExport(app.CommandLine());
-            }
-            break;
-        }
-    }
+    QTimer::singleShot(msec, &w, SLOT(ProcessCMD()));
 
-    return (VApplication::CheckGUI()) ? app.exec() : 0; // single return point is always better than more
+    return app.exec();
 }

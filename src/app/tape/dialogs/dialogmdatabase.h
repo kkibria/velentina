@@ -43,7 +43,7 @@ class DialogMDataBase : public QDialog
     Q_OBJECT
 
 public:
-    DialogMDataBase(const QStringList &list, QWidget *parent = 0);
+    explicit DialogMDataBase(const QStringList &list, QWidget *parent = 0);
     explicit DialogMDataBase(QWidget *parent = 0);
     virtual ~DialogMDataBase() Q_DECL_OVERRIDE;
 
@@ -51,12 +51,17 @@ public:
 
     void RetranslateGroups();
 
+    static QString ImgTag(const QString &number);
+
 protected:
     virtual void changeEvent(QEvent* event) Q_DECL_OVERRIDE;
+    virtual bool eventFilter(QObject *target, QEvent *event) Q_DECL_OVERRIDE;
 
 private slots:
     void UpdateChecks(QTreeWidgetItem *item, int column);
     void ShowDescription(QTreeWidgetItem *item, int column);
+    void TreeMenu(const QPoint &pos);
+    void Recheck();
 
 private:
     Q_DISABLE_COPY(DialogMDataBase)
@@ -83,20 +88,20 @@ private:
     QTreeWidgetItem *groupQ;
 
     void InitDataBase(const QStringList &list = QStringList());
-    void InitGroup(QTreeWidgetItem *group, const QString &groupName, const QStringList &mList,
+    void InitGroup(QTreeWidgetItem **group, const QString &groupName, const QStringList &mList,
                    const QStringList &list = QStringList());
 
     QTreeWidgetItem *AddGroup(const QString &text);
     void AddMeasurement(QTreeWidgetItem *group, const QString &name, const QStringList &list);
-
-    QStringList ListNumbers(const QStringList & listMeasurements) const;
-    QString MapDiagrams(const QString &number) const;
 
     void ReadSettings();
     void WriteSettings();
 
     void RetranslateGroup(QTreeWidgetItem *group, const QString &groupText, const QStringList &list);
     void RetranslateMeasurement(QTreeWidgetItem *group, int index, const QString &name);
+
+    void ChangeCheckState(QTreeWidgetItem *group, Qt::CheckState check);
+    Qt::CheckState GlobalCheckState() const;
 };
 
 #endif // DIALOGMDATABASE_H

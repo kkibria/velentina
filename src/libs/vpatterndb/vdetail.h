@@ -82,6 +82,7 @@ public:
     QVector<QPointF> SeamAllowancePoints(const VContainer *data) const;
 
     QPainterPath ContourPath(const VContainer *data) const;
+    QPainterPath SeamAllowancePath(const VContainer *data) const;
     QVector<VNodeDetail> listNodePoint()const;
 private:
     QSharedDataPointer<VDetailData> d;
@@ -93,5 +94,7 @@ private:
 
     static QVector<QPointF> biasPoints(const QVector<QPointF> &points, const qreal &mx, const qreal &my);
 };
+
+Q_DECLARE_TYPEINFO(VDetail, Q_MOVABLE_TYPE);
 
 #endif // VDETAIL_H

@@ -36,6 +36,7 @@
 #include "../version.h"
 #include "../vmisc/logging.h"
 #include "../qmuparser/qmuparsererror.h"
+#include "../mainwindow.h"
 
 #include <QDebug>
 #include <QDir>
@@ -50,10 +51,25 @@
 #include <QThread>
 #include <QDateTime>
 #include <QtXmlPatterns>
+#include <QIcon>
+
+#if defined(Q_CC_CLANG)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wmissing-prototypes"
+#elif defined(Q_CC_INTEL)
+    #pragma warning( push )
+    #pragma warning( disable: 1418 )
+#endif
 
 Q_LOGGING_CATEGORY(vApp, "v.application")
 
-constexpr auto DAYS_TO_KEEP_LOGS = 3;
+#if defined(Q_CC_CLANG)
+    #pragma clang diagnostic pop
+#elif defined(Q_CC_INTEL)
+    #pragma warning( pop )
+#endif
+
+Q_DECL_CONSTEXPR auto DAYS_TO_KEEP_LOGS = 3;
 
 //---------------------------------------------------------------------------------------------------------------------
 inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -63,6 +79,15 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
     {
         type = QtWarningMsg;
     }
+
+#if defined(Q_OS_MAC)
+    // Try hide very annoying, Qt related, warnings in Mac OS X
+    // Remove after Qt fix will be released
+    if ((type == QtWarningMsg) && msg.contains("QNSView"))
+    {
+        type = QtDebugMsg;
+    }
+#endif
 
     // this is another one that doesn't make sense as just a debug message.  pretty serious
     // sign of a problem
@@ -95,29 +120,35 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
             case QtDebugMsg:
                 debugdate += QString(":DEBUG:%1(%2)] %3: %4: %5").arg(context.file).arg(context.line)
                              .arg(context.function).arg(context.category).arg(msg);
+                vStdOut() << QApplication::translate("vNoisyHandler", "DEBUG:") << msg << "\n";
                 break;
             case QtWarningMsg:
                 debugdate += QString(":WARNING:%1(%2)] %3: %4: %5").arg(context.file).arg(context.line)
                              .arg(context.function).arg(context.category).arg(msg);
+                vStdErr() << QApplication::translate("vNoisyHandler", "WARNING:") << msg << "\n";
                 break;
             case QtCriticalMsg:
                 debugdate += QString(":CRITICAL:%1(%2)] %3: %4: %5").arg(context.file).arg(context.line)
                              .arg(context.function).arg(context.category).arg(msg);
+                vStdErr() << QApplication::translate("vNoisyHandler", "CRITICAL:") << msg << "\n";
                 break;
             case QtFatalMsg:
                 debugdate += QString(":FATAL:%1(%2)] %3: %4: %5").arg(context.file).arg(context.line)
                              .arg(context.function).arg(context.category).arg(msg);
+                vStdErr() << QApplication::translate("vNoisyHandler", "FATAL:") << msg << "\n";
                 break;
+            #if QT_VERSION > QT_VERSION_CHECK(5, 4, 2)
+            case QtInfoMsg:
+                debugdate += QString(":INFO:%1(%2)] %3: %4: %5").arg(context.file).arg(context.line)
+                             .arg(context.function).arg(context.category).arg(msg);
+                vStdOut() << QApplication::translate("vNoisyHandler", "INFO:") << msg << "\n";
+                break;
+            #endif
             default:
                 break;
         }
 
         (*qApp->LogFile()) << debugdate <<  endl;
-    }
-
-    if (type == QtWarningMsg || type == QtCriticalMsg || type == QtFatalMsg)
-    {
-        vStdErr() << msg << "\n";
     }
 
     if (isGuiThread)
@@ -131,14 +162,23 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
         switch (type)
         {
             case QtWarningMsg:
+                messageBox.setWindowTitle(QApplication::translate("vNoisyHandler", "Warning."));
                 messageBox.setIcon(QMessageBox::Warning);
                 break;
             case QtCriticalMsg:
+                messageBox.setWindowTitle(QApplication::translate("vNoisyHandler", "Critical error."));
                 messageBox.setIcon(QMessageBox::Critical);
                 break;
             case QtFatalMsg:
+                messageBox.setWindowTitle(QApplication::translate("vNoisyHandler", "Fatal error."));
                 messageBox.setIcon(QMessageBox::Critical);
                 break;
+            #if QT_VERSION > QT_VERSION_CHECK(5, 4, 2)
+            case QtInfoMsg:
+                messageBox.setWindowTitle(QApplication::translate("vNoisyHandler", "Information."));
+                messageBox.setIcon(QMessageBox::Information);
+                break;
+            #endif
             case QtDebugMsg:
             default:
                 break;
@@ -146,15 +186,21 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
 
         if (type == QtWarningMsg || type == QtCriticalMsg || type == QtFatalMsg)
         {
-            if (VApplication::CheckGUI())
+            if (VApplication::IsGUIMode())
             {
                 if (topWinAllowsPop)
                 {
-                    messageBox.setInformativeText(msg);
+                    messageBox.setText(msg);
                     messageBox.setStandardButtons(QMessageBox::Ok);
                     messageBox.setWindowModality(Qt::ApplicationModal);
                     messageBox.setModal(true);
+                #ifndef QT_NO_CURSOR
+                    QApplication::setOverrideCursor(Qt::ArrowCursor);
+                #endif
                     messageBox.exec();
+                #ifndef QT_NO_CURSOR
+                    QApplication::restoreOverrideCursor();
+                #endif
                 }
             }
         }
@@ -229,7 +275,7 @@ void VApplication::NewValentina(const QString &fileName)
     qCDebug(vApp, "Open new detached process.");
     if (fileName.isEmpty())
     {
-        qCDebug(vApp, "New process without arguments. program = %s", qApp->applicationFilePath().toUtf8().constData());
+        qCDebug(vApp, "New process without arguments. program = %s", qUtf8Printable(qApp->applicationFilePath()));
         // Path can contain spaces.
         if (QProcess::startDetached("\""+qApp->applicationFilePath()+"\""))
         {
@@ -243,7 +289,7 @@ void VApplication::NewValentina(const QString &fileName)
     else
     {
         const QString run = QString("\"%1\" \"%2\"").arg(qApp->applicationFilePath()).arg(fileName);
-        qCDebug(vApp, "New process with arguments. program = %s", run.toUtf8().constData());
+        qCDebug(vApp, "New process with arguments. program = %s", qUtf8Printable(run));
         if (QProcess::startDetached(run))
         {
             qCDebug(vApp, "The process was started successfully.");
@@ -271,84 +317,60 @@ bool VApplication::notify(QObject *receiver, QEvent *event)
     }
     catch (const VExceptionObjectError &e)
     {
-        e.CriticalMessageBox(tr("Error parsing file. Program will be terminated."), mainWindow);
-        abort();
+        qCCritical(vApp, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error parsing file. Program will be terminated.")), //-V807
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+        exit(V_EX_DATAERR);
     }
     catch (const VExceptionBadId &e)
     {
-        e.CriticalMessageBox(tr("Error bad id. Program will be terminated."), mainWindow);
-        abort();
+        qCCritical(vApp, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error bad id. Program will be terminated.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+        exit(V_EX_DATAERR);
     }
     catch (const VExceptionConversionError &e)
     {
-        e.CriticalMessageBox(tr("Error can't convert value. Program will be terminated."), mainWindow);
-        abort();
+        qCCritical(vApp, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error can't convert value. Program will be terminated.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+        exit(V_EX_DATAERR);
     }
     catch (const VExceptionEmptyParameter &e)
     {
-        e.CriticalMessageBox(tr("Error empty parameter. Program will be terminated."), mainWindow);
-        abort();
+        qCCritical(vApp, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error empty parameter. Program will be terminated.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+        exit(V_EX_DATAERR);
     }
     catch (const VExceptionWrongId &e)
     {
-        e.CriticalMessageBox(tr("Error wrong id. Program will be terminated."), mainWindow);
-        abort();
+        qCCritical(vApp, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error wrong id. Program will be terminated.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+        exit(V_EX_DATAERR);
+    }
+    catch (const VExceptionToolWasDeleted &e)
+    {
+        qCCritical(vApp, "%s\n\n%s\n\n%s",
+                   qUtf8Printable("Unhadled deleting tool. Continue use object after deleting"),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+        exit(V_EX_DATAERR);
     }
     catch (const VException &e)
     {
-        e.CriticalMessageBox(tr("Something's wrong!!"), mainWindow);
+        qCCritical(vApp, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Something's wrong!!")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         return true;
     }
     // These last two cases special. I found that we can't show here modal dialog with error message.
     // Somehow program doesn't waite untile an error dialog will be closed. But if ignore this program will hang.
     catch (const qmu::QmuParserError &e)
     {
-        qCDebug(vApp, "Parser error: %s", e.GetMsg().toUtf8().constData());
-        abort();
+        qCCritical(vApp, "%s", qUtf8Printable(tr("Parser error: %1. Program will be terminated.").arg(e.GetMsg())));
+        exit(V_EX_DATAERR);
     }
     catch (std::exception& e)
     {
-        qCDebug(vApp, "Critical error! Exception thrown: %s", e.what());
-        abort();
+        qCCritical(vApp, "%s", qUtf8Printable(tr("Exception thrown: %1. Program will be terminated.").arg(e.what())));
+        exit(V_EX_SOFTWARE);
     }
     return false;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-QString VApplication::translationsPath() const
-{
-    const QString trPath = QStringLiteral("/translations");
-#ifdef Q_OS_WIN
-    return QApplication::applicationDirPath() + trPath;
-#elif defined(Q_OS_MAC)
-    QDir dirBundle(QApplication::applicationDirPath() + QStringLiteral("/../Resources") + trPath);
-    if (dirBundle.exists())
-    {
-        return dirBundle.absolutePath();
-    }
-    else
-    {
-        QDir dir(QApplication::applicationDirPath() + trPath);
-        if (dir.exists())
-        {
-            return dir.absolutePath();
-        }
-        else
-        {
-            return QStringLiteral("/usr/share/valentina/translations");
-        }
-    }
-#else // Unix
-    QDir dir(QApplication::applicationDirPath() + trPath);
-    if (dir.exists())
-    {
-        return dir.absolutePath();
-    }
-    else
-    {
-        return QStringLiteral("/usr/share/valentina/translations");
-    }
-#endif
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -391,15 +413,15 @@ QString VApplication::TapeFilePath() const
     }
     else
     {
-            QFileInfo tapeFile(QApplication::applicationDirPath() + "/" + tape);
-            if (tapeFile.exists())
-            {
-                return tapeFile.absoluteFilePath();
-            }
-            else
-            {
-                return tape;
-            }
+        QFileInfo tapeFile(QApplication::applicationDirPath() + "/" + tape);
+        if (tapeFile.exists())
+        {
+            return tapeFile.absoluteFilePath();
+        }
+        else
+        {
+            return tape;
+        }
     }
 #endif
 }
@@ -436,7 +458,7 @@ void VApplication::CreateLogDir() const
 //---------------------------------------------------------------------------------------------------------------------
 void VApplication::BeginLogging()
 {
-    VlpCreateLock(lockLog, LogPath()+".lock", [this](){return new QFile(LogPath());});
+    VlpCreateLock(lockLog, LogPath(), [this](){return new QFile(LogPath());});
 
     if (lockLog->IsLocked())
     {
@@ -444,26 +466,25 @@ void VApplication::BeginLogging()
         {
             out.reset(new QTextStream(lockLog->GetProtected().get()));
             qInstallMessageHandler(noisyFailureMsgHandler);
-            qCDebug(vApp, "Log file %s was locked.", LogPath().toUtf8().constData());
+            qCDebug(vApp, "Log file %s was locked.", qUtf8Printable(LogPath()));
         }
         else
         {
             qCDebug(vApp, "Error opening log file \'%s\'. All debug output redirected to console.",
-                    LogPath().toUtf8().constData());
+                    qUtf8Printable(LogPath()));
         }
     }
     else
     {
-        qCDebug(vApp, "Failed to lock %s", LogPath().toUtf8().constData());
+        qCDebug(vApp, "Failed to lock %s", qUtf8Printable(LogPath()));
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VApplication::ClearOldLogs() const
 {
-    QStringList filters{"*.log"};
     QDir logsDir(LogDirPath());
-    logsDir.setNameFilters(filters);
+    logsDir.setNameFilters(QStringList("*.log"));
     logsDir.setCurrent(LogDirPath());
 
     const QStringList allFiles = logsDir.entryList(QDir::NoDotAndDotDot | QDir::Files);
@@ -476,21 +497,21 @@ void VApplication::ClearOldLogs() const
             QFileInfo info(fn);
             if (info.created().daysTo(QDateTime::currentDateTime()) >= DAYS_TO_KEEP_LOGS)
             {
-                VLockGuard<QFile> tmp(info.absoluteFilePath() + ".lock", [&fn](){return new QFile(fn);});
+                VLockGuard<QFile> tmp(info.absoluteFilePath(), [&fn](){return new QFile(fn);});
                 if (tmp.GetProtected() != nullptr)
                 {
                     if (tmp.GetProtected()->remove())
                     {
-                        qCDebug(vApp, "Deleted %s", info.absoluteFilePath().toUtf8().constData());
+                        qCDebug(vApp, "Deleted %s", qUtf8Printable(info.absoluteFilePath()));
                     }
                     else
                     {
-                        qCDebug(vApp, "Could not delete %s", info.absoluteFilePath().toUtf8().constData());
+                        qCDebug(vApp, "Could not delete %s", qUtf8Printable(info.absoluteFilePath()));
                     }
                 }
                 else
                 {
-                    qCDebug(vApp, "Failed to lock %s", info.absoluteFilePath().toUtf8().constData());
+                    qCDebug(vApp, "Failed to lock %s", qUtf8Printable(info.absoluteFilePath()));
                 }
             }
         }
@@ -520,7 +541,7 @@ void VApplication::InitOptions()
     qDebug()<<"Command-line arguments:"<<this->arguments();
     qDebug()<<"Process ID:"<<this->applicationPid();
 
-    if (VApplication::CheckGUI())// By default console version uses system locale
+    if (VApplication::IsGUIMode())// By default console version uses system locale
     {
         LoadTranslation(ValentinaSettings()->GetLocale());
     }
@@ -553,24 +574,10 @@ QStringList VApplication::LabelLanguages()
 //---------------------------------------------------------------------------------------------------------------------
 void VApplication::StartLogging()
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 3, 0)
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 2, 0)
-    // Qt < 5.2 didn't feature categorized logging
-    // Do nothing
-#else
-    // In Qt 5.2 need manualy enable debug information for categories. This work
-    // because Qt doesn't provide debug information for categories itself. And in this
-    // case will show our messages. Another situation with Qt 5.3 that has many debug
-    // messages itself. We don't need this information and can turn on later if need.
-    // But here Qt already show our debug messages without enabling.
-    QLoggingCategory::setFilterRules("*.debug=true\n");
-#endif // QT_VERSION < QT_VERSION_CHECK(5, 2, 0)
-
-#endif // QT_VERSION < QT_VERSION_CHECK(5, 3, 0)
-
     CreateLogDir();
+    // cppcheck-suppress leakReturnValNotUsed
     BeginLogging();
+    // cppcheck-suppress leakReturnValNotUsed
     ClearOldLogs();
 #if defined(Q_OS_WIN) && defined(Q_CC_GNU)
     ClearOldReports();
@@ -592,7 +599,51 @@ const VTranslateVars *VApplication::TrVars()
 //---------------------------------------------------------------------------------------------------------------------
 void VApplication::InitTrVars()
 {
-    trVars = new VTranslateVars(ValentinaSettings()->GetOsSeparator());
+    if (trVars == nullptr)
+    {
+        trVars = new VTranslateVars(ValentinaSettings()->GetOsSeparator());
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool VApplication::event(QEvent *e)
+{
+    switch(e->type())
+    {
+        // In Mac OS X the QFileOpenEvent event is generated when user perform "Open With" from Finder (this event is
+        // Mac specific).
+        case QEvent::FileOpen:
+        {
+            QFileOpenEvent *fileOpenEvent = static_cast<QFileOpenEvent *>(e);
+            if(fileOpenEvent)
+            {
+                const QString macFileOpen = fileOpenEvent->file();
+                if(not macFileOpen.isEmpty())
+                {
+                    MainWindow *window = qobject_cast<MainWindow*>(mainWindow);
+                    if (window)
+                    {
+                        window->LoadPattern(macFileOpen);  // open file in existing window
+                    }
+                    return true;
+                }
+            }
+            break;
+        }
+#if defined(Q_OS_MAC)
+        case QEvent::ApplicationActivate:
+        {
+            if (mainWindow && not mainWindow->isMinimized())
+            {
+                mainWindow->show();
+            }
+            return true;
+        }
+#endif //defined(Q_OS_MAC)
+        default:
+            return VAbstractApplication::event(e);
+    }
+    return VAbstractApplication::event(e);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -615,9 +666,18 @@ VSettings *VApplication::ValentinaSettings()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-bool VApplication::CheckGUI()
+bool VApplication::IsGUIMode()
 {
     return (VCommandLine::instance != nullptr) && VCommandLine::instance->IsGuiEnabled();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief IsAppInGUIMode little hack that allow to have access to application state from VAbstractApplication class.
+ */
+bool VApplication::IsAppInGUIMode() const
+{
+    return IsGUIMode();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -682,7 +742,7 @@ void VApplication::GatherLogs() const
                     continue;
                 }
 
-                VLockGuard<QFile> tmp(info.absoluteFilePath() + ".lock", [&fn](){return new QFile(fn);});
+                VLockGuard<QFile> tmp(info.absoluteFilePath(), [&fn](){return new QFile(fn);});
 
                 if (tmp.IsLocked())
                 {
@@ -703,7 +763,7 @@ void VApplication::GatherLogs() const
                 }
                 else
                 {
-                    qCDebug(vApp, "Failed to lock %s", info.absoluteFilePath().toUtf8().constData());
+                    qCDebug(vApp, "Failed to lock %s", qUtf8Printable(info.absoluteFilePath()));
                 }
             }
         }
@@ -775,6 +835,7 @@ void VApplication::CollectReport(const QString &reportName) const
     reportFile.remove(); // Clear after yourself
 
     filename = QString("%1/reports/log-%2.log").arg(qApp->applicationDirPath()).arg(timestamp);
+    // cppcheck-suppress leakReturnValNotUsed
     GatherLogs();
     QFile logFile(QString("%1/valentina.log").arg(LogDirPath()));
     logFile.copy(filename); // Collect log
@@ -809,8 +870,8 @@ void VApplication::SendReport(const QString &reportName) const
     content.append(QString("-------------------------------")+"\r\n");
     content.append(QString("Version:%1").arg(APP_VERSION)+"\r\n");
     content.append(QString("Build revision:%1").arg(BUILD_REVISION)+"\r\n");
-    content.append(QString("Based on Qt %2 (32 bit)").arg(QT_VERSION_STR)+"\r\n");
-    content.append(QString("Built on %3 at %4").arg(__DATE__).arg(__TIME__)+"\r\n");
+    content.append(QString("Based on Qt %1 (32 bit)").arg(QT_VERSION_STR)+"\r\n");
+    content.append(QString("Built on %1 at %2").arg(__DATE__).arg(__TIME__)+"\r\n");
     content.append(QString("Web site:http://www.valentina-project.org/ ")+"\r\n");
     content.append("\r\n");
 
@@ -838,6 +899,7 @@ void VApplication::SendReport(const QString &reportName) const
     content.append(QString("\r\n-------------------------------\r\n"));
     content.append(QString("Log:")+"\r\n");
 
+    // cppcheck-suppress leakReturnValNotUsed
     GatherLogs();
     QFile logFile(QString("%1/valentina.log").arg(LogDirPath()));
     if (logFile.open(QIODevice::ReadOnly | QIODevice::Text))

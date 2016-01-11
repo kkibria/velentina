@@ -26,6 +26,7 @@
 #include <sstream>
 #include <QException>
 #include <QVector>
+#include <QCoreApplication>
 
 #include "qmuparserdef.h"
 #include "qmutranslation.h"
@@ -93,7 +94,7 @@ enum EErrorCodes
 //---------------------------------------------------------------------------
 /** @brief A class that handles the error messages.
 */
-class QmuParserErrorMsg
+class QMUPARSERSHARED_EXPORT QmuParserErrorMsg
 {
 public:
     typedef QmuParserErrorMsg self_type;

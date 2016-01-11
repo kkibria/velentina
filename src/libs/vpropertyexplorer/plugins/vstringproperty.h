@@ -35,7 +35,7 @@ class VPROPERTYEXPLORERSHARED_EXPORT VStringProperty : public VProperty
 public:
     VStringProperty(const QString& name, const QMap<QString, QVariant>& settings);
 
-    VStringProperty(const QString& name);
+    explicit VStringProperty(const QString& name);
 
     //! Returns an editor widget, or NULL if it doesn't supply one
     //! \param parent The widget to which the editor will be added as a child
@@ -49,6 +49,7 @@ public:
     virtual QVariant getEditorData(const QWidget* editor) const Q_DECL_OVERRIDE;
 
     void         setReadOnly(bool readOnly);
+    void         setClearButtonEnable(bool value);
 
     //! Sets the settings.
     virtual void setSetting(const QString& key, const QVariant& value) Q_DECL_OVERRIDE;
@@ -77,6 +78,7 @@ public:
 protected:
     bool readOnly;
     int typeForParent;
+    bool clearButton;
 
 private:
     Q_DISABLE_COPY(VStringProperty)

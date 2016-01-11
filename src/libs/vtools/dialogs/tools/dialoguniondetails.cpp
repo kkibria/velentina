@@ -28,8 +28,8 @@
 
 #include "dialoguniondetails.h"
 #include "ui_dialoguniondetails.h"
-#include "../../libs/vpatterndb/vdetail.h"
-#include "../../libs/vpatterndb/vcontainer.h"
+#include "../vpatterndb/vdetail.h"
+#include "../vpatterndb/vcontainer.h"
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -43,8 +43,6 @@ DialogUnionDetails::DialogUnionDetails(const VContainer *data, const quint32 &to
 {
     ui->setupUi(this);
     InitOkCancel(ui);
-
-    FixateSize();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

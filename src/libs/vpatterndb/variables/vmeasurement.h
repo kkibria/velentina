@@ -33,6 +33,7 @@
 #include "../ifc/ifcdef.h"
 
 #include <QStringList>
+#include <QMap>
 
 class VMeasurementData;
 class VContainer;
@@ -71,10 +72,14 @@ public:
     static QStringList ListSizes(QMap<GSizes, bool> sizes, Unit patternUnit);
     static QStringList WholeListHeights(Unit patternUnit);
     static QStringList WholeListSizes(Unit patternUnit);
+    static bool IsGradationSizeValid(const QString &size);
+    static bool IsGradationHeightValid(const QString &height);
 private:
     QSharedDataPointer<VMeasurementData> d;
 
     static void        ListValue(QStringList &list, qreal value, Unit patternUnit);
 };
+
+Q_DECLARE_TYPEINFO(VMeasurement, Q_MOVABLE_TYPE);
 
 #endif // VSTANDARDTABLEROW_H

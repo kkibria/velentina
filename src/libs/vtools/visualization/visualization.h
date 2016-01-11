@@ -35,7 +35,7 @@
 #include "../vmisc/vabstractapplication.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vmisc/logging.h"
-#include "../../libs/vpatterndb/vcontainer.h"
+#include "../vpatterndb/vcontainer.h"
 
 Q_DECLARE_LOGGING_CATEGORY(vVis)
 
@@ -43,7 +43,7 @@ class Visualization : public QObject
 {
     Q_OBJECT
 public:
-    Visualization(const VContainer *data);
+    explicit Visualization(const VContainer *data);
     virtual ~Visualization() Q_DECL_OVERRIDE;
 
     virtual void RefreshGeometry()=0;

@@ -34,11 +34,15 @@
 #include <QDate>
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QShowEvent>
+#include <QUrl>
+#include <QtDebug>
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogAboutTape::DialogAboutTape(QWidget *parent)
     :QDialog(parent),
-      ui(new Ui::DialogAboutTape)
+      ui(new Ui::DialogAboutTape),
+      isInitialized(false)
 {
     ui->setupUi(this);
 
@@ -52,10 +56,6 @@ DialogAboutTape::DialogAboutTape(QWidget *parent)
     FontPointSize(ui->label_Legal_Stuff, 11);
     FontPointSize(ui->label_Tape_Built, 11);
     FontPointSize(ui->label_QT_Version, 11);
-
-    adjustSize();
-    setMaximumSize(size());
-    setMinimumSize(size());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -79,11 +79,32 @@ void DialogAboutTape::changeEvent(QEvent *event)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void DialogAboutTape::showEvent(QShowEvent *event)
+{
+    QDialog::showEvent( event );
+    if ( event->spontaneous() )
+    {
+        return;
+    }
+
+    if (isInitialized)
+    {
+        return;
+    }
+    // do your init stuff here
+
+    setMaximumSize(size());
+    setMinimumSize(size());
+
+    isInitialized = true;//first show windows are held
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogAboutTape::WebButtonClicked()
 {
     if ( QDesktopServices::openUrl(QUrl(VER_COMPANYDOMAIN_STR)) == false)
     {
-        QMessageBox::warning(this, tr("Warning"), tr("Cannot open your default browser"));
+        qWarning() << tr("Cannot open your default browser");
     }
 }
 
@@ -105,7 +126,7 @@ void DialogAboutTape::RetranslateUi()
     ui->label_QT_Version->setText(buildCompatibilityString());
 
     const QDate date = QLocale(QLocale::C).toDate(QString(__DATE__).simplified(), QLatin1String("MMM d yyyy"));
-    ui->label_Tape_Built->setText(tr("Built on %3 at %4").arg(date.toString()).arg(__TIME__));
+    ui->label_Tape_Built->setText(tr("Built on %1 at %2").arg(date.toString()).arg(__TIME__));
 
     ui->label_Legal_Stuff->setText(QApplication::translate("InternalStrings",
                                                            "The program is provided AS IS with NO WARRANTY OF ANY "

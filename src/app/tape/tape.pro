@@ -7,7 +7,7 @@
 # File with common stuff for whole project
 include(../../../common.pri)
 
-QT       += core gui widgets network xml xmlpatterns printsupport
+QT       += core gui widgets network xml xmlpatterns printsupport svg
 
 # Name of binary file
 TARGET = tape
@@ -48,23 +48,209 @@ RESOURCES += \
 
 DATA_RESOURCE = share/resources/diagrams.qrc # External Binary Resource
 
+# The list helps to check that all files are exist.
+# Don't forget to convert text to curves.
+DIAGRAMS += \
+        $${PWD}/share/resources/diagrams/Ap1.svg \
+        $${PWD}/share/resources/diagrams/Ap2.svg \
+        $${PWD}/share/resources/diagrams/Bp1.svg \
+        $${PWD}/share/resources/diagrams/Bp2.svg \
+        $${PWD}/share/resources/diagrams/Cp1.svg \
+        $${PWD}/share/resources/diagrams/Cp2.svg \
+        $${PWD}/share/resources/diagrams/Dp1.svg \
+        $${PWD}/share/resources/diagrams/Dp2.svg \
+        $${PWD}/share/resources/diagrams/Dp3.svg \
+        $${PWD}/share/resources/diagrams/Ep1.svg \
+        $${PWD}/share/resources/diagrams/Ep2.svg \
+        $${PWD}/share/resources/diagrams/Fp1.svg \
+        $${PWD}/share/resources/diagrams/Fp2.svg \
+        $${PWD}/share/resources/diagrams/Fp3.svg \
+        $${PWD}/share/resources/diagrams/Gp1.svg \
+        $${PWD}/share/resources/diagrams/Gp2.svg \
+        $${PWD}/share/resources/diagrams/Gp3.svg \
+        $${PWD}/share/resources/diagrams/Gp4.svg \
+        $${PWD}/share/resources/diagrams/Gp5.svg \
+        $${PWD}/share/resources/diagrams/Gp6.svg \
+        $${PWD}/share/resources/diagrams/Gp7.svg \
+        $${PWD}/share/resources/diagrams/Gp8.svg \
+        $${PWD}/share/resources/diagrams/Gp9.svg \
+        $${PWD}/share/resources/diagrams/Hp1.svg \
+        $${PWD}/share/resources/diagrams/Hp2.svg \
+        $${PWD}/share/resources/diagrams/Hp3.svg \
+        $${PWD}/share/resources/diagrams/Hp4.svg \
+        $${PWD}/share/resources/diagrams/Hp5.svg \
+        $${PWD}/share/resources/diagrams/Hp6.svg \
+        $${PWD}/share/resources/diagrams/Hp7.svg \
+        $${PWD}/share/resources/diagrams/Hp8.svg \
+        $${PWD}/share/resources/diagrams/Hp9.svg \
+        $${PWD}/share/resources/diagrams/Hp10.svg \
+        $${PWD}/share/resources/diagrams/Hp11.svg \
+        $${PWD}/share/resources/diagrams/Hp12.svg \
+        $${PWD}/share/resources/diagrams/Hp13.svg \
+        $${PWD}/share/resources/diagrams/Ip1.svg \
+        $${PWD}/share/resources/diagrams/Ip2.svg \
+        $${PWD}/share/resources/diagrams/Ip3.svg \
+        $${PWD}/share/resources/diagrams/Ip4.svg \
+        $${PWD}/share/resources/diagrams/Ip5.svg \
+        $${PWD}/share/resources/diagrams/Ip6.svg \
+        $${PWD}/share/resources/diagrams/Ip7.svg \
+        $${PWD}/share/resources/diagrams/Jp1.svg \
+        $${PWD}/share/resources/diagrams/Jp2.svg \
+        $${PWD}/share/resources/diagrams/Jp3.svg \
+        $${PWD}/share/resources/diagrams/Jp4.svg \
+        $${PWD}/share/resources/diagrams/Jp5.svg \
+        $${PWD}/share/resources/diagrams/Kp1.svg \
+        $${PWD}/share/resources/diagrams/Kp2.svg \
+        $${PWD}/share/resources/diagrams/Kp3.svg \
+        $${PWD}/share/resources/diagrams/Kp4.svg \
+        $${PWD}/share/resources/diagrams/Kp5.svg \
+        $${PWD}/share/resources/diagrams/Kp6.svg \
+        $${PWD}/share/resources/diagrams/Kp7.svg \
+        $${PWD}/share/resources/diagrams/Kp8.svg \
+        $${PWD}/share/resources/diagrams/Kp9.svg \
+        $${PWD}/share/resources/diagrams/Kp10.svg \
+        $${PWD}/share/resources/diagrams/Kp11.svg \
+        $${PWD}/share/resources/diagrams/Lp1.svg \
+        $${PWD}/share/resources/diagrams/Lp2.svg \
+        $${PWD}/share/resources/diagrams/Lp3.svg \
+        $${PWD}/share/resources/diagrams/Lp4.svg \
+        $${PWD}/share/resources/diagrams/Lp5.svg \
+        $${PWD}/share/resources/diagrams/Lp6.svg \
+        $${PWD}/share/resources/diagrams/Lp7.svg \
+        $${PWD}/share/resources/diagrams/Lp8.svg \
+        $${PWD}/share/resources/diagrams/Lp9.svg \
+        $${PWD}/share/resources/diagrams/Lp10.svg \
+        $${PWD}/share/resources/diagrams/Mp1.svg \
+        $${PWD}/share/resources/diagrams/Mp2.svg \
+        $${PWD}/share/resources/diagrams/Mp3.svg \
+        $${PWD}/share/resources/diagrams/Np1.svg \
+        $${PWD}/share/resources/diagrams/Np2.svg \
+        $${PWD}/share/resources/diagrams/Np3.svg \
+        $${PWD}/share/resources/diagrams/Np4.svg \
+        $${PWD}/share/resources/diagrams/Np5.svg \
+        $${PWD}/share/resources/diagrams/Op1.svg \
+        $${PWD}/share/resources/diagrams/Op2.svg \
+        $${PWD}/share/resources/diagrams/Op3.svg \
+        $${PWD}/share/resources/diagrams/Op4.svg \
+        $${PWD}/share/resources/diagrams/Op5.svg \
+        $${PWD}/share/resources/diagrams/Op6.svg \
+        $${PWD}/share/resources/diagrams/Op7.svg \
+        $${PWD}/share/resources/diagrams/Op8.svg \
+        $${PWD}/share/resources/diagrams/Op9.svg \
+        $${PWD}/share/resources/diagrams/Op10.svg \
+        $${PWD}/share/resources/diagrams/Op11.svg \
+        $${PWD}/share/resources/diagrams/Pp1.svg \
+        $${PWD}/share/resources/diagrams/Pp2.svg \
+        $${PWD}/share/resources/diagrams/Pp3.svg \
+        $${PWD}/share/resources/diagrams/Pp4.svg \
+        $${PWD}/share/resources/diagrams/Pp5.svg \
+        $${PWD}/share/resources/diagrams/Pp6.svg \
+        $${PWD}/share/resources/diagrams/Pp7.svg \
+        $${PWD}/share/resources/diagrams/Pp8.svg \
+        $${PWD}/share/resources/diagrams/Pp9.svg \
+        $${PWD}/share/resources/diagrams/Pp10.svg \
+        $${PWD}/share/resources/diagrams/Pp11.svg \
+        $${PWD}/share/resources/diagrams/Pp12.svg \
+        $${PWD}/share/resources/diagrams/Qp1.svg \
+        $${PWD}/share/resources/diagrams/Qp2.svg \
+        $${PWD}/share/resources/diagrams/Qp3.svg
+
+!exists($${OUT_PWD}/$${DESTDIR}/diagrams.rcc) {
+    diagrams.name = resource diagrams
+    diagrams.CONFIG += no_link target_predeps
+    diagrams.depends = $$DIAGRAMS # expects a list of files
+    diagrams.input = DATA_RESOURCE # expects the name of a variable
+    diagrams.output = ${QMAKE_FILE_BASE}.rcc
+    diagrams.commands = $$shell_path($$[QT_INSTALL_BINS]/rcc) -binary -no-compress ${QMAKE_FILE_IN} -o $${OUT_PWD}/$${DESTDIR}/${QMAKE_FILE_OUT}
+
+QMAKE_EXTRA_COMPILERS += diagrams
+}
+
+QMAKE_CLEAN += $${OUT_PWD}/$${DESTDIR}/diagrams.rcc
+
+# INSTALL_STANDARD_MEASHUREMENTS and INSTALL_STANDARD_TEMPLATES inside tables.pri
+include(../tables.pri)
+copyToDestdir($$INSTALL_STANDARD_TEMPLATES, $$shell_path($${OUT_PWD}/$${DESTDIR}/tables/templates))
+include(../translations.pri)
+
+# Set "make install" command for Unix-like systems.
+unix{
+    # Prefix for binary file.
+    isEmpty(PREFIX){
+        PREFIX = $$DEFAULT_PREFIX
+    }
+
+    unix:!macx{
+        DATADIR =$$PREFIX/share
+        DEFINES += DATADIR=\\\"$$DATADIR\\\" PKGDATADIR=\\\"$$PKGDATADIR\\\"
+
+        # Path to bin file after installation
+        target.path = $$PREFIX/bin
+
+        rcc_diagrams.path = /usr/share/valentina/
+        rcc_diagrams.files = $${OUT_PWD}/$${DESTDIR}/diagrams.rcc
+        rcc_diagrams.CONFIG = no_check_exist
+
+        INSTALLS += \
+            target \
+            rcc_diagrams
+    }
+    macx{
+        # Some macx stuff
+        QMAKE_MAC_SDK = macosx
+
+        QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.6
+        # Path to resources in app bundle
+        #RESOURCES_DIR = "Contents/Resources" defined in translation.pri
+        FRAMEWORKS_DIR = "Contents/Frameworks"
+        MACOS_DIR = "Contents/MacOS"
+        # On macx we will use app bundle. Bundle doesn't need bin directory inside.
+        # See issue #166: Creating OSX Homebrew (Mac OS X package manager) formula.
+        target.path = $$MACOS_DIR
+
+        #languages added inside translations.pri
+
+        # Symlinks also good names for copying. Make will take origin file and copy them with using symlink name.
+        # For bundle this names more then enough. We don't need care much about libraries versions.
+        libraries.path = $$FRAMEWORKS_DIR
+        libraries.files += $${OUT_PWD}/../../libs/qmuparser/$${DESTDIR}/libqmuparser.2.dylib
+        libraries.files += $${OUT_PWD}/../../libs/vpropertyexplorer/$${DESTDIR}/libvpropertyexplorer.1.dylib
+
+        # logo on macx.
+        ICON = $$PWD/../../../dist/Tape.icns
+
+        QMAKE_INFO_PLIST = $$PWD/../../../dist/macx/tape/Info.plist
+
+        # Copy to bundle standard measurements files
+        standard.path = $$RESOURCES_DIR/tables/standard/
+        standard.files = $$INSTALL_STANDARD_MEASHUREMENTS
+
+        # Copy to bundle templates files
+        templates.path = $$RESOURCES_DIR/tables/templates/
+        templates.files = $$INSTALL_STANDARD_TEMPLATES
+
+        # Copy to bundle standard measurements files
+        # We cannot add none exist files to bundle through QMAKE_BUNDLE_DATA. That's why we must do this manually.
+        forceCopyToDestdir($${OUT_PWD}/$${DESTDIR}/diagrams.rcc, $$shell_path($${OUT_PWD}/$$DESTDIR/$${TARGET}.app/$$RESOURCES_DIR/))
+
+        format.path = $$RESOURCES_DIR/
+        format.files = $$PWD/../../../dist/macx/measurements.icns
+
+        QMAKE_BUNDLE_DATA += \
+            templates \
+            standard \
+            libraries \
+            format
+    }
+}
+
 # Compilation will fail without this files after we added them to this section.
 OTHER_FILES += \
-    share/resources/tape.rc \ # For Windows system.
     share/resources/tapeicon/64x64/logo.ico \ # Tape's logo.
     $$DATA_RESOURCE
 
 # Set using ccache. Function enable_ccache() defined in common.pri.
-macx {
-    CONFIG(debug, debug|release){
-        $$enable_ccache()# Use only in debug mode on Mac
-    }
-} else {
-    $$enable_ccache()
-}
-
-# Set precompiled headers. Function set_PCH() defined in common.pri.
-$$set_PCH()
+$$enable_ccache()
 
 CONFIG(debug, debug|release){
     # Debug mode
@@ -89,12 +275,25 @@ CONFIG(debug, debug|release){
             }
         }
         clang*{
-        QMAKE_CXXFLAGS += \
-            # Key -isystem disable checking errors in system headers.
-            -isystem "$${OUT_PWD}/$${UI_DIR}" \
-            -isystem "$${OUT_PWD}/$${MOC_DIR}" \
-            -isystem "$${OUT_PWD}/$${RCC_DIR}" \
-            $$CLANG_DEBUG_CXXFLAGS # See common.pri for more details.
+            QMAKE_CXXFLAGS += \
+                # Key -isystem disable checking errors in system headers.
+                -isystem "$${OUT_PWD}/$${UI_DIR}" \
+                -isystem "$${OUT_PWD}/$${MOC_DIR}" \
+                -isystem "$${OUT_PWD}/$${RCC_DIR}" \
+                $$CLANG_DEBUG_CXXFLAGS # See common.pri for more details.
+
+            # -isystem key works only for headers. In some cases it's not enough. But we can't delete this warnings and
+            # want them in global list. Compromise decision delete them from local list.
+            QMAKE_CXXFLAGS -= \
+                -Wundefined-reinterpret-cast \
+                -Wmissing-prototypes # rcc folder
+        }
+        *-icc-*{
+            QMAKE_CXXFLAGS += \
+                -isystem "$${OUT_PWD}/$${UI_DIR}" \
+                -isystem "$${OUT_PWD}/$${MOC_DIR}" \
+                -isystem "$${OUT_PWD}/$${RCC_DIR}" \
+                $$ICC_DEBUG_CXXFLAGS
         }
     } else {
         *-g++{
@@ -104,14 +303,18 @@ CONFIG(debug, debug|release){
     DEFINES += "BUILD_REVISION=\\\"unknown\\\""
 }else{
     # Release mode
+    !win32-msvc*:CONFIG += silent
     DEFINES += V_NO_ASSERT
     !unix:*-g++{
         QMAKE_CXXFLAGS += -fno-omit-frame-pointer # Need for exchndl.dll
     }
 
     noDebugSymbols{ # For enable run qmake with CONFIG+=noDebugSymbols
-        # do nothing
+        DEFINES += V_NO_DEBUG
     } else {
+        noCrashReports{
+            DEFINES += V_NO_DEBUG
+        }
         # Turn on debug symbols in release mode on Unix systems.
         # On Mac OS X temporarily disabled. Need find way how to strip binary file.
         !macx:!win32-msvc*{
@@ -143,6 +346,12 @@ CONFIG(debug, debug|release){
 
 # Path to recource file.
 win32:RC_FILE = share/resources/tape.rc
+
+unix:!macx{
+    # suppress the default RPATH
+    QMAKE_LFLAGS_RPATH =
+    QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN\' -Wl,-rpath,$${OUT_PWD}/../../libs/qmuparser/$${DESTDIR} -Wl,-rpath,$${OUT_PWD}/../../libs/vpropertyexplorer/$${DESTDIR}"
+}
 
 # When the GNU linker sees a library, it discards all symbols that it doesn't need.
 # Dependent library go first.
@@ -236,116 +445,6 @@ else:unix: LIBS += -L$${OUT_PWD}/../../libs/vpropertyexplorer/$${DESTDIR} -lvpro
 INCLUDEPATH += $${PWD}/../../libs/vpropertyexplorer
 DEPENDPATH += $${PWD}/../../libs/vpropertyexplorer
 
-DIAGRAMS += \
-        $${PWD}/share/resources/diagrams/Ap1.png \
-        $${PWD}/share/resources/diagrams/Ap2.png \
-        $${PWD}/share/resources/diagrams/Bp1.png \
-        $${PWD}/share/resources/diagrams/Bp2.png \
-        $${PWD}/share/resources/diagrams/Cp1.png \
-        $${PWD}/share/resources/diagrams/Cp2.png \
-        $${PWD}/share/resources/diagrams/Dp1.png \
-        $${PWD}/share/resources/diagrams/Dp2.png \
-        $${PWD}/share/resources/diagrams/Dp3.png \
-        $${PWD}/share/resources/diagrams/Ep1.png \
-        $${PWD}/share/resources/diagrams/Ep2.png \
-        $${PWD}/share/resources/diagrams/Fp1.png \
-        $${PWD}/share/resources/diagrams/Fp2.png \
-        $${PWD}/share/resources/diagrams/Fp3.png \
-        $${PWD}/share/resources/diagrams/Gp1.png \
-        $${PWD}/share/resources/diagrams/Gp2.png \
-        $${PWD}/share/resources/diagrams/Gp3.png \
-        $${PWD}/share/resources/diagrams/Gp4.png \
-        $${PWD}/share/resources/diagrams/Gp5.png \
-        $${PWD}/share/resources/diagrams/Gp6.png \
-        $${PWD}/share/resources/diagrams/Gp7.png \
-        $${PWD}/share/resources/diagrams/Gp8.png \
-        $${PWD}/share/resources/diagrams/Hp1.png \
-        $${PWD}/share/resources/diagrams/Hp2.png \
-        $${PWD}/share/resources/diagrams/Hp3.png \
-        $${PWD}/share/resources/diagrams/Hp4.png \
-        $${PWD}/share/resources/diagrams/Hp5.png \
-        $${PWD}/share/resources/diagrams/Hp6.png \
-        $${PWD}/share/resources/diagrams/Hp7.png \
-        $${PWD}/share/resources/diagrams/Hp8.png \
-        $${PWD}/share/resources/diagrams/Hp9.png \
-        $${PWD}/share/resources/diagrams/Hp10.png \
-        $${PWD}/share/resources/diagrams/Hp11.png \
-        $${PWD}/share/resources/diagrams/Hp12.png \
-        $${PWD}/share/resources/diagrams/Ip1.png \
-        $${PWD}/share/resources/diagrams/Ip2.png \
-        $${PWD}/share/resources/diagrams/Ip3.png \
-        $${PWD}/share/resources/diagrams/Ip4.png \
-        $${PWD}/share/resources/diagrams/Ip5.png \
-        $${PWD}/share/resources/diagrams/Ip6.png \
-        $${PWD}/share/resources/diagrams/Ip7.png \
-        $${PWD}/share/resources/diagrams/Jp1.png \
-        $${PWD}/share/resources/diagrams/Jp2.png \
-        $${PWD}/share/resources/diagrams/Jp3.png \
-        $${PWD}/share/resources/diagrams/Jp4.png \
-        $${PWD}/share/resources/diagrams/Jp5.png \
-        $${PWD}/share/resources/diagrams/Kp1.png \
-        $${PWD}/share/resources/diagrams/Kp2.png \
-        $${PWD}/share/resources/diagrams/Kp3.png \
-        $${PWD}/share/resources/diagrams/Kp4.png \
-        $${PWD}/share/resources/diagrams/Kp5.png \
-        $${PWD}/share/resources/diagrams/Kp6.png \
-        $${PWD}/share/resources/diagrams/Kp7.png \
-        $${PWD}/share/resources/diagrams/Kp8.png \
-        $${PWD}/share/resources/diagrams/Kp9.png \
-        $${PWD}/share/resources/diagrams/Kp10.png \
-        $${PWD}/share/resources/diagrams/Kp11.png \
-        $${PWD}/share/resources/diagrams/Lp1.png \
-        $${PWD}/share/resources/diagrams/Lp2.png \
-        $${PWD}/share/resources/diagrams/Lp3.png \
-        $${PWD}/share/resources/diagrams/Lp4.png \
-        $${PWD}/share/resources/diagrams/Lp5.png \
-        $${PWD}/share/resources/diagrams/Lp6.png \
-        $${PWD}/share/resources/diagrams/Lp7.png \
-        $${PWD}/share/resources/diagrams/Lp8.png \
-        $${PWD}/share/resources/diagrams/Lp9.png \
-        $${PWD}/share/resources/diagrams/Mp1.png \
-        $${PWD}/share/resources/diagrams/Mp2.png \
-        $${PWD}/share/resources/diagrams/Mp3.png \
-        $${PWD}/share/resources/diagrams/Np1.png \
-        $${PWD}/share/resources/diagrams/Np2.png \
-        $${PWD}/share/resources/diagrams/Np3.png \
-        $${PWD}/share/resources/diagrams/Np4.png \
-        $${PWD}/share/resources/diagrams/Op1.png \
-        $${PWD}/share/resources/diagrams/Op2.png \
-        $${PWD}/share/resources/diagrams/Op3.png \
-        $${PWD}/share/resources/diagrams/Op4.png \
-        $${PWD}/share/resources/diagrams/Op5.png \
-        $${PWD}/share/resources/diagrams/Op6.png \
-        $${PWD}/share/resources/diagrams/Op7.png \
-        $${PWD}/share/resources/diagrams/Op8.png \
-        $${PWD}/share/resources/diagrams/Op9.png \
-        $${PWD}/share/resources/diagrams/Op10.png \
-        $${PWD}/share/resources/diagrams/Op11.png \
-        $${PWD}/share/resources/diagrams/Pp1.png \
-        $${PWD}/share/resources/diagrams/Pp2.png \
-        $${PWD}/share/resources/diagrams/Pp3.png \
-        $${PWD}/share/resources/diagrams/Pp4.png \
-        $${PWD}/share/resources/diagrams/Pp5.png \
-        $${PWD}/share/resources/diagrams/Pp6.png \
-        $${PWD}/share/resources/diagrams/Pp7.png \
-        $${PWD}/share/resources/diagrams/Pp8.png \
-        $${PWD}/share/resources/diagrams/Pp9.png \
-        $${PWD}/share/resources/diagrams/Pp10.png \
-        $${PWD}/share/resources/diagrams/Pp11.png \
-        $${PWD}/share/resources/diagrams/Pp12.png \
-        $${PWD}/share/resources/diagrams/Qp1.png \
-        $${PWD}/share/resources/diagrams/Qp2.png \
-        $${PWD}/share/resources/diagrams/Qp3.png
-
-diagrams.name = resource diagrams
-diagrams.CONFIG += no_link target_predeps
-diagrams.depends = $$DIAGRAMS # expects a list of files
-diagrams.input = DATA_RESOURCE # expects the name of a variable
-diagrams.output = ${QMAKE_FILE_BASE}.rcc
-diagrams.commands = $$shell_path($$[QT_INSTALL_BINS]/rcc) --binary --no-compress ${QMAKE_FILE_IN} -o $${OUT_PWD}/$${DESTDIR}/${QMAKE_FILE_OUT}
-
-QMAKE_EXTRA_COMPILERS += diagrams
-
 noDebugSymbols{ # For enable run qmake with CONFIG+=noDebugSymbols
     # do nothing
 } else {
@@ -367,6 +466,15 @@ noDebugSymbols{ # For enable run qmake with CONFIG+=noDebugSymbols
                 QMAKE_POST_LINK += objcopy --strip-debug ${TARGET} &&
                 QMAKE_POST_LINK += objcopy --add-gnu-debuglink="${TARGET}.dbg" ${TARGET}
             }
+
+            !macx:!win32-msvc*{
+                QMAKE_DISTCLEAN += bin/${TARGET}.dbg
+            }
         }
     }
+}
+
+macx{
+   # run macdeployqt to include all qt libraries in packet
+   QMAKE_POST_LINK += $$[QT_INSTALL_BINS]/macdeployqt $${OUT_PWD}/$${DESTDIR}/$${TARGET}.app
 }

@@ -325,7 +325,7 @@
            <string>Point intersect line and axis</string>
           </property>
           <property name="text">
-           <string>...</string>
+           <string notr="true">...</string>
           </property>
           <property name="icon">
            <iconset resource="share/resources/toolicon.qrc">
@@ -346,6 +346,9 @@
          <widget class="QToolButton" name="toolButtonTrueDarts">
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>True darts</string>
           </property>
           <property name="text">
            <string notr="true">...</string>
@@ -372,7 +375,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>100</width>
+         <width>130</width>
          <height>58</height>
         </rect>
        </property>
@@ -458,7 +461,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>100</width>
+         <width>130</width>
          <height>156</height>
         </rect>
        </property>
@@ -598,7 +601,7 @@
            <string>Point intersect curve and axis</string>
           </property>
           <property name="text">
-           <string>...</string>
+           <string notr="true">...</string>
           </property>
           <property name="icon">
            <iconset resource="share/resources/toolicon.qrc">
@@ -622,7 +625,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>100</width>
+         <width>130</width>
          <height>196</height>
         </rect>
        </property>
@@ -864,7 +867,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>100</width>
+         <width>130</width>
          <height>58</height>
         </rect>
        </property>
@@ -950,8 +953,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>98</width>
-         <height>58</height>
+         <width>130</width>
+         <height>386</height>
         </rect>
        </property>
        <attribute name="icon">
@@ -1042,7 +1045,7 @@
      <addaction name="actionPrint"/>
      <addaction name="separator"/>
      <addaction name="actionSaveAsTiledPDF"/>
-     <addaction name="actionPrintPreviewTailed"/>
+     <addaction name="actionPrintPreviewTiled"/>
      <addaction name="actionPrintTiled"/>
      <addaction name="separator"/>
      <addaction name="actionExportAs"/>
@@ -1090,6 +1093,7 @@
     <addaction name="actionTable"/>
     <addaction name="actionLoadIndividual"/>
     <addaction name="actionLoadStandard"/>
+    <addaction name="actionUnloadMeasurements"/>
     <addaction name="actionCreateNew"/>
     <addaction name="actionShowM"/>
     <addaction name="actionSyncMeasurements"/>
@@ -1352,7 +1356,10 @@
     <string>Create a new pattern</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+N</string>
+    <string notr="true">Ctrl+N</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionOpen">
@@ -1369,6 +1376,12 @@
    </property>
    <property name="toolTip">
     <string>Open file with pattern</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionSave">
@@ -1390,7 +1403,10 @@
     <string>Save pattern</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S</string>
+    <string notr="true">Ctrl+S</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionSaveAs">
@@ -1409,7 +1425,10 @@
     <string>Save not yet saved pattern</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+S</string>
+    <string notr="true">Ctrl+Shift+S</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionDraw">
@@ -1430,10 +1449,13 @@
     <string>Draw</string>
    </property>
    <property name="toolTip">
-    <string>Draw mode</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with pattern pieces. These pattern pieces are base for going to the next stage &amp;quot;Details mode&amp;quot;. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+W</string>
+    <string notr="true">Ctrl+W</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionDetails">
@@ -1451,10 +1473,13 @@
     <string>Details</string>
    </property>
    <property name="toolTip">
-    <string>Details mode</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with details. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail on the stage &amp;quot;Draw mode&amp;quot;. Details created on this stage will be used for creating a layout. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+E</string>
+    <string notr="true">Ctrl+E</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionArrowTool">
@@ -1474,6 +1499,9 @@
    <property name="toolTip">
     <string>Pointer tools</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
   </action>
   <action name="actionNewDraw">
    <property name="enabled">
@@ -1490,7 +1518,10 @@
     <string>Add new pattern piece</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+N</string>
+    <string notr="true">Ctrl+Shift+N</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionOptionDraw">
@@ -1506,6 +1537,12 @@
    </property>
    <property name="toolTip">
     <string>Change the label of pattern piece</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionTable">
@@ -1526,7 +1563,10 @@
     <string>Tables of variables</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+T</string>
+    <string notr="true">Ctrl+T</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionHistory">
@@ -1544,7 +1584,10 @@
     <string>History</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+H</string>
+    <string notr="true">Ctrl+H</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionLayout">
@@ -1562,15 +1605,24 @@
     <string>Layout</string>
    </property>
    <property name="toolTip">
-    <string>Create a layout</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for creating a layout of details. This mode avaliable if was created at least one detail on the stage &amp;quot;Details mode&amp;quot;. The layout can be exported to your prefered file format and saved to your harddirve.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+L</string>
+    <string notr="true">Ctrl+L</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About &amp;Qt</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutQtRole</enum>
    </property>
   </action>
   <action name="actionAbout_Valentina">
@@ -1581,6 +1633,12 @@
    </property>
    <property name="text">
     <string>&amp;About Valentina</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
    </property>
   </action>
   <action name="actionExit">
@@ -1596,17 +1654,32 @@
     <string>Exit the application</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Q</string>
+    <string notr="true">Ctrl+Q</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::QuitRole</enum>
    </property>
   </action>
   <action name="actionPreferences">
    <property name="text">
     <string>Preferences</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
+   </property>
   </action>
   <action name="actionPattern_properties">
    <property name="text">
     <string>Pattern properties</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionZoomIn">
@@ -1624,6 +1697,12 @@
    <property name="toolTip">
     <string>zoom in</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
   </action>
   <action name="actionZoomOut">
    <property name="enabled">
@@ -1640,10 +1719,22 @@
    <property name="toolTip">
     <string>Zoom out</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
   </action>
   <action name="actionEdit_pattern_code">
    <property name="text">
     <string>Edit pattern XML code</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionZoomOriginal">
@@ -1661,6 +1752,12 @@
    <property name="toolTip">
     <string>Original Zoom </string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
   </action>
   <action name="actionZoomFitBest">
    <property name="enabled">
@@ -1675,7 +1772,10 @@
     <string>Zoom fit best</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+=</string>
+    <string notr="true">Ctrl+=</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionStopTool">
@@ -1696,6 +1796,9 @@
    <property name="toolTip">
     <string>Stop using tool</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
   </action>
   <action name="actionRepotBug">
    <property name="text">
@@ -1704,10 +1807,22 @@
    <property name="toolTip">
     <string>Report bug</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
   </action>
   <action name="actionCloseWindow">
    <property name="text">
     <string>Close window</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionOnlineHelp">
@@ -1722,6 +1837,12 @@
    <property name="toolTip">
     <string>Show online help</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
   </action>
   <action name="actionLast_tool">
    <property name="enabled">
@@ -1734,7 +1855,10 @@
     <string>Activate last used tool again</string>
    </property>
    <property name="shortcut">
-    <string>L</string>
+    <string notr="true">L</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionShowCurveDetails">
@@ -1751,7 +1875,10 @@
     <string>Show/hide control points and curve direction</string>
    </property>
    <property name="shortcut">
-    <string>F2</string>
+    <string notr="true">F2</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionSaveAsPDF">
@@ -1768,6 +1895,9 @@
    <property name="toolTip">
     <string>Save original layout</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
   </action>
   <action name="actionSaveAsTiledPDF">
    <property name="enabled">
@@ -1783,6 +1913,9 @@
    <property name="toolTip">
     <string>Split and save a layout into smaller pages</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
   </action>
   <action name="actionPrint">
    <property name="enabled">
@@ -1797,7 +1930,10 @@
     <string>Print</string>
    </property>
    <property name="toolTip">
-    <string>Print original a layout</string>
+    <string>Print an original layout</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
    </property>
   </action>
   <action name="actionPrintTiled">
@@ -1815,6 +1951,9 @@
    <property name="toolTip">
     <string>Split and print a layout into smaller pages (for regular printers)</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
   </action>
   <action name="actionPrintPreview">
    <property name="enabled">
@@ -1831,8 +1970,11 @@
    <property name="toolTip">
     <string>Print preview original layout</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
   </action>
-  <action name="actionPrintPreviewTailed">
+  <action name="actionPrintPreviewTiled">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -1842,10 +1984,13 @@
     </iconset>
    </property>
    <property name="text">
-    <string>Print preview tailed</string>
+    <string>Print preview tiled</string>
    </property>
    <property name="toolTip">
-    <string>Print preview tailed layout</string>
+    <string>Print preview tiled layout</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
    </property>
   </action>
   <action name="actionExportAs">
@@ -1862,6 +2007,9 @@
    <property name="toolTip">
     <string>Export original layout</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
   </action>
   <action name="actionLoadIndividual">
    <property name="enabled">
@@ -1869,6 +2017,12 @@
    </property>
    <property name="text">
     <string>Load Individual ...</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionLoadStandard">
@@ -1878,6 +2032,12 @@
    <property name="text">
     <string>Load Standard ...</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
   </action>
   <action name="actionCreateNew">
    <property name="text">
@@ -1885,6 +2045,12 @@
    </property>
    <property name="toolTip">
     <string>Create/edit measurements</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="actionShowM">
@@ -1897,6 +2063,12 @@
    <property name="toolTip">
     <string>Show measurements</string>
    </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
   </action>
   <action name="actionSyncMeasurements">
    <property name="enabled">
@@ -1908,6 +2080,29 @@
    </property>
    <property name="text">
     <string>Sync measurements</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="actionUnloadMeasurements">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Unload measurements</string>
+   </property>
+   <property name="toolTip">
+    <string>Unload measurements if they was not used in a pattern file.</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
  </widget>

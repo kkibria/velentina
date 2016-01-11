@@ -32,7 +32,7 @@
 #include "../../../visualization/vistoolsplinepath.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 1, 0)
-#   include "../../libs/vmisc/vmath.h"
+#   include "../vmisc/vmath.h"
 #else
 #   include <QtMath>
 #endif
@@ -132,8 +132,7 @@ VToolSplinePath* VToolSplinePath::Create(DialogTool *dialog, VMainGraphicsScene 
     {
         doc->IncrementReferens((*path)[i].P().id());
     }
-    VToolSplinePath* spl = nullptr;
-    spl = Create(0, path, color, scene, doc, data, Document::FullParse, Source::FromGui);
+    VToolSplinePath* spl = Create(0, path, color, scene, doc, data, Document::FullParse, Source::FromGui);
     if (spl != nullptr)
     {
         spl->dialog=dialogTool;
@@ -318,7 +317,15 @@ void VToolSplinePath::ShowVisualization(bool show)
  */
 void VToolSplinePath::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    ContextMenu<DialogSplinePath>(this, event);
+    try
+    {
+        ContextMenu<DialogSplinePath>(this, event);
+    }
+    catch(const VExceptionToolWasDeleted &e)
+    {
+        Q_UNUSED(e);
+        return;//Leave this method immediately!!!
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------

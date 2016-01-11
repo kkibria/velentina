@@ -33,11 +33,12 @@
 
 #include <QMessageBox>
 #include <QPushButton>
-#include <QtSvgDepends>
+#include <QMovie>
+#include <QtDebug>
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogLayoutProgress::DialogLayoutProgress(int count, QWidget *parent)
-    :QDialog(parent), ui(new Ui::DialogLayoutProgress), maxCount(count), movie(nullptr)
+    :QDialog(parent), ui(new Ui::DialogLayoutProgress), maxCount(count), movie(nullptr), isInitialized(false)
 {
     ui->setupUi(this);
 
@@ -58,9 +59,6 @@ DialogLayoutProgress::DialogLayoutProgress(int count, QWidget *parent)
     setModal(true);
 
     this->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
-
-    setMaximumSize(size());
-    setMinimumSize(size());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -86,20 +84,17 @@ void DialogLayoutProgress::Arranged(int count)
 //---------------------------------------------------------------------------------------------------------------------
 void DialogLayoutProgress::Error(const LayoutErrors &state)
 {
-    QString text;
     switch (state)
     {
         case LayoutErrors::NoError:
             return;
         case LayoutErrors::PrepareLayoutError:
-            text = tr("Couldn't prepare data for creation layout");
-            QMessageBox::critical(this, tr("Critical error"), text, QMessageBox::Ok, QMessageBox::Ok);
+            qCritical() << tr("Couldn't prepare data for creation layout");
             break;
         case LayoutErrors::ProcessStoped:
             break;
         case LayoutErrors::EmptyPaperError:
-            text = tr("Several workpieces left not arranged, but none of them match for paper");
-            QMessageBox::critical(this, tr("Critical error"), text, QMessageBox::Ok, QMessageBox::Ok);
+            qCritical() << tr("Several workpieces left not arranged, but none of them match for paper");
             break;
         default:
             break;
@@ -118,4 +113,25 @@ void DialogLayoutProgress::Finished()
 void DialogLayoutProgress::StopWorking()
 {
     emit Abort();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogLayoutProgress::showEvent(QShowEvent *event)
+{
+    QDialog::showEvent( event );
+    if ( event->spontaneous() )
+    {
+        return;
+    }
+
+    if (isInitialized)
+    {
+        return;
+    }
+    // do your init stuff here
+
+    setMaximumSize(size());
+    setMinimumSize(size());
+
+    isInitialized = true;//first show windows are held
 }

@@ -27,10 +27,12 @@
  *************************************************************************/
 
 #include "tst_vabstractdetail.h"
-#include "../../libs/vlayout/vabstractdetail.h"
+#include "../vlayout/vabstractdetail.h"
 
 #include <QPointF>
 #include <QVector>
+
+#include <QtTest>
 
 //---------------------------------------------------------------------------------------------------------------------
 TST_VAbstractDetail::TST_VAbstractDetail(QObject *parent)
@@ -48,6 +50,165 @@ void TST_VAbstractDetail::EquidistantRemoveLoop() const
     // Code should clean loops in path.
     Case1();
     Case2();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_VAbstractDetail::SumTrapezoids() const
+{
+    // Case3 checks that the method 'SumTrapezoids' returns negative value for three clockwise allocated points
+    // Case4 checks that the method 'SumTrapezoids' returns positive value for three counterclock-wise allocated points
+    // Case5 checks that the method 'SumTrapezoids' returns 0 for one point
+    Case3();
+    Case4();
+    Case5();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_VAbstractDetail::PathRemoveLoop_data() const
+{
+    QTest::addColumn<QVector<QPointF>>("path");
+    QTest::addColumn<QVector<QPointF>>("expect");
+
+    QVector<QPointF> path;
+    path << QPointF(10, 10);
+    path << QPointF(20, 10);
+    path << QPointF(20, 20);
+    path << QPointF(10, 20);
+    path << QPointF(10, 10);
+    QTest::newRow("Correct closed a path (four unique points)") << path << path;
+
+    path.removeLast();
+    QTest::newRow("Correct unclosed a path (four unique points)") << path << path;
+
+    path.clear();
+    path << QPointF(0, 10);
+    path << QPointF(10, 10);
+    path << QPointF(20, 10);
+    path << QPointF(20, 20);
+    path << QPointF(10, 20);
+    path << QPointF(0, 20);
+    path << QPointF(0, 10);
+    QTest::newRow("Correct closed a path (six unique points)") << path << path;
+
+    path.removeLast();
+    QTest::newRow("Correct unclosed a path (six unique points)") << path << path;
+
+    path.clear();
+    path << QPointF(20, 10);
+    path << QPointF(10, 20);
+    path << QPointF(10, 10);
+    path << QPointF(20, 20);
+    path << QPointF(20, 10);
+
+    QVector<QPointF> res;
+    res << QPointF(20, 10);
+    res << QPointF(15, 15);
+    res << QPointF(20, 20);
+    res << QPointF(20, 10);
+    QTest::newRow("One loop, closed a path (four unique points)") << path << res;
+
+    path.removeLast();
+    res.removeLast();
+    QTest::newRow("One loop, unclosed a path (four unique points)") << path << res;
+
+    path.clear();
+    path << QPointF(20, 10);
+    path << QPointF(10, 20);
+    path << QPointF(0, 10);
+    path << QPointF(0, 20);
+    path << QPointF(10, 10);
+    path << QPointF(20, 20);
+    path << QPointF(20, 10);
+
+    res.clear();
+    res << QPointF(20, 10);
+    res << QPointF(15, 15);
+    res << QPointF(20, 20);
+    res << QPointF(20, 10);
+    QTest::newRow("Two loops, closed a path (six unique points)") << path << res;
+
+    path.removeLast();
+    res.removeLast();
+    QTest::newRow("Two loops, unclosed a path (six unique points)") << path << res;
+
+    path.clear();
+    path << QPointF(20, 10);
+    path << QPointF(10, 20);
+    path << QPointF(0, 20);
+    path << QPointF(0, 10);
+    path << QPointF(10, 10);
+    path << QPointF(20, 20);
+    path << QPointF(20, 10);
+
+    res.clear();
+    res << QPointF(20, 10);
+    res << QPointF(15, 15);
+    res << QPointF(20, 20);
+    res << QPointF(20, 10);
+    QTest::newRow("One loop, the first loop, closed a path (six unique points)") << path << res;
+
+    path.removeLast();
+    res.removeLast();
+    QTest::newRow("One loop, the first loop, unclosed a path (six unique points)") << path << res;
+
+    path.clear();
+    path << QPointF(20, 10);
+    path << QPointF(10, 10);
+    path << QPointF(0, 20);
+    path << QPointF(0, 10);
+    path << QPointF(10, 20);
+    path << QPointF(20, 20);
+    path << QPointF(20, 10);
+
+    res.clear();
+    res << QPointF(20, 10);
+    res << QPointF(10, 10);
+    res << QPointF(5, 15);
+    res << QPointF(10, 20);
+    res << QPointF(20, 20);
+    res << QPointF(20, 10);
+    QTest::newRow("One loop, the second loop, closed a path (six unique points)") << path << res;
+
+    path.removeLast();
+    res.removeLast();
+    QTest::newRow("One loop, the second loop, unclosed a path (six unique points)") << path << res;
+
+    path.clear();
+    path << QPointF(20, 10);
+    path << QPointF(10, 10);
+    path << QPointF(20, 15);
+    path << QPointF(10, 20);
+    path << QPointF(20, 20);
+    path << QPointF(20, 10);
+    QTest::newRow("Correct closed a path, point on line (four unique points)") << path << path;
+
+    path.removeLast();
+    QTest::newRow("Corect unclosed a path, point on line (four unique points)") << path << path;
+
+    path.clear();
+    path << QPointF(20, 10);
+    path << QPointF(10, 10);
+    path << QPointF(0, 10);
+    path << QPointF(10, 15);
+    path << QPointF(0, 20);
+    path << QPointF(10, 20);
+    path << QPointF(20, 20);
+    path << QPointF(10, 15);
+    path << QPointF(20, 10);
+    QTest::newRow("Correct closed a path, point on line (six unique points)") << path << path;
+
+    path.removeLast();
+    QTest::newRow("Corect unclosed a path, point on line (six unique points)") << path << path;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_VAbstractDetail::PathRemoveLoop() const
+{
+    QFETCH(QVector<QPointF>, path);
+    QFETCH(QVector<QPointF>, expect);
+
+    QVector<QPointF> res = VAbstractDetail::CheckLoops(path);
+    Comparison(res, expect);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -76,6 +237,33 @@ void TST_VAbstractDetail::Case2() const
 
     // Begin comparison
     Comparison(ekv, ekvOrig);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_VAbstractDetail::Case3() const
+{
+    const QVector<QPointF> points = InputPointsCase3(); // Input points.
+
+    const qreal result = VAbstractDetail::SumTrapezoids(points);
+    QVERIFY(result < 0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_VAbstractDetail::Case4() const
+{
+    const QVector<QPointF> points = InputPointsCase4(); // Input points.
+
+    const qreal result = VAbstractDetail::SumTrapezoids(points);
+    QVERIFY(result > 0);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_VAbstractDetail::Case5() const
+{
+    const QVector<QPointF> points = InputPointsCase5(); // Input points.
+
+    const qreal result = VAbstractDetail::SumTrapezoids(points);
+    QVERIFY(qFuzzyIsNull(result));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -321,6 +509,40 @@ QVector<QPointF> TST_VAbstractDetail::OutputPointsCase2() const
     points += QPointF(488.279, 455.72);
     points += QPointF(-2.79526, 455.75);
     points += QPointF(-2.79526, 4.83848);
+
+    return points;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QVector<QPointF> TST_VAbstractDetail::InputPointsCase3() const
+{
+    QVector<QPointF> points;
+
+    points += QPointF(35, 35);
+    points += QPointF(50, 50);
+    points += QPointF(15, 50);
+
+    return points;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QVector<QPointF> TST_VAbstractDetail::InputPointsCase4() const
+{
+    QVector<QPointF> points;
+
+    points += QPointF(15, 15);
+    points += QPointF(15, 50);
+    points += QPointF(50, 50);
+
+    return points;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QVector<QPointF> TST_VAbstractDetail::InputPointsCase5() const
+{
+    QVector<QPointF> points;
+
+    points += QPointF(35, 35);
 
     return points;
 }

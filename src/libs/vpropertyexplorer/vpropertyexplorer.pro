@@ -60,9 +60,6 @@ unix:!macx{
 # Set using ccache. Function enable_ccache() defined in common.pri.
 $$enable_ccache()
 
-# Set precompiled headers. Function set_PCH() defined in common.pri.
-$$set_PCH()
-
 CONFIG(debug, debug|release){
     # Debug mode
     unix {
@@ -100,6 +97,11 @@ CONFIG(debug, debug|release){
         QMAKE_CXXFLAGS -= \
             -Wundefined-reinterpret-cast
         }
+        *-icc-*{
+            QMAKE_CXXFLAGS += \
+                -isystem "$${OUT_PWD}/$${MOC_DIR}" \
+                $$ICC_DEBUG_CXXFLAGS
+        }
     } else {
         *-g++{
         QMAKE_CXXFLAGS += $$CLANG_DEBUG_CXXFLAGS # See common.pri for more details.
@@ -108,6 +110,7 @@ CONFIG(debug, debug|release){
 
 }else{
     # Release mode
+    !win32-msvc*:CONFIG += silent
 
     !unix:*-g++{
         QMAKE_CXXFLAGS += -fno-omit-frame-pointer # Need for exchndl.dll
@@ -131,6 +134,8 @@ CONFIG(debug, debug|release){
                 QMAKE_POST_LINK += objcopy --strip-debug bin/${TARGET} &&
                 QMAKE_POST_LINK += objcopy --add-gnu-debuglink="bin/${TARGET}.dbg" bin/${TARGET}
             }
+
+            QMAKE_DISTCLEAN += bin/${TARGET}.dbg
         }
     }
 }

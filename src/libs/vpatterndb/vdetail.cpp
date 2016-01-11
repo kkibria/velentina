@@ -32,6 +32,7 @@
 #include "../vgeometry/vpointf.h"
 
 #include <QDebug>
+#include <QPainterPath>
 #include <QString>
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -328,7 +329,7 @@ VDetail VDetail::RemoveEdge(const quint32 &index) const
  */
 QList<quint32> VDetail::Missing(const VDetail &det) const
 {
-    if (d->nodes.size() == det.CountNode())
+    if (d->nodes.size() == det.CountNode()) //-V807
     {
         return QList<quint32>();
     }
@@ -381,6 +382,8 @@ QVector<QPointF> VDetail::ContourPoints(const VContainer *data) const
                 break;
         }
     }
+
+    points = CheckLoops(CorrectEquidistantPoints(points));//A path can contains loops
     return points;
 }
 
@@ -415,7 +418,7 @@ QVector<QPointF> VDetail::SeamAllowancePoints(const VContainer *data) const
                 const QPointF begin = StartSegment(data, i);
                 const QPointF end = EndSegment(data, i);
 
-                QVector<QPointF> nodePoints = curve->GetSegmentPoints(begin, end, at(i).getReverse());
+                const QVector<QPointF> nodePoints = curve->GetSegmentPoints(begin, end, at(i).getReverse());
                 pointsEkv << biasPoints(nodePoints, at(i).getMx(), at(i).getMy());
             }
             break;
@@ -424,6 +427,8 @@ QVector<QPointF> VDetail::SeamAllowancePoints(const VContainer *data) const
                 break;
         }
     }
+
+    pointsEkv = CheckLoops(CorrectEquidistantPoints(pointsEkv));//A path can contains loops
 
     if (getClosed() == true)
     {
@@ -441,9 +446,7 @@ QVector<QPointF> VDetail::SeamAllowancePoints(const VContainer *data) const
 //---------------------------------------------------------------------------------------------------------------------
 QPainterPath VDetail::ContourPath(const VContainer *data) const
 {
-    QVector<QPointF> points = ContourPoints(data);
-    QVector<QPointF> pointsEkv = SeamAllowancePoints(data);
-
+    const QVector<QPointF> points = ContourPoints(data);
     QPainterPath path;
 
     // contour
@@ -453,25 +456,33 @@ QPainterPath VDetail::ContourPath(const VContainer *data) const
         path.lineTo(points.at(i));
     }
     path.lineTo(points.at(0));
+    path.setFillRule(Qt::WindingFill);
+
+    return path;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QPainterPath VDetail::SeamAllowancePath(const VContainer *data) const
+{
+    const QVector<QPointF> pointsEkv = SeamAllowancePoints(data);
+    QPainterPath ekv;
 
     // seam allowence
-    if (getSeamAllowance() == true)
+    if (getSeamAllowance())
     {
         if (not pointsEkv.isEmpty())
         {
-            QPainterPath ekv;
             ekv.moveTo(pointsEkv.at(0));
             for (qint32 i = 1; i < pointsEkv.count(); ++i)
             {
                 ekv.lineTo(pointsEkv.at(i));
             }
 
-            path.addPath(ekv);
-            path.setFillRule(Qt::WindingFill);
+            ekv.setFillRule(Qt::WindingFill);
         }
     }
 
-    return path;
+    return ekv;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -482,7 +493,7 @@ QPainterPath VDetail::ContourPath(const VContainer *data) const
 QVector<VNodeDetail> VDetail::listNodePoint() const
 {
     QVector<VNodeDetail> list;
-    for (int i = 0; i < d->nodes.size(); ++i)
+    for (int i = 0; i < d->nodes.size(); ++i) //-V807
     {
         if (d->nodes.at(i).getTypeTool() == Tool::NodePoint)
         {
@@ -515,7 +526,14 @@ int VDetail::indexOfNode(const QVector<VNodeDetail> &list, const quint32 &id)
 //---------------------------------------------------------------------------------------------------------------------
 QPointF VDetail::StartSegment(const VContainer *data, const int &i) const
 {
-    QPointF begin;
+    if (i < 0 && i > CountNode()-1)
+    {
+        return QPointF();
+    }
+
+    const QSharedPointer<VAbstractCurve> curve = data->GeometricObject<VAbstractCurve>(at(i).getId());
+
+    QPointF begin = curve->GetPoints().first();
     if (CountNode() > 1)
     {
         if (i == 0)
@@ -539,7 +557,14 @@ QPointF VDetail::StartSegment(const VContainer *data, const int &i) const
 //---------------------------------------------------------------------------------------------------------------------
 QPointF VDetail::EndSegment(const VContainer *data, const int &i) const
 {
-    QPointF end;
+    if (i < 0 && i > CountNode()-1)
+    {
+        return QPointF();
+    }
+
+    const QSharedPointer<VAbstractCurve> curve = data->GeometricObject<VAbstractCurve>(at(i).getId());
+
+    QPointF end = curve->GetPoints().last();
     if (CountNode() > 2)
     {
         if (i == CountNode() - 1)

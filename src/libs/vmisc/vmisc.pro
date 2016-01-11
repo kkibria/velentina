@@ -7,7 +7,7 @@
 # File with common stuff for whole project
 include(../../../common.pri)
 
-QT += widgets
+QT += widgets printsupport
 
 # Name of library
 TARGET = vmisc
@@ -48,9 +48,6 @@ OBJECTS_DIR = obj
 # Set using ccache. Function enable_ccache() defined in common.pri.
 $$enable_ccache()
 
-# Set precompiled headers. Function set_PCH() defined in common.pri.
-$$set_PCH()
-
 CONFIG(debug, debug|release){
     # Debug mode
     unix {
@@ -82,6 +79,11 @@ CONFIG(debug, debug|release){
         QMAKE_CXXFLAGS -= \
             -Wmissing-prototypes
         }
+        *-icc-*{
+            QMAKE_CXXFLAGS += \
+                -isystem "$${OUT_PWD}/$${MOC_DIR}" \
+                $$ICC_DEBUG_CXXFLAGS
+        }
     } else {
         *-g++{
             QMAKE_CXXFLAGS += $$GCC_DEBUG_CXXFLAGS # See common.pri for more details.
@@ -94,14 +96,18 @@ CONFIG(debug, debug|release){
     DEFINES += "BUILD_REVISION=\\\"unknown\\\""
 }else{
     # Release mode
+    !win32-msvc*:CONFIG += silent
     DEFINES += V_NO_ASSERT
     !unix:*-g++{
         QMAKE_CXXFLAGS += -fno-omit-frame-pointer # Need for exchndl.dll
     }
 
     noDebugSymbols{ # For enable run qmake with CONFIG+=noDebugSymbols
-        # do nothing
+        DEFINES += V_NO_DEBUG
     } else {
+        noCrashReports{
+            DEFINES += V_NO_DEBUG
+        }
         !macx:!win32-msvc*{
             # Turn on debug symbols in release mode on Unix systems.
             # On Mac OS X temporarily disabled. TODO: find way how to strip binary file.

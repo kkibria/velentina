@@ -23,16 +23,17 @@
 **
 **********************************************************************/
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+#if defined(Q_CC_MSVC)
+    #if (_MSC_VER > 1000)
+    #pragma once
+    #endif // _MSC_VER > 1000
+#endif // Q_CC_MSVC
 
 #include <stdio.h>
 #include <string.h>
+#include <QtGlobal>
 
 #include "dl_writer_ascii.h"
-#include "dl_exception.h"
-
 
 /**
  * Closes the output file.
@@ -71,20 +72,20 @@ void DL_WriterA::dxfReal(int gc, double value) const
     // Cut away those zeros at the end:
     bool dot = false;
     int end = -1;
-    for (unsigned int i=0; i<strlen(str); ++i)
+    for (quint32 i=0, sz = strlen(str); i<sz; ++i)
     {
         if (str[i]=='.')
         {
             dot = true;
-            end = i+2;
+            end = static_cast<int>(i)+2;
             continue;
         }
         else if (dot && str[i]!='0')
         {
-            end = i+1;
+            end = static_cast<int>(i)+1;
         }
     }
-    if (end>0 && end<(int)strlen(str))
+    if (end>0 && end<static_cast<int>(strlen(str)))
     {
         str[end] = '\0';
     }
@@ -131,12 +132,6 @@ void DL_WriterA::dxfHex(int gc, int value) const
  */
 void DL_WriterA::dxfString(int gc, const char* value) const
 {
-    if (value==NULL)
-    {
-#ifndef __GCC2x__
-        //throw DL_NullStrExc();
-#endif
-    }
     m_ofile << (gc<10 ? "  " : (gc<100 ? " " : "")) << gc << "\n"
             << value << "\n";
 }

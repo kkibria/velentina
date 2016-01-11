@@ -31,7 +31,7 @@
 
 #include <QDialog>
 
-#include "../../libs/vlayout/vlayoutdef.h"
+#include "../vlayout/vlayoutdef.h"
 
 namespace Ui
 {
@@ -43,7 +43,7 @@ class DialogLayoutProgress : public QDialog
     Q_OBJECT
 
 public:
-    DialogLayoutProgress(int count, QWidget *parent = 0);
+    explicit DialogLayoutProgress(int count, QWidget *parent = 0);
     ~DialogLayoutProgress();
 
 signals:
@@ -56,11 +56,15 @@ public slots:
     void Finished();
     void StopWorking();
 
+protected:
+    virtual void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
+
 private:
     Q_DISABLE_COPY(DialogLayoutProgress)
     Ui::DialogLayoutProgress *ui;
     const int maxCount;
     QMovie *movie;
+    bool isInitialized;
 };
 
 #endif // DIALOGLAYOUTPROGRESS_H

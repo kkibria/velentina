@@ -29,6 +29,7 @@
 #include "vcontrolpointspline.h"
 
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsView>
 #include <QPen>
 #include <QStyleOptionGraphicsItem>
 
@@ -120,9 +121,28 @@ QVariant VControlPointSpline::itemChange(QGraphicsItem::GraphicsItemChange chang
 {
     if (change == ItemPositionChange && scene())
     {
-        // value - new position.
-        QPointF newPos = value.toPointF();
-        emit ControlPointChangePosition(indexSpline, position, newPos);
+        // Each time we move something we call recalculation scene rect. In some cases this can cause moving
+        // objects positions. And this cause infinite redrawing. That's why we wait the finish of saving the last move.
+        static bool changeFinished = true;
+        if (changeFinished)
+        {
+            changeFinished = false;
+            // value - new position.
+            QPointF newPos = value.toPointF();
+            emit ControlPointChangePosition(indexSpline, position, newPos);
+            if (scene())
+            {
+                const QList<QGraphicsView *> viewList = scene()->views();
+                if (not viewList.isEmpty())
+                {
+                    if (QGraphicsView *view = viewList.at(0))
+                    {
+                        view->ensureVisible(this);
+                    }
+                }
+            }
+            changeFinished = true;
+        }
     }
     return QGraphicsItem::itemChange(change, value);
 }

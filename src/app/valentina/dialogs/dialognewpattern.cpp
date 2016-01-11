@@ -29,9 +29,9 @@
 #include "dialognewpattern.h"
 #include "ui_dialognewpattern.h"
 #include "../core/vapplication.h"
-#include "../../libs/vmisc/vsettings.h"
-#include "../../libs/vpatterndb/vcontainer.h"
-#include "../../libs/ifc/xml/vdomdocument.h"
+#include "../vmisc/vsettings.h"
+#include "../vpatterndb/vcontainer.h"
+#include "../ifc/xml/vdomdocument.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -41,9 +41,13 @@
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogNewPattern::DialogNewPattern(VContainer *data, const QString &patternPieceName, QWidget *parent)
-    :QDialog(parent), ui(new Ui::DialogNewPattern), data(data)
+    :QDialog(parent), ui(new Ui::DialogNewPattern), data(data), isInitialized(false)
 {
     ui->setupUi(this);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    ui->lineEditName->setClearButtonEnabled(true);
+#endif
 
     qApp->ValentinaSettings()->GetOsSeparator() ? setLocale(QLocale::system()) : setLocale(QLocale(QLocale::C));
 
@@ -56,9 +60,6 @@ DialogNewPattern::DialogNewPattern(VContainer *data, const QString &patternPiece
     InitUnits();
     CheckState();
     connect(ui->lineEditName, &QLineEdit::textChanged, this, &DialogNewPattern::CheckState);
-
-    setMaximumSize(size());
-    setMinimumSize(size());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -86,6 +87,27 @@ void DialogNewPattern::CheckState()
     QPushButton *bOk = ui->buttonBox->button(QDialogButtonBox::Ok);
     SCASSERT(bOk != nullptr);
     bOk->setEnabled(flagName);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogNewPattern::showEvent(QShowEvent *event)
+{
+    QDialog::showEvent( event );
+    if ( event->spontaneous() )
+    {
+        return;
+    }
+
+    if (isInitialized)
+    {
+        return;
+    }
+    // do your init stuff here
+
+    setMaximumSize(size());
+    setMinimumSize(size());
+
+    isInitialized = true;//first show windows are held
 }
 
 //---------------------------------------------------------------------------------------------------------------------

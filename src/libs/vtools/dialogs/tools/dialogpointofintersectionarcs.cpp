@@ -29,10 +29,10 @@
 #include "dialogpointofintersectionarcs.h"
 #include "ui_dialogpointofintersectionarcs.h"
 
-#include "../../libs/vgeometry/vpointf.h"
-#include "../../libs/vpatterndb/vcontainer.h"
+#include "../vgeometry/vpointf.h"
+#include "../vpatterndb/vcontainer.h"
 #include "../../visualization/vistoolpointofintersectionarcs.h"
-#include "../../libs/vwidgets/vmaingraphicsscene.h"
+#include "../vwidgets/vmaingraphicsscene.h"
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogPointOfIntersectionArcs::DialogPointOfIntersectionArcs(const VContainer *data, const quint32 &toolId,
@@ -40,6 +40,11 @@ DialogPointOfIntersectionArcs::DialogPointOfIntersectionArcs(const VContainer *d
     :DialogTool(data, toolId, parent), ui(new Ui::DialogPointOfIntersectionArcs)
 {
     ui->setupUi(this);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    ui->lineEditNamePoint->setClearButtonEnabled(true);
+#endif
+
     ui->lineEditNamePoint->setText(qApp->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
     labelEditNamePoint = ui->labelEditNamePoint;
 
@@ -57,8 +62,6 @@ DialogPointOfIntersectionArcs::DialogPointOfIntersectionArcs(const VContainer *d
             this, &DialogPointOfIntersectionArcs::ArcChanged);
 
     vis = new VisToolPointOfIntersectionArcs(data);
-
-    FixateSize();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -114,7 +117,7 @@ CrossCirclesPoint DialogPointOfIntersectionArcs::GetCrossArcPoint() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogPointOfIntersectionArcs::SetCrossArcPoint(CrossCirclesPoint &p)
+void DialogPointOfIntersectionArcs::SetCrossArcPoint(const CrossCirclesPoint &p)
 {
     const qint32 index = ui->comboBoxResult->findData(static_cast<int>(p));
     if (index != -1)

@@ -29,7 +29,7 @@
 #include "vtoolline.h"
 #include "../../dialogs/tools/dialogline.h"
 #include <QKeyEvent>
-#include "../../libs/vgeometry/vpointf.h"
+#include "../vgeometry/vpointf.h"
 #include "../../dialogs/tools/dialogline.h"
 #include "../../visualization/vistoolline.h"
 
@@ -101,9 +101,8 @@ VToolLine *VToolLine::Create(DialogTool *dialog, VMainGraphicsScene *scene, VAbs
     const QString typeLine = dialogTool->GetTypeLine();
     const QString lineColor = dialogTool->GetLineColor();
 
-    VToolLine *line = nullptr;
-    line = Create(0, firstPoint, secondPoint, typeLine, lineColor,  scene, doc, data, Document::FullParse,
-                  Source::FromGui);
+    VToolLine *line = Create(0, firstPoint, secondPoint, typeLine, lineColor,  scene, doc, data, Document::FullParse,
+                             Source::FromGui);
     if (line != nullptr)
     {
         line->dialog=dialogTool;
@@ -232,7 +231,15 @@ void VToolLine::Disable(bool disable, const QString &namePP)
  */
 void VToolLine::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    ContextMenu<DialogLine>(this, event);
+    try
+    {
+        ContextMenu<DialogLine>(this, event);
+    }
+    catch(const VExceptionToolWasDeleted &e)
+    {
+        Q_UNUSED(e);
+        return;//Leave this method immediately!!!
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -339,8 +346,16 @@ void VToolLine::keyReleaseEvent(QKeyEvent *event)
     switch (event->key())
     {
         case Qt::Key_Delete:
-            DeleteTool();
-            return; //Leave this method immediately after call!!!
+            try
+            {
+                DeleteTool();
+            }
+            catch(const VExceptionToolWasDeleted &e)
+            {
+                Q_UNUSED(e);
+                return;//Leave this method immediately!!!
+            }
+            break;
         default:
             break;
     }

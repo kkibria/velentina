@@ -32,14 +32,18 @@
 #include <QDebug>
 #include <QLocale>
 #include <QApplication>
+#include <QPrinter>
+#include <QSharedPointer>
 
-#include "../../libs/ifc/ifcdef.h"
+#include "../ifc/ifcdef.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 1, 0)
-#   include "../../libs/vmisc/vmath.h"
+#   include "../vmisc/vmath.h"
 #else
 #   include <QtMath>
 #endif
+
+Q_DECLARE_METATYPE(QMarginsF)
 
 const QString VSettings::SettingConfigurationLabelLanguage       = QStringLiteral("configuration/label_language");
 
@@ -69,12 +73,16 @@ const QString VSettings::SettingLayoutRotationIncrease           = QStringLitera
 const QString VSettings::SettingLayoutAutoCrop                   = QStringLiteral("layout/autoCrop");
 const QString VSettings::SettingLayoutSaveLength                 = QStringLiteral("layout/saveLength");
 const QString VSettings::SettingLayoutUnitePages                 = QStringLiteral("layout/unitePages");
+const QString VSettings::SettingFields                           = QStringLiteral("layout/fields");
+const QString VSettings::SettingIgnoreFields                     = QStringLiteral("layout/ignoreFields");
 
 //---------------------------------------------------------------------------------------------------------------------
 VSettings::VSettings(Format format, Scope scope, const QString &organization, const QString &application,
                      QObject *parent)
     :VCommonSettings(format, scope, organization, application, parent)
-{}
+{
+    qRegisterMetaTypeStreamOperators<QMarginsF>("QMarginsF");
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 QString VSettings::GetLabelLanguage() const
@@ -91,25 +99,31 @@ void VSettings::SetLabelLanguage(const QString &value)
 //---------------------------------------------------------------------------------------------------------------------
 QString VSettings::GetPathPattern() const
 {
-    return value(SettingPathsPattern, QDir::homePath()).toString();
+    QSettings settings(this->format(), this->scope(), this->organizationName(), this->applicationName());
+    return settings.value(SettingPathsPattern, QDir::homePath()).toString();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VSettings::SetPathPattern(const QString &value)
 {
-    setValue(SettingPathsPattern, value);
+    QSettings settings(this->format(), this->scope(), this->organizationName(), this->applicationName());
+    settings.setValue(SettingPathsPattern, value);
+    settings.sync();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 QString VSettings::GetPathLayout() const
 {
-    return value(SettingPathsLayout, QDir::homePath()).toString();
+    QSettings settings(this->format(), this->scope(), this->organizationName(), this->applicationName());
+    return settings.value(SettingPathsLayout, QDir::homePath()).toString();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VSettings::SetPathLayout(const QString &value)
 {
-    setValue(SettingPathsLayout, value);
+    QSettings settings(this->format(), this->scope(), this->organizationName(), this->applicationName());
+    settings.setValue(SettingPathsLayout, value);
+    settings.sync();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -245,11 +259,11 @@ void VSettings::SetUserPassword(const QString &value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-int VSettings::GetLayoutPaperHeight() const
+qreal VSettings::GetLayoutPaperHeight() const
 {
-    const int def = qFloor(UnitConvertor(1189/*A0*/, Unit::Mm, Unit::Px));
+    const qreal def = UnitConvertor(1189/*A0*/, Unit::Mm, Unit::Px);
     bool ok = false;
-    const int height = value(SettingLayoutPaperHeight, def).toInt(&ok);
+    const qreal height = value(SettingLayoutPaperHeight, def).toDouble(&ok);
     if (ok)
     {
         return height;
@@ -261,17 +275,17 @@ int VSettings::GetLayoutPaperHeight() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VSettings::SetLayoutPaperHeight(int value)
+void VSettings::SetLayoutPaperHeight(qreal value)
 {
     setValue(SettingLayoutPaperHeight, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-int VSettings::GetLayoutPaperWidth() const
+qreal VSettings::GetLayoutPaperWidth() const
 {
-    const int def = qFloor(UnitConvertor(841/*A0*/, Unit::Mm, Unit::Px));
+    const qreal def = UnitConvertor(841/*A0*/, Unit::Mm, Unit::Px);
     bool ok = false;
-    const int width = value(SettingLayoutPaperWidth, def).toInt(&ok);
+    const qreal width = value(SettingLayoutPaperWidth, def).toDouble(&ok);
     if (ok)
     {
         return width;
@@ -283,17 +297,17 @@ int VSettings::GetLayoutPaperWidth() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VSettings::SetLayoutPaperWidth(int value)
+void VSettings::SetLayoutPaperWidth(qreal value)
 {
     setValue(SettingLayoutPaperWidth, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-unsigned int VSettings::GetLayoutShift() const
+qreal VSettings::GetLayoutShift() const
 {
-    const unsigned int def = GetDefLayoutShift();
+    const qreal def = GetDefLayoutShift();
     bool ok = false;
-    const unsigned int shift = value(SettingLayoutShift, def).toUInt(&ok);
+    const qreal shift = value(SettingLayoutShift, def).toDouble(&ok);
     if (ok)
     {
         return shift;
@@ -305,23 +319,23 @@ unsigned int VSettings::GetLayoutShift() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-unsigned int VSettings::GetDefLayoutShift()
+qreal VSettings::GetDefLayoutShift()
 {
-    return static_cast<unsigned int>(UnitConvertor(50, Unit::Mm, Unit::Px));
+    return UnitConvertor(50, Unit::Mm, Unit::Px);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VSettings::SetLayoutShift(unsigned int value)
+void VSettings::SetLayoutShift(qreal value)
 {
     setValue(SettingLayoutShift, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-unsigned int VSettings::GetLayoutWidth() const
+qreal VSettings::GetLayoutWidth() const
 {
-    const unsigned int def = GetDefLayoutWidth();
+    const qreal def = GetDefLayoutWidth();
     bool ok = false;
-    const unsigned int lWidth = value(SettingLayoutWidth, def).toUInt(&ok);
+    const qreal lWidth = value(SettingLayoutWidth, def).toDouble(&ok);
     if (ok)
     {
         return lWidth;
@@ -333,15 +347,58 @@ unsigned int VSettings::GetLayoutWidth() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-unsigned int VSettings::GetDefLayoutWidth()
+qreal VSettings::GetDefLayoutWidth()
 {
-    return static_cast<unsigned int>(UnitConvertor(2.5, Unit::Mm, Unit::Px));
+    return UnitConvertor(2.5, Unit::Mm, Unit::Px);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VSettings::SetLayoutWidth(unsigned int value)
+void VSettings::SetLayoutWidth(qreal value)
 {
     setValue(SettingLayoutWidth, value);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QMarginsF VSettings::GetFields() const
+{
+    const QMarginsF def = GetDefFields();
+    const QVariant val = value(SettingFields, QVariant::fromValue(def));
+    if (val.canConvert<QMarginsF>())
+    {
+        return val.value<QMarginsF>();
+    }
+    return def;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QMarginsF VSettings::GetDefFields()
+{
+    QSharedPointer<QPrinter> printer = DefaultPrinter();
+    if (printer.isNull())
+    {
+        return QMarginsF();
+    }
+
+    qreal left = 0;
+    qreal top = 0;
+    qreal right = 0;
+    qreal bottom = 0;
+    printer->getPageMargins(&left, &top, &right, &bottom, QPrinter::Millimeter);
+    // We can't use Unit::Px because our dpi in most cases is different
+    QMarginsF def;
+    def.setLeft(UnitConvertor(left, Unit::Mm, Unit::Px));
+    def.setRight(UnitConvertor(right, Unit::Mm, Unit::Px));
+    def.setTop(UnitConvertor(top, Unit::Mm, Unit::Px));
+    def.setBottom(UnitConvertor(bottom, Unit::Mm, Unit::Px));
+    return def;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VSettings::SetFields(const QMarginsF &value)
+{
+    QVariant val = QVariant::fromValue(value);
+    QString str = val.toString();
+    setValue(SettingFields, val);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -435,7 +492,13 @@ void VSettings::SetLayoutRotationIncrease(int value)
 //---------------------------------------------------------------------------------------------------------------------
 bool VSettings::GetLayoutAutoCrop() const
 {
-    return value(SettingLayoutAutoCrop, false).toBool();
+    return value(SettingLayoutAutoCrop, GetDefLayoutAutoCrop()).toBool();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool VSettings::GetDefLayoutAutoCrop()
+{
+    return false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -447,7 +510,13 @@ void VSettings::SetLayoutAutoCrop(bool value)
 //---------------------------------------------------------------------------------------------------------------------
 bool VSettings::GetLayoutSaveLength() const
 {
-    return value(SettingLayoutSaveLength, false).toBool();
+    return value(SettingLayoutSaveLength, GetDefLayoutSaveLength()).toBool();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool VSettings::GetDefLayoutSaveLength()
+{
+    return false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -459,7 +528,13 @@ void VSettings::SetLayoutSaveLength(bool value)
 //---------------------------------------------------------------------------------------------------------------------
 bool VSettings::GetLayoutUnitePages() const
 {
-    return value(SettingLayoutUnitePages, false).toBool();
+    return value(SettingLayoutUnitePages, GetDefLayoutUnitePages()).toBool();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool VSettings::GetDefLayoutUnitePages()
+{
+    return false;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -469,42 +544,19 @@ void VSettings::SetLayoutUnitePages(bool value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-QString VSettings::StandardTablesPath() const
+bool VSettings::GetIgnoreAllFields() const
 {
-    const QString stPath = QStringLiteral("/tables/standard");
-#ifdef Q_OS_WIN
-    return QApplication::applicationDirPath() + stPath;
-#elif defined(Q_OS_MAC)
-    QDir dirBundle(QApplication::applicationDirPath() + QStringLiteral("/../Resources") + stPath);
-    if (dirBundle.exists())
-    {
-        return dirBundle.absolutePath();
-    }
-    else
-    {
-        QDir dir(QApplication::applicationDirPath() + stPath);
-        if (dir.exists())
-        {
-            return dir.absolutePath();
-        }
-        else
-        {
-            return QStringLiteral("/usr/share/valentina/tables/standard");
-        }
-    }
-#else // Unix
-    #ifdef QT_DEBUG
-        return QApplication::applicationDirPath() + stPath;
-    #else
-        QDir dir(QApplication::applicationDirPath() + stPath);
-        if (dir.exists())
-        {
-            return dir.absolutePath();
-        }
-        else
-        {
-            return QStringLiteral("/usr/share/valentina/tables/standard");
-        }
-    #endif
-#endif
+    return value(SettingIgnoreFields, GetDefIgnoreAllFields()).toBool();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool VSettings::GetDefIgnoreAllFields()
+{
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VSettings::SetIgnoreAllFields(bool value)
+{
+    setValue(SettingIgnoreFields, value);
 }

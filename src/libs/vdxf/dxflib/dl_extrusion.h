@@ -44,11 +44,9 @@ public:
     /**
      * Default constructor.
      */
-    DL_Extrusion()
+    DL_Extrusion() : direction(new double[3]), elevation(0.0)
     {
-        direction = new double[3];
         setDirection(0.0, 0.0, 1.0);
-        setElevation(0.0);
     }
 
 
@@ -60,26 +58,25 @@ public:
         delete[] direction ;
     }
 
+    DL_Extrusion(const DL_Extrusion &L)
+        : direction(new double[3]), elevation(L.elevation)
+    {
+        setDirection(L.direction[0], L.direction[1], L.direction[0]);
+    }
 
     /**
-     * Constructor for DXF extrusion.
-     *
-     * @param direction Vector of axis along which the entity shall be extruded
-     *                  this is also the Z axis of the Entity coordinate system
-     * @param elevation Distance of the entities XY plane from the origin of the
-     *                  world coordinate system
+     * @brief DL_Extrusion Constructor for DXF extrusion.
      */
     DL_Extrusion(double dx, double dy, double dz, double elevation)
+        : direction(new double[3]), elevation(elevation)
     {
-        direction = new double[3];
         setDirection(dx, dy, dz);
-        setElevation(elevation);
     }
 
 
 
     /**
-     * Sets the direction vector.
+     * @brief setDirection Sets the direction vector.
      */
     void setDirection(double dx, double dy, double dz)
     {
@@ -98,11 +95,6 @@ public:
         return direction;
     }
 
-
-
-    /**
-     * @return direction vector.
-     */
     void getDirection(double dir[]) const
     {
         dir[0]=direction[0];
@@ -135,8 +127,12 @@ public:
     /**
      * Copies extrusion (deep copies) from another extrusion object.
      */
-    DL_Extrusion operator = (const DL_Extrusion& extru)
+    DL_Extrusion & operator = (const DL_Extrusion& extru)
     {
+        if ( &extru == this )
+        {
+            return *this;
+        }
         setDirection(extru.direction[0], extru.direction[1], extru.direction[2]);
         setElevation(extru.elevation);
 
@@ -146,7 +142,14 @@ public:
 
 
 private:
+    /**
+     * @brief direction Vector of axis along which the entity shall be extruded this is also the Z axis of the Entity
+     * coordinate system
+     */
     double *direction;
+    /**
+     * @brief elevation Distance of the entities XY plane from the origin of the world coordinate system
+     */
     double elevation;
 };
 

@@ -30,18 +30,27 @@
 
 #include <QTextStream>
 #include <QDebug>
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 1, 0)
-#   include "../libs/vmisc/vmath.h"
+#   include "../vmisc/vmath.h"
 #else
 #   include <QtMath>
 #endif
 
+#ifdef Q_CC_MSVC
+    #include <ciso646>
+#endif /* Q_CC_MSVC */
+
 //---------------------------------------------------------------------------------------------------------------------
 static inline QPaintEngine::PaintEngineFeatures svgEngineFeatures()
 {
-#ifdef Q_CC_CLANG
+#if defined(Q_CC_CLANG)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wsign-conversion"
+#elif defined (Q_CC_INTEL)
+#pragma warning( push )
+#pragma warning( disable: 68 )
+#pragma warning( disable: 2022 )
 #endif
 
     return QPaintEngine::PaintEngineFeatures(
@@ -51,14 +60,14 @@ static inline QPaintEngine::PaintEngineFeatures svgEngineFeatures()
         & ~QPaintEngine::ConicalGradientFill
         & ~QPaintEngine::PorterDuff);
 
-#ifdef Q_CC_CLANG
+#if defined(Q_CC_CLANG)
 #pragma clang diagnostic pop
 #endif
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 VObjEngine::VObjEngine()
-    :QPaintEngine(svgEngineFeatures()), stream(nullptr), globalPointsCount(0), outputDevice(nullptr), planeCount(0),
+    :QPaintEngine(svgEngineFeatures()), stream(), globalPointsCount(0), outputDevice(), planeCount(0),
       size(), resolution(96), matrix()
 {
     for (int i=0; i < MAX_POINTS; i++)
@@ -68,17 +77,20 @@ VObjEngine::VObjEngine()
     }
 }
 
+#if defined(Q_CC_INTEL)
+#pragma warning( pop )
+#endif
+
 //---------------------------------------------------------------------------------------------------------------------
 VObjEngine::~VObjEngine()
 {
-    outputDevice = nullptr;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 bool VObjEngine::begin(QPaintDevice *pdev)
 {
     Q_UNUSED(pdev)
-    if (outputDevice == nullptr)
+    if (outputDevice.isNull())
     {
         qWarning("VObjEngine::begin(), no output device");
         return false;
@@ -105,7 +117,7 @@ bool VObjEngine::begin(QPaintDevice *pdev)
         return false;
     }
 
-    stream = new QTextStream(outputDevice);
+    stream = QSharedPointer<QTextStream>(new QTextStream(outputDevice.data()));
     *stream << "# Valentina OBJ File" <<  endl;
     *stream << "# www.valentina-project.org/" <<  endl;
     return true;
@@ -114,7 +126,7 @@ bool VObjEngine::begin(QPaintDevice *pdev)
 //---------------------------------------------------------------------------------------------------------------------
 bool VObjEngine::end()
 {
-    delete stream;
+    stream.reset();
     return true;
 }
 
@@ -149,7 +161,7 @@ void VObjEngine::drawPath(const QPainterPath &path)
     ++planeCount;
     *stream << "o Plane." << QString("%1").arg(planeCount, 3, 10, QLatin1Char('0')) << endl;
 
-    unsigned int num_points = 0;
+    quint32 num_points = 0;
 
     for (int i=0; i < polygon.count(); i++)
     {
@@ -167,7 +179,7 @@ void VObjEngine::drawPath(const QPainterPath &path)
     QPointF pf[MAX_POINTS];
     bool skipFace=false;//Need skip first face
 
-    for (unsigned int i = 0; i < res->num_faces; i++ )
+    for (quint32 i = 0; i < res->num_faces; i++ )
     {
         if (offset == 0)
         {
@@ -215,7 +227,7 @@ void VObjEngine::drawPolygon(const QPointF *points, int pointCount, PolygonDrawM
 
     for (int i = 0; i < pointCount; ++i)
     {
-        *stream << QString(" %1").arg(globalPointsCount - static_cast<unsigned int>(pointCount) + i + 1);
+        *stream << QString(" %1").arg(static_cast<int>(globalPointsCount) - pointCount + i + 1);
     }
     *stream << endl;
 }
@@ -270,21 +282,21 @@ QSize VObjEngine::getSize() const
 //---------------------------------------------------------------------------------------------------------------------
 void VObjEngine::setSize(const QSize &value)
 {
-    Q_ASSERT(!isActive());
+    Q_ASSERT(not isActive());
     size = value;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 QIODevice *VObjEngine::getOutputDevice() const
 {
-    return outputDevice;
+    return outputDevice.data();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VObjEngine::setOutputDevice(QIODevice *value)
 {
-    Q_ASSERT(!isActive());
-    outputDevice = value;
+    Q_ASSERT(not isActive());
+    outputDevice.reset(value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -296,7 +308,7 @@ int VObjEngine::getResolution() const
 //---------------------------------------------------------------------------------------------------------------------
 void VObjEngine::setResolution(int value)
 {
-    Q_ASSERT(!isActive());
+    Q_ASSERT(not isActive());
     resolution = value;
 }
 

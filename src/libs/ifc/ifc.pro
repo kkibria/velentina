@@ -43,15 +43,15 @@ MOC_DIR = moc
 # objecs files
 OBJECTS_DIR = obj
 
+# Directory for files created rcc
+RCC_DIR = rcc
+
 # Resource files. This files will be included in binary.
 RESOURCES += \
     schema.qrc  # Schemas for validation xml files.
 
 # Set using ccache. Function enable_ccache() defined in common.pri.
 $$enable_ccache()
-
-# Set precompiled headers. Function set_PCH() defined in common.pri.
-$$set_PCH()
 
 CONFIG(debug, debug|release){
     # Debug mode
@@ -61,6 +61,7 @@ CONFIG(debug, debug|release){
             QMAKE_CXXFLAGS += \
                 # Key -isystem disable checking errors in system headers.
                 -isystem "$${OUT_PWD}/$${MOC_DIR}" \
+                -isystem "$${OUT_PWD}/$${RCC_DIR}" \
                 $$GCC_DEBUG_CXXFLAGS # See common.pri for more details.
 
             noAddressSanitizer{ # For enable run qmake with CONFIG+=noAddressSanitizer
@@ -77,12 +78,20 @@ CONFIG(debug, debug|release){
         QMAKE_CXXFLAGS += \
             # Key -isystem disable checking errors in system headers.
             -isystem "$${OUT_PWD}/$${MOC_DIR}" \
+            -isystem "$${OUT_PWD}/$${RCC_DIR}" \
             $$CLANG_DEBUG_CXXFLAGS # See common.pri for more details.
 
         # -isystem key works only for headers. In some cases it's not enough. But we can't delete these warnings and
         # want them in global list. Compromise decision delete them from local list.
         QMAKE_CXXFLAGS -= \
-            -Wmissing-prototypes
+            -Wmissing-prototypes \
+            -Wundefined-reinterpret-cast
+        }
+        *-icc-*{
+            QMAKE_CXXFLAGS += \
+                -isystem "$${OUT_PWD}/$${MOC_DIR}" \
+                -isystem "$${OUT_PWD}/$${RCC_DIR}" \
+                $$ICC_DEBUG_CXXFLAGS
         }
     } else {
         *-g++{
@@ -92,6 +101,7 @@ CONFIG(debug, debug|release){
 
 }else{
     # Release mode
+    !win32-msvc*:CONFIG += silent
     DEFINES += V_NO_ASSERT
     !unix:*-g++{
         QMAKE_CXXFLAGS += -fno-omit-frame-pointer # Need for exchndl.dll

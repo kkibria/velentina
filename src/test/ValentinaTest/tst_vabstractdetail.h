@@ -41,16 +41,26 @@ signals:
 
 private slots:
     void EquidistantRemoveLoop() const;
+    void SumTrapezoids() const;
+    void PathRemoveLoop_data() const;
+    void PathRemoveLoop() const;
 
 private:
     void Case1() const;
     void Case2() const;
+    void Case3() const;
+    void Case4() const;
+    void Case5() const;
 
     QVector<QPointF> InputPointsCase1() const;
     QVector<QPointF> OutputPointsCase1() const;
 
     QVector<QPointF> InputPointsCase2() const;
     QVector<QPointF> OutputPointsCase2() const;
+
+    QVector<QPointF> InputPointsCase3() const;
+    QVector<QPointF> InputPointsCase4() const;
+    QVector<QPointF> InputPointsCase5() const;
 
 };
 

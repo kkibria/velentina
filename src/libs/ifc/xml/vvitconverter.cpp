@@ -40,8 +40,8 @@
  */
 
 const QString VVITConverter::MeasurementMinVerStr = QStringLiteral("0.2.0");
-const QString VVITConverter::MeasurementMaxVerStr = QStringLiteral("0.3.0");
-const QString VVITConverter::CurrentSchema        = QStringLiteral("://schema/individual_measurements/v0.3.0.xsd");
+const QString VVITConverter::MeasurementMaxVerStr = QStringLiteral("0.3.3");
+const QString VVITConverter::CurrentSchema        = QStringLiteral("://schema/individual_measurements/v0.3.3.xsd");
 
 //---------------------------------------------------------------------------------------------------------------------
 VVITConverter::VVITConverter(const QString &fileName)
@@ -89,6 +89,12 @@ QString VVITConverter::XSDSchema(int ver) const
         case (0x000200):
             return QStringLiteral("://schema/individual_measurements/v0.2.0.xsd");
         case (0x000300):
+            return QStringLiteral("://schema/individual_measurements/v0.3.0.xsd");
+        case (0x000301):
+            return QStringLiteral("://schema/individual_measurements/v0.3.1.xsd");
+        case (0x000302):
+            return QStringLiteral("://schema/individual_measurements/v0.3.2.xsd");
+        case (0x000303):
             return CurrentSchema;
         default:
         {
@@ -113,6 +119,27 @@ void VVITConverter::ApplyPatches()
                 V_FALLTHROUGH
             }
             case (0x000300):
+            {
+                ToV0_3_1();
+                const QString schema = XSDSchema(0x000301);
+                ValidateXML(schema, fileName);
+                V_FALLTHROUGH
+            }
+            case (0x000301):
+            {
+                ToV0_3_2();
+                const QString schema = XSDSchema(0x000302);
+                ValidateXML(schema, fileName);
+                V_FALLTHROUGH
+            }
+            case (0x000302):
+            {
+                ToV0_3_3();
+                const QString schema = XSDSchema(0x000303);
+                ValidateXML(schema, fileName);
+                V_FALLTHROUGH
+            }
+            case (0x000303):
                 break;
             default:
                 break;
@@ -121,7 +148,7 @@ void VVITConverter::ApplyPatches()
     catch (VException &e)
     {
         QString error;
-        const QString backupFileName = fileName +".backup";
+        const QString backupFileName = fileName + QLatin1Literal(".backup");
         if (SafeCopy(backupFileName, fileName, error) == false)
         {
             const QString errorMsg(tr("Error restoring backup file: %1.").arg(error));
@@ -168,17 +195,14 @@ void VVITConverter::ConvertMeasurementsToV0_3_0()
 
     QDomElement bm = createElement(tagBM);
 
-    QMultiMap<QString, QString> names = OldNamesToNewNames_InV0_3_0();
-
-    QMutableMapIterator<QString, QString> iter( names );
-    while( iter.hasNext() )
+    const QMultiMap<QString, QString> names = OldNamesToNewNames_InV0_3_0();
+    const QList<QString> keys = names.uniqueKeys();
+    for (int i = 0; i < keys.size(); ++i)
     {
-        iter.next();
-
         qreal resValue = 0;
 
         // This has the same effect as a .values(), just isn't as elegant
-        const QList<QString> list = names.values( iter.key() );
+        const QList<QString> list = names.values( keys.at(i) );
         foreach(const QString &val, list )
         {
             const QDomNodeList nodeList = this->elementsByTagName(val);
@@ -195,7 +219,7 @@ void VVITConverter::ConvertMeasurementsToV0_3_0()
             }
         }
 
-        bm.appendChild(AddMV0_3_0(iter.key(), resValue));
+        bm.appendChild(AddMV0_3_0(keys.at(i), resValue));
     }
 
     QDomElement rootElement = this->documentElement();
@@ -217,11 +241,90 @@ QDomElement VVITConverter::AddMV0_3_0(const QString &name, qreal value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VVITConverter::GenderV0_3_1()
+{
+    const QDomNodeList nodeList = this->elementsByTagName(QStringLiteral("sex"));
+    QDomElement sex = nodeList.at(0).toElement();
+
+    QDomElement gender = createElement(QStringLiteral("gender"));
+    gender.appendChild(createTextNode(sex.text()));
+
+    QDomElement parent = sex.parentNode().toElement();
+    parent.replaceChild(gender, sex);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VVITConverter::PM_SystemV0_3_2()
+{
+    QDomElement pm_system = createElement(QStringLiteral("pm_system"));
+    pm_system.appendChild(createTextNode(QStringLiteral("998")));
+
+    const QDomNodeList nodeList = this->elementsByTagName(QStringLiteral("personal"));
+    QDomElement personal = nodeList.at(0).toElement();
+
+    QDomElement parent = personal.parentNode().toElement();
+    parent.insertBefore(pm_system, personal);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VVITConverter::ConvertMeasurementsToV0_3_3()
+{
+    const QMap<QString, QString> names = OldNamesToNewNames_InV0_3_3();
+    auto i = names.constBegin();
+    while (i != names.constEnd())
+    {
+        const QDomNodeList nodeList = this->elementsByTagName(QStringLiteral("m"));
+        if (nodeList.isEmpty())
+        {
+            ++i;
+            continue;
+        }
+
+        for (int ii = 0; ii < nodeList.size(); ++ii)
+        {
+            const QString attrName = QStringLiteral("name");
+            QDomElement element = nodeList.at(ii).toElement();
+            const QString name = GetParametrString(element, attrName);
+            if (name == i.value())
+            {
+                SetAttribute(element, attrName, i.key());
+            }
+        }
+
+        ++i;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VVITConverter::ToV0_3_0()
 {
     AddRootComment();
     SetVersion(QStringLiteral("0.3.0"));
     AddNewTagsForV0_3_0();
     ConvertMeasurementsToV0_3_0();
+    Save();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VVITConverter::ToV0_3_1()
+{
+    SetVersion(QStringLiteral("0.3.1"));
+    GenderV0_3_1();
+    Save();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VVITConverter::ToV0_3_2()
+{
+    SetVersion(QStringLiteral("0.3.2"));
+    PM_SystemV0_3_2();
+    Save();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VVITConverter::ToV0_3_3()
+{
+    SetVersion(QStringLiteral("0.3.3"));
+    ConvertMeasurementsToV0_3_3();
     Save();
 }

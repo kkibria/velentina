@@ -32,7 +32,7 @@
 #include <QWheelEvent>
 #include <QApplication>
 #include <QScrollBar>
-#include "vsimplecurve.h"
+#include "vsimplepoint.h"
 
 #include <QGraphicsItem>
 #include <QMouseEvent>
@@ -55,11 +55,20 @@ GraphicsViewZoom::GraphicsViewZoom(QGraphicsView* view)
 void GraphicsViewZoom::gentle_zoom(double factor)
 {
   _view->scale(factor, factor);
+  if (factor < 1)
+  {
+      // Because QGraphicsView centers the picture when it's smaller than the view. And QGraphicsView's scrolls
+      // boundaries don't allow to put any picture point at any viewport position we will provide fictive scene size.
+      // Temporary and bigger than view, scene size will help position an image under cursor.
+      FictiveSceneRect(_view->scene(), _view);
+  }
   _view->centerOn(target_scene_pos);
   QPointF delta_viewport_pos = target_viewport_pos - QPointF(_view->viewport()->width() / 2.0,
                                                              _view->viewport()->height() / 2.0);
   QPointF viewport_center = _view->mapFromScene(target_scene_pos) - delta_viewport_pos;
   _view->centerOn(_view->mapToScene(viewport_center.toPoint()));
+  // In the end we just set correct scene size
+  VMainGraphicsView::NewSceneRect(_view->scene(), _view);
   emit zoomed();
 }
 
@@ -81,29 +90,19 @@ void GraphicsViewZoom::set_zoom_factor_base(double value)
 void GraphicsViewZoom::scrollingTime(qreal x)
 {
     Q_UNUSED(x);
-    qreal factor = 1.0;
-    if (_numScheduledScalings < 0)
+
+    qreal scroll = _view->verticalScrollBar()->pageStep()/60;
+    if (_numScheduledScalings > 0)
     {
-        factor = factor*13.8;
+        scroll = scroll * -1;
     }
-    else
-    {
-        factor = factor*-13.8;
-    }
-    _view->verticalScrollBar()->setValue(qRound(_view->verticalScrollBar()->value() + factor));
+    _view->verticalScrollBar()->setValue(qRound(_view->verticalScrollBar()->value() + scroll));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void GraphicsViewZoom::animFinished()
 {
-    if (_numScheduledScalings > 0)
-    {
-        _numScheduledScalings--;
-    }
-    else
-    {
-        _numScheduledScalings++;
-    }
+    _numScheduledScalings > 0 ? _numScheduledScalings-- : _numScheduledScalings++;
     anim->stop();
 
     /*
@@ -112,65 +111,111 @@ void GraphicsViewZoom::animFinished()
      * If don't do that we will zoom using old value cursor position on scene. It is not what we expect.
      * Almoust the same we do in method GraphicsViewZoom::eventFilter.
      */
-    QPoint pos = _view->mapFromGlobal(QCursor::pos());
-    QPointF delta = target_scene_pos - _view->mapToScene(pos);
+    const QPoint pos = _view->mapFromGlobal(QCursor::pos());
+    const QPointF delta = target_scene_pos - _view->mapToScene(pos);
     if (qAbs(delta.x()) > 5 || qAbs(delta.y()) > 5)
     {
-      target_viewport_pos = pos;
-      target_scene_pos = _view->mapToScene(pos);
+        target_viewport_pos = pos;
+        target_scene_pos = _view->mapToScene(pos);
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 bool GraphicsViewZoom::eventFilter(QObject *object, QEvent *event)
 {
-  if (event->type() == QEvent::MouseMove)
-  {
-    /*
-     * Here we are saving cursor position on view and scene.
-     * This data need for gentle_zoom().
-     * Almoust the same we do in method GraphicsViewZoom::animFinished.
-     */
-    QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
-    QPointF delta = target_viewport_pos - mouse_event->pos();
-    if (qAbs(delta.x()) > 5 || qAbs(delta.y()) > 5)
+    if (event->type() == QEvent::MouseMove)
     {
-      target_viewport_pos = mouse_event->pos();
-      target_scene_pos = _view->mapToScene(mouse_event->pos());
-    }
-  }
-  else if (event->type() == QEvent::Wheel)
-  {
-    QWheelEvent* wheel_event = static_cast<QWheelEvent*>(event);
-    if (QApplication::keyboardModifiers() == _modifiers)
-    {
-      if (wheel_event->orientation() == Qt::Vertical)
-      {
-        double angle = wheel_event->angleDelta().y();
-        double factor = qPow(_zoom_factor_base, angle);
-        gentle_zoom(factor);
-        return true;
-      }
-    }
-    else
-    {
-        int numSteps = wheel_event->delta() / 8 / 15;  // see QWheelEvent documentation
-
-        _numScheduledScalings += numSteps;
-        if (_numScheduledScalings * numSteps < 0)
-        {  // if user moved the wheel in another direction, we reset
-            _numScheduledScalings = numSteps;       // previously scheduled scalings
-        }
-
-        if (anim->state() != QTimeLine::Running)
+        /*
+         * Here we are saving cursor position on view and scene.
+         * This data need for gentle_zoom().
+         * Almoust the same we do in method GraphicsViewZoom::animFinished.
+         */
+        QMouseEvent* mouse_event = static_cast<QMouseEvent*>(event);
+        QPointF delta = target_viewport_pos - mouse_event->pos();
+        if (qAbs(delta.x()) > 5 || qAbs(delta.y()) > 5)
         {
-            anim->start();
+            target_viewport_pos = mouse_event->pos();
+            target_scene_pos = _view->mapToScene(mouse_event->pos());
         }
-        return true;
+        return false;
     }
-  }
-  Q_UNUSED(object)
-  return false;
+    else if (event->type() == QEvent::Wheel)
+    {
+        QWheelEvent* wheel_event = static_cast<QWheelEvent*>(event);
+        if (QApplication::keyboardModifiers() == _modifiers)
+        {
+            if (wheel_event->orientation() == Qt::Vertical)
+            {
+                double angle = wheel_event->angleDelta().y();
+                double factor = qPow(_zoom_factor_base, angle);
+                gentle_zoom(factor);
+                return true;
+            }
+        }
+        else
+        {
+            const QPoint numPixels = wheel_event->pixelDelta();
+            const QPoint numDegrees = wheel_event->angleDelta() / 8;
+            int numSteps;
+
+            if (not numPixels.isNull())
+            {
+                numSteps = numPixels.y();
+            }
+            else if (not numDegrees.isNull())
+            {
+                numSteps = numDegrees.y() / 15;
+            }
+            else
+            {
+                return true;//Just ignore
+            }
+
+            _numScheduledScalings += numSteps;
+            if (_numScheduledScalings * numSteps < 0)
+            {  // if user moved the wheel in another direction, we reset
+                _numScheduledScalings = numSteps;       // previously scheduled scalings
+            }
+
+            if (anim->state() != QTimeLine::Running)
+            {
+                anim->start();
+            }
+            return true;
+        }
+    }
+
+    return QObject::eventFilter(object, event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void GraphicsViewZoom::FictiveSceneRect(QGraphicsScene *sc, QGraphicsView *view)
+{
+    SCASSERT(sc != nullptr);
+    SCASSERT(view != nullptr);
+
+    //Calculate view rect
+    //to receive the currently visible area, map the widgets bounds to the scene
+    const QPointF a = view->mapToScene(0, 0 );
+    const QPointF b = view->mapToScene(view->viewport()->width(), view->viewport()->height());
+    QRectF viewRect = QRectF( a, b );
+
+    //Scale view
+    QLineF topLeftRay(viewRect.center(), viewRect.topLeft());
+    topLeftRay.setLength(topLeftRay.length()*2);
+
+    QLineF bottomRightRay(viewRect.center(), viewRect.bottomRight());
+    bottomRightRay.setLength(bottomRightRay.length()*2);
+
+    viewRect = QRectF(topLeftRay.p2(), bottomRightRay.p2());
+
+    //Calculate scene rect
+    const QRectF sceneRect = sc->sceneRect();
+
+    //Unite two rects
+    const QRectF newRect = sceneRect.united(viewRect);
+
+    sc->setSceneRect(newRect);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -211,6 +256,7 @@ void VMainGraphicsView::ZoomOriginal()
     trans.setMatrix(1.0, trans.m12(), trans.m13(), trans.m21(), 1.0, trans.m23(), trans.m31(), trans.m32(),
                     trans.m33());
     this->setTransform(trans);
+    VMainGraphicsView::NewSceneRect(this->scene(), this);
     emit NewFactor(1.0);
 }
 
@@ -225,6 +271,7 @@ void VMainGraphicsView::ZoomFitBest()
     }
 
     this->fitInView(rect, Qt::KeepAspectRatio);
+    VMainGraphicsView::NewSceneRect(this->scene(), this);
     emit NewFactor(this->transform().m11());
 }
 
@@ -255,7 +302,7 @@ void VMainGraphicsView::mousePressEvent(QMouseEvent *mousePress)
                     {
                         if (this->scene()->items().contains(list.at(i)))
                         {
-                            if (list.at(i)->type() <= VSimpleCurve::Type &&
+                            if (list.at(i)->type() <= VSimplePoint::Type &&
                                 list.at(i)->type() > QGraphicsItem::UserType)
                             {
                                 emit itemClicked(list.at(i));
@@ -308,25 +355,20 @@ void VMainGraphicsView::NewSceneRect(QGraphicsScene *sc, QGraphicsView *view)
     SCASSERT(sc != nullptr);
     SCASSERT(view != nullptr);
 
-    const QRectF rect = sc->itemsBoundingRect();
-    const QRect rec0 = QRect(0, 0, view->rect().width()-2, view->rect().height()-2);
-    const QTransform t = view->transform();
+    //Calculate view rect
+    //to receive the currently visible area, map the widgets bounds to the scene
+    const QPointF a = view->mapToScene(0, 0 );
+    const QPointF b = view->mapToScene(view->width(), view->height());
+    const QRectF viewRect = QRectF( a, b );
 
-    QRectF rec1;
-    if (t.m11() < 1)
-    {
-        const qreal width = rec0.width()/t.m11();
-        const qreal height = rec0.height()/t.m22();
-        rec1 = QRect(0, 0, static_cast<qint32>(width), static_cast<qint32>(height));
+    //Calculate scene rect
+    const QRectF itemsRect = sc->itemsBoundingRect();
 
-        rec1.translate(rec0.center().x()-rec1.center().x(), rec0.center().y()-rec1.center().y());
-        const QPolygonF polygone = view->mapToScene(rec1.toRect());
-        rec1 = polygone.boundingRect();
+    //Unite two rects
+    const QRectF newRect = itemsRect.united(viewRect);
+
+    if (newRect != itemsRect)
+    {//Update if only need
+        sc->setSceneRect(newRect);
     }
-    else
-    {
-        rec1 = rec0;
-    }
-    rec1 = rec1.united(rect.toRect());
-    sc->setSceneRect(rec1);
 }

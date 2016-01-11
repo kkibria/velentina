@@ -39,12 +39,12 @@ class VPoster
 {
     Q_DECLARE_TR_FUNCTIONS(VPoster)
 public:
-    VPoster(const QPrinter *printer);
+    explicit VPoster(const QPrinter *printer);
 
     QVector<QImage> Generate(const QImage &image, int page, int sheets = 1) const;
 private:
     const QPrinter *printer;
-    unsigned int allowence;
+    quint32 allowence;
 
     int CountRows(int height) const;
     int CountColomns(int width) const;

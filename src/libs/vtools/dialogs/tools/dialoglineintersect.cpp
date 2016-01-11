@@ -29,10 +29,10 @@
 #include "dialoglineintersect.h"
 #include "ui_dialoglineintersect.h"
 
-#include "../../libs/vgeometry/vpointf.h"
-#include "../../libs/vpatterndb/vcontainer.h"
+#include "../vgeometry/vpointf.h"
+#include "../vpatterndb/vcontainer.h"
 #include "../../visualization/vistoollineintersect.h"
-#include "../../libs/vwidgets/vmaingraphicsscene.h"
+#include "../vwidgets/vmaingraphicsscene.h"
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -44,6 +44,11 @@ DialogLineIntersect::DialogLineIntersect(const VContainer *data, const quint32 &
     :DialogTool(data, toolId, parent), ui(new Ui::DialogLineIntersect), flagPoint(true)
 {
     ui->setupUi(this);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    ui->lineEditNamePoint->setClearButtonEnabled(true);
+#endif
+
     number = 0;
     InitOkCancelApply(ui);
     ui->lineEditNamePoint->setText(qApp->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
@@ -65,8 +70,6 @@ DialogLineIntersect::DialogLineIntersect(const VContainer *data, const quint32 &
             this, &DialogLineIntersect::PointNameChanged);
 
     vis = new VisToolLineIntersect(data);
-
-    FixateSize();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

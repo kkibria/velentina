@@ -48,6 +48,7 @@ namespace Ui
 }
 
 class VToolOptionsPropertyBrowser;
+class VMeasurements;
 
 /**
  * @brief The MainWindow class main windows.
@@ -58,11 +59,12 @@ class MainWindow : public MainWindowsNoGUI
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow() Q_DECL_OVERRIDE;
-    bool LoadPattern(const QString &curFile, const QString &customMeasureFile = QString());
-    void               ReopenFilesAfterCrash(QStringList &args);
 
-    void DoExport(const VCommandLinePtr& expParams);
+    bool               LoadPattern(const QString &curFile, const QString &customMeasureFile = QString());
+
 public slots:
+    void               ProcessCMD();
+
     void               mouseMove(const QPointF &scenePos);
     void               ArrowTool();
 
@@ -97,9 +99,6 @@ public slots:
 
     void               currentPPChanged(int index);
 
-    void               ChangedSize(const QString &text);
-    void               ChangedHeight(const QString & text);
-
     void               PatternWasModified(bool saved);
 
     void               ToolEndLine(bool checked);
@@ -123,6 +122,7 @@ public slots:
     void               ToolCutArc(bool checked);
     void               ToolLineIntersectAxis(bool checked);
     void               ToolCurveIntersectAxis(bool checked);
+    void               ToolArcIntersectAxis(bool checked);
     void               ToolPointOfIntersectionArcs(bool checked);
     void               ToolPointOfIntersectionCircles(bool checked);
     void               ToolPointFromCircleAndTangent(bool checked);
@@ -158,18 +158,26 @@ signals:
 protected:
     virtual void       keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
     virtual void       showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
+    virtual void       changeEvent(QEvent* event) Q_DECL_OVERRIDE;
     virtual void       closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
     virtual void       customEvent(QEvent * event) Q_DECL_OVERRIDE;
-
     virtual void       CleanLayout() Q_DECL_OVERRIDE;
     virtual void       PrepareSceneList() Q_DECL_OVERRIDE;
 private slots:
     void LoadIndividual();
     void LoadStandard();
+    void UnloadMeasurements();
     void CreateMeasurements();
     void ShowMeasurements();
     void MeasurementsChanged(const QString &path);
     void SyncMeasurements();
+#if defined(Q_OS_MAC)
+    void OpenAt(QAction *where);
+#endif //defined(Q_OS_MAC)
+
+    void ChangedSize(const QString &text);
+    void ChangedHeight(const QString & text);
+
 private:
     Q_DISABLE_COPY(MainWindow)
     /** @brief ui keeps information about user interface */
@@ -197,6 +205,8 @@ private:
 
     /** @brief isInitialized true after first show window. */
     bool               isInitialized;
+
+    /** @brief mChanges true if measurement file was changed. */
     bool               mChanges;
 
     DialogIncrements   *dialogTable;
@@ -205,6 +215,7 @@ private:
 
     /** @brief comboBoxDraws comboc who show name of pattern peaces. */
     QComboBox          *comboBoxDraws;
+    QLabel             *patternPieceLabel;
 
     /** @brief mode keep current draw mode. */
     Draw               mode;
@@ -230,7 +241,10 @@ private:
     QPointer<QLabel>   gradationHeightsLabel;
     QPointer<QLabel>   gradationSizesLabel;
     VToolOptionsPropertyBrowser *toolOptions;
-    VLockGuardPtr<char> lock;
+    std::shared_ptr<VLockGuard<char>> lock;
+
+    void               SetDefaultHeight();
+    void               SetDefaultSize();
 
     void               ToolBarOption();
     void               ToolBarStages();
@@ -262,7 +276,6 @@ private:
     bool               SavePattern(const QString &curFile, QString &error);
     void               AutoSavePattern();
     void               setCurrentFile(const QString &fileName);
-    QString            strippedName(const QString &fullFileName);
 
     void               ReadSettings();
     void               WriteSettings();
@@ -283,8 +296,6 @@ private:
     void               ZoomFirstShow();
     void               UpdateHeightsList(const QStringList &list);
     void               UpdateSizesList(const QStringList &list);
-    void               SetDefaultHeight(int value);
-    void               SetDefaultSize(int value);
 
     void               AddDocks();
     void               PropertyBrowser();
@@ -294,15 +305,28 @@ private:
     void               ToolBarStyle(QToolBar *bar);
 
     void               AddPP(const QString &PPName);
+    QPointF            StartPositionNewPP() const;
 
     void               InitScenes();
 
+    QSharedPointer<VMeasurements> OpenMeasurementFile(const QString &path);
     bool               LoadMeasurements(const QString &path);
+    bool               UpdateMeasurements(const QString &path, int size, int height);
 
     void               ToggleMSync(bool toggle);
 
-    QString            RelativeMPath(const QString &patternPath, const QString &absoluteMPath) const;
-    QString            AbsoluteMPath(const QString &patternPath, const QString &relativeMPath) const;
+    void               ReopenFilesAfterCrash(QStringList &args);
+    void               DoExport(const VCommandLinePtr& expParams);
+
+    bool               SetSize(const QString &text);
+    bool               SetHeight(const QString & text);
+
+    QString            GetPatternFileName();
+    QString            GetMeasurementFileName();
+
+    void               UpdateWindowTitle();
+
+    bool               IgnoreLocking(int error, const QString &path);
 };
 
 #endif // MAINWINDOW_H

@@ -45,6 +45,11 @@ DialogLineIntersectAxis::DialogLineIntersectAxis(const VContainer *data, const q
       formulaBaseHeightAngle(0)
 {
     ui->setupUi(this);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    ui->lineEditNamePoint->setClearButtonEnabled(true);
+#endif
+
     InitFormulaUI(ui);
     ui->lineEditNamePoint->setText(qApp->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
     labelEditNamePoint = ui->labelEditNamePoint;
@@ -76,8 +81,6 @@ DialogLineIntersectAxis::DialogLineIntersectAxis(const VContainer *data, const q
             this, &DialogLineIntersectAxis::PointNameChanged);
 
     vis = new VisToolLineIntersectAxis(data);
-
-    FixateSize();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

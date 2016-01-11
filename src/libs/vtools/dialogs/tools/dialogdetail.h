@@ -31,7 +31,7 @@
 
 #include "ui_dialogdetail.h"
 #include "dialogtool.h"
-#include "../../libs/vpatterndb/vdetail.h"
+#include "../vpatterndb/vdetail.h"
 
 /**
  * @brief The DialogDetail class dialog for ToolDetai. Help create detail and edit option.
@@ -54,6 +54,8 @@ public slots:
     void             ClickedReverse(bool checked);
     void             ObjectChanged(int row);
     void             DeleteItem();
+    void             ScrollUp();
+    void             ScrollDown();
 protected:
     /**
      * @brief SaveData Put dialog data in local variables
@@ -74,6 +76,9 @@ private:
     /** @brief closed keep option about equdistant (closed or not) */
     bool             closed;
     bool             flagWidth;
+    bool             DetailIsValid() const;
+    bool             FirstPointEqualLast() const;
+    bool             DetailIsClockwise() const;
 
     void             NewItem(quint32 id, const Tool &typeTool, const NodeDetail &typeNode,
                              qreal mx = 0, qreal my = 0, bool reverse = false);

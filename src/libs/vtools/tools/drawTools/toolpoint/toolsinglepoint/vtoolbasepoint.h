@@ -32,7 +32,7 @@
 #include "vtoolsinglepoint.h"
 
 /**
- * @brief The VToolBasePoint class tool for creation pattern base point. Obly base point can move. All object
+ * @brief The VToolBasePoint class tool for creation pattern base point. Only base point can move. All object
  * pattern peace depend on base point.
  */
 class VToolBasePoint : public VToolSinglePoint
@@ -47,6 +47,7 @@ public:
     virtual int  type() const Q_DECL_OVERRIDE {return Type;}
     enum { Type = UserType + static_cast<int>(Tool::BasePoint)};
     virtual void ShowVisualization(bool show) Q_DECL_OVERRIDE;
+    virtual void decrementReferens() Q_DECL_OVERRIDE;
 public slots:
     virtual void FullUpdateFromFile() Q_DECL_OVERRIDE;
     virtual void SetFactor(qreal factor) Q_DECL_OVERRIDE;
@@ -60,7 +61,6 @@ protected:
     virtual void contextMenuEvent ( QGraphicsSceneContextMenuEvent * event ) Q_DECL_OVERRIDE;
     virtual void AddToFile() Q_DECL_OVERRIDE;
     QVariant     itemChange ( GraphicsItemChange change, const QVariant &value );
-    virtual void decrementReferens() Q_DECL_OVERRIDE;
     virtual void DeleteTool(bool ask = true) Q_DECL_OVERRIDE;
     virtual void SaveDialog(QDomElement &domElement) Q_DECL_OVERRIDE;
     virtual void hoverEnterEvent ( QGraphicsSceneHoverEvent * event ) Q_DECL_OVERRIDE;

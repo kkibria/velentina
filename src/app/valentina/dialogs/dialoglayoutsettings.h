@@ -32,9 +32,15 @@
 #include <QCloseEvent>
 #include <QDialog>
 
-#include "../../libs/vlayout/vbank.h"
-#include "../../libs/ifc/ifcdef.h"
-#include "../../libs/vlayout/vlayoutgenerator.h"
+#include "../vlayout/vbank.h"
+#include "../ifc/ifcdef.h"
+#include "../vlayout/vlayoutgenerator.h"
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 3, 0)
+#   include "../vmisc/backport/qmarginsf.h"
+#else
+#   include <QMargins>
+#endif
 
 namespace Ui
 {
@@ -47,22 +53,36 @@ class DialogLayoutSettings : public QDialog
 {
     Q_OBJECT
 public:
-    enum class PaperSizeTemplate : char { A0 = 0, A1, A2, A3, A4, Letter, Legal, Roll24in, Roll30in, Roll36in, Roll42in,
-                                          Roll44in};
-    DialogLayoutSettings(VLayoutGenerator *generator, QWidget *parent = nullptr, bool disableSettings = false);
+    enum class PaperSizeTemplate : char { A0 = 0,
+                                          A1,
+                                          A2,
+                                          A3,
+                                          A4,
+                                          Letter,
+                                          Legal,
+                                          Roll24in = 7, // Be carefull when change order roll type
+                                          Roll30in,     // Used also for showing icon
+                                          Roll36in,
+                                          Roll42in,
+                                          Roll44in = 11,
+                                          Custom = 12};
+    explicit DialogLayoutSettings(VLayoutGenerator *generator, QWidget *parent = nullptr, bool disableSettings = false);
     ~DialogLayoutSettings();
 
-    int GetPaperHeight() const;
-    void SetPaperHeight(int value);
+    qreal GetPaperHeight() const;
+    void SetPaperHeight(qreal value);
 
-    int GetPaperWidth() const;
-    void SetPaperWidth(int value);
+    qreal GetPaperWidth() const;
+    void SetPaperWidth(qreal value);
 
-    unsigned int GetShift() const;
-    void SetShift(unsigned int value);
+    qreal GetShift() const;
+    void SetShift(qreal value);
 
-    unsigned int GetLayoutWidth() const;
-    void SetLayoutWidth(unsigned int value);
+    qreal GetLayoutWidth() const;
+    void SetLayoutWidth(qreal value);
+
+    QMarginsF GetFields() const;
+    void SetFields(const QMarginsF &value);
 
     Cases GetGroup() const;
     void SetGroup(const Cases &value);
@@ -82,28 +102,36 @@ public:
     bool IsUnitePages() const;
     void SetUnitePages(bool save);
 
+    bool IsIgnoreAllFields() const;
+    void SetIgnoreAllFields(bool value);
+
     //support functions for the command line parser which uses invisible dialog to properly build layout generator
     bool SelectTemplate(const PaperSizeTemplate& id);
     static QString MakeHelpTemplateList();
     bool SelectPaperUnit(const QString& units);
     bool SelectLayoutUnit(const QString& units);
-    int  LayoutToPixels(qreal value) const;
-    int  PageToPixels(qreal value) const;
+    qreal LayoutToPixels(qreal value) const;
+    qreal PageToPixels(qreal value) const;
     static QString MakeGroupsHelp();
+protected:
+    virtual void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
 public slots:
     void ConvertPaperSize();
     void ConvertLayoutSize();
 
     void TemplateSelected();
+    void FindTemplate();
     void PaperSizeChanged();
     void Swap(bool checked);
 
     void DialogAccepted();
     void RestoreDefaults();
-
+private slots:
+    void CorrectMaxFileds();
+    void IgnoreAllFields(int state);
 private:
     Q_DISABLE_COPY(DialogLayoutSettings)
-    typedef std::vector<QString> FormatsVector;
+    typedef QStringList FormatsVector;
     typedef int VIndexType;
     const static  FormatsVector pageFormatNames;
 
@@ -113,18 +141,21 @@ private:
     Unit oldPaperUnit;
     Unit oldLayoutUnit;
     VLayoutGenerator *generator;
+    bool isInitialized;
 
     void InitPaperUnits();
     void InitLayoutUnits();
     void InitTemplates();
     QSizeF Template();
+    QSizeF TemplateSize(const PaperSizeTemplate &tmpl) const;
+    QSizeF RoundTemplateSize(qreal width, qreal height) const;
+    QMarginsF RoundMargins(const QMarginsF &margins) const;
 
     Unit PaperUnit() const;
     Unit LayoutUnit() const;
 
     void CorrectPaperDecimals();
     void CorrectLayoutDecimals();
-    void Label();
 
     void MinimumPaperSize();
     void MinimumLayoutSize();

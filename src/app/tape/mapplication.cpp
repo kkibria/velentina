@@ -47,11 +47,28 @@
 #include <QLocalServer>
 #include <QMessageBox>
 #include <iostream>
+#include <QGridLayout>
+#include <QSpacerItem>
+#include <QThread>
+
+#if defined(Q_CC_CLANG)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wmissing-prototypes"
+#elif defined(Q_CC_INTEL)
+    #pragma warning( push )
+    #pragma warning( disable: 1418 )
+#endif
 
 Q_LOGGING_CATEGORY(mApp, "m.application")
 
+#if defined(Q_CC_CLANG)
+    #pragma clang diagnostic pop
+#elif defined(Q_CC_INTEL)
+    #pragma warning( pop )
+#endif
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 2, 0)
-#   include "../../libs/vmisc/backport/qcommandlineparser.h"
+#   include "../vmisc/backport/qcommandlineparser.h"
 #else
 #   include <QCommandLineParser>
 #endif
@@ -66,6 +83,15 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
     {
         type = QtWarningMsg;
     }
+
+#if defined(Q_OS_MAC)
+    // Try hide very annoying, Qt related, warnings in Mac OS X
+    // Remove after Qt fix will be released
+    if ((type == QtWarningMsg) && msg.contains("QNSView"))
+    {
+        type = QtDebugMsg;
+    }
+#endif
 
     // this is another one that doesn't make sense as just a debug message.  pretty serious
     // sign of a problem
@@ -93,13 +119,22 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
     switch (type)
     {
         case QtDebugMsg:
-            vStdOut() << msg << "\n";
+            vStdOut() << QApplication::translate("mNoisyHandler", "DEBUG:") << msg << "\n";
             return;
         case QtWarningMsg:
-        case QtCriticalMsg:
-        case QtFatalMsg:
-            vStdErr() << msg << "\n";
+            vStdErr() << QApplication::translate("mNoisyHandler", "WARNING:") << msg << "\n";
             break;
+        case QtCriticalMsg:
+            vStdErr() << QApplication::translate("mNoisyHandler", "CRITICAL:") << msg << "\n";
+            break;
+        case QtFatalMsg:
+            vStdErr() << QApplication::translate("mNoisyHandler", "FATAL:") << msg << "\n";
+            break;
+        #if QT_VERSION > QT_VERSION_CHECK(5, 4, 2)
+        case QtInfoMsg:
+            vStdOut() << QApplication::translate("mNoisyHandler", "INFO:") << msg << "\n";
+            break;
+        #endif
         default:
             break;
     }
@@ -114,15 +149,25 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
         switch (type)
         {
             case QtWarningMsg:
+                messageBox.setWindowTitle(QApplication::translate("mNoisyHandler", "Warning."));
                 messageBox.setIcon(QMessageBox::Warning);
                 break;
             case QtCriticalMsg:
+                messageBox.setWindowTitle(QApplication::translate("mNoisyHandler", "Critical error."));
                 messageBox.setIcon(QMessageBox::Critical);
                 break;
             case QtFatalMsg:
+                messageBox.setWindowTitle(QApplication::translate("mNoisyHandler", "Fatal error."));
                 messageBox.setIcon(QMessageBox::Critical);
                 break;
+            #if QT_VERSION > QT_VERSION_CHECK(5, 4, 2)
+            case QtInfoMsg:
+                messageBox.setWindowTitle(QApplication::translate("mNoisyHandler", "Information."));
+                messageBox.setIcon(QMessageBox::Information);
+                break;
+            #endif
             case QtDebugMsg:
+                Q_UNREACHABLE(); //-V501
             default:
                 break;
         }
@@ -133,11 +178,17 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
             {
                 if (topWinAllowsPop)
                 {
-                    messageBox.setInformativeText(msg);
+                    messageBox.setText(msg);
                     messageBox.setStandardButtons(QMessageBox::Ok);
                     messageBox.setWindowModality(Qt::ApplicationModal);
                     messageBox.setModal(true);
+                #ifndef QT_NO_CURSOR
+                    QApplication::setOverrideCursor(Qt::ArrowCursor);
+                #endif
                     messageBox.exec();
+                #ifndef QT_NO_CURSOR
+                    QApplication::restoreOverrideCursor();
+                #endif
                 }
             }
         }
@@ -157,6 +208,7 @@ inline void noisyFailureMsgHandler(QtMsgType type, const QMessageLogContext &con
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+// cppcheck-suppress uninitMemberVar
 MApplication::MApplication(int &argc, char **argv)
     :VAbstractApplication(argc, argv),
       mainWindows(),
@@ -171,31 +223,9 @@ MApplication::MApplication(int &argc, char **argv)
     setOrganizationDomain(VER_COMPANYDOMAIN_STR);
     // Setting the Application version
     setApplicationVersion(APP_VERSION_STR);
+#if !defined(Q_OS_MAC)
     setWindowIcon(QIcon(":/tapeicon/64x64/logo.png"));
-
-    const QString serverName = QCoreApplication::applicationName();
-    QLocalSocket socket;
-    socket.connectToServer(serverName);
-    if (socket.waitForConnected(500))
-    {
-        QTextStream stream(&socket);
-        stream << QCoreApplication::arguments().join(";;");
-        stream.flush();
-        socket.waitForBytesWritten();
-        return;
-    }
-
-    localServer = new QLocalServer(this);
-    connect(localServer, &QLocalServer::newConnection, this, &MApplication::NewLocalSocketConnection);
-    if (!localServer->listen(serverName))
-    {
-        if (localServer->serverError() == QAbstractSocket::AddressInUseError
-                && QFile::exists(localServer->serverName()))
-        {
-            QFile::remove(localServer->serverName());
-            localServer->listen(serverName);
-        }
-    }
+#endif // !defined(Q_OS_MAC)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -230,45 +260,58 @@ bool MApplication::notify(QObject *receiver, QEvent *event)
     }
     catch (const VExceptionObjectError &e)
     {
-        e.CriticalMessageBox(tr("Error parsing file. Program will be terminated."), mainWindow);
-        abort();
+        qCCritical(mApp, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error parsing file. Program will be terminated.")), //-V807
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+        exit(V_EX_DATAERR);
     }
     catch (const VExceptionBadId &e)
     {
-        e.CriticalMessageBox(tr("Error bad id. Program will be terminated."), mainWindow);
-        abort();
+        qCCritical(mApp, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error bad id. Program will be terminated.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+        exit(V_EX_DATAERR);
     }
     catch (const VExceptionConversionError &e)
     {
-        e.CriticalMessageBox(tr("Error can't convert value. Program will be terminated."), mainWindow);
-        abort();
+        qCCritical(mApp, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error can't convert value. Program will be terminated.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+        exit(V_EX_DATAERR);
     }
     catch (const VExceptionEmptyParameter &e)
     {
-        e.CriticalMessageBox(tr("Error empty parameter. Program will be terminated."), mainWindow);
-        abort();
+        qCCritical(mApp, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error empty parameter. Program will be terminated.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+        exit(V_EX_DATAERR);
     }
     catch (const VExceptionWrongId &e)
     {
-        e.CriticalMessageBox(tr("Error wrong id. Program will be terminated."), mainWindow);
-        abort();
+        qCCritical(mApp, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Error wrong id. Program will be terminated.")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+        exit(V_EX_DATAERR);
+    }
+    catch (const VExceptionToolWasDeleted &e)
+    {
+        qCCritical(mApp, "%s\n\n%s\n\n%s",
+                   qUtf8Printable("Unhadled deleting tool. Continue use object after deleting!"),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
+        exit(V_EX_DATAERR);
     }
     catch (const VException &e)
     {
-        e.CriticalMessageBox(tr("Something's wrong!!"), mainWindow);
+        qCCritical(mApp, "%s\n\n%s\n\n%s", qUtf8Printable(tr("Something's wrong!!")),
+                   qUtf8Printable(e.ErrorMessage()), qUtf8Printable(e.DetailedInformation()));
         return true;
     }
     // These last two cases special. I found that we can't show here modal dialog with error message.
     // Somehow program doesn't waite untile an error dialog will be closed. But if ignore this program will hang.
     catch (const qmu::QmuParserError &e)
     {
-        qCDebug(mApp, "Parser error: %s", e.GetMsg().toUtf8().constData());
-        abort();
+        qCCritical(mApp, "%s", qUtf8Printable(tr("Parser error: %1. Program will be terminated.").arg(e.GetMsg())));
+        exit(V_EX_DATAERR);
     }
-    catch (std::exception& e)
+    catch (std::exception &e)
     {
-        qCDebug(mApp, "Critical error! Exception thrown: %s", e.what());
-        abort();
+        qCCritical(mApp, "%s", qUtf8Printable(tr("Exception thrown: %1. Program will be terminated.").arg(e.what())));
+        exit(V_EX_SOFTWARE);
     }
     return false;
 }
@@ -280,9 +323,12 @@ bool MApplication::IsTestMode() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-bool MApplication::IsTheOnly() const
+/**
+ * @brief IsAppInGUIMode little hack that allow to have access to application state from VAbstractApplication class.
+ */
+bool MApplication::IsAppInGUIMode() const
 {
-    return (localServer != 0);
+    return IsTestMode();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -315,12 +361,12 @@ void MApplication::InitOptions()
 
     OpenSettings();
 
-    qDebug()<<"Version:"<<APP_VERSION_STR;
-    qDebug()<<"Build revision:"<<BUILD_REVISION;
-    qDebug()<<buildCompatibilityString();
-    qDebug()<<"Built on"<<__DATE__<<"at"<<__TIME__;
-    qDebug()<<"Command-line arguments:"<<this->arguments();
-    qDebug()<<"Process ID:"<<this->applicationPid();
+    qCDebug(mApp, "Version: %s", qUtf8Printable(APP_VERSION_STR));
+    qCDebug(mApp, "Build revision: %s", BUILD_REVISION);
+    qCDebug(mApp, "%s", qUtf8Printable(buildCompatibilityString()));
+    qCDebug(mApp, "Built on %s at %s", __DATE__, __TIME__);
+    qCDebug(mApp, "Command-line arguments: %s", qUtf8Printable(this->arguments().join(", ")));
+    qCDebug(mApp, "Process ID: %s", qUtf8Printable(QString().setNum(this->applicationPid())));
 
     LoadTranslation(QLocale::system().name());// By default the console version uses system locale
 
@@ -357,6 +403,49 @@ void MApplication::InitTrVars()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+bool MApplication::event(QEvent *e)
+{
+    switch(e->type())
+    {
+        // In Mac OS X the QFileOpenEvent event is generated when user perform "Open With" from Finder (this event is
+        // Mac specific).
+        case QEvent::FileOpen:
+        {
+            QFileOpenEvent *fileOpenEvent = static_cast<QFileOpenEvent *>(e);
+            if(fileOpenEvent)
+            {
+                const QString macFileOpen = fileOpenEvent->file();
+                if(not macFileOpen.isEmpty())
+                {
+                    TMainWindow *mw = MainWindow();
+                    if (mw)
+                    {
+                        mw->LoadFile(macFileOpen);  // open file in existing window
+                    }
+                    return true;
+                }
+            }
+            break;
+        }
+#if defined(Q_OS_MAC)
+        case QEvent::ApplicationActivate:
+        {
+            Clean();
+            TMainWindow *mw = MainWindow();
+            if (mw && not mw->isMinimized())
+            {
+                mw->show();
+            }
+            return true;
+        }
+#endif //defined(Q_OS_MAC)
+        default:
+            return VAbstractApplication::event(e);
+    }
+    return VAbstractApplication::event(e);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void MApplication::OpenSettings()
 {
     settings = new VTapeSettings(QSettings::IniFormat, QSettings::UserScope, QApplication::organizationName(),
@@ -368,57 +457,6 @@ VTapeSettings *MApplication::TapeSettings()
 {
     SCASSERT(settings != nullptr);
     return qobject_cast<VTapeSettings *>(settings);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-QString MApplication::translationsPath() const
-{
-    const QString trPath = QStringLiteral("/translations");
-#ifdef Q_OS_WIN
-    QDir dir(QApplication::applicationDirPath() + trPath);
-    if (dir.exists())
-    {
-        return dir.absolutePath();
-    }
-    else
-    {
-        return QApplication::applicationDirPath() + "/../../valentina/bin" + trPath;
-    }
-#elif defined(Q_OS_MAC)
-    QDir dirBundle(QApplication::applicationDirPath() + QStringLiteral("/../Resources") + trPath);
-    if (dirBundle.exists())
-    {
-        return dirBundle.absolutePath();
-    }
-    else
-    {
-        QDir dir(QApplication::applicationDirPath() + trPath);
-        if (dir.exists())
-        {
-            return dir.absolutePath();
-        }
-        else
-        {
-            return QStringLiteral("/usr/share/valentina/translations");
-        }
-    }
-#else // Unix
-    QDir dir1(QApplication::applicationDirPath() + trPath);
-    if (dir1.exists())
-    {
-        return dir1.absolutePath();
-    }
-
-    QDir dir2(QApplication::applicationDirPath() + "/../../valentina/bin" + trPath);
-    if (dir2.exists())
-    {
-        return dir2.absolutePath();
-    }
-    else
-    {
-        return QStringLiteral("/usr/share/valentina/translations");
-    }
-#endif
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -494,34 +532,32 @@ void MApplication::RetranslateTables()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MApplication::ParseCommandLine(const QStringList &arguments)
+void MApplication::ParseCommandLine(const SocketConnection &connection, const QStringList &arguments)
 {
     QCommandLineParser parser;
-    parser.setApplicationDescription(QCoreApplication::translate("main", "Valentina's measurements editor."));
+    parser.setApplicationDescription(tr("Valentina's measurements editor."));
     parser.addHelpOption();
     parser.addVersionOption();
-    parser.addPositionalArgument("filename", QCoreApplication::translate("main", "The measurement file."));
+    parser.addPositionalArgument("filename", tr("The measurement file."));
     //-----
     QCommandLineOption heightOption(QStringList() << "e" << "height",
-    QCoreApplication::translate("main", "Open with the base height: 92, 98, 104, 110, 116, 122, 128, 134, 140, 146, "
-                                "152, 158, 164, 170, 176, 182 or 188 cm."),
-                                QCoreApplication::translate("main", "The base height"));
+            tr("Open with the base height. Valid values: %1cm.")
+                                    .arg(VMeasurement::WholeListHeights(Unit::Cm).join(", ")),
+            tr("The base height"));
     parser.addOption(heightOption);
     //-----
     QCommandLineOption sizeOption(QStringList() << "s" << "size",
-    QCoreApplication::translate("main", "Open with the base size: 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, "
-                                "48, 50, 52, 54 or 56 cm."),
-                                QCoreApplication::translate("main", "The base size"));
+            tr("Open with the base size. Valid values: %1cm.").arg(VMeasurement::WholeListSizes(Unit::Cm).join(", ")),
+            tr("The base size"));
     parser.addOption(sizeOption);
     //-----
     QCommandLineOption unitOption(QStringList() << "u" << "unit",
-    QCoreApplication::translate("main", "Set pattern file unit: cm, mm, inch."),
-                                QCoreApplication::translate("main", "The pattern unit"));
+            tr("Set pattern file unit: cm, mm, inch."),
+            tr("The pattern unit"));
     parser.addOption(unitOption);
     //-----
     QCommandLineOption testOption(QStringList() << "test",
-    QCoreApplication::translate("main", "Use for unit testing. Run the program and open a file without showing a "
-                                "window."));
+            tr("Use for unit testing. Run the program and open a file without showing the main window."));
     parser.addOption(testOption);
     //-----
     parser.process(arguments);
@@ -534,44 +570,38 @@ void MApplication::ParseCommandLine(const QStringList &arguments)
     int height = 0;
     Unit unit = Unit::Cm;
 
+    if (parser.isSet(heightOption))
     {
-    const QString heightValue = parser.value(heightOption);
-    if (not heightValue.isEmpty())
-    {
-        const QStringList heights = VMeasurement::WholeListHeights(Unit::Cm);
-        if (heights.contains(heightValue))
+        const QString heightValue = parser.value(heightOption);
+        if (VMeasurement::IsGradationHeightValid(heightValue))
         {
             flagHeight = true;
             height = heightValue.toInt();
         }
         else
         {
-            fprintf(stderr, "%s\n", qPrintable(QCoreApplication::translate("main",
-            "Error: Invalid base height argument. Must be 92, 98, 104, 110, 116, 122, 128, 134, 140, 146, 152, 158, "
-            "164, 170, 176, 182 or 188 cm.")));
-            parser.showHelp(1);
+            qCCritical(mApp, "%s\n",
+                    qPrintable(tr("Invalid base height argument. Must be %1cm.")
+                               .arg(VMeasurement::WholeListHeights(Unit::Cm).join(", "))));
+            parser.showHelp(V_EX_USAGE);
         }
     }
-    }
 
+    if (parser.isSet(sizeOption))
     {
-    const QString sizeValue = parser.value(sizeOption);
-    if (not sizeValue.isEmpty())
-    {
-        const QStringList sizes = VMeasurement::WholeListSizes(Unit::Cm);
-        if (sizes.contains(sizeValue))
+        const QString sizeValue = parser.value(sizeOption);
+        if (VMeasurement::IsGradationSizeValid(sizeValue))
         {
             flagSize = true;
             size = sizeValue.toInt();
         }
         else
         {
-            fprintf(stderr, "%s\n", qPrintable(QCoreApplication::translate("main",
-            "Error: Invalid base size argument. Must be 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, "
-            "52, 54 or 56 cm.")));
-            parser.showHelp(1);
+            qCCritical(mApp, "%s\n",
+                    qPrintable(tr("Invalid base size argument. Must be %1cm.")
+                               .arg(VMeasurement::WholeListSizes(Unit::Cm).join(", "))));
+            parser.showHelp(V_EX_USAGE);
         }
-    }
     }
 
     {
@@ -589,17 +619,49 @@ void MApplication::ParseCommandLine(const QStringList &arguments)
         }
         else
         {
-            fprintf(stderr, "%s\n", qPrintable(QCoreApplication::translate("main",
-            "Error: Invalid base size argument. Must be cm, mm or inch.")));
-            parser.showHelp(1);
+            qCCritical(mApp, "%s\n", qPrintable(tr("Invalid base size argument. Must be cm, mm or inch.")));
+            parser.showHelp(V_EX_USAGE);
         }
     }
     }
 
     testMode = parser.isSet(testOption);
 
-    if (not testMode)
+    if (not testMode && connection == SocketConnection::Client)
     {
+        const QString serverName = QCoreApplication::applicationName();
+        QLocalSocket socket;
+        socket.connectToServer(serverName);
+        if (socket.waitForConnected(1000))
+        {
+            qCDebug(mApp, "Connected to the server '%s'", qUtf8Printable(serverName));
+            QTextStream stream(&socket);
+            stream << QCoreApplication::arguments().join(";;");
+            stream.flush();
+            socket.waitForBytesWritten();
+            qApp->exit(V_EX_OK);
+            return;
+        }
+
+        qCDebug(mApp, "Can't establish connection to the server '%s'", qUtf8Printable(serverName));
+
+        localServer = new QLocalServer(this);
+        connect(localServer, &QLocalServer::newConnection, this, &MApplication::NewLocalSocketConnection);
+        if (not localServer->listen(serverName))
+        {
+            qCDebug(mApp, "Can't begin to listen for incoming connections on name '%s'",
+                    qUtf8Printable(serverName));
+            if (localServer->serverError() == QAbstractSocket::AddressInUseError)
+            {
+                QLocalServer::removeServer(serverName);
+                if (not localServer->listen(serverName))
+                {
+                    qCWarning(mApp, "%s",
+                     qUtf8Printable(tr("Can't begin to listen for incoming connections on name '%1'").arg(serverName)));
+                }
+            }
+        }
+
         LoadTranslation(TapeSettings()->GetLocale());
     }
 
@@ -608,15 +670,22 @@ void MApplication::ParseCommandLine(const QStringList &arguments)
     {
         if (testMode && args.count() > 1)
         {
-            fprintf(stderr, "%s\n", qPrintable(QCoreApplication::translate("main",
-            "Error: Test mode doesn't support openning several files.")));
-            parser.showHelp(1);
+            qCCritical(mApp, "%s\n", qPrintable(tr("Test mode doesn't support openning several files.")));
+            parser.showHelp(V_EX_USAGE);
         }
 
         for (int i = 0; i < args.size(); ++i)
         {
             NewMainWindow();
-            MainWindow()->LoadFile(args.at(i));
+            if (not MainWindow()->LoadFile(args.at(i)))
+            {
+                if (testMode)
+                {
+                    return; // process only one input file
+                }
+                delete MainWindow();
+                continue;
+            }
 
             if (flagSize)
             {
@@ -640,34 +709,18 @@ void MApplication::ParseCommandLine(const QStringList &arguments)
         {
             NewMainWindow();
         }
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-#if defined(Q_WS_MAC)
-bool MApplication::event(QEvent* event)
-{
-    switch (event->type())
-    {
-        case QEvent::ApplicationActivate:
+        else
         {
-            Clean();
-            if (!mainWindows.isEmpty())
-            {
-                TMainWindow *mw = MainWindow();
-                if (mw && !mw->isMinimized())
-                {
-                    MainWindow()->show();
-                }
-                return true;
-            }
+            qCCritical(mApp, "%s\n", qPrintable(tr("Please, provide one input file.")));
+            parser.showHelp(V_EX_USAGE);
         }
-        default:
-            break;
     }
-    return QApplication::event(event);
+
+    if (testMode)
+    {
+        qApp->exit(V_EX_OK); // close program after processing in console mode
+    }
 }
-#endif
 
 //---------------------------------------------------------------------------------------------------------------------
 TMainWindow *MApplication::NewMainWindow()
@@ -679,6 +732,12 @@ TMainWindow *MApplication::NewMainWindow()
         tape->show();
     }
     return tape;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MApplication::ProcessCMD()
+{
+    ParseCommandLine(SocketConnection::Client, arguments());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -700,7 +759,7 @@ void MApplication::NewLocalSocketConnection()
     const QString arg = stream.readAll();
     if (not arg.isEmpty())
     {
-        ParseCommandLine(arg.split(";;"));
+        ParseCommandLine(SocketConnection::Server, arg.split(";;"));
     }
     delete socket;
     MainWindow()->raise();

@@ -31,10 +31,16 @@
 
 #include <QObject>
 #include <QList>
+#include <memory>
 
 #include "vlayoutdef.h"
 #include "vbank.h"
-#include <memory>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 3, 0)
+#   include "../vmisc/backport/qmarginsf.h"
+#else
+#   include <QMargins>
+#endif
 
 class VLayoutPaper;
 class VLayoutDetail;
@@ -44,7 +50,7 @@ class VLayoutGenerator :public QObject
 {
     Q_OBJECT
 public:
-    VLayoutGenerator(QObject *parent = 0);
+    explicit VLayoutGenerator(QObject *parent = 0);
     virtual ~VLayoutGenerator() Q_DECL_OVERRIDE;
 
     void SetDetails(const QVector<VLayoutDetail> &details);
@@ -52,14 +58,17 @@ public:
     void SetCaseType(Cases caseType);
     int DetailsCount();
 
-    int GetPaperHeight() const;
-    void SetPaperHeight(int value);
+    qreal GetPaperHeight() const;
+    void SetPaperHeight(qreal value);
 
-    int GetPaperWidth() const;
-    void SetPaperWidth(int value);
+    qreal GetPaperWidth() const;
+    void SetPaperWidth(qreal value);
 
-    unsigned int GetShift() const;
-    void         SetShift(unsigned int shift);
+    QMarginsF GetFields() const;
+    void SetFields(const QMarginsF &value);
+
+    quint32 GetShift() const;
+    void    SetShift(quint32 shift);
 
     void Generate();
 
@@ -96,16 +105,20 @@ private:
     Q_DISABLE_COPY(VLayoutGenerator)
     QVector<VLayoutPaper> papers;
     VBank *bank;
-    int paperHeight;
-    int paperWidth;
+    qreal paperHeight;
+    qreal paperWidth;
+    QMarginsF margins;
     volatile bool stopGeneration;
     LayoutErrors state;
-    unsigned int shift;
+    quint32 shift;
     bool rotate;
     int rotationIncrease;
     bool autoCrop;
     bool saveLength;
     bool unitePages;
+
+    int PageHeight() const;
+    int PageWidth() const;
 };
 
 typedef std::shared_ptr<VLayoutGenerator> VLayoutGeneratorPtr;

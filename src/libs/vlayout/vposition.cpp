@@ -39,8 +39,9 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QtWidgets>
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 1, 0)
-#   include "../libs/vmisc/vmath.h"
+#   include "../vmisc/vmath.h"
 #else
 #   include <QtMath>
 #endif
@@ -496,8 +497,8 @@ VPosition::InsideType VPosition::InsideContour(const VLayoutDetail &detail, cons
 
         for (int i=0; i<polyCorners; i++)
         {
-            const qreal xi = gContour.at(i).x();
-            const qreal xj = gContour.at(j).x();
+            const qreal xi = gContour.at(i).x(); //-V807
+            const qreal xj = gContour.at(j).x(); //-V807
             const qreal yi = gContour.at(i).y();
             const qreal yj = gContour.at(j).y();
             if (qFuzzyCompare(yj, yi))
@@ -538,9 +539,10 @@ VPosition::InsideType VPosition::InsideContour(const VLayoutDetail &detail, cons
                     const qreal yi = gContour.at(i).y();
                     const qreal yj = gContour.at(j).y();
 
-                    if (((yi < p.at(n).y() && yj >= p.at(n).y()) || (yj < p.at(n).y() && yi >= p.at(n).y())))
+					const QPointF &pn = p.at(n);
+                    if (((yi < pn.y() && yj >= pn.y()) || (yj < pn.y() && yi >= pn.y())))
                     {
-                        oddNodes ^= (p.at(n).y() * multiple.at(i) + constant.at(i) < p.at(n).x());
+                        oddNodes ^= (pn.y() * multiple.at(i) + constant.at(i) < pn.x());
                     }
 
                     j=i;
@@ -607,7 +609,7 @@ void VPosition::RotateEdges(VLayoutDetail &detail, const QLineF &globalEdge, int
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VPosition::AppendWhole(QVector<QPointF> &contour, const VLayoutDetail &detail, int detJ, unsigned int shift)
+void VPosition::AppendWhole(QVector<QPointF> &contour, const VLayoutDetail &detail, int detJ, quint32 shift)
 {
     int processedEdges = 0;
     const int nD = detail.EdgesCount();
@@ -638,7 +640,7 @@ QPolygonF VPosition::GlobalPolygon() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-QVector<QPointF> VPosition::CutEdge(const QLineF &edge, unsigned int shift)
+QVector<QPointF> VPosition::CutEdge(const QLineF &edge, quint32 shift)
 {
     QVector<QPointF> points;
     if (shift == 0)

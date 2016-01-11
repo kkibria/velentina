@@ -32,8 +32,9 @@
 
 #include <QPointF>
 #include <QLineF>
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 1, 0)
-#   include "../libs/vmisc/vmath.h"
+#   include "../vmisc/vmath.h"
 #else
 #   include <QtMath>
 #endif
@@ -81,13 +82,13 @@ QVector<QPointF> VContour::GetContour() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-unsigned int VContour::GetShift() const
+quint32 VContour::GetShift() const
 {
     return d->shift;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VContour::SetShift(unsigned int shift)
+void VContour::SetShift(quint32 shift)
 {
     d->shift = shift;
 }
@@ -126,7 +127,7 @@ QSizeF VContour::GetSize() const
 QVector<QPointF> VContour::UniteWithContour(const VLayoutDetail &detail, int globalI, int detJ, BestFrom type) const
 {
     QVector<QPointF> newContour;
-    if (d->globalContour.isEmpty())
+    if (d->globalContour.isEmpty()) //-V807
     {
         AppendWhole(newContour, detail, detJ);
     }
@@ -232,7 +233,7 @@ int VContour::EdgesCount() const
 //---------------------------------------------------------------------------------------------------------------------
 QLineF VContour::GlobalEdge(int i) const
 {
-    if (d->globalContour.isEmpty())
+    if (d->globalContour.isEmpty()) //-V807
     {
         // Because sheet is blank we have one global edge for all cases - Ox axis.
         const QLineF axis = EmptySheetEdge();

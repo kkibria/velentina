@@ -70,56 +70,34 @@ VNodeSplinePath::VNodeSplinePath(VAbstractPattern *doc, VContainer *data, quint3
  * @param idTool tool id.
  * @param parent QObject parent.
  */
-void VNodeSplinePath::Create(VAbstractPattern *doc, VContainer *data, quint32 id, quint32 idSpline,
-                             const Document &parse,
+void VNodeSplinePath::Create(VAbstractPattern *doc, VContainer *data, VMainGraphicsScene *scene, quint32 id,
+                             quint32 idSpline, const Document &parse,
                              const Source &typeCreation, const quint32 &idTool, QObject *parent)
 {
     VAbstractTool::AddRecord(id, Tool::NodeSplinePath, doc);
     if (parse == Document::FullParse)
     {
         VNodeSplinePath *splPath = new VNodeSplinePath(doc, data, id, idSpline, typeCreation, idTool, parent);
+
         doc->AddTool(id, splPath);
-        const QSharedPointer<VSplinePath> path = data->GeometricObject<VSplinePath>(id);
-        const QVector<VSplinePoint> *points = path->GetPoint();
-        for (qint32 i = 0; i<points->size(); ++i)
+        if (idTool != NULL_ID)
         {
-            if (idTool != 0)
-            {
-                doc->IncrementReferens(idTool);
-                //Some nodes we don't show on scene. Tool that create this nodes must free memory.
-                VDataTool *tool = doc->getTool(idTool);
-                SCASSERT(tool != nullptr);
-                splPath->setParent(tool);
-            }
-            else
-            {
-                doc->IncrementReferens(points->at(i).P().id());
-            }
+            //Some nodes we don't show on scene. Tool that create this nodes must free memory.
+            VDataTool *tool = doc->getTool(idTool);
+            SCASSERT(tool != nullptr);
+            splPath->setParent(tool);// Adopted by a tool
+        }
+        else
+        {
+            // Try to prevent memory leak
+            scene->addItem(splPath);// First adopted by scene
+            splPath->hide();// If no one will use node, it will stay hidden
+            splPath->SetParentType(ParentType::Scene);
         }
     }
     else
     {
         doc->UpdateToolData(id, data);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief DeleteNode delete node from detail.
- */
-void VNodeSplinePath::DeleteNode()
-{
-    VAbstractNode::DeleteNode();
-    this->setVisible(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VNodeSplinePath::RestoreNode()
-{
-    if (this->isVisible() == false)
-    {
-        VAbstractNode::RestoreNode();
-        this->setVisible(true);
     }
 }
 
@@ -208,6 +186,21 @@ void VNodeSplinePath::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     Q_UNUSED(event);
     this->setPen(QPen(currentColor, qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VNodeSplinePath::ShowNode()
+{
+    if (parentType != ParentType::Scene)
+    {
+        show();
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VNodeSplinePath::HideNode()
+{
+    hide();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

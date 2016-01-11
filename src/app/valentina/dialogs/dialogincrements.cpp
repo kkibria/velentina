@@ -60,6 +60,11 @@ DialogIncrements::DialogIncrements(VContainer *data, VPattern *doc, QWidget *par
       formulaBaseHeight(0)
 {
     ui->setupUi(this);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    ui->lineEditName->setClearButtonEnabled(true);
+#endif
+
     formulaBaseHeight = ui->plainTextEditFormula->height();
 
     qApp->Settings()->GetOsSeparator() ? setLocale(QLocale::system()) : setLocale(QLocale(QLocale::C));
@@ -80,7 +85,11 @@ DialogIncrements::DialogIncrements(VContainer *data, VPattern *doc, QWidget *par
     connect(this->doc, &VPattern::FullUpdateFromFile, this, &DialogIncrements::FullUpdateFromFile);
 
     ui->tabWidget->setCurrentIndex(0);
-    ui->lineEditName->setValidator( new QRegularExpressionValidator(QRegularExpression(NameRegExp())));
+#if QT_VERSION > QT_VERSION_CHECK(5, 1, 0)
+    ui->lineEditName->setValidator( new QRegularExpressionValidator(QRegularExpression(NameRegExp()), this));
+#else
+    ui->lineEditName->setValidator( new QRegExpValidator(QRegExp(NameRegExp()), this));
+#endif
 
     connect(ui->tableWidgetIncrement, &QTableWidget::itemSelectionChanged, this,
             &DialogIncrements::ShowIncrementDetails);
@@ -154,7 +163,7 @@ void DialogIncrements::FillIncrements()
 
 //---------------------------------------------------------------------------------------------------------------------
 template <typename T>
-void DialogIncrements::FillTable(const QMap<QString, T> varTable, QTableWidget *table)
+void DialogIncrements::FillTable(const QMap<QString, T> &varTable, QTableWidget *table)
 {
     SCASSERT(table != nullptr);
 
@@ -319,8 +328,8 @@ bool DialogIncrements::EvalIncrementFormula(const QString &formula, bool fromUse
                 f = formula;
             }
             f.replace("\n", " ");
-            Calculator *cal = new Calculator(data, qApp->patternType());
-            const qreal result = cal->EvalFormula(f);
+            Calculator *cal = new Calculator();
+            const qreal result = cal->EvalFormula(data->PlainVariables(), f);
             delete cal;
 
             label->setText(qApp->LocaleToString(result) + " " + postfix);
@@ -419,16 +428,22 @@ void DialogIncrements::EnableDetails(bool enabled)
  */
 void DialogIncrements::FullUpdateFromFile()
 {
-    FillIncrements();
-
     ui->tableWidgetLines->clearContents();
-    FillLengthsLines();
-
     ui->tableWidgetSplines->clearContents();
-    FillLengthsCurves();
-
     ui->tableWidgetArcs->clearContents();
+    ui->tableWidgetAnglesArcs->clearContents();
+    ui->tableWidgetAnglesCurves->clearContents();
+    ui->tableWidgetLinesAngles->clearContents();
+    ui->tableWidgetRadiusesArcs->clearContents();
+
+    FillIncrements();
+    FillLengthsLines();
+    FillLengthLinesAngles();
+    FillLengthsCurves();
     FillLengthArcs();
+    FillRadiusesArcs();
+    FillAnglesArcs();
+    FillAnglesCurves();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -456,7 +471,7 @@ void DialogIncrements::AddIncrement()
     else
     {
         currentRow  = ui->tableWidgetIncrement->currentRow()+1;
-        QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(ui->tableWidgetIncrement->currentRow(), 0);
+        const QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(ui->tableWidgetIncrement->currentRow(), 0);
         doc->AddEmptyIncrementAfter(nameField->text(), name);
     }
 
@@ -477,7 +492,7 @@ void DialogIncrements::RemoveIncrement()
         return;
     }
 
-    QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
+    const QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
     doc->RemoveIncrement(nameField->text());
 
     FullUpdateTree(Document::LiteParse);
@@ -502,7 +517,7 @@ void DialogIncrements::MoveUp()
         return;
     }
 
-    QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
+    const QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
     doc->MoveUpIncrement(nameField->text());
     FullUpdateTree(Document::LiteParse);
     ui->tableWidgetIncrement->selectRow(row-1);
@@ -518,7 +533,7 @@ void DialogIncrements::MoveDown()
         return;
     }
 
-    QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
+    const QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
     doc->MoveDownIncrement(nameField->text());
     FullUpdateTree(Document::LiteParse);
     ui->tableWidgetIncrement->selectRow(row+1);
@@ -534,7 +549,7 @@ void DialogIncrements::SaveIncrName()
         return;
     }
 
-    QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
+    const QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
     const QString newName = CustomIncrSign + ui->lineEditName->text();
     if (data->IsUnique(newName))
     {
@@ -560,7 +575,7 @@ void DialogIncrements::SaveIncrDescription()
         return;
     }
 
-    QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
+    const QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
     doc->SetIncrementDescription(nameField->text(), ui->plainTextEditDescription->toPlainText());
 
     FullUpdateTree(Document::LiteParse);
@@ -582,7 +597,7 @@ void DialogIncrements::SaveIncrFormula()
         return;
     }
 
-    QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
+    const QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
 
     // Replace line return character with spaces for calc if exist
     QString text = ui->plainTextEditFormula->toPlainText();
@@ -638,7 +653,10 @@ void DialogIncrements::SaveIncrFormula()
 void DialogIncrements::DeployFormula()
 {
     SCASSERT(ui->plainTextEditFormula != nullptr);
-    SCASSERT(ui->pushButtonGrow != nullptr)
+    SCASSERT(ui->pushButtonGrow != nullptr);
+
+    const QTextCursor cursor = ui->plainTextEditFormula->textCursor();
+
     if (ui->plainTextEditFormula->height() < DIALOG_MAX_FORMULA_HEIGHT)
     {
         ui->plainTextEditFormula->setFixedHeight(DIALOG_MAX_FORMULA_HEIGHT);
@@ -659,6 +677,9 @@ void DialogIncrements::DeployFormula()
     setUpdatesEnabled(false);
     repaint();
     setUpdatesEnabled(true);
+
+    ui->plainTextEditFormula->setFocus();
+    ui->plainTextEditFormula->setTextCursor(cursor);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -671,7 +692,7 @@ void DialogIncrements::Fx()
         return;
     }
 
-    QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
+    const QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(row, 0);
     QSharedPointer<VIncrement> incr = data->GetVariable<VIncrement>(nameField->text());
 
     DialogEditWrongFormula *dialog = new DialogEditWrongFormula(incr->GetData(), NULL_ID, this);
@@ -705,13 +726,27 @@ void DialogIncrements::closeEvent(QCloseEvent *event)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void DialogIncrements::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        // retranslate designer form (single inheritance approach)
+        ui->retranslateUi(this);
+        FullUpdateFromFile();
+    }
+    // remember to call base class implementation
+   QWidget::changeEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void DialogIncrements::ShowIncrementDetails()
 {
     if (ui->tableWidgetIncrement->rowCount() > 0)
     {
         EnableDetails(true);
 
-        QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(ui->tableWidgetIncrement->currentRow(), 0); // name
+        // name
+        const QTableWidgetItem *nameField = ui->tableWidgetIncrement->item(ui->tableWidgetIncrement->currentRow(), 0);
         QSharedPointer<VIncrement> incr;
 
         try

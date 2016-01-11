@@ -38,20 +38,21 @@ public:
     VTapeSettings(Format format, Scope scope, const QString &organization, const QString &application = QString(),
                   QObject *parent = 0);
 
-    virtual QString StandardTablesPath()const Q_DECL_OVERRIDE;
-    QString TemplatesPath() const;
-
-    QString GetPathTemplate() const;
-    void SetPathTemplate(const QString &value);
-
     QByteArray GetDataBaseGeometry() const;
     void SetDataBaseGeometry(const QByteArray &value);
+
+    void SetDefHeight(int value);
+    int  GetDefHeight() const;
+
+    void SetDefSize(int value);
+    int  GetDefSize() const;
 
 private:
     Q_DISABLE_COPY(VTapeSettings)
 
-    static const QString SettingPathsTemplates;
     static const QString SettingDataBaseGeometry;
+    static const QString SettingDefHeight;
+    static const QString SettingDefSize;
 };
 
 #endif // VTAPESETTINGS_H

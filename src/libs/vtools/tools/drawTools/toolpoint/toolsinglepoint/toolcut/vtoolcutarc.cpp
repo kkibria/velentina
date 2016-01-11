@@ -54,9 +54,6 @@ VToolCutArc::VToolCutArc(VAbstractPattern *doc, VContainer *data, const quint32 
                          const Source &typeCreation, QGraphicsItem * parent)
     :VToolCut(doc, data, id, formula, arcId, arc1id, arc2id, color, parent)
 {
-    RefreshCurve(firstCurve, curve1id, SimpleCurvePoint::ForthPoint);
-    RefreshCurve(secondCurve, curve2id, SimpleCurvePoint::FirstPoint);
-
     ToolCreation(typeCreation);
 }
 
@@ -94,8 +91,8 @@ VToolCutArc* VToolCutArc::Create(DialogTool *dialog, VMainGraphicsScene *scene, 
     QString formula = dialogTool->GetFormula();
     const quint32 arcId = dialogTool->getArcId();
     const QString color = dialogTool->GetColor();
-    VToolCutArc* point = nullptr;
-    point=Create(0, pointName, formula, arcId, 5, 10, color, scene, doc, data, Document::FullParse, Source::FromGui);
+    VToolCutArc* point = Create(0, pointName, formula, arcId, 5, 10, color, scene, doc, data, Document::FullParse,
+                                Source::FromGui);
     if (point != nullptr)
     {
         point->dialog=dialogTool;
@@ -187,22 +184,20 @@ void VToolCutArc::ShowVisualization(bool show)
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief CurveChoosed send signal about selection from cutted arc.
- * @param id object id in container.
- */
-void VToolCutArc::CurveChoosed(quint32 id)
-{
-    emit ChoosedTool(id, SceneObject::Arc);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
  * @brief contextMenuEvent handle context menu events.
  * @param event context menu event.
  */
 void VToolCutArc::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    ContextMenu<DialogCutArc>(this, event);
+    try
+    {
+        ContextMenu<DialogCutArc>(this, event);
+    }
+    catch(const VExceptionToolWasDeleted &e)
+    {
+        Q_UNUSED(e);
+        return;//Leave this method immediately!!!
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -218,31 +213,6 @@ void VToolCutArc::SaveDialog(QDomElement &domElement)
     doc->SetAttribute(domElement, AttrLength, dialogTool->GetFormula());
     doc->SetAttribute(domElement, AttrArc, QString().setNum(dialogTool->getArcId()));
     doc->SetAttribute(domElement, AttrColor, dialogTool->GetColor());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief RefreshCurve refresh curve on scene.
- * @param curve curve.
- * @param curveId curve id.
- */
-void VToolCutArc::RefreshCurve(VSimpleCurve *curve, quint32 curveId, SimpleCurvePoint curvePosition,
-                               PathDirection direction)
-{
-    const QSharedPointer<VArc> arc = VAbstractTool::data.GeometricObject<VArc>(curveId);
-    QPainterPath path;
-    path.addPath(arc->GetPath(direction));
-    path.setFillRule( Qt::WindingFill );
-    if (curvePosition == SimpleCurvePoint::FirstPoint)
-    {
-        path.translate(-arc->GetP1().x(), -arc->GetP1().y());
-    }
-    else
-    {
-        path.translate(-arc->GetP2().x(), -arc->GetP2().y());
-    }
-    curve->SetCurrentColor(QColor(lineColor));
-    curve->setPath(path);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

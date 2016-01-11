@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>565</width>
-    <height>382</height>
+    <width>522</width>
+    <height>425</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,7 +75,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Bias X</string>
+            <string>Bias X:</string>
            </property>
           </widget>
          </item>
@@ -121,7 +121,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Bias Y</string>
+            <string>Bias Y:</string>
            </property>
           </widget>
          </item>
@@ -221,7 +221,7 @@
                <locale language="English" country="UnitedStates"/>
               </property>
               <property name="text">
-               <string>Name of detail</string>
+               <string>Name of detail:</string>
               </property>
              </widget>
             </item>
@@ -264,7 +264,7 @@
                <locale language="English" country="UnitedStates"/>
               </property>
               <property name="text">
-               <string>Width</string>
+               <string>Width:</string>
               </property>
              </widget>
             </item>
@@ -313,14 +313,76 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="toolButtonDelete">
-            <property name="enabled">
-             <bool>false</bool>
+           <layout class="QHBoxLayout" name="horizontalLayout_16">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetFixedSize</enum>
             </property>
-            <property name="text">
-             <string>Delete</string>
+            <property name="leftMargin">
+             <number>10</number>
             </property>
-           </widget>
+            <property name="topMargin">
+             <number>10</number>
+            </property>
+            <property name="rightMargin">
+             <number>10</number>
+            </property>
+            <property name="bottomMargin">
+             <number>10</number>
+            </property>
+            <item alignment="Qt::AlignLeft">
+             <widget class="QToolButton" name="toolButtonDelete">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Delete</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item alignment="Qt::AlignRight">
+             <widget class="QToolButton" name="toolButtonDown">
+              <property name="toolTip">
+               <string>Scroll down the list</string>
+              </property>
+              <property name="text">
+               <string notr="true">...</string>
+              </property>
+              <property name="icon">
+               <iconset theme="go-down">
+                <normaloff/>
+               </iconset>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignRight">
+             <widget class="QToolButton" name="toolButtonUp">
+              <property name="toolTip">
+               <string>Scroll up the list</string>
+              </property>
+              <property name="text">
+               <string notr="true">...</string>
+              </property>
+              <property name="icon">
+               <iconset theme="go-up">
+                <normaloff/>
+               </iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -331,6 +393,19 @@
       <widget class="QListWidget" name="listWidget"/>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="helpLabel">
+     <property name="text">
+      <string>Ready!</string>
+     </property>
+     <property name="textFormat">
+      <enum>Qt::RichText</enum>
+     </property>
+     <property name="scaledContents">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -352,7 +427,6 @@
   <tabstop>checkBoxSeams</tabstop>
   <tabstop>doubleSpinBoxSeams</tabstop>
   <tabstop>checkBoxClosed</tabstop>
-  <tabstop>toolButtonDelete</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>

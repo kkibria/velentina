@@ -48,7 +48,7 @@
 
 //---------------------------------------------------------------------------------------------------------------------
 PathPage::PathPage(QWidget *parent)
-    : QWidget(parent), defaultButton(nullptr), editButton(nullptr), pathTable(nullptr)
+    : QWidget(parent), defaultButton(nullptr), editButton(nullptr), pathTable(nullptr), pathGroup(nullptr)
 {
     QGroupBox *pathGroup = PathGroup();
     SCASSERT(pathGroup != nullptr);
@@ -62,10 +62,12 @@ PathPage::PathPage(QWidget *parent)
 //---------------------------------------------------------------------------------------------------------------------
 void PathPage::Apply()
 {
-    qApp->ValentinaSettings()->SetPathIndividualMeasurements(pathTable->item(0, 1)->text());
-    qApp->ValentinaSettings()->SetPathStandardMeasurements(pathTable->item(1, 1)->text());
-    qApp->ValentinaSettings()->SetPathPattern(pathTable->item(2, 1)->text());
-    qApp->ValentinaSettings()->SetPathLayout(pathTable->item(3, 1)->text());
+    VSettings *settings = qApp->ValentinaSettings();
+    settings->SetPathIndividualMeasurements(pathTable->item(0, 1)->text());
+    settings->SetPathStandardMeasurements(pathTable->item(1, 1)->text());
+    settings->SetPathPattern(pathTable->item(2, 1)->text());
+    settings->SetPathLayout(pathTable->item(3, 1)->text());
+    settings->SetPathTemplate(pathTable->item(4, 1)->text());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -97,6 +99,10 @@ void PathPage::DefaultPath()
             item->setText(QDir::homePath());
             item->setToolTip(QDir::homePath());
             break;
+        case 4: // templates
+            item->setText(qApp->ValentinaSettings()->TemplatesPath());
+            item->setToolTip(qApp->ValentinaSettings()->TemplatesPath());
+            break;
         default:
             break;
     }
@@ -124,6 +130,9 @@ void PathPage::EditPath()
         case 3: // layout path
             path = qApp->ValentinaSettings()->GetPathLayout();
             break;
+        case 4: // templates
+            path = qApp->ValentinaSettings()->GetPathTemplate();
+            break;
         default:
             break;
     }
@@ -140,9 +149,22 @@ void PathPage::EditPath()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void PathPage::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        // retranslate designer form (single inheritance approach)
+        RetranslateUi();
+    }
+
+    // remember to call base class implementation
+    QWidget::changeEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 QGroupBox *PathPage::PathGroup()
 {
-    QGroupBox *pathGroup = new QGroupBox(tr("Path that use Valentina"));
+    pathGroup = new QGroupBox(tr("Path that use Valentina"));
     InitTable();
 
     defaultButton = new QPushButton(tr("Default"));
@@ -169,7 +191,7 @@ QGroupBox *PathPage::PathGroup()
 void PathPage::InitTable()
 {
     pathTable = new QTableWidget();
-    pathTable->setRowCount(4);
+    pathTable->setRowCount(5);
     pathTable->setColumnCount(2);
     pathTable->verticalHeader()->setVisible(false);
     pathTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -179,33 +201,41 @@ void PathPage::InitTable()
 
     QStringList tableHeader = QStringList() << tr("Type") << tr("Path");
     pathTable->setHorizontalHeaderLabels(tableHeader);
+    const VSettings *settings = qApp->ValentinaSettings();
 
     {
         pathTable->setItem(0, 0, new QTableWidgetItem(tr("Individual measurements")));
-        QTableWidgetItem *item = new QTableWidgetItem(qApp->ValentinaSettings()->GetPathIndividualMeasurements());
-        item->setToolTip(qApp->ValentinaSettings()->GetPathIndividualMeasurements());
+        QTableWidgetItem *item = new QTableWidgetItem(settings->GetPathIndividualMeasurements());
+        item->setToolTip(settings->GetPathIndividualMeasurements());
         pathTable->setItem(0, 1, item);
     }
 
     {
         pathTable->setItem(1, 0, new QTableWidgetItem(tr("Standard measurements")));
-        QTableWidgetItem *item = new QTableWidgetItem(qApp->ValentinaSettings()->GetPathStandardMeasurements());
-        item->setToolTip(qApp->ValentinaSettings()->GetPathStandardMeasurements());
+        QTableWidgetItem *item = new QTableWidgetItem(settings->GetPathStandardMeasurements());
+        item->setToolTip(settings->GetPathStandardMeasurements());
         pathTable->setItem(1, 1, item);
     }
 
     {
         pathTable->setItem(2, 0, new QTableWidgetItem(tr("Patterns")));
-        QTableWidgetItem *item = new QTableWidgetItem(qApp->ValentinaSettings()->GetPathPattern());
-        item->setToolTip(qApp->ValentinaSettings()->GetPathPattern());
+        QTableWidgetItem *item = new QTableWidgetItem(settings->GetPathPattern());
+        item->setToolTip(settings->GetPathPattern());
         pathTable->setItem(2, 1, item);
     }
 
     {
         pathTable->setItem(3, 0, new QTableWidgetItem(tr("Layout")));
-        QTableWidgetItem *item = new QTableWidgetItem(qApp->ValentinaSettings()->GetPathLayout());
-        item->setToolTip(qApp->ValentinaSettings()->GetPathLayout());
+        QTableWidgetItem *item = new QTableWidgetItem(settings->GetPathLayout());
+        item->setToolTip(settings->GetPathLayout());
         pathTable->setItem(3, 1, item);
+    }
+
+    {
+        pathTable->setItem(4, 0, new QTableWidgetItem(tr("Templates")));
+        QTableWidgetItem *item = new QTableWidgetItem(settings->GetPathTemplate());
+        item->setToolTip(settings->GetPathTemplate());
+        pathTable->setItem(4, 1, item);
     }
 
     pathTable->verticalHeader()->setDefaultSectionSize(20);
@@ -214,4 +244,21 @@ void PathPage::InitTable()
     pathTable->horizontalHeader()->setStretchLastSection(true);
 
     connect(pathTable, &QTableWidget::itemSelectionChanged, this, &PathPage::TableActivated);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void PathPage::RetranslateUi()
+{
+    pathGroup->setTitle(tr("Path that use Valentina"));
+    defaultButton->setText(tr("Default"));
+    editButton->setText(tr("Edit"));
+
+    const QStringList tableHeader = QStringList() << tr("Type") << tr("Path");
+    pathTable->setHorizontalHeaderLabels(tableHeader);
+
+    pathTable->item(0, 0)->setText(tr("Individual measurements"));
+    pathTable->item(1, 0)->setText(tr("Standard measurements"));
+    pathTable->item(2, 0)->setText(tr("Patterns"));
+    pathTable->item(3, 0)->setText(tr("Layout"));
+    pathTable->item(4, 0)->setText(tr("Templates"));
 }

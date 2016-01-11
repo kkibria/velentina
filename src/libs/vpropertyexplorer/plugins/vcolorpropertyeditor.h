@@ -38,7 +38,7 @@ class VPROPERTYEXPLORERSHARED_EXPORT VColorPropertyEditor : public QWidget
 
 public:
     //! Constructor taking a widget as parent
-    VColorPropertyEditor(QWidget *parent);
+    explicit VColorPropertyEditor(QWidget *parent);
 
     //! Destructor
     virtual ~VColorPropertyEditor() Q_DECL_OVERRIDE;
@@ -51,7 +51,7 @@ public:
     //! \param color The color to fill the image with
     //! \size The size of the generated pixmap
     //! \return Returns a QPixmap
-    static QPixmap GetColorPixmap(const QColor& color, unsigned int size = 16);
+    static QPixmap GetColorPixmap(const QColor& color, quint32 size = 16);
 
     //! A helper function to convert a color into a string.
     //! \param color The color to fill the image with

@@ -42,9 +42,6 @@ OBJECTS_DIR = obj
 # Set using ccache. Function enable_ccache() defined in common.pri.
 $$enable_ccache()
 
-# Set precompiled headers. Function set_PCH() defined in common.pri.
-$$set_PCH()
-
 CONFIG(debug, debug|release){
     # Debug mode
     unix {
@@ -70,6 +67,16 @@ CONFIG(debug, debug|release){
             # Key -isystem disable checking errors in system headers.
             -isystem "$${OUT_PWD}/$${MOC_DIR}" \
             $$CLANG_DEBUG_CXXFLAGS # See common.pri for more details.
+
+        # -isystem key works only for headers. In some cases it's not enough. But we can't delete these warnings and
+        # want them in global list. Compromise decision delete them from local list.
+        QMAKE_CXXFLAGS -= \
+            -Wundefined-reinterpret-cast
+        }
+        *-icc-*{
+            QMAKE_CXXFLAGS += \
+                -isystem "$${OUT_PWD}/$${MOC_DIR}" \
+                $$ICC_DEBUG_CXXFLAGS
         }
     } else {
         *-g++{
@@ -79,6 +86,7 @@ CONFIG(debug, debug|release){
 
 }else{
     # Release mode
+    !win32-msvc*:CONFIG += silent
 
     !unix:*-g++{
         QMAKE_CXXFLAGS += -fno-omit-frame-pointer # Need for exchndl.dll

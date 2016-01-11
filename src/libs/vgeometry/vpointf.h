@@ -35,6 +35,11 @@ class QPointF;
 class QString;
 class VPointFData;
 
+#if defined (Q_CC_INTEL)
+#pragma warning(push)
+#pragma warning(disable : 2304)
+#endif
+
 /**
  * @brief The VPointF class keep data of point.
  */
@@ -43,11 +48,12 @@ class VPointF:public VGObject
 public:
     VPointF ();
     VPointF (const VPointF &point );
+    // cppcheck-suppress noExplicitConstructor
     VPointF (const QPointF &point );
     VPointF (qreal x, qreal y, const QString &name, qreal mx, qreal my, quint32 idObject = 0,
-              const Draw &mode = Draw::Calculation);
+             const Draw &mode = Draw::Calculation);
     VPointF (const QPointF &point, const QString &name, qreal mx, qreal my, quint32 idObject = 0,
-              const Draw &mode = Draw::Calculation);
+             const Draw &mode = Draw::Calculation);
     virtual ~VPointF() Q_DECL_OVERRIDE;
     VPointF &operator=(const VPointF &point);
     qreal   mx() const;
@@ -62,5 +68,11 @@ public:
 private:
     QSharedDataPointer<VPointFData> d;
 };
+
+Q_DECLARE_TYPEINFO(VPointF, Q_MOVABLE_TYPE);
+
+#if defined(Q_CC_INTEL)
+#pragma warning(pop)
+#endif
 
 #endif // VPOINTF_H

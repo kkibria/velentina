@@ -60,7 +60,15 @@ void VAbstractPoint::ShowTool(quint32 id, bool enable)
 //---------------------------------------------------------------------------------------------------------------------
 void VAbstractPoint::DeleteFromLabel()
 {
-    DeleteTool(); //Leave this method immediately after call!!!
+    try
+    {
+        DeleteTool();
+    }
+    catch(const VExceptionToolWasDeleted &e)
+    {
+        Q_UNUSED(e);
+        return;//Leave this method immediately!!!
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -72,8 +80,8 @@ QString VAbstractPoint::PointName(quint32 id) const
     }
     catch (const VExceptionBadId &e)
     {
-        qCDebug(vTool, "Error! Couldn't get point name. %s %s", e.ErrorMessage().toUtf8().constData(),
-                e.DetailedInformation().toUtf8().constData());
+        qCDebug(vTool, "Error! Couldn't get point name. %s %s", qUtf8Printable(e.ErrorMessage()),
+                qUtf8Printable(e.DetailedInformation()));
         return QString("");// Return empty string for property browser
     }
 }

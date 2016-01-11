@@ -107,13 +107,13 @@ void VLayoutPaper::SetLayoutWidth(qreal width)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-unsigned int VLayoutPaper::GetShift() const
+quint32 VLayoutPaper::GetShift() const
 {
     return d->globalContour.GetShift();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VLayoutPaper::SetShift(unsigned int shift)
+void VLayoutPaper::SetShift(quint32 shift)
 {
     d->globalContour.SetShift(shift);
 }
@@ -216,7 +216,7 @@ bool VLayoutPaper::AddToSheet(const VLayoutDetail &detail, volatile bool &stop)
             threads.append(thread);
             thread_pool->start(thread);
 
-            d->frame = d->frame + 3 + static_cast<unsigned int>(360/d->rotationIncrease*2);
+            d->frame = d->frame + 3 + static_cast<quint32>(360/d->rotationIncrease*2);
         }
     }
 
@@ -288,7 +288,7 @@ QGraphicsRectItem *VLayoutPaper::GetPaperItem(bool autoCrop) const
         }
         const int height = scene->itemsBoundingRect().toRect().height() + static_cast<int>(d->layoutWidth)*2;
         delete scene;
-        if (d->globalContour.GetHeight() > height)
+        if (d->globalContour.GetHeight() > height) //-V807
         {
             paper = new QGraphicsRectItem(QRectF(0, 0, d->globalContour.GetWidth(), height));
         }

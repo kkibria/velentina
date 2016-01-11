@@ -51,7 +51,7 @@ public:
      * @param idObject parent id.
      * @param mode mode creation spline path.
      */
-    VSplinePath(qreal kCurve = 1, quint32 idObject = 0, Draw mode = Draw::Calculation);
+    explicit VSplinePath(qreal kCurve = 1, quint32 idObject = 0, Draw mode = Draw::Calculation);
     /**
      * @brief VSplinePath copy constructor.
      * @param splPath spline path.
@@ -181,5 +181,7 @@ public:
 private:
     QSharedDataPointer<VSplinePathData> d;
 };
+
+Q_DECLARE_TYPEINFO(VSplinePath, Q_MOVABLE_TYPE);
 
 #endif // VSPLINEPATH_H

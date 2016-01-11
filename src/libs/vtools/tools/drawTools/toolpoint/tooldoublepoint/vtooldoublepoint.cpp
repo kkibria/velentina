@@ -31,6 +31,8 @@
 #include "../vgeometry/vpointf.h"
 #include "../../../../undocommands/movedoublelabel.h"
 
+#include <QKeyEvent>
+
 //---------------------------------------------------------------------------------------------------------------------
 VToolDoublePoint::VToolDoublePoint(VAbstractPattern *doc, VContainer *data, quint32 id, quint32 p1id, quint32 p2id,
                                    QGraphicsItem *parent)
@@ -216,7 +218,7 @@ QVariant VToolDoublePoint::itemChange(QGraphicsItem::GraphicsItemChange change, 
         }
     }
 
-    return QGraphicsItem::itemChange(change, value);
+    return QGraphicsPathItem::itemChange(change, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -229,8 +231,16 @@ void VToolDoublePoint::keyReleaseEvent(QKeyEvent *event)
     switch (event->key())
     {
         case Qt::Key_Delete:
-            DeleteTool();
-            return; //Leave this method immediately after call!!!
+            try
+            {
+                DeleteTool();
+            }
+            catch(const VExceptionToolWasDeleted &e)
+            {
+                Q_UNUSED(e);
+                return;//Leave this method immediately!!!
+            }
+            break;
         default:
             break;
     }

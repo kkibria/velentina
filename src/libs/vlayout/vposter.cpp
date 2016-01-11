@@ -29,8 +29,9 @@
 #include "vposter.h"
 #include <QPainter>
 #include <QPrinter>
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 1, 0)
-#   include "../libs/vmisc/vmath.h"
+#   include "../vmisc/vmath.h"
 #else
 #   include <QtMath>
 #endif
@@ -39,7 +40,7 @@
 
 //---------------------------------------------------------------------------------------------------------------------
 VPoster::VPoster(const QPrinter *printer)
-    :printer(printer), allowence(qRound(10./25.4*printer->resolution()))//1 cm
+    :printer(printer), allowence(static_cast<quint32>(qRound(10./25.4*printer->resolution())))//1 cm
 {
 }
 
@@ -108,13 +109,14 @@ int VPoster::CountRows(int height) const
     // Calculate how many pages will be after using allowence.
     // We know start pages count. This number not enought because
     // each n-1 pages add (n-1)*allowence length to page (1).
-    const qreal addionalLength = (pCount-1)*allowence;
+    const qreal addionalLength = (pCount-1)*static_cast<int>(allowence); //-V636
 
     // Calculate additional length form pages that will cover this length (2).
     // In the end add page length (3).
     // Bottom page have mandatory border (4)
     return qCeil((addionalLength +
-                         qCeil(addionalLength/pageLength)*allowence + allowence + imgLength)/pageLength);
+                         qCeil(addionalLength/pageLength)*static_cast<int>(allowence) + static_cast<int>(allowence) +
+                  imgLength)/pageLength);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -137,18 +139,19 @@ int VPoster::CountColomns(int width) const
     // Calculate how many pages will be after using allowence.
     // We know start pages count. This number not enought because
     // each n-1 pages add (n-1)*allowence length to page (1).
-    const qreal addionalLength = (pCount-1)*allowence;
+    const qreal addionalLength = (pCount-1)*static_cast<int>(allowence); //-V636
 
     // Calculate additional length form pages that will cover this length (2).
     // In the end add page length (3).
-    return qCeil((addionalLength + qCeil(addionalLength/pageLength)*allowence + imgLength)/pageLength);
+    return qCeil((addionalLength + qCeil(addionalLength/pageLength)*static_cast<int>(allowence) +
+                  imgLength)/pageLength);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 QImage VPoster::Cut(int i, int j, const QImage &image) const
 {
-    const int x = j*PageRect().width()  - j*allowence;
-    const int y = i*PageRect().height() - i*allowence;
+    const int x = j*PageRect().width()  - j*static_cast<int>(allowence);
+    const int y = i*PageRect().height() - i*static_cast<int>(allowence);
 
     SCASSERT(x <= image.rect().width());
     SCASSERT(y <= image.rect().height());
@@ -187,32 +190,36 @@ QImage VPoster::Borders(int rows, int colomns, int i, int j, QImage &image, int 
     pen.setColor(Qt::black);
     painter.setPen(pen);
 
+    const QRect rec = image.rect();
     if (j != 0 && PageRect().x() > 0)
     {// Left border
-        painter.drawLine(QLine(0, 0, 0, image.rect().height()));
-        painter.drawImage(QPoint(0, image.rect().height()-allowence), QImage("://scissors_vertical.png"));
+        painter.drawLine(QLine(0, 0, 0, rec.height()));
+        painter.drawImage(QPoint(0, rec.height()-static_cast<int>(allowence)),
+                          QImage("://scissors_vertical.png"));
     }
 
     if (j != colomns-1)
     {// Right border
-        painter.drawLine(QLine(image.rect().width()-allowence, 0,
-                               image.rect().width()-allowence, image.rect().height()));
+        painter.drawLine(QLine(rec.width()-static_cast<int>(allowence), 0,
+                               rec.width()-static_cast<int>(allowence), rec.height()));
     }
 
     if (i != 0 && PageRect().y() > 0)
     {// Top border
-        painter.drawLine(QLine(0, 0, image.rect().width(), 0));
-        painter.drawImage(QPoint(image.rect().width()-allowence, 0), QImage("://scissors_horizontal.png"));
+        painter.drawLine(QLine(0, 0, rec.width(), 0));
+        painter.drawImage(QPoint(rec.width()-static_cast<int>(allowence), 0),
+                          QImage("://scissors_horizontal.png"));
     }
 
     if (rows*colomns > 1)
     { // Don't show bottom border if only one page need
         // Bottom border (mandatory)
-        painter.drawLine(QLine(0, image.rect().height()-allowence,
-                               image.rect().width(), image.rect().height()-allowence));
+        painter.drawLine(QLine(0, rec.height()-static_cast<int>(allowence),
+                               rec.width(), rec.height()-static_cast<int>(allowence)));
         if (i == rows-1)
         {
-            painter.drawImage(QPoint(image.rect().width()-allowence, image.rect().height()-allowence),
+            painter.drawImage(QPoint(rec.width()-static_cast<int>(allowence),
+                                     rec.height()-static_cast<int>(allowence)),
                               QImage("://scissors_horizontal.png"));
         }
     }
@@ -220,8 +227,8 @@ QImage VPoster::Borders(int rows, int colomns, int i, int j, QImage &image, int 
     // Labels
     const int layoutX = 15;
     const int layoutY = 5;
-    QRect labels(layoutX, image.rect().height()-allowence+layoutY,
-                 image.rect().width()-(allowence+layoutX), allowence-layoutY);
+    QRect labels(layoutX, rec.height()-static_cast<int>(allowence)+layoutY,
+                 rec.width()-(static_cast<int>(allowence)+layoutX), static_cast<int>(allowence)-layoutY);
     painter.drawText(labels, Qt::AlignLeft, tr("Grid ( %1 , %2 )").arg(i+1).arg(j+1));
     painter.drawText(labels, Qt::AlignHCenter, tr("Page %1 of %2").arg(i*(colomns)+j+1).arg(rows*colomns));
     if (sheets > 1)
@@ -237,11 +244,11 @@ QImage VPoster::Borders(int rows, int colomns, int i, int j, QImage &image, int 
 QRect VPoster::PageRect() const
 {
     // Because the Point unit is defined to be 1/72th of an inch
-    // we can't use method pageRect(QPrinter::Point). Our dpi different can be different.
+    // we can't use method pageRect(QPrinter::Point). Our dpi value can be different.
     // We convert value yourself to pixels.
     const QRectF rect = printer->pageRect(QPrinter::Millimeter);
-    QRect pageRect(qFloor(ToPixel(rect.x())), qFloor(ToPixel(rect.y())), qFloor(ToPixel(rect.width())),
-                   qFloor(ToPixel(rect.height())));
+    const QRect pageRect(qFloor(ToPixel(rect.x())), qFloor(ToPixel(rect.y())), qFloor(ToPixel(rect.width())),
+                         qFloor(ToPixel(rect.height())));
     return pageRect;
 }
 

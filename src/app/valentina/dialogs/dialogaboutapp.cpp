@@ -32,13 +32,15 @@
 #include <QDate>
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QtDebug>
 #include "../options.h"
 #include "../core/vapplication.h"
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogAboutApp::DialogAboutApp(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::DialogAboutApp)
+    ui(new Ui::DialogAboutApp),
+    isInitialized(false)
 {
     ui->setupUi(this);
 
@@ -49,7 +51,7 @@ DialogAboutApp::DialogAboutApp(QWidget *parent) :
     ui->label_QT_Version->setText(buildCompatibilityString());
 
     QDate date = QLocale(QLocale::C).toDate(QString(__DATE__).simplified(), QLatin1String("MMM d yyyy"));
-    ui->label_Valentina_Built->setText(tr("Built on %3 at %4").arg(date.toString()).arg(__TIME__));
+    ui->label_Valentina_Built->setText(tr("Built on %1 at %2").arg(date.toString()).arg(__TIME__));
 
     ui->label_Legal_Stuff->setText(QApplication::translate("InternalStrings",
                                                            "The program is provided AS IS with NO WARRANTY OF ANY "
@@ -65,15 +67,33 @@ DialogAboutApp::DialogAboutApp(QWidget *parent) :
     FontPointSize(ui->label_contrib_label, 11);
     FontPointSize(ui->label_Valentina_Built, 11);
     FontPointSize(ui->label_QT_Version, 11);
-
-    setMaximumSize(size());
-    setMinimumSize(size());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 DialogAboutApp::~DialogAboutApp()
 {
     delete ui;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogAboutApp::showEvent(QShowEvent *event)
+{
+    QDialog::showEvent( event );
+    if ( event->spontaneous() )
+    {
+        return;
+    }
+
+    if (isInitialized)
+    {
+        return;
+    }
+    // do your init stuff here
+
+    setMaximumSize(size());
+    setMinimumSize(size());
+
+    isInitialized = true;//first show windows are held
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -94,7 +114,7 @@ void DialogAboutApp::webButtonClicked()
 {
     if ( QDesktopServices::openUrl(QUrl(VER_COMPANYDOMAIN_STR)) == false)
     {
-        QMessageBox::warning(this, tr("Warning"), tr("Cannot open your default browser"));
+        qWarning() << tr("Cannot open your default browser");
     }
 
 }

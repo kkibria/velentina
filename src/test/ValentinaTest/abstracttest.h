@@ -31,6 +31,17 @@
 
 #include <QObject>
 
+#ifdef Q_CC_MSVC
+#include <ciso646>
+#endif /* Q_CC_MSVC */
+
+// Return codes for testing run application
+static const auto TST_EX_BIN = -1;      // Can't find binary.
+static const auto TST_EX_TIME_OUT = -2; // The operation timed out or an error occurred.
+static const auto TST_EX_CRASH = -3;    // Program crashed.
+
+enum ErrorState {ErrorLoad = 0, ErrorInstall, ErrorSize, NoError};
+
 class AbstractTest : public QObject
 {
     Q_OBJECT
@@ -42,8 +53,10 @@ protected:
 
     QString ValentinaPath() const;
     QString TapePath() const;
+    QString TranslationsPath() const;
 
-    bool Run(const QString &program, const QStringList &arguments);
+    bool Run(bool showWarn, int exit, int &exitCode, const QString &program, const QStringList &arguments,
+             int msecs = 30000);
     bool CopyRecursively(const QString &srcFilePath, const QString &tgtFilePath) const;
 };
 

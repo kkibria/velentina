@@ -58,6 +58,7 @@ public:
 
     quint32        SPointActiveDraw();
 
+    virtual void   setXMLContent(const QString &fileName) Q_DECL_OVERRIDE;
     virtual bool   SaveDocument(const QString &fileName, QString &error) const Q_DECL_OVERRIDE;
 
     QRectF         ActiveDrawBoundingRect() const;
@@ -76,6 +77,15 @@ public:
     void SetIncrementDescription(const QString &name, const QString &text);
 
     virtual QString GenerateLabel(const LabelType &type, const QString &reservedName = QString())const Q_DECL_OVERRIDE;
+
+    bool IsDefCustom() const;
+    void SetDefCustom(bool value);
+
+    int  GetDefCustomHeight() const;
+    void SetDefCustomHeight(int value);
+
+    int  GetDefCustomSize() const;
+    void SetDefCustomSize(int value);
 
 public slots:
     void           LiteParseTree(const Document &parse);
@@ -123,7 +133,7 @@ private:
     template <typename T>
     QRectF ToolBoundingRect(const QRectF &rec, const quint32 &id) const;
     void           ParseCurrentPP();
-    QString        GetLabelBase(unsigned int index)const;
+    QString        GetLabelBase(quint32 index)const;
 
     void ParseToolBasePoint(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
     void ParseToolEndLine(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
@@ -165,6 +175,8 @@ private:
 
     QDomElement MakeEmptyIncrement(const QString &name);
     QDomElement FindIncrement(const QString &name) const;
+
+    void GarbageCollector();
 };
 
 #endif // VPATTERN_H

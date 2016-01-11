@@ -35,7 +35,7 @@ class VPatternConverter : public VAbstractConverter
 {
     Q_DECLARE_TR_FUNCTIONS(VPatternConverter)
 public:
-    VPatternConverter(const QString &fileName);
+    explicit VPatternConverter(const QString &fileName);
     virtual ~VPatternConverter() Q_DECL_OVERRIDE;
 
     static const QString    PatternMaxVerStr;
@@ -60,11 +60,17 @@ private:
     void ToV0_1_3();
     void ToV0_1_4();
     void ToV0_2_0();
+    void ToV0_2_1();
+    void ToV0_2_2();
+    void ToV0_2_3();
+    void ToV0_2_4();
 
     void          TagUnitToV0_2_0();
     void          TagIncrementToV0_2_0();
     void          ConvertMeasurementsToV0_2_0();
     void          TagMeasurementsToV0_2_0();
+
+    void          ConvertMeasurementsToV0_2_1();
 
     QSet<QString> FixIncrementsToV0_2_0();
     QString       FixIncrementInFormulaToV0_2_0(const QString &formula, const QSet<QString> &names);
@@ -82,7 +88,12 @@ private:
     QDomElement TagIncrementsV0_1_4() const;
     QStringList ListPathPointExpressionsV0_1_4() const;
 
+    void FixToolUnionToV0_2_4();
+    void ParseModelingToV0_2_4(const QDomElement &modeling);
+    void SaveChildrenToolUnionToV0_2_4(quint32 id, const QVector<quint32> &children);
+
     static QMap<QString, QString> OldNamesToNewNames_InV0_2_0();
+    static QMap<QString, QString> OldNamesToNewNames_InV0_2_1();
 };
 
 #endif // VPATTERNCONVERTER_H

@@ -28,9 +28,9 @@
 
 #include "vtooldetail.h"
 #include "nodeDetails/nodedetails.h"
-#include "../../vgeometry/varc.h"
-#include "../../vgeometry/vsplinepath.h"
-#include "../../vwidgets/vmaingraphicsscene.h"
+#include "../vgeometry/varc.h"
+#include "../vgeometry/vsplinepath.h"
+#include "../vwidgets/vmaingraphicsscene.h"
 #include "../dialogs/tools/dialogtool.h"
 #include "../dialogs/tools/dialogdetail.h"
 #include "../undocommands/savedetailoptions.h"
@@ -74,8 +74,9 @@ const QString VToolDetail::NodeSplinePath   = QStringLiteral("NodeSplinePath");
  * @param parent parent object
  */
 VToolDetail::VToolDetail(VAbstractPattern *doc, VContainer *data, const quint32 &id, const Source &typeCreation,
-                         VMainGraphicsScene *scene, QGraphicsItem *parent)
-    :VAbstractTool(doc, data, id), QGraphicsPathItem(parent), dialog(nullptr), sceneDetails(scene)
+                         VMainGraphicsScene *scene, const QString &drawName, QGraphicsItem *parent)
+    :VAbstractTool(doc, data, id), VNoBrushScalePathItem(parent), dialog(nullptr), sceneDetails(scene),
+      drawName(drawName), seamAllowance(new VNoBrushScalePathItem(this))
 {
     VDetail detail = data->GetDetail(id);
     for (int i = 0; i< detail.CountNode(); ++i)
@@ -98,13 +99,18 @@ VToolDetail::VToolDetail(VAbstractPattern *doc, VContainer *data, const quint32 
                 qDebug()<<"Get wrong tool type. Ignore.";
                 break;
         }
-        doc->IncrementReferens(detail.at(i).getId());
     }
     this->setFlag(QGraphicsItem::ItemIsMovable, true);
     this->setFlag(QGraphicsItem::ItemIsSelectable, true);
     RefreshGeometry();
+
+    this->setBrush(QBrush(Qt::Dense7Pattern));
+    seamAllowance->setBrush(QBrush(Qt::FDiagPattern));
+
     this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     this->setFlag(QGraphicsItem::ItemIsFocusable, true);
+
+    connect(scene, &VMainGraphicsScene::EnableToolMove, this, &VToolDetail::EnableToolMove);
     if (typeCreation == Source::FromGui || typeCreation == Source::FromTool)
     {
         AddToFile();
@@ -113,6 +119,7 @@ VToolDetail::VToolDetail(VAbstractPattern *doc, VContainer *data, const quint32 
             qApp->getUndoStack()->endMacro();
         }
     }
+    setAcceptHoverEvents(true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -153,38 +160,38 @@ void VToolDetail::Create(DialogTool *dialog, VMainGraphicsScene *scene, VAbstrac
     for (int i = 0; i< detail.CountNode(); ++i)
     {
         quint32 id = 0;
-        switch (detail.at(i).getTypeTool())
+        const VNodeDetail &nodeD = detail.at(i);
+        switch (nodeD.getTypeTool())
         {
             case (Tool::NodePoint):
             {
-                id = CreateNode<VPointF>(data, detail.at(i).getId());
-                VNodePoint::Create(doc, data, id, detail.at(i).getId(), Document::FullParse, Source::FromGui);
+                id = CreateNode<VPointF>(data, nodeD.getId());
+                VNodePoint::Create(doc, data, scene, id, nodeD.getId(), Document::FullParse, Source::FromGui);
             }
             break;
             case (Tool::NodeArc):
             {
-                id = CreateNode<VArc>(data, detail.at(i).getId());
-                VNodeArc::Create(doc, data, id, detail.at(i).getId(), Document::FullParse, Source::FromGui);
+                id = CreateNode<VArc>(data, nodeD.getId());
+                VNodeArc::Create(doc, data, scene, id, nodeD.getId(), Document::FullParse, Source::FromGui);
             }
             break;
             case (Tool::NodeSpline):
             {
-                id = CreateNode<VSpline>(data, detail.at(i).getId());
-                VNodeSpline::Create(doc, data, id, detail.at(i).getId(), Document::FullParse, Source::FromGui);
+                id = CreateNode<VSpline>(data, nodeD.getId());
+                VNodeSpline::Create(doc, data, scene, id, nodeD.getId(), Document::FullParse, Source::FromGui);
             }
             break;
             case (Tool::NodeSplinePath):
             {
-                id = CreateNode<VSplinePath>(data, detail.at(i).getId());
-                VNodeSplinePath::Create(doc, data, id, detail.at(i).getId(), Document::FullParse, Source::FromGui);
+                id = CreateNode<VSplinePath>(data, nodeD.getId());
+                VNodeSplinePath::Create(doc, data, scene, id, nodeD.getId(), Document::FullParse, Source::FromGui);
             }
             break;
             default:
                 qDebug()<<"May be wrong tool type!!! Ignoring."<<Q_FUNC_INFO;
                 break;
         }
-        VNodeDetail node(id, detail.at(i).getTypeTool(), NodeDetail::Contour, detail.at(i).getMx(),
-                         detail.at(i).getMy(), detail.at(i).getReverse());
+        VNodeDetail node(id, nodeD.getTypeTool(), NodeDetail::Contour, nodeD.getMx(), nodeD.getMy(), nodeD.getReverse());
         det.append(node);
     }
     det.setName(detail.getName());
@@ -206,7 +213,7 @@ void VToolDetail::Create(DialogTool *dialog, VMainGraphicsScene *scene, VAbstrac
  * @param typeCreation way we create this tool.
  */
 void VToolDetail::Create(const quint32 &_id, const VDetail &newDetail, VMainGraphicsScene *scene, VAbstractPattern *doc,
-                         VContainer *data, const Document &parse, const Source &typeCreation)
+                         VContainer *data, const Document &parse, const Source &typeCreation, const QString &drawName)
 {
     quint32 id = _id;
     if (typeCreation == Source::FromGui || typeCreation == Source::FromTool)
@@ -224,7 +231,7 @@ void VToolDetail::Create(const quint32 &_id, const VDetail &newDetail, VMainGrap
     VAbstractTool::AddRecord(id, Tool::Detail, doc);
     if (parse == Document::FullParse)
     {
-        VToolDetail *detail = new VToolDetail(doc, data, id, typeCreation, scene);
+        VToolDetail *detail = new VToolDetail(doc, data, id, typeCreation, scene, drawName);
         scene->addItem(detail);
         connect(detail, &VToolDetail::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
         QHash<quint32, VDataTool*>* tools = doc->getTools();
@@ -238,7 +245,15 @@ void VToolDetail::Create(const quint32 &_id, const VDetail &newDetail, VMainGrap
  */
 void VToolDetail::Remove(bool ask)
 {
-    DeleteTool(ask);
+    try
+    {
+        DeleteTool(ask);
+    }
+    catch(const VExceptionToolWasDeleted &e)
+    {
+        Q_UNUSED(e);
+        return;//Leave this method immediately!!!
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -295,7 +310,7 @@ void VToolDetail::AddToFile()
        AddNode(doc, domElement, detail.at(i));
     }
 
-    AddDet *addDet = new AddDet(domElement, doc);
+    AddDet *addDet = new AddDet(domElement, doc, detail, drawName);
     connect(addDet, &AddDet::NeedFullParsing, doc, &VAbstractPattern::NeedFullParsing);
     qApp->getUndoStack()->push(addDet);
 }
@@ -367,12 +382,34 @@ void VToolDetail::keyReleaseEvent(QKeyEvent *event)
     switch (event->key())
     {
         case Qt::Key_Delete:
-            DeleteTool();
-            return; //Leave this method immediately after call!!!
+            try
+            {
+                DeleteTool();
+            }
+            catch(const VExceptionToolWasDeleted &e)
+            {
+                Q_UNUSED(e);
+                return;//Leave this method immediately!!!
+            }
+            break;
         default:
             break;
     }
     QGraphicsItem::keyReleaseEvent ( event );
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolDetail::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (flags() & QGraphicsItem::ItemIsMovable)
+    {
+        if (event->button() == Qt::LeftButton && event->type() != QEvent::GraphicsSceneMouseDoubleClick)
+        {
+            SetOverrideCursor(cursorArrowCloseHand, 1, 1);
+            event->accept();
+        }
+    }
+    VNoBrushScalePathItem::mousePressEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -385,8 +422,41 @@ void VToolDetail::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         emit ChoosedTool(id, SceneObject::Detail);
+        //Disable cursor-arrow-closehand
+        RestoreOverrideCursor(cursorArrowCloseHand);
     }
     QGraphicsItem::mouseReleaseEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolDetail::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    Q_UNUSED(event);
+    if (flags() & QGraphicsItem::ItemIsMovable)
+    {
+        SetOverrideCursor(cursorArrowOpenHand, 1, 1);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolDetail::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    Q_UNUSED(event);
+    if (flags() & QGraphicsItem::ItemIsMovable)
+    {
+        SetOverrideCursor(cursorArrowOpenHand, 1, 1);
+    }
+}
+
+////---------------------------------------------------------------------------------------------------------------------
+void VToolDetail::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    Q_UNUSED(event);
+    //Disable cursor-arrow-openhand
+    if (flags() & QGraphicsItem::ItemIsMovable)
+    {
+        RestoreOverrideCursor(cursorArrowOpenHand);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -420,21 +490,16 @@ void VToolDetail::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     }
     if (selectedAction == actionRemove)
     {
-        DeleteTool();
+        try
+        {
+            DeleteTool();
+        }
+        catch(const VExceptionToolWasDeleted &e)
+        {
+            Q_UNUSED(e);
+            return;//Leave this method immediately!!!
+        }
         return; //Leave this method immediately after call!!!
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief RemoveReferens decrement value of reference.
- */
-void VToolDetail::RemoveReferens()
-{
-    VDetail detail = VAbstractTool::data.GetDetail(id);
-    for (int i = 0; i< detail.CountNode(); ++i)
-    {
-        doc->DecrementReferens(detail.at(i).getId());
     }
 }
 
@@ -505,16 +570,30 @@ void VToolDetail::ShowVisualization(bool show)
 void VToolDetail::RefreshGeometry()
 {
     this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
-    VDetail detail = VAbstractTool::data.GetDetail(id);
-    this->setPath(detail.ContourPath(this->getData()));
+
+    const VDetail detail = VAbstractTool::data.GetDetail(id);
+    QPainterPath mainPath = detail.ContourPath(this->getData());
+    this->setPath(mainPath);
     this->setPos(detail.getMx(), detail.getMy());
+
+    if (detail.getSeamAllowance())
+    {
+        mainPath.addPath(detail.SeamAllowancePath(this->getData()));
+        mainPath.setFillRule(Qt::OddEvenFill);
+        seamAllowance->setPath(mainPath);
+    }
+    else
+    {
+        seamAllowance->setPath(QPainterPath());
+    }
+
     this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolDetail::DeleteTool(bool ask)
 {
-    DeleteDetail *delDet = new DeleteDetail(doc, id);
+    DeleteDetail *delDet = new DeleteDetail(doc, id, VAbstractTool::data.GetDetail(id));
     if (ask)
     {
         if (ConfirmDeletion() == QMessageBox::No)
@@ -525,6 +604,10 @@ void VToolDetail::DeleteTool(bool ask)
         connect(delDet, &DeleteDetail::NeedFullParsing, doc, &VAbstractPattern::NeedFullParsing);
     }
     qApp->getUndoStack()->push(delDet);
+
+    // Throw exception, this will help prevent case when we forget to immediately quit function.
+    VExceptionToolWasDeleted e("Tool was used after deleting.");
+    throw e;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -538,5 +621,12 @@ void VToolDetail::InitTool(VMainGraphicsScene *scene, const VNodeDetail &node)
     SCASSERT(tool != nullptr);
     connect(tool, &Tool::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
     tool->setParentItem(this);
+    tool->SetParentType(ParentType::Item);
     doc->IncrementReferens(node.getId());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolDetail::EnableToolMove(bool move)
+{
+    this->setFlag(QGraphicsItem::ItemIsMovable, move);
 }

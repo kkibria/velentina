@@ -46,26 +46,10 @@ const QString VAbstractNode::AttrIdTool = QStringLiteral("idTool");
  */
 VAbstractNode::VAbstractNode(VAbstractPattern *doc, VContainer *data, const quint32 &id, const quint32 &idNode,
                              const quint32 &idTool, QObject *parent)
-    : VAbstractTool(doc, data, id, parent), idNode(idNode), idTool(idTool), currentColor(Qt::black)
+    : VAbstractTool(doc, data, id, parent), parentType(ParentType::Item), idNode(idNode), idTool(idTool),
+      currentColor(Qt::black)
 {
     _referens = 0;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VAbstractNode::DeleteNode()
-{
-    if (_referens <= 1)
-    {
-        RemoveReferens();//deincrement referens
-    }
-}
-
-void VAbstractNode::RestoreNode()
-{
-    if (_referens <= 1)
-    {
-        RestoreReferens();
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -75,14 +59,19 @@ void VAbstractNode::ShowVisualization(bool show)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief AddToModeling add tag to modeling tag current pattern peace.
- * @param domElement tag.
- */
-void VAbstractNode::AddToModeling(const QDomElement &domElement)
+void VAbstractNode::incrementReferens()
 {
-    AddDetNode *addNode = new AddDetNode(domElement, doc);
-    qApp->getUndoStack()->push(addNode);
+    ++_referens;
+    if (_referens == 1)
+    {
+        idTool != NULL_ID ? doc->IncrementReferens(idTool) : doc->IncrementReferens(idNode);
+        ShowNode();
+        QDomElement domElement = doc->elementById(id);
+        if (domElement.isElement())
+        {
+            doc->SetParametrUsage(domElement, AttrInUse, NodeUsage::InUse);
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -95,43 +84,37 @@ void VAbstractNode::decrementReferens()
     {
         --_referens;
     }
-    if (_referens <= 0)
+    if (_referens == 0)
     {
-        doc->DecrementReferens(idNode);
+        idTool != NULL_ID ? doc->DecrementReferens(idTool) : doc->DecrementReferens(idNode);
+        HideNode();
         QDomElement domElement = doc->elementById(id);
         if (domElement.isElement())
         {
-            QDomNode element = domElement.parentNode();
-            if (element.isNull() == false)
-            {
-                element.removeChild(domElement);
-            }
+            doc->SetParametrUsage(domElement, AttrInUse, NodeUsage::NotInUse);
         }
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VAbstractNode::RemoveReferens()
+ParentType VAbstractNode::GetParentType() const
 {
-    if (idTool != 0)
-    {
-        doc->DecrementReferens(idTool);
-    }
-    else
-    {
-        doc->DecrementReferens(idNode);
-    }
+    return parentType;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VAbstractNode::RestoreReferens()
+void VAbstractNode::SetParentType(const ParentType &value)
 {
-    if (idTool != 0)
-    {
-        doc->IncrementReferens(idTool);
-    }
-    else
-    {
-        doc->IncrementReferens(idNode);
-    }
+    parentType = value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+/**
+ * @brief AddToModeling add tag to modeling tag current pattern peace.
+ * @param domElement tag.
+ */
+void VAbstractNode::AddToModeling(const QDomElement &domElement)
+{
+    AddDetNode *addNode = new AddDetNode(domElement, doc);
+    qApp->getUndoStack()->push(addNode);
 }

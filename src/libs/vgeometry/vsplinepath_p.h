@@ -45,7 +45,7 @@ public:
         : path(QVector<VSplinePoint>()), kCurve(1)
     {}
 
-    VSplinePathData(qreal kCurve)
+    explicit VSplinePathData(qreal kCurve)
         : path(QVector<VSplinePoint>()), kCurve(kCurve)
     {}
 
@@ -63,6 +63,9 @@ public:
      * @brief kCurve coefficient of curvature spline.
      */
     qreal         kCurve;
+
+private:
+    VSplinePathData &operator=(const VSplinePathData &) Q_DECL_EQ_DELETE;
 };
 
 VSplinePathData::~VSplinePathData()

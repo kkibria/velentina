@@ -32,11 +32,19 @@
 #include <csignal>
 #include <QtGlobal>
 #include <QStringList>
+#include <QSharedPointer>
 #ifdef Q_OS_WIN
     #include <windows.h>
 #endif /* Q_OS_WIN */
 
 #include "debugbreak.h"
+
+#ifdef Q_CC_MSVC
+    #include <ciso646>
+#endif /* Q_CC_MSVC */
+
+class QComboBox;
+class QPrinter;
 
 #define SceneSize 50000
 #define DefPointRadius 1.5//mm
@@ -46,6 +54,7 @@ enum class SceneObject : char { Point, Line, Spline, Arc, SplinePath, Detail, Un
 enum class MeasurementsType : char { Standard, Individual , Unknown};
 enum class Unit : char { Mm = 0, Cm, Inch, Px, LAST_UNIT_DO_NOT_USE};
 enum class Source : char { FromGui, FromFile, FromTool };
+enum class NodeUsage : bool {NotInUse = false, InUse = true};
 
 typedef unsigned char ToolVisHolderType;
 enum class Tool : ToolVisHolderType
@@ -95,7 +104,6 @@ enum class Vis : ToolVisHolderType
 {
     ControlPointSpline = static_cast<ToolVisHolderType>(Tool::LAST_ONE_DO_NOT_USE),
     GraphicsSimpleTextItem,
-    SimpleSplinePath,
     SimplePoint,
     Line,
     Path,
@@ -163,19 +171,14 @@ enum class GSizes : unsigned char { ALL,
  */
 #ifndef V_NO_ASSERT
 
-#ifdef Q_CC_MSVC
-#define V_PRETTY_FUNCTION __FUNCSIG__
-#else // GCC/Clang
-#define V_PRETTY_FUNCTION __PRETTY_FUNCTION__
-#endif /*Q_CC_MSVC*/
-
 #define SCASSERT(cond)                                      \
 {                                                           \
     if (!(cond))                                            \
     {                                                       \
-        qDebug("ASSERT: %s in %s (%s:%u)",                  \
-            #cond, V_PRETTY_FUNCTION, __FILE__, __LINE__);  \
+        qCritical("ASSERT: %s in %s (%s:%u)",               \
+                  #cond, Q_FUNC_INFO , __FILE__, __LINE__); \
         debug_break();                                      \
+        abort();                                            \
     }                                                       \
 }                                                           \
 
@@ -190,8 +193,6 @@ enum class GSizes : unsigned char { ALL,
 #endif
 
 // measurements
-// Need for standard table
-extern const QString size_M;
 // A
 extern const QString height_M;                    // A01
 extern const QString heightNeckBack_M;            // A02
@@ -289,6 +290,7 @@ extern const QString hipWithAbdomenArcF_M; // G42
 extern const QString bodyArmfoldCirc_M;    // G43
 extern const QString bodyBustCirc_M;       // G44
 extern const QString bodyTorsoCirc_M;      // G45
+extern const QString hipCircWithAbdomen_M; // G46
 // H
 extern const QString neckFrontToWaistF_M;             // H01
 extern const QString neckFrontToWaistFlatF_M;         // H02
@@ -330,6 +332,8 @@ extern const QString shoulderSlopeNeckSideLength_M;   // H37
 extern const QString shoulderSlopeNeckBackAngle_M;    // H38
 extern const QString shoulderSlopeNeckBackHeight_M;   // H39
 extern const QString shoulderSlopeShoulderTipAngle_M; // H40
+extern const QString neckBackToAcrossBack_M;          // H41
+extern const QString acrossBackToWaistB_M;            // H42
 // I
 extern const QString shoulderLength_M;                // I01
 extern const QString shoulderTipToShoulderTipF_M;     // I02
@@ -391,6 +395,7 @@ extern const QString armNeckSideToFingerTip_M;      // L18
 extern const QString armscyeCirc_M;                 // L19
 extern const QString armscyeLength_M;               // L20
 extern const QString armscyeWidth_M;	            // L21
+extern const QString armNeckSideToOuterElbow_M;     // L22
 // M
 extern const QString legCrotchToFloor_M;    // M01
 extern const QString legWaistSideToFloor_M; // M02
@@ -407,13 +412,14 @@ extern const QString legCrotchToAnkle_M;    // M12
 extern const QString legWaistSideToAnkle_M; // M13
 extern const QString legWaistSideToKnee_M;  // M14
 // N
-extern const QString crotchLength_M;   // N01
-extern const QString crotchLengthB_M;  // N02
-extern const QString crotchLengthF_M;  // N03
-extern const QString riseLengthSide_M; // N04
-extern const QString riseLengthDiag_M; // N05
-extern const QString riseLengthB_M;    // N06
-extern const QString riseLengthF_M;    // N07
+extern const QString crotchLength_M;          // N01
+extern const QString crotchLengthB_M;         // N02
+extern const QString crotchLengthF_M;         // N03
+extern const QString riseLengthSideSitting_M; // N04
+extern const QString riseLengthDiag_M;        // N05
+extern const QString riseLengthB_M;           // N06
+extern const QString riseLengthF_M;           // N07
+extern const QString riseLengthSide_M;        // N08
 // O
 extern const QString neckBackToWaistFront_M;	        // O01
 extern const QString waistToWaistHalter_M;	            // O02
@@ -464,6 +470,9 @@ QStringList ListGroupN();
 QStringList ListGroupO();
 QStringList ListGroupP();
 QStringList ListGroupQ();
+
+QStringList ListNumbers(const QStringList & listMeasurements);
+QString MapDiagrams(const QString &number);
 
 // pattern making systems codes
 extern const QString p0_S;
@@ -521,6 +530,10 @@ extern const QString p51_S;
 extern const QString p52_S;
 extern const QString p53_S;
 extern const QString p54_S;
+extern const QString p998_S;
+
+QStringList ListPMSystems();
+void InitPMSystems(QComboBox *systemCombo);
 
 // functions
 extern const QString sin_F;
@@ -578,5 +591,13 @@ void CheckFactor(qreal &oldFactor, const qreal &Newfactor);
 
 QStringList SupportedLocales();
 QStringList AllGroupNames();
+
+QString StrippedName(const QString &fullFileName);
+QString RelativeMPath(const QString &patternPath, const QString &absoluteMPath);
+QString AbsoluteMPath(const QString &patternPath, const QString &relativeMPath);
+
+QSharedPointer<QPrinter> DefaultPrinter();
+
+QPixmap darkenPixmap(const QPixmap &pixmap);
 
 #endif // DEF_H

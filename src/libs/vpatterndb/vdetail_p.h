@@ -45,7 +45,7 @@ public:
         :_id(NULL_ID), nodes(QVector<VNodeDetail>()), mx(0), my(0)
     {}
 
-    VDetailData(const QVector<VNodeDetail> &nodes)
+    explicit VDetailData(const QVector<VNodeDetail> &nodes)
         :_id(NULL_ID), nodes(nodes), mx(0), my(0)
     {}
 
@@ -66,6 +66,9 @@ public:
 
     /** @brief my bias y axis. */
     qreal          my;
+
+private:
+    VDetailData &operator=(const VDetailData &) Q_DECL_EQ_DELETE;
 };
 
 #ifdef Q_CC_GNU

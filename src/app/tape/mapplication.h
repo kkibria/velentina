@@ -44,6 +44,8 @@ class QLocalServer;
 #endif
 #define qApp (static_cast<MApplication*>(VAbstractApplication::instance()))
 
+enum class SocketConnection : bool {Client = false, Server = true};
+
 class MApplication : public VAbstractApplication
 {
     Q_OBJECT
@@ -55,13 +57,9 @@ public:
     virtual bool notify(QObject * receiver, QEvent * event) Q_DECL_OVERRIDE;
 
     bool IsTestMode() const;
-    bool IsTheOnly() const;
+    virtual bool IsAppInGUIMode() const;
     TMainWindow *MainWindow();
     QList<TMainWindow*> MainWindows();
-
-#if defined(Q_WS_MAC)
-    bool event(QEvent *event);
-#endif
 
     void InitOptions();
 
@@ -70,20 +68,21 @@ public:
     virtual void  OpenSettings() Q_DECL_OVERRIDE;
     VTapeSettings *TapeSettings();
 
-    virtual QString translationsPath() const Q_DECL_OVERRIDE;
     QString diagramsPath() const;
 
     void ShowDataBase();
     void RetranslateGroups();
     void RetranslateTables();
 
-    void ParseCommandLine(const QStringList &arguments);
+    void ParseCommandLine(const SocketConnection &connection, const QStringList &arguments);
 
 public slots:
     TMainWindow *NewMainWindow();
+    void ProcessCMD();
 
 protected:
     virtual void InitTrVars() Q_DECL_OVERRIDE;
+    virtual bool event(QEvent *e) Q_DECL_OVERRIDE;
 
 private slots:
     void OpenFile(const QString &path);

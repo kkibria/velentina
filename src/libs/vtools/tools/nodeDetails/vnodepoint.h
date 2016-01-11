@@ -48,18 +48,19 @@ public:
     VNodePoint(VAbstractPattern *doc, VContainer *data, quint32 id, quint32 idPoint,  const Source &typeCreation,
                const quint32 &idTool = 0,  QObject *qoParent = nullptr, QGraphicsItem * parent = nullptr );
 
-    static void  Create(VAbstractPattern *doc, VContainer *data, quint32 id, quint32 idPoint, const Document &parse,
+    static void  Create(VAbstractPattern *doc, VContainer *data, VMainGraphicsScene *scene,
+                        quint32 id, quint32 idPoint, const Document &parse,
                         const Source &typeCreation, const quint32 &idTool = 0, QObject *parent = nullptr);
     static const QString TagName;
     static const QString ToolType;
-    virtual void DeleteNode() Q_DECL_OVERRIDE;
-    virtual void RestoreNode() Q_DECL_OVERRIDE;
     virtual int  type() const Q_DECL_OVERRIDE {return Type;}
     enum { Type = UserType + static_cast<int>(Tool::NodePoint)};
     virtual QString getTagName() const Q_DECL_OVERRIDE;
 public slots:
     virtual void FullUpdateFromFile() Q_DECL_OVERRIDE;
     void         NameChangePosition(const QPointF &pos);
+    void         PointChoosed();
+    void         EnableToolMove(bool move);
 protected:
     /** @brief radius radius circle. */
     qreal        radius;
@@ -78,6 +79,8 @@ protected:
     virtual void UpdateNamePosition(qreal mx, qreal my);
     virtual void RefreshPointGeometry(const VPointF &point);
     void         RefreshLine();
+    virtual void ShowNode() Q_DECL_OVERRIDE;
+    virtual void HideNode() Q_DECL_OVERRIDE;
 private:
     Q_DISABLE_COPY(VNodePoint)
 };

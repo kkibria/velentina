@@ -40,8 +40,8 @@ class DXFLIB_EXPORT DL_CreationAdapter : public DL_CreationInterface
 {
 public:
     DL_CreationAdapter() {}
-    virtual ~DL_CreationAdapter() {}
-    virtual void processCodeValuePair(unsigned int, const std::string&) {}
+    virtual ~DL_CreationAdapter();
+    virtual void processCodeValuePair(quint32, const std::string&) {}
     virtual void endSection() {}
     virtual void addLayer(const DL_LayerData&) {}
     virtual void addLinetype(const DL_LinetypeData&) {}
@@ -128,11 +128,14 @@ public:
     virtual void setVariableString(const char*, const char*, int) {}
     virtual void setVariableInt(const char*, int, int) {}
     virtual void setVariableDouble(const char*, double, int) {}
-    virtual void processCodeValuePair(unsigned int, char*) {}
+    virtual void processCodeValuePair(quint32, char*) {}
     virtual void addComment(const char*) {}
     virtual void addMTextChunk(const char*) {}
 #endif
     virtual void endSequence() {}
 };
+
+DL_CreationAdapter::~DL_CreationAdapter()
+{}
 
 #endif

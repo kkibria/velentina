@@ -34,7 +34,21 @@
 
 #include <QKeyEvent>
 
+#if defined(Q_CC_CLANG)
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wmissing-prototypes"
+#elif defined(Q_CC_INTEL)
+    #pragma warning( push )
+    #pragma warning( disable: 1418 )
+#endif
+
 Q_LOGGING_CATEGORY(vToolSinglePoint, "v.toolSinglePoint")
+
+#if defined(Q_CC_CLANG)
+    #pragma clang diagnostic pop
+#elif defined(Q_CC_INTEL)
+    #pragma warning( pop )
+#endif
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -94,6 +108,7 @@ void VToolSinglePoint::setName(const QString &name)
 void VToolSinglePoint::SetEnabled(bool enabled)
 {
     SetToolEnabled(this, enabled);
+    SetToolEnabled(lineName, enabled);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -109,12 +124,10 @@ void VToolSinglePoint::NameChangePosition(const QPointF &pos)
 //---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief UpdateNamePosition save new position label to the pattern file.
- * @param mx label bias x axis.
- * @param my label bias y axis.
  */
 void VToolSinglePoint::UpdateNamePosition(quint32 id)
 {
-    VPointF *point = new VPointF(*VAbstractTool::data.GeometricObject<VPointF>(id));
+    const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(id);
     MoveLabel *moveLabel = new MoveLabel(doc, point->mx(), point->my(), id, this->scene());
     connect(moveLabel, &MoveLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
     qApp->getUndoStack()->push(moveLabel);
@@ -235,32 +248,8 @@ void VToolSinglePoint::RefreshPointGeometry(const VPointF &point)
 void VToolSinglePoint::RefreshLine(quint32 id)
 {
     Q_UNUSED(id)
-
-    QRectF nRec = namePoint->sceneBoundingRect();
-    nRec.translate(- scenePos());
-    if (this->rect().intersects(nRec) == false)
-    {
-        const QRectF nameRec = namePoint->sceneBoundingRect();
-        QPointF p1, p2;
-        VGObject::LineIntersectCircle(QPointF(), radius, QLineF(QPointF(), nameRec.center() - scenePos()), p1, p2);
-        const QPointF pRec = VGObject::LineIntersectRect(nameRec, QLineF(scenePos(), nameRec.center()));
-        lineName->setLine(QLineF(p1, pRec - scenePos()));
-        lineName->setPen(QPen(CorrectColor(Qt::black),
-                              qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor));
-
-        if (QLineF(p1, pRec - scenePos()).length() <= ToPixel(4, Unit::Mm))
-        {
-            lineName->setVisible(false);
-        }
-        else
-        {
-            lineName->setVisible(true);
-        }
-    }
-    else
-    {
-        lineName->setVisible(false);
-    }
+    VAbstractTool::RefreshLine(this, namePoint, lineName, radius);
+    lineName->setPen(QPen(CorrectColor(Qt::black), qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -285,7 +274,7 @@ QVariant VToolSinglePoint::itemChange(QGraphicsItem::GraphicsItemChange change, 
         }
     }
 
-    return QGraphicsItem::itemChange(change, value);
+    return QGraphicsEllipseItem::itemChange(change, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -298,8 +287,16 @@ void VToolSinglePoint::keyReleaseEvent(QKeyEvent *event)
     switch (event->key())
     {
         case Qt::Key_Delete:
-            DeleteTool();
-            return; //Leave this method immediately after call!!!
+            try
+            {
+                DeleteTool();
+            }
+            catch(const VExceptionToolWasDeleted &e)
+            {
+                Q_UNUSED(e);
+                return;//Leave this method immediately!!!
+            }
+            break;
         default:
             break;
     }

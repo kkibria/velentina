@@ -43,12 +43,11 @@ VIncrement::VIncrement()
 /**
  * @brief VIncrementTableRow create increment
  * @param name increment's name
- * @param id id
  * @param base value
  * @param description description of increment
  */
 VIncrement::VIncrement(VContainer *data, const QString &name, quint32 index, qreal base, const QString &formula,
-                       bool ok, const QString description)
+                       bool ok, const QString &description)
     :VVariable(name, base, description), d(new VIncrementData(data, index, formula, ok))
 {
     SetType(VarType::Increment);

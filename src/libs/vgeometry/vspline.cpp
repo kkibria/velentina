@@ -300,7 +300,7 @@ void VSpline::PointBezier_r ( qreal x1, qreal y1, qreal x2, qreal y2,
         {
             if (QPointF(px.at(i-1), py.at(i-1)) == QPointF(px.at(i), py.at(i)))
             {
-                qCritical("All neighbors points in path must be unique.");
+                qDebug("All neighbors points in path must be unique.");
             }
         }
     }
@@ -371,7 +371,6 @@ void VSpline::PointBezier_r ( qreal x1, qreal y1, qreal x2, qreal y2,
                     const double da2 = y3 - y1;
                     d3  = k * (da1*dx + da2*dy);
                 }
-                // cppcheck-suppress incorrectLogicOperator
                 if (d2 > 0 && d2 < 1 && d3 > 0 && d3 < 1)
                 {
                     // Simple collinear case, 1---2---3---4

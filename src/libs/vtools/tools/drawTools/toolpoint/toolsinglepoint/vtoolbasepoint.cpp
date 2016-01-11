@@ -92,7 +92,7 @@ void VToolBasePoint::ShowVisualization(bool show)
  */
 void VToolBasePoint::AddToFile()
 {
-    Q_ASSERT_X(namePP.isEmpty() == false, "AddToFile", "name pattern piece is empty");
+    Q_ASSERT_X(not namePP.isEmpty(), Q_FUNC_INFO, "name pattern piece is empty");
 
     QDomElement sPoint = doc->createElement(TagName);
 
@@ -128,27 +128,30 @@ QVariant VToolBasePoint::itemChange(QGraphicsItem::GraphicsItemChange change, co
 {
     if (change == ItemPositionChange && scene())
     {
-        // value - this is new position.
-        QPointF newPos = value.toPointF();
-        QRectF rect = scene()->sceneRect();
-        if (rect.contains(newPos) == false)
+        // Each time we move something we call recalculation scene rect. In some cases this can cause moving
+        // objects positions. And this cause infinite redrawing. That's why we wait the finish of saving the last move.
+        static bool changeFinished = true;
+        if (changeFinished)
         {
-            // Save element into rect of scene.
-            newPos.setX(qMin(rect.right(), qMax(newPos.x(), rect.left())));
-            newPos.setY(qMin(rect.bottom(), qMax(newPos.y(), rect.top())));
-            return newPos;
+            changeFinished = false;
+            // value - this is new position.
+            QPointF newPos = value.toPointF();
+
+            MoveSPoint *moveSP = new MoveSPoint(doc, newPos.x(), newPos.y(), id, this->scene());
+            connect(moveSP, &MoveSPoint::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+            qApp->getUndoStack()->push(moveSP);
+            const QList<QGraphicsView *> viewList = scene()->views();
+            if (not viewList.isEmpty())
+            {
+                if (QGraphicsView *view = viewList.at(0))
+                {
+                    view->ensureVisible(this);
+                }
+            }
+            changeFinished = true;
         }
     }
-    if (change == ItemPositionHasChanged && scene())
-    {
-        // value - this is new position.
-        QPointF newPos = value.toPointF();
-
-        MoveSPoint *moveSP = new MoveSPoint(doc, newPos.x(), newPos.y(), id, this->scene());
-        connect(moveSP, &MoveSPoint::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
-        qApp->getUndoStack()->push(moveSP);
-    }
-    return QGraphicsItem::itemChange(change, value);
+    return VToolSinglePoint::itemChange(change, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -166,21 +169,26 @@ void VToolBasePoint::decrementReferens()
 //---------------------------------------------------------------------------------------------------------------------
 void VToolBasePoint::DeleteTool(bool ask)
 {
-    if (_referens <= 1)
+    qCDebug(vTool, "Deleting base point.");
+    qApp->getSceneView()->itemClicked(nullptr);
+    if (ask)
     {
-        qApp->getSceneView()->itemClicked(nullptr);
-        if (ask)
+        qCDebug(vTool, "Asking.");
+        if (ConfirmDeletion() == QMessageBox::No)
         {
-            if (ConfirmDeletion() == QMessageBox::No)
-            {
-                return;
-            }
+            qCDebug(vTool, "User said no.");
+            return;
         }
-
-        DeletePatternPiece *deletePP = new DeletePatternPiece(doc, nameActivDraw);
-        connect(deletePP, &DeletePatternPiece::NeedFullParsing, doc, &VAbstractPattern::NeedFullParsing);
-        qApp->getUndoStack()->push(deletePP);
     }
+
+    qCDebug(vTool, "Begin deleting.");
+    DeletePatternPiece *deletePP = new DeletePatternPiece(doc, nameActivDraw);
+    connect(deletePP, &DeletePatternPiece::NeedFullParsing, doc, &VAbstractPattern::NeedFullParsing);
+    qApp->getUndoStack()->push(deletePP);
+
+    // Throw exception, this will help prevent case when we forget to immediately quit function.
+    VExceptionToolWasDeleted e("Tool was used after deleting.");
+    throw e;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -287,21 +295,32 @@ void VToolBasePoint::ReadToolAttributes(const QDomElement &domElement)
  */
 void VToolBasePoint::contextMenuEvent ( QGraphicsSceneContextMenuEvent * event )
 {
+    qCDebug(vTool, "Context menu base point");
 #ifndef QT_NO_CURSOR
     QApplication::restoreOverrideCursor();
+    qCDebug(vTool, "Restored overriden cursor");
 #endif
 
-    quint32 ref = _referens; // store referens
-    _referens = 1; // make available delete pattern piece
-    if (doc->CountPP() > 1)
+    try
     {
-        ContextMenu<DialogSinglePoint>(this, event);
+        if (doc->CountPP() > 1)
+        {
+            qCDebug(vTool, "PP count > 1");
+            ContextMenu<DialogSinglePoint>(this, event, RemoveOption::Enable, Referens::Ignore);
+        }
+        else
+        {
+            qCDebug(vTool, "PP count = 1");
+            ContextMenu<DialogSinglePoint>(this, event, RemoveOption::Disable);
+        }
     }
-    else
+    catch(const VExceptionToolWasDeleted &e)
     {
-        ContextMenu<DialogSinglePoint>(this, event, false);
+        qCDebug(vTool, "Tool was deleted. Immediately leave method.");
+        Q_UNUSED(e);
+        return;//Leave this method immediately!!!
     }
-    _referens = ref; // restore referens. If not restore garbage collector delete point!!!
+    qCDebug(vTool, "Context menu closed. Tool was not deleted.");
 }
 
 //---------------------------------------------------------------------------------------------------------------------

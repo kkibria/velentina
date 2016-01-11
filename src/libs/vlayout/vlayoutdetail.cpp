@@ -31,11 +31,13 @@
 
 #include <QGraphicsItem>
 #include <QPainterPath>
+
 #if QT_VERSION < QT_VERSION_CHECK(5, 1, 0)
-#   include "../libs/vmisc/vmath.h"
+#   include "../vmisc/vmath.h"
 #else
 #   include <QtMath>
 #endif
+
 #include <QDebug>
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -85,11 +87,12 @@ QVector<QPointF> VLayoutDetail::GetSeamAllowencePoints() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void VLayoutDetail::SetSeamAllowencePoints(const QVector<QPointF> &points, bool seamAllowence)
+void VLayoutDetail::SetSeamAllowencePoints(const QVector<QPointF> &points, bool seamAllowence, bool closed)
 {
     if (seamAllowence)
     {
         setSeamAllowance(seamAllowence);
+        setClosed(closed);
         d->seamAllowence = points;
         if (not d->seamAllowence.isEmpty())
         {
@@ -162,22 +165,23 @@ void VLayoutDetail::Mirror(const QLineF &edge)
     const QLineF axis = QLineF(edge.x2(), edge.y2(), edge.x2() + 100, edge.y2()); // Ox axis
 
     const qreal angle = edge.angleTo(axis);
+    const QPointF p2 = edge.p2();
     QTransform m;
-    m.translate(edge.p2().x(), edge.p2().y());
+    m.translate(p2.x(), p2.y());
     m.rotate(-angle);
-    m.translate(-edge.p2().x(), -edge.p2().y());
+    m.translate(-p2.x(), -p2.y());
     d->matrix *= m;
 
     m.reset();
-    m.translate(edge.p2().x(), edge.p2().y());
+    m.translate(p2.x(), p2.y());
     m.scale(m.m11(), m.m22()*-1);
-    m.translate(-edge.p2().x(), -edge.p2().y());
+    m.translate(-p2.x(), -p2.y());
     d->matrix *= m;
 
     m.reset();
-    m.translate(edge.p2().x(), edge.p2().y());
+    m.translate(p2.x(), p2.y());
     m.rotate(-(360-angle));
-    m.translate(-edge.p2().x(), -edge.p2().y());
+    m.translate(-p2.x(), -p2.y());
     d->matrix *= m;
 
     d->mirror = !d->mirror;
@@ -212,8 +216,9 @@ QLineF VLayoutDetail::Edge(int i) const
     if (d->mirror)
     {
         const int oldI1 = i1;
-        i1 = (d->layoutAllowence.size()-1) - i2;
-        i2 = (d->layoutAllowence.size()-1) - oldI1;
+        const int size = d->layoutAllowence.size()-1; //-V807
+        i1 = size - i2;
+        i2 = size - oldI1;
         return QLineF(d->matrix.map(d->layoutAllowence.at(i2)), d->matrix.map(d->layoutAllowence.at(i1)));
     }
     else
@@ -278,47 +283,14 @@ bool VLayoutDetail::isNull() const
 //---------------------------------------------------------------------------------------------------------------------
 qint64 VLayoutDetail::Square() const
 {
-    if (d->layoutAllowence.isEmpty())
+    if (d->layoutAllowence.isEmpty()) //-V807
     {
         return 0;
     }
 
-    const int n = d->layoutAllowence.count();
-    qreal s, res = 0;
-    qint64 sq = 0;
+    const qreal res = SumTrapezoids(d->layoutAllowence);
 
-    QVector<qreal> x;
-    QVector<qreal> y;
-
-    for (int i=0; i < n; ++i)
-    {
-        x.append(d->layoutAllowence.at(i).x());
-        y.append(d->layoutAllowence.at(i).y());
-    }
-
-    // Calculation a polygon area through the sum of the areas of trapezoids
-    for (int i = 0; i < n; ++i)
-    {
-        if (i == 0)
-        {
-            s = x.at(i)*(y.at(n-1) - y.at(i+1)); //if i == 0, then y[i-1] replace on y[n-1]
-            res += s;
-        }
-        else
-        {
-            if (i == n-1)
-            {
-                s = x.at(i)*(y.at(i-1) - y.at(0)); // if i == n-1, then y[i+1] replace on y[0]
-                res += s;
-            }
-            else
-            {
-                s = x.at(i)*(y.at(i-1) - y.at(i+1));
-                res += s;
-            }
-        }
-    }
-    sq = qFloor(qAbs(res/2.0));
+    const qint64 sq = qFloor(qAbs(res/2.0));
     return sq;
 }
 

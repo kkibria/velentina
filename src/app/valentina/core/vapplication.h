@@ -61,7 +61,6 @@ public:
 
     void               InitOptions();
 
-    virtual QString    translationsPath() const Q_DECL_OVERRIDE;
     QString            TapeFilePath() const;
 
     QTimer             *getAutoSaveTimer() const;
@@ -78,13 +77,15 @@ public:
     static void        DrMingw();
     void               CollectReports() const;
 #endif // defined(Q_OS_WIN) && defined(Q_CC_GNU)
-    bool static CheckGUI();
+    bool static IsGUIMode();
+    virtual bool IsAppInGUIMode() const;
 
     virtual void OpenSettings() Q_DECL_OVERRIDE;
     VSettings *ValentinaSettings();
 
 protected:
     virtual void       InitTrVars() Q_DECL_OVERRIDE;
+    virtual bool	   event(QEvent *e) Q_DECL_OVERRIDE;
 
 private slots:
 #if defined(Q_OS_WIN) && defined(Q_CC_GNU)
@@ -96,7 +97,7 @@ private:
     VTranslateVars     *trVars;
     QTimer             *autoSaveTimer;
 
-    VLockGuardPtr<QFile>         lockLog;
+    std::shared_ptr<VLockGuard<QFile>> lockLog;
     std::shared_ptr<QTextStream> out;
 
     void               InitLineWidth();

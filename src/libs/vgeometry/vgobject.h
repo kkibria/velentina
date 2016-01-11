@@ -37,6 +37,7 @@
 
 class VGObjectData;
 class QLineF;
+class QPoint;
 class QPointF;
 class QRectF;
 
@@ -47,7 +48,7 @@ class VGObject
 {
 public:
     VGObject();
-    VGObject(const GOType &type, const quint32 &idObject = 0, const Draw &mode = Draw::Calculation);
+    explicit VGObject(const GOType &type, const quint32 &idObject = 0, const Draw &mode = Draw::Calculation);
     VGObject(const VGObject &obj);
     VGObject& operator= (const VGObject &obj);
     virtual ~VGObject();
@@ -94,5 +95,7 @@ private:
 
     static int     PointInCircle (const QPointF &p, const QPointF &center, qreal radius);
 };
+
+Q_DECLARE_TYPEINFO(VGObject, Q_MOVABLE_TYPE);
 
 #endif // VGOBJECT_H

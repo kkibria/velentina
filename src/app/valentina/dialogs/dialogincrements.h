@@ -59,7 +59,7 @@ signals:
 
 protected:
     virtual void         closeEvent ( QCloseEvent * event ) Q_DECL_OVERRIDE;
-
+    virtual void         changeEvent ( QEvent * event) Q_DECL_OVERRIDE;
 private slots:
     void ShowIncrementDetails();
     void AddIncrement();
@@ -80,7 +80,7 @@ private:
     Ui::DialogIncrements *ui;
 
     /** @brief data container with data */
-    VContainer           *data; // need because we must change data
+    VContainer           *data; // need because we must change data //-V703
 
     /** @brief doc dom document container */
     VPattern             *doc;
@@ -88,7 +88,7 @@ private:
     int                  formulaBaseHeight;
 
     template <typename T>
-    void                 FillTable(const QMap<QString, T> varTable, QTableWidget *table);
+    void                 FillTable(const QMap<QString, T> &varTable, QTableWidget *table);
 
     void                 FillIncrements();
     void                 FillLengthsLines();

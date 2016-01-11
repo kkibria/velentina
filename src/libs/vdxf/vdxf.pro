@@ -40,9 +40,6 @@ OBJECTS_DIR = obj
 # Set using ccache. Function enable_ccache() defined in common.pri.
 $$enable_ccache()
 
-# Set precompiled headers. Function set_PCH() defined in common.pri.
-$$set_PCH()
-
 CONFIG(debug, debug|release){
     # Debug mode
     unix {
@@ -69,6 +66,11 @@ CONFIG(debug, debug|release){
             -isystem "$${OUT_PWD}/$${MOC_DIR}" \
             $$CLANG_DEBUG_CXXFLAGS # See common.pri for more details.
         }
+        *-icc-*{
+            QMAKE_CXXFLAGS += \
+                -isystem "$${OUT_PWD}/$${MOC_DIR}" \
+                $$ICC_DEBUG_CXXFLAGS
+        }
     } else {
         *-g++{
             QMAKE_CXXFLAGS += $$GCC_DEBUG_CXXFLAGS # See common.pri for more details.
@@ -77,6 +79,7 @@ CONFIG(debug, debug|release){
 
 }else{
     # Release mode
+    CONFIG += silent
 
     !unix:*-g++{
         QMAKE_CXXFLAGS += -fno-omit-frame-pointer # Need for exchndl.dll

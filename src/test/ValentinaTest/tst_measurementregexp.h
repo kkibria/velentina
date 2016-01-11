@@ -29,12 +29,14 @@
 #ifndef TST_MEASUREMENTREGEXP_H
 #define TST_MEASUREMENTREGEXP_H
 
-#include <QObject>
+#include "abstracttest.h"
+
+#include <QPointer>
 
 class QTranslator;
-class VTranslateMeasurements;
+class VTranslateVars;
 
-class TST_MeasurementRegExp : public QObject
+class TST_MeasurementRegExp : public AbstractTest
 {
     Q_OBJECT
 public:
@@ -43,7 +45,8 @@ public:
 
 private slots:
     void TestOriginalMeasurementNamesRegExp();
-    void TestMeasurementRegExp();
+    void TestVariableStrings_data();
+    void TestVariableStrings();
     void TestCorrectOrderMeasurement_data();
     void TestCorrectOrderMeasurement();
 
@@ -51,12 +54,24 @@ private:
     Q_DISABLE_COPY(TST_MeasurementRegExp)
 
     QPointer<QTranslator>   pmsTranslator;
-    VTranslateMeasurements *trMs;
+    QPointer<QTranslator>   vTranslator;
+    VTranslateVars *trMs;
 
-    QString TranslationsPath() const;
+    void    PrepareMeasurementData();
+
     int     LoadTranslation(const QString &checkedSystem, const QString &checkedLocale);
+    int     LoadMeasurements(const QString &checkedSystem, const QString &checkedLocale);
+    int     LoadVariables(const QString &checkedLocale);
+
+    void    RemoveTrMeasurements(const QString &checkedSystem, const QString &checkedLocale);
+    void    RemoveTrVariables(const QString &checkedLocale);
+
     void    InitTrMs();
-    void    CheckNames() const;
+    void    CheckRegExpNames() const;
+    void    CheckIsNamesUnique() const;
+    void    CheckNoOriginalNamesInTranslation() const;
+    void    CheckUnderlineExists() const;
+    void    CheckInternalVaribleRegExp() const;
 };
 
 #endif // TST_MEASUREMENTREGEXP_H

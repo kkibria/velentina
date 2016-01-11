@@ -1,7 +1,40 @@
 win32{
-    unset(QMAKE_COPY)
     # Because "copy" doesn't support files that containe plus sign (+) in name we will use xcopy instead.
+    unset(QMAKE_COPY)
     QMAKE_COPY = xcopy /y
+
+    unset(QMAKE_COPY_FILE)
+    QMAKE_COPY_FILE = xcopy /y
+
+    unset(QMAKE_INSTALL_FILE)
+    QMAKE_INSTALL_FILE = xcopy /y
+
+    unset(QMAKE_INSTALL_PROGRAM)
+    QMAKE_INSTALL_PROGRAM = xcopy /y
+}
+
+unix{
+    macx{
+        VCOPY = $$QMAKE_COPY
+    } else {
+        VCOPY = $$QMAKE_COPY -u
+    }
+}
+
+win32{
+    VCOPY = $$QMAKE_COPY /D
+}
+
+macx{
+    # QTBUG-31034 qmake doesn't allow override QMAKE_CXX
+    CONFIG+=no_ccache
+}
+
+CONFIG(release, debug|release){
+    !noDebugSymbols:win32:!win32-msvc*{
+        unset(QMAKE_STRIP)
+        QMAKE_STRIP = echo # we do striping manualy
+    }
 }
 
 defineTest(minQtVersion) {
@@ -36,25 +69,63 @@ defineTest(copyToDestdir) {
     message("----------------------------------------------begin------------------------------------------------")
     message("Copy to" $$DDIR "after link")
     for(FILE, files) {
+        unix{
+            QMAKE_POST_LINK += ln -s -f $$quote($$FILE) $$quote($$DDIR/$$basename(FILE)) $$escape_expand(\\n\\t)
+            message("Command:" ln -s -f $$quote($$FILE) $$quote($$DDIR/$$basename(FILE)))
+        } else {
+            !exists($$DDIR/$$basename(FILE)) {
+                # Replace slashes in paths with backslashes for Windows
+                win32{
+                    FILE ~= s,/,\\,g
+                    DDIR ~= s,/,\\,g
+                }
+                QMAKE_POST_LINK += $$VCOPY $$quote($$FILE) $$quote($$DDIR) $$escape_expand(\\n\\t)
+                message("Command:" $$VCOPY $$quote($$FILE) $$quote($$DDIR))
+            } else {
+                message("File:" $$DDIR/$$basename(FILE) "already exist")
+            }
 
-        # Replace slashes in paths with backslashes for Windows
-        win32{
-            FILE ~= s,/,\\,g
-            DDIR ~= s,/,\\,g
+            QMAKE_CLEAN += $$DDIR/$$basename(FILE)
         }
-        QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$FILE) $$quote($$DDIR) $$escape_expand(\\n\\t)
-        message("Command:" $$QMAKE_COPY $$quote($$FILE) $$quote($$DDIR))
     }
 
     export(QMAKE_POST_LINK)
+    export(QMAKE_CLEAN)
+    message("----------------------------------------------end---------------------------------------------------")
+}
+
+# Alwayse copies the given files to the destination directory
+defineTest(forceCopyToDestdir) {
+    files = $$1
+    DDIR = $$2
+    mkpath($$DDIR)
+
+    message("----------------------------------------------begin------------------------------------------------")
+    message("Copy to" $$DDIR "after link")
+    for(FILE, files) {
+        unix{
+            QMAKE_POST_LINK += ln -s -f $$quote($$FILE) $$quote($$DDIR/$$basename(FILE)) $$escape_expand(\\n\\t)
+            message("Command:" ln -s -f $$quote($$FILE) $$quote($$DDIR/$$basename(FILE)))
+        } else {
+            # Replace slashes in paths with backslashes for Windows
+            win32{
+                FILE ~= s,/,\\,g
+                DDIR ~= s,/,\\,g
+            }
+            QMAKE_POST_LINK += $$VCOPY $$quote($$FILE) $$quote($$DDIR) $$escape_expand(\\n\\t)
+            message("Command:" $$VCOPY $$quote($$FILE) $$quote($$DDIR))
+            QMAKE_CLEAN += $$DDIR/$$basename(FILE)
+        }
+    }
+
+    export(QMAKE_POST_LINK)
+    export(QMAKE_CLEAN)
     message("----------------------------------------------end---------------------------------------------------")
 }
 
 # We use precompiled headers for more fast compilation source code.
 defineReplace(set_PCH){
-    macx:clang*{
-    # Precompiled headers don't work with clang on macx.
-    } else {
+    no_ccache{
         CONFIG += precompile_header # Turn on creation precompiled headers (PCH).
         export(CONFIG) # export value to global variable.
 
@@ -71,7 +142,7 @@ defineReplace(set_PCH){
 
 defineReplace(enable_ccache){
     no_ccache{ # For enable run qmake with CONFIG+=no_ccache
-        # do nothing
+        $$set_PCH()
     } else {
         # ccache support only Unix systems.
         unix:{
@@ -90,6 +161,8 @@ defineReplace(enable_ccache){
                 QMAKE_CXX = ccache clang++
                 export(QMAKE_CXX) # export value to global variable.
             }
+        } else {
+            $$set_PCH()
         }
     }
     return(true)
@@ -111,6 +184,9 @@ ISYSTEM += \
     -isystem "$$[QT_INSTALL_HEADERS]/QtGui" \
     -isystem "$$[QT_INSTALL_HEADERS]/QtXmlPatterns" \
     -isystem "$$[QT_INSTALL_HEADERS]/QtCore" \
+    -isystem "$$[QT_INSTALL_HEADERS]/QtPrintSupport" \
+    -isystem "$$[QT_INSTALL_HEADERS]/QtSvg" \
+    -isystem "$$[QT_INSTALL_HEADERS]/QtNetwork" \
     -isystem "$$[QT_INSTALL_HEADERS]/QtTest"
 } else {
 ISYSTEM += \
@@ -124,6 +200,12 @@ ISYSTEM += \
     -isystem "$$[QT_INSTALL_LIBS]/QtXmlPatterns.framework/Versions/5/Headers/" \
     -isystem "$$[QT_INSTALL_LIBS]/QtCore.framework/Headers/" \
     -isystem "$$[QT_INSTALL_LIBS]/QtCore.framework/Versions/5/Headers/" \
+    -isystem "$$[QT_INSTALL_LIBS]/QtPrintSupport.framework/Headers/" \
+    -isystem "$$[QT_INSTALL_LIBS]/QtPrintSupport.framework/Versions/5/Headers/" \
+    -isystem "$$[QT_INSTALL_LIBS]/QtSvg.framework/Headers/" \
+    -isystem "$$[QT_INSTALL_LIBS]/QtSvg.framework/Versions/5/Headers/" \
+    -isystem "$$[QT_INSTALL_LIBS]/QtNetwork.framework/Headers/" \
+    -isystem "$$[QT_INSTALL_LIBS]/QtNetwork.framework/Versions/5/Headers/" \
     -isystem "$$[QT_INSTALL_LIBS]/QtTest.framework/Headers/" \
     -isystem "$$[QT_INSTALL_LIBS]/QtTest.framework/Versions/5/Headers/"
 }
@@ -274,7 +356,7 @@ CLANG_DEBUG_CXXFLAGS += \
     -Wdeprecated-register \
     -Wdeprecated-writable-strings \
     -Wdirect-ivar-access \
-    -Wdisabled-macro-expansion \
+#   -Wdisabled-macro-expansion \ Disabled
     -Wdisabled-optimization \
     -Wdiscard-qual \
     -Wdistributed-object-modifiers \
@@ -400,6 +482,7 @@ CLANG_DEBUG_CXXFLAGS += \
     -Wnon-virtual-dtor \
     -Wnonnull \
     -Wnonportable-cfstrings \
+    -Wno-c++98-compat \
     -WNSObject-attribute \
     -Wnull-arithmetic \
     -Wnull-character \
@@ -547,7 +630,33 @@ CLANG_DEBUG_CXXFLAGS += \
     -Wwrite-strings \
     -Wzero-length-array \
     -Qunused-arguments \
-    -fcolor-diagnostics
+    -fcolor-diagnostics \
+    -fms-extensions # Need for pragma message
+
+ICC_DEBUG_CXXFLAGS += \
+    $$ISYSTEM \ # Ignore warnings Qt headers.
+    -Wcomment \
+    -Weffc++ \
+    -Wextra-tokens \
+    -Wformat \
+    #-Winline \
+    -Wmain \
+    -Wmissing-declarations \
+    -Wmissing-prototypes \
+    -Wnon-virtual-dtor \
+    -Wp64 \
+    -Wpointer-arith \
+    -Wremarks \
+    -Wreturn-type \
+    -Wsign-compare \
+    -Wstrict-aliasing \
+    -Wstrict-prototypes \
+    -Wtrigraphs \
+    -Wuninitialized \
+    -Wunknown-pragmas \
+    -Wunused-variable \
+    -Wno-pch-messages \
+    -wd1418,2012,2015,2017,2022,2013 #disable warnings. Syntax example -wd1572,873,2259,2261
 } else {
 # Don't use additional GCC and Clang keys on Windows system.
 # Can't find way mark ignore Qt header on Windows.
@@ -562,5 +671,6 @@ CLANG_DEBUG_CXXFLAGS += \
     -Wall \
     -Wextra \
     -pedantic \
-    -fno-omit-frame-pointer # Need for exchndl.dll
+    -fno-omit-frame-pointer \ # Need for exchndl.dll
+    -fms-extensions # Need for pragma message
 }

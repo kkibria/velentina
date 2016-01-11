@@ -33,6 +33,8 @@
 
 #include <QColor>
 
+enum class ParentType : bool {Scene, Item};
+
 /**
  * @brief The VAbstractNode class parent class for all detail node.
  */
@@ -45,9 +47,15 @@ public:
     virtual      ~VAbstractNode() Q_DECL_OVERRIDE {}
     static const QString AttrIdObject;
     static const QString AttrIdTool;
-    virtual void DeleteNode();
-    virtual void RestoreNode();
     virtual void ShowVisualization(bool show) Q_DECL_OVERRIDE;
+    virtual void incrementReferens() Q_DECL_OVERRIDE;
+    virtual void decrementReferens() Q_DECL_OVERRIDE;
+
+    ParentType GetParentType() const;
+    void       SetParentType(const ParentType &value);
+
+protected:
+    ParentType parentType;
 protected:
     /** @brief idNodenode id. */
     quint32       idNode;
@@ -59,10 +67,10 @@ protected:
     QColor        currentColor;
 
     void         AddToModeling(const QDomElement &domElement);
-    virtual void decrementReferens() Q_DECL_OVERRIDE;
-    virtual void RemoveReferens() Q_DECL_OVERRIDE;
-    virtual void RestoreReferens();
     virtual void SetVisualization() {}
+
+    virtual void ShowNode()=0;
+    virtual void HideNode()=0;
 };
 
 #endif // VABSTRACTNODE_H

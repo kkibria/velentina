@@ -36,33 +36,51 @@
 class QCheckBox;
 class QGroupBox;
 class QLineEdit;
+class QLabel;
 
 class CommunityPage : public QWidget
 {
     Q_OBJECT
 public:
-    CommunityPage(QWidget *parent = nullptr);
+    explicit CommunityPage(QWidget *parent = nullptr);
     void      Apply();
+protected:
+    virtual void changeEvent(QEvent* event) Q_DECL_OVERRIDE;
 private:
     Q_DISABLE_COPY(CommunityPage)
     // server name and https connection
+    QGroupBox *serverGroup;
     QLineEdit *server;
     QCheckBox *secureComm;
+    QLabel    *serverNameLabel;
+    QLabel    *secureConnectionLabel;
 
     // proxy stuff
+    QGroupBox *proxyGroup;
     QCheckBox *useProxy;
     QLineEdit *proxyAddress;
     QLineEdit *proxyPort;
     QLineEdit *proxyUser;
     QLineEdit *proxyPass;
 
+    QLabel    *useProxyLabel;
+    QLabel    *proxyAddressLabel;
+    QLabel    *proxyPortLabel;
+    QLabel    *proxyUserLabel;
+    QLabel    *proxyPassLabel;
+
     // username and password
+    QGroupBox *userGroup;
     QLineEdit *username;
     QCheckBox *savePassword;
     QLineEdit *userpassword;
 
-    static void add_checkbox(QCheckBox** thebox, QFormLayout *layout, bool checked, QString label);
-    static void add_lineedit(QLineEdit** theline, QFormLayout *layout, QString value, QString label);
+    QLabel    *usernameLabel;
+    QLabel    *savePasswordLabel;
+    QLabel    *userpasswordLabel;
+
+    static void AddCheckbox(QCheckBox** thebox, QFormLayout *layout, bool checked, QLabel* label);
+    static void AddLineedit(QLineEdit** theline, QFormLayout *layout, QString value, QLabel *label);
 
     void ProxyCheckChanged();
     void PasswordCheckChanged();
@@ -70,6 +88,8 @@ private:
     QGroupBox *ServerGroup();
     QGroupBox *ProxyGroup();
     QGroupBox *UserGroup();
+
+    void RetranslateUi();
 };
 
 #endif // COMMUNITYPAGE_H

@@ -49,7 +49,7 @@ public:
     void SetCountourPoints(const QVector<QPointF> &points);
 
     QVector<QPointF> GetSeamAllowencePoints() const;
-    void SetSeamAllowencePoints(const QVector<QPointF> &points, bool seamAllowence = true);
+    void SetSeamAllowencePoints(const QVector<QPointF> &points, bool seamAllowence = true, bool closed = true);
 
     QVector<QPointF> GetLayoutAllowencePoints() const;
     void SetLayoutAllowencePoints();
@@ -84,5 +84,7 @@ private:
     QVector<QPointF> Map(const QVector<QPointF> &points) const;
     static QVector<QPointF> RoundPoints(const QVector<QPointF> &points);
 };
+
+Q_DECLARE_TYPEINFO(VLayoutDetail, Q_MOVABLE_TYPE);
 
 #endif // VLAYOUTDETAIL_H

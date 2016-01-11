@@ -29,17 +29,18 @@
 #include "tst_measurementregexp.h"
 #include "../qmuparser/qmudef.h"
 #include "../vmisc/def.h"
-#include "../vpatterndb/vtranslatemeasurements.h"
+#include "../vmisc/logging.h"
+#include "../vpatterndb/vtranslatevars.h"
+#include "../ifc/ifcdef.h"
 
 #include <QtTest>
 #include <QTranslator>
 
-enum ErrorState {ErrorLoad = 0, ErrorInstall, ErrorSize, NoError};
-
 //---------------------------------------------------------------------------------------------------------------------
 TST_MeasurementRegExp::TST_MeasurementRegExp(QObject *parent)
-    :QObject(parent),
+    :AbstractTest(parent),
       pmsTranslator(nullptr),
+      vTranslator(nullptr),
       trMs(nullptr)
 {
 }
@@ -48,6 +49,7 @@ TST_MeasurementRegExp::TST_MeasurementRegExp(QObject *parent)
 TST_MeasurementRegExp::~TST_MeasurementRegExp()
 {
     delete pmsTranslator;
+    delete vTranslator;
     delete trMs;
 }
 
@@ -66,60 +68,46 @@ void TST_MeasurementRegExp::TestOriginalMeasurementNamesRegExp()
 
 //---------------------------------------------------------------------------------------------------------------------
 // cppcheck-suppress unusedFunction
-void TST_MeasurementRegExp::TestMeasurementRegExp()
+void TST_MeasurementRegExp::TestVariableStrings_data()
 {
-    const int systemCounts = 55;
-    const QStringList locales = SupportedLocales();
+    PrepareMeasurementData();
+}
 
+//---------------------------------------------------------------------------------------------------------------------
+// cppcheck-suppress unusedFunction
+void TST_MeasurementRegExp::TestVariableStrings()
+{
+    QFETCH(QString, system);
+    QFETCH(QString, locale);
+
+    const int res = LoadTranslation(system, locale);
+
+    switch(res)
     {
-        const int combinations = systemCounts * locales.size(); // 55*12=660
-
-        QDir dir(TranslationsPath());
-        const QStringList fileNames = dir.entryList(QStringList("measurements_p*_*.qm"));
-
-        QVERIFY2(combinations == fileNames.size(), "Unexpected count of files.");
-    }
-
-    for(int s = 0; s < systemCounts; ++s)
-    {
-        for(int l = 0, sz = locales.size(); l < sz; ++l)
+        case ErrorInstall:
+        case ErrorSize:
+        case ErrorLoad:
         {
-            const int res = LoadTranslation(QString("p%1").arg(s), locales.at(l));
-
-            switch(res)
-            {
-                case ErrorInstall:
-                case ErrorSize:
-                case ErrorLoad:
-                {
-                    const QString message = QString("Failed to check translation for system = p%1 and locale = %2")
-                            .arg(s)
-                            .arg(locales.at(l));
-                    QFAIL(message.toUtf8().constData());
-                    break;
-                }
-                case NoError:
-                {
-                    CheckNames();
-
-                    if (not pmsTranslator.isNull())
-                    {
-                        const bool result = QCoreApplication::removeTranslator(pmsTranslator);
-
-                        if (result == false)
-                        {
-                            const QString message = QString("Can't remove translation for system = p%1 and locale = %2")
-                                    .arg(s)
-                                    .arg(locales.at(l));
-                            QWARN(message.toUtf8().constData());
-                        }
-                        delete pmsTranslator;
-                    }
-                }
-                default:
-                    QWARN("Unexpected state");
-            }
+            const QString message = QString("Can't to check translation. System = %1, locale = %2")
+                    .arg(system)
+                    .arg(locale);
+            QSKIP(qUtf8Printable(message));
+            break;
         }
+        case NoError:
+        {
+            CheckRegExpNames();
+            CheckIsNamesUnique();
+            CheckNoOriginalNamesInTranslation();
+            CheckUnderlineExists();
+            CheckInternalVaribleRegExp();
+
+            RemoveTrMeasurements(system, locale);
+            RemoveTrVariables(locale);
+            break;
+        }
+        default:
+            QWARN("Unexpected state");
     }
 }
 
@@ -220,6 +208,7 @@ void TST_MeasurementRegExp::TestCorrectOrderMeasurement_data()
     QTest::newRow("G43") << bodyArmfoldCirc_M << "body_armfold_circ";
     QTest::newRow("G44") << bodyBustCirc_M << "body_bust_circ";
     QTest::newRow("G45") << bodyTorsoCirc_M << "body_torso_circ";
+    QTest::newRow("G46") << hipCircWithAbdomen_M << "hip_circ_with_abdomen";
     QTest::newRow("H01") << neckFrontToWaistF_M << "neck_front_to_waist_f";
     QTest::newRow("H02") << neckFrontToWaistFlatF_M << "neck_front_to_waist_flat_f";
     QTest::newRow("H03") << armpitToWaistSide_M << "armpit_to_waist_side";
@@ -260,6 +249,8 @@ void TST_MeasurementRegExp::TestCorrectOrderMeasurement_data()
     QTest::newRow("H38") << shoulderSlopeNeckBackAngle_M << "shoulder_slope_neck_back_angle";
     QTest::newRow("H39") << shoulderSlopeNeckBackHeight_M << "shoulder_slope_neck_back_height";
     QTest::newRow("H40") << shoulderSlopeShoulderTipAngle_M << "shoulder_slope_shoulder_tip_angle";
+    QTest::newRow("H41") << neckBackToAcrossBack_M << "neck_back_to_across_back";
+    QTest::newRow("H42") << acrossBackToWaistB_M << "across_back_to_waist_b";
     QTest::newRow("I01") << shoulderLength_M << "shoulder_length";
     QTest::newRow("I02") << shoulderTipToShoulderTipF_M << "shoulder_tip_to_shoulder_tip_f";
     QTest::newRow("I03") << acrossChestF_M << "across_chest_f";
@@ -317,6 +308,7 @@ void TST_MeasurementRegExp::TestCorrectOrderMeasurement_data()
     QTest::newRow("L19") << armscyeCirc_M << "armscye_circ";
     QTest::newRow("L20") << armscyeLength_M << "armscye_length";
     QTest::newRow("L21") << armscyeWidth_M << "armscye_width";
+    QTest::newRow("L22") << armNeckSideToOuterElbow_M << "arm_neck_side_to_outer_elbow";
     QTest::newRow("M01") << legCrotchToFloor_M << "leg_crotch_to_floor";
     QTest::newRow("M02") << legWaistSideToFloor_M << "leg_waist_side_to_floor";
     QTest::newRow("M03") << legThighUpperCirc_M << "leg_thigh_upper_circ";
@@ -334,10 +326,11 @@ void TST_MeasurementRegExp::TestCorrectOrderMeasurement_data()
     QTest::newRow("N01") << crotchLength_M << "crotch_length";
     QTest::newRow("N02") << crotchLengthB_M << "crotch_length_b";
     QTest::newRow("N03") << crotchLengthF_M << "crotch_length_f";
-    QTest::newRow("N04") << riseLengthSide_M << "rise_length_side";
+    QTest::newRow("N04") << riseLengthSideSitting_M << "rise_length_side_sitting";
     QTest::newRow("N05") << riseLengthDiag_M << "rise_length_diag";
     QTest::newRow("N06") << riseLengthB_M << "rise_length_b";
     QTest::newRow("N07") << riseLengthF_M << "rise_length_f";
+    QTest::newRow("N08") << riseLengthSide_M << "rise_length_side";
     QTest::newRow("O01") << neckBackToWaistFront_M << "neck_back_to_waist_front";
     QTest::newRow("O02") << waistToWaistHalter_M << "waist_to_waist_halter";
     QTest::newRow("O03") << waistNaturalCirc_M << "waist_natural_circ";
@@ -358,7 +351,8 @@ void TST_MeasurementRegExp::TestCorrectOrderMeasurement_data()
     QTest::newRow("P04") << highbustBackOverShoulderToArmfoldFront_M << "highbust_back_over_shoulder_to_armfold_front";
     QTest::newRow("P05") << highbustBackOverShoulderToWaistFront_M << "highbust_back_over_shoulder_to_waist_front";
     QTest::newRow("P06") << neckBackToArmfoldFrontToNeckBack_M << "neck_back_to_armfold_front_to_neck_back";
-    QTest::newRow("P07") << acrossBackCenterToArmfoldFrontToAcrossBackCenter_M << "across_back_center_to_armfold_front_to_across_back_center";
+    QTest::newRow("P07") << acrossBackCenterToArmfoldFrontToAcrossBackCenter_M
+                         << "across_back_center_to_armfold_front_to_across_back_center";
     QTest::newRow("P08") << neckBackToArmfoldFrontToHighbustBack_M << "neck_back_to_armfold_front_to_highbust_back";
     QTest::newRow("P09") << armfoldToArmfoldBust_M << "armfold_to_armfold_bust";
     QTest::newRow("P10") << armfoldToBustFront_M << "armfold_to_bust_front";
@@ -380,25 +374,69 @@ void TST_MeasurementRegExp::TestCorrectOrderMeasurement()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-QString TST_MeasurementRegExp::TranslationsPath() const
+void TST_MeasurementRegExp::PrepareMeasurementData()
 {
-    return QApplication::applicationDirPath() + QStringLiteral("/../../../app/valentina/bin/translations");
+    const int systemCounts = 56;
+    const QStringList locales = SupportedLocales();
+
+    {
+        const int combinations = systemCounts * locales.size();
+
+        QDir dir(TranslationsPath());
+        const QStringList fileNames = dir.entryList(QStringList("measurements_p*_*.qm"));
+
+        QVERIFY2(combinations == fileNames.size(), "Unexpected count of files.");
+    }
+
+    QTest::addColumn<QString>("system");
+    QTest::addColumn<QString>("locale");
+
+    for(int s = 0; s < systemCounts; ++s)
+    {
+        for(int l = 0, sz = locales.size(); l < sz; ++l)
+        {
+            const QString system = QString("p%1").arg(s);
+            const QString locale = locales.at(l);
+            const QString tag = QString("Check translation system %1, locale %2").arg(system).arg(locale);
+            QTest::newRow(qUtf8Printable(tag)) << system << locale;
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 int TST_MeasurementRegExp::LoadTranslation(const QString &checkedSystem, const QString &checkedLocale)
 {
+    int state = LoadMeasurements(checkedSystem, checkedLocale);
+    if (state != NoError)
+    {
+        return state;
+    }
+
+    state = LoadVariables(checkedLocale);
+    if (state != NoError)
+    {
+        return state;
+    }
+
+    InitTrMs();//Very important do this after loading QM files.
+
+    return NoError;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+int TST_MeasurementRegExp::LoadMeasurements(const QString &checkedSystem, const QString &checkedLocale)
+{
     const QString path = TranslationsPath();
     const QString file = QString("measurements_%1_%2.qm").arg(checkedSystem).arg(checkedLocale);
 
-    if (QFileInfo(path+"/"+file).size() <= 34)
+    if (QFileInfo(path+QLatin1Literal("/")+file).size() <= 34)
     {
         const QString message = QString("Translation for system = %1 and locale = %2 is empty. \nFull path: %3/%4")
                 .arg(checkedSystem)
                 .arg(checkedLocale)
                 .arg(path)
                 .arg(file);
-        QWARN(message.toUtf8().constData());
+        QWARN(qUtf8Printable(message));
 
         return ErrorSize;
     }
@@ -412,7 +450,7 @@ int TST_MeasurementRegExp::LoadTranslation(const QString &checkedSystem, const Q
                 .arg(checkedLocale)
                 .arg(path)
                 .arg(file);
-        QWARN(message.toUtf8().constData());
+        QWARN(qUtf8Printable(message));
 
         delete pmsTranslator;
 
@@ -426,16 +464,97 @@ int TST_MeasurementRegExp::LoadTranslation(const QString &checkedSystem, const Q
                 .arg(checkedLocale)
                 .arg(path)
                 .arg(file);
-        QWARN(message.toUtf8().constData());
+        QWARN(qUtf8Printable(message));
 
         delete pmsTranslator;
 
         return ErrorInstall;
     }
 
-    InitTrMs();//Very important do it after load QM file.
+    return NoError;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+int TST_MeasurementRegExp::LoadVariables(const QString &checkedLocale)
+{
+    const QString path = TranslationsPath();
+    const QString file = QString("valentina_%1.qm").arg(checkedLocale);
+
+    if (QFileInfo(path+QLatin1Literal("/")+file).size() <= 34)
+    {
+        const QString message = QString("Translation variables for locale = %1 is empty. \nFull path: %2/%3")
+                .arg(checkedLocale)
+                .arg(path)
+                .arg(file);
+        QWARN(qUtf8Printable(message));
+
+        return ErrorSize;
+    }
+
+    vTranslator = new QTranslator(this);
+
+    if (not vTranslator->load(file, path))
+    {
+        const QString message = QString("Can't load translation variables for locale = %1. \nFull path: %2/%3")
+                .arg(checkedLocale)
+                .arg(path)
+                .arg(file);
+        QWARN(qUtf8Printable(message));
+
+        delete vTranslator;
+
+        return ErrorLoad;
+    }
+
+    if (not QCoreApplication::installTranslator(vTranslator))
+    {
+        const QString message = QString("Can't install translation variables for locale = %1. \nFull path: %2/%3")
+                .arg(checkedLocale)
+                .arg(path)
+                .arg(file);
+        QWARN(qUtf8Printable(message));
+
+        delete vTranslator;
+
+        return ErrorInstall;
+    }
 
     return NoError;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_MeasurementRegExp::RemoveTrMeasurements(const QString &checkedSystem, const QString &checkedLocale)
+{
+    if (not pmsTranslator.isNull())
+    {
+        const bool result = QCoreApplication::removeTranslator(pmsTranslator);
+
+        if (result == false)
+        {
+            const QString message = QString("Can't remove translation for system = %1 and locale = %2")
+                    .arg(checkedSystem)
+                    .arg(checkedLocale);
+            QWARN(qUtf8Printable(message));
+        }
+        delete pmsTranslator;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_MeasurementRegExp::RemoveTrVariables(const QString &checkedLocale)
+{
+    if (not vTranslator.isNull())
+    {
+        const bool result = QCoreApplication::removeTranslator(vTranslator);
+
+        if (result == false)
+        {
+            const QString message = QString("Can't remove translation variables for locale = %1")
+                    .arg(checkedLocale);
+            QWARN(qUtf8Printable(message));
+        }
+        delete vTranslator;
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -447,19 +566,134 @@ void TST_MeasurementRegExp::InitTrMs()
     }
     else
     {
-        trMs = new VTranslateMeasurements();
+        trMs = new VTranslateVars(true);
     }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void TST_MeasurementRegExp::CheckNames() const
+void TST_MeasurementRegExp::CheckRegExpNames() const
 {
-    const QStringList originalNames = AllGroupNames();
+    const QStringList originalNames = AllGroupNames() + builInFunctions + builInVariables;
     const QRegularExpression re(NameRegExp());
 
     foreach(const QString &str, originalNames)
     {
-        const QString translated = trMs->MToUser(str);
-        QCOMPARE(re.match(translated).hasMatch(), true);
+        const QString translated = trMs->VarToUser(str);
+        if (not re.match(translated).hasMatch())
+        {
+            const QString message = QString("Original name:'%1', translated name:'%2'").arg(str).arg(translated);
+            QFAIL(qUtf8Printable(message));
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_MeasurementRegExp::CheckIsNamesUnique() const
+{
+    const QStringList originalNames = AllGroupNames() + builInFunctions + builInVariables;
+    QSet<QString> names;
+
+    foreach(const QString &str, originalNames)
+    {
+        const QString translated = trMs->VarToUser(str);
+        if (names.contains(translated))
+        {
+            const QString message = QString("Name is not unique. Original name:'%1', translated name:'%2'")
+                    .arg(str).arg(translated);
+            QFAIL(qUtf8Printable(message));
+        }
+        names.insert(translated);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_MeasurementRegExp::CheckNoOriginalNamesInTranslation() const
+{
+    const QStringList originalNames = AllGroupNames() + builInFunctions + builInVariables;
+    QSet<QString> names = QSet<QString>::fromList(originalNames);
+
+    foreach(const QString &str, originalNames)
+    {
+        const QString translated = trMs->VarToUser(str);
+        if (names.contains(translated))
+        {
+            if (str != translated)
+            {
+                const QString message = QString("Translation repeat original name from other place. "
+                                                "Original name:'%1', translated name:'%2'")
+                        .arg(str).arg(translated);
+                QFAIL(qUtf8Printable(message));
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_MeasurementRegExp::CheckUnderlineExists() const
+{
+    QMap<QString, bool> data;
+
+    data.insert(line_, true);
+    data.insert(angleLine_, true);
+    data.insert(arc_, true);
+    data.insert(spl_, true);
+    data.insert(splPath, false);
+    data.insert(radius_V, false);
+    data.insert(radiusArc_, true);
+    data.insert(angle1_V, false);
+    data.insert(angle2_V, false);
+    data.insert(angle1Arc_, true);
+    data.insert(angle2Arc_, true);
+    data.insert(angle1Spl_, true);
+    data.insert(angle2Spl_, true);
+    data.insert(angle1SplPath, false);
+    data.insert(angle2SplPath, false);
+
+    //Catch case when new internal variable appears.
+    QCOMPARE(data.size(), builInVariables.size());
+
+    auto i = data.constBegin();
+    while (i != data.constEnd())
+    {
+        const QString translated = trMs->InternalVarToUser(i.key());
+        if ((translated.right(1) == QLatin1Literal("_")) != i.value())
+        {
+            const QString message = QString("String '%1' doesn't contain underline. Original string is '%2'")
+                    .arg(translated).arg(i.key());
+            QFAIL(qUtf8Printable(message));
+        }
+        ++i;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TST_MeasurementRegExp::CheckInternalVaribleRegExp() const
+{
+    const QString regex = QStringLiteral("(.){1,}_(.){1,}$");
+    foreach(const QString &var, builInVariables)
+    {
+        const QString sourceRegex = QLatin1Literal("^") + var + regex;
+        const QRegularExpression sourceRe(sourceRegex);
+
+        const QString translated = trMs->InternalVarToUser(var);
+        const QString translationRegex = QLatin1Literal("^") + translated + regex;
+        const QRegularExpression translationRe(translationRegex);
+
+        const QStringList originalNames = AllGroupNames() + builInFunctions + builInVariables;
+        foreach(const QString &str, originalNames)
+        {
+            if (sourceRe.match(str).hasMatch() || translationRe.match(str).hasMatch())
+            {
+                const QString message = QString("Invalid original string '%1'").arg(str);
+                QFAIL(qUtf8Printable(message));
+            }
+
+            const QString translated = trMs->VarToUser(str);
+            if (sourceRe.match(translated).hasMatch() || translationRe.match(translated).hasMatch())
+            {
+                const QString message = QString("Invalid translation string '%1'").arg(translated);
+                QFAIL(qUtf8Printable(message));
+            }
+        }
     }
 }

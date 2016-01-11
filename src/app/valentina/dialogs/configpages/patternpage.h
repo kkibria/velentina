@@ -36,21 +36,31 @@ class QCheckBox;
 class QSpinBox;
 class QGroupBox;
 class QLineEdit;
+class QLabel;
 
 class PatternPage : public QWidget
 {
     Q_OBJECT
 public:
-    PatternPage(QWidget *parent = nullptr);
+    explicit PatternPage(QWidget *parent = nullptr);
     void      Apply();
+protected:
+    virtual void changeEvent(QEvent* event) Q_DECL_OVERRIDE;
 private:
     Q_DISABLE_COPY(PatternPage)
+    QGroupBox *userGroup;
     QLineEdit *userName;
+    QLabel    *userNameLabel;
+    QGroupBox *graphOutputGroup;
     QCheckBox *graphOutputCheck;
+    QGroupBox *undoGroup;
     QSpinBox  *undoCount;
+    QLabel    *countStepsLabel;
     QGroupBox *UserGroup();
     QGroupBox *GraphOutputGroup();
     QGroupBox *UndoGroup();
+
+    void      RetranslateUi();
 };
 
 #endif // PATTERNPAGE_H

@@ -63,15 +63,17 @@ public:
     void SetPUnit(Unit unit);
 
 public slots:
-    void LoadFile(const QString &path);
+    bool LoadFile(const QString &path);
     void FileNew();
     void OpenIndividual();
     void OpenStandard();
     void OpenTemplate();
+    void CreateFromExisting();
 
 protected:
     virtual void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
     virtual void changeEvent(QEvent* event) Q_DECL_OVERRIDE;
+    virtual void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
 
 private slots:
     void FileSave();
@@ -79,18 +81,27 @@ private slots:
     void AboutToShowWindowMenu();
     void ShowWindow();
     void AboutApplication();
+    void AboutQt();
+
+#if defined(Q_OS_MAC)
+    void AboutToShowDockMenu();
+    void OpenAt(QAction *where);
+#endif //defined(Q_OS_MAC)
 
     void SaveGivenName();
     void SaveFamilyName();
     void SaveEmail();
-    void SaveSex(int index);
+    void SaveGender(int index);
     void SaveBirthDate(const QDate & date);
     void SaveNotes();
+    void SavePMSystem(int index);
     void ReadOnly(bool ro);
 
     void Remove();
+    void MoveTop();
     void MoveUp();
     void MoveDown();
+    void MoveBottom();
     void Fx();
 
     void AddCustom();
@@ -133,14 +144,22 @@ private:
     QComboBox       *gradationSizes;
     QComboBox       *comboBoxUnits;
     int              formulaBaseHeight;
-    VLockGuardPtr<char> lock;
+    std::shared_ptr<VLockGuard<char>> lock;
     QSharedPointer<VTableSearch> search;
+    QLabel *labelGradationHeights;
+    QLabel *labelGradationSizes;
+    QLabel *labelPatternUnit;
+    QAction *actionDockDiagram;
+    bool dockDiagramVisible;
+    bool isInitialized;
 
     void SetupMenu();
     void InitWindow();
     void InitTable();
     void SetDecimals();
     void InitUnits();
+    void InitComboBoxUnits();
+    void InitGender(QComboBox *gender);
 
     void ShowUnits();
     void ShowHeaderUnits(QTableWidget *table, int column, const QString &unit);
@@ -153,7 +172,7 @@ private:
 
     QTableWidgetItem *AddCell(const QString &text, int row, int column, int aligment, bool ok = true);
 
-    QComboBox *SetGradationList(const QString &label, const QStringList &list);
+    QComboBox *SetGradationList(QLabel *label, const QStringList &list);
     void       SetDefaultHeight(int value);
     void       SetDefaultSize(int value);
 
@@ -163,6 +182,7 @@ private:
     QString ClearCustomName(const QString &name) const;
 
     bool EvalFormula(const QString &formula, bool fromUser, VContainer *data, QLabel *label);
+    void ShowMDiagram(const QString &name);
 
     void Open(const QString &pathTo, const QString &filter);
     void GUIReadOnly(bool ro);
@@ -176,6 +196,12 @@ private:
     QStringList FilterMeasurements(const QStringList &mNew, const QStringList &mFilter);
 
     void UpdatePatternUnit();
+
+    bool LoadFromExistingFile(const QString &path);
+
+    void CreateWindowMenu(QMenu *menu);
+
+    bool IgnoreLocking(int error, const QString &path);
 };
 
 #endif // TMAINWINDOW_H

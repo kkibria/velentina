@@ -32,13 +32,13 @@
 #include "../ifc/xml/vdomdocument.h"
 #include "../vpatterndb/vcontainer.h"
 
-enum class SexType : char { Male, Female, Unknown };
+enum class GenderType : char { Male, Female, Unknown };
 
 class VMeasurements : public VDomDocument
 {
-
+    Q_DECLARE_TR_FUNCTIONS(VMeasurements)
 public:
-    VMeasurements(VContainer *data);
+    explicit VMeasurements(VContainer *data);
     VMeasurements(Unit unit, VContainer *data);
     VMeasurements(Unit unit, int baseSize, int baseHeight, VContainer *data);
     virtual ~VMeasurements() Q_DECL_OVERRIDE;
@@ -48,10 +48,13 @@ public:
     void AddEmpty(const QString &name, const QString &formula = QString());
     void AddEmptyAfter(const QString &after, const QString &name, const QString &formula = QString());
     void Remove(const QString &name);
+    void MoveTop(const QString &name);
     void MoveUp(const QString &name);
     void MoveDown(const QString &name);
+    void MoveBottom(const QString &name);
 
     void ReadMeasurements() const;
+    void ClearForExport();
 
     MeasurementsType Type() const;
     Unit MUnit() const;
@@ -70,8 +73,11 @@ public:
     QDate   BirthDate() const;
     void    SetBirthDate(const QDate &date);
 
-    SexType Sex() const;
-    void    SetSex(const SexType &sex);
+    GenderType Gender() const;
+    void    SetGender(const GenderType &gender);
+
+    QString PMSystem() const;
+    void    SetPMSystem(const QString &system);
 
     QString Email() const;
     void    SetEmail(const QString &text);
@@ -98,7 +104,8 @@ public:
     static const QString TagFamilyName;
     static const QString TagGivenName;
     static const QString TagBirthDate;
-    static const QString TagSex;
+    static const QString TagGender;
+    static const QString TagPMSystem;
     static const QString TagEmail;
     static const QString TagReadOnly;
     static const QString TagMeasurement;
@@ -111,12 +118,12 @@ public:
     static const QString AttrName;
     static const QString AttrFullName;
 
-    static const QString SexMale;
-    static const QString SexFemale;
-    static const QString SexUnknown;
+    static const QString GenderMale;
+    static const QString GenderFemale;
+    static const QString GenderUnknown;
 
-    static QString GenderToStr(const SexType &sex);
-    static SexType StrToGender(const QString &sex);
+    static QString GenderToStr(const GenderType &sex);
+    static GenderType StrToGender(const QString &sex);
 
     QStringList ListAll() const;
     QStringList ListKnown() const;
@@ -143,6 +150,8 @@ private:
     MeasurementsType ReadType() const;
 
     qreal EvalFormula(VContainer *data, const QString &formula, bool *ok) const;
+
+    QString ClearPMCode(const QString &code) const;
 };
 
 #endif // VMEASUREMENTS_H

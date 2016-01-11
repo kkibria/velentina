@@ -48,24 +48,21 @@ class VContainer;
  *     //Need delete dialog here because parser in dialog don't allow use correct separator for parsing here.
  *     //Don't know why.
  *     delete dialog;
- *     Calculator *cal = new Calculator(data);
- *     result = cal->EvalFormula(formula);
+ *     Calculator *cal = new Calculator();
+ *     result = cal->EvalFormula(data->PlainVariables(), formula);
  *     delete cal;//Here can be memory leak, but dialog already check this formula and probability very low.
  * }
  */
 class Calculator:public qmu::QmuFormulaBase
 {
 public:
-    Calculator(const VContainer *data, MeasurementsType patternType);
-    virtual ~Calculator();
-    qreal         EvalFormula(const QString &formula);
+    Calculator();
+    virtual ~Calculator() Q_DECL_OVERRIDE;
+    qreal         EvalFormula(const QHash<QString, qreal *> &vars, const QString &formula);
 private:
     Q_DISABLE_COPY(Calculator)
-    qreal *vVarVal;
-    const VContainer *data;
-    MeasurementsType patternType;
-    void          InitVariables(const VContainer *data, const QMap<int, QString> &tokens, const QString &formula);
-    static void   RemoveAll(QMap<int, QString> &map, const QString &val);
+    void          InitVariables(const QHash<QString, qreal *> &vars, const QMap<int, QString> &tokens,
+                                const QString &formula);
 };
 
 #endif // CALCULATOR_H

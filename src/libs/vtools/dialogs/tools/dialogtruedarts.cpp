@@ -40,6 +40,12 @@ DialogTrueDarts::DialogTrueDarts(const VContainer *data, const quint32 &toolId, 
       ch2(NULL_ID), flagName1(true), flagName2(true)
 {
     ui->setupUi(this);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    ui->lineEditFirstNewDartPoint->setClearButtonEnabled(true);
+    ui->lineEditSecondNewDartPoint->setClearButtonEnabled(true);
+#endif
+
     const QString name1 = qApp->getCurrentDocument()->GenerateLabel(LabelType::NewLabel);
     const QString name2 = qApp->getCurrentDocument()->GenerateLabel(LabelType::NewLabel, name1);
     ui->lineEditFirstNewDartPoint->setText(name1);
@@ -69,8 +75,6 @@ DialogTrueDarts::DialogTrueDarts(const VContainer *data, const quint32 &toolId, 
             this, &DialogTrueDarts::PointNameChanged);
 
     vis = new VisToolTrueDarts(data);
-
-    FixateSize();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -27,15 +27,15 @@
  *************************************************************************/
 
 #include "vtooloptionspropertybrowser.h"
-#include "../../libs/vtools/tools/drawTools/drawtools.h"
+#include "../vtools/tools/drawTools/drawtools.h"
 #include "../core/vapplication.h"
-#include "../../libs/vwidgets/vmaingraphicsview.h"
-#include "../../libs/vwidgets/vgraphicssimpletextitem.h"
-#include "../../libs/vwidgets/vcontrolpointspline.h"
-#include "../../libs/vwidgets/vsimplepoint.h"
-#include "../../libs/vpropertyexplorer/vproperties.h"
+#include "../vwidgets/vmaingraphicsview.h"
+#include "../vwidgets/vgraphicssimpletextitem.h"
+#include "../vwidgets/vcontrolpointspline.h"
+#include "../vwidgets/vsimplepoint.h"
+#include "../vpropertyexplorer/vproperties.h"
 #include "vformulaproperty.h"
-#include "../../libs/vpatterndb/vformula.h"
+#include "../vpatterndb/vformula.h"
 
 #include <QDockWidget>
 #include <QHBoxLayout>
@@ -143,10 +143,6 @@ void VToolOptionsPropertyBrowser::ShowItemOptions(QGraphicsItem *item)
             ShowItemOptions(currentItem);
             break;
         case VControlPointSpline::Type:
-            currentItem = item->parentItem();
-            ShowItemOptions(currentItem);
-            break;
-        case VSimpleCurve::Type:
             currentItem = item->parentItem();
             ShowItemOptions(currentItem);
             break;
@@ -442,7 +438,8 @@ void VToolOptionsPropertyBrowser::AddPropertyFormula(const QString &propertyName
 template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyPointName(Tool *i, const QString &propertyName)
 {
-    VProperty* itemName = new VProperty(propertyName);
+    VStringProperty *itemName = new VStringProperty(propertyName);
+    itemName->setClearButtonEnable(true);
     itemName->setValue(i->name());
     AddProperty(itemName, AttrName);
 }
@@ -452,7 +449,8 @@ void VToolOptionsPropertyBrowser::AddPropertyPointName(Tool *i, const QString &p
 template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyPointName1(Tool *i, const QString &propertyName)
 {
-    VProperty* itemName = new VProperty(propertyName);
+    VStringProperty *itemName = new VStringProperty(propertyName);
+    itemName->setClearButtonEnable(true);
     itemName->setValue(i->nameP1());
     AddProperty(itemName, AttrName1);
 }
@@ -461,7 +459,8 @@ void VToolOptionsPropertyBrowser::AddPropertyPointName1(Tool *i, const QString &
 template<class Tool>
 void VToolOptionsPropertyBrowser::AddPropertyPointName2(Tool *i, const QString &propertyName)
 {
-    VProperty* itemName = new VProperty(propertyName);
+    VStringProperty *itemName = new VStringProperty(propertyName);
+    itemName->setClearButtonEnable(true);
     itemName->setValue(i->nameP2());
     AddProperty(itemName, AttrName2);
 }
@@ -591,7 +590,7 @@ void VToolOptionsPropertyBrowser::SetPointName2(const QString &name)
 
 //---------------------------------------------------------------------------------------------------------------------
 template<class Tool>
-void VToolOptionsPropertyBrowser::SetCrossCirclesPoint(const QVariant value)
+void VToolOptionsPropertyBrowser::SetCrossCirclesPoint(const QVariant &value)
 {
     if (Tool *i = qgraphicsitem_cast<Tool *>(currentItem))
     {

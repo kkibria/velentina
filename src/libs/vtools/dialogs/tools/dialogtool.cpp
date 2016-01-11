@@ -106,6 +106,11 @@ void DialogTool::showEvent(QShowEvent *event)
     {
         return;
     }
+    // do your init stuff here
+
+    setMaximumSize(size());
+    setMinimumSize(size());
+
     isInitialized = true;//first show windows are held
     ShowVisualization();
 }
@@ -195,11 +200,18 @@ void DialogTool::FillComboBoxLineColors(QComboBox *box) const
 {
     SCASSERT(box != nullptr);
 
+    box->clear();
+    int size = box->iconSize().height();
+    // On Mac pixmap should be little bit smaller.
+#if defined(Q_OS_MAC)
+    size -= 2; // Two pixels should be enough.
+#endif //defined(Q_OS_MAC)
+
     const QMap<QString, QString> map = VAbstractTool::ColorsList();
     QMap<QString, QString>::const_iterator i = map.constBegin();
     while (i != map.constEnd())
     {
-        QPixmap pix(16, 16);
+        QPixmap pix(size, size);
         pix.fill(QColor(i.key()));
         box->addItem(QIcon(pix), i.value(), QVariant(i.key()));
         ++i;
@@ -282,13 +294,6 @@ bool DialogTool::eventFilter(QObject *object, QEvent *event)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogTool::FixateSize()
-{
-    setMaximumSize(size());
-    setMinimumSize(size());
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief ValFormulaChanged handle change formula
  * @param flag flag state of formula
@@ -364,8 +369,8 @@ qreal DialogTool::Eval(const QString &text, bool &flag, QLabel *label, const QSt
             formula.replace("\n", " ");
             // Translate to internal look.
             formula = qApp->TrVars()->FormulaFromUser(formula, qApp->Settings()->GetOsSeparator());
-            Calculator *cal = new Calculator(data, qApp->patternType());
-            result = cal->EvalFormula(formula);
+            Calculator *cal = new Calculator();
+            result = cal->EvalFormula(data->PlainVariables(), formula);
             delete cal;
 
             //if result equal 0
@@ -446,7 +451,6 @@ void DialogTool::setCurrentArcId(QComboBox *box, const quint32 &value, FillCombo
  * @brief setCurrentSplinePathId set current splinePath id in combobox
  * @param box combobox
  * @param value splinePath id
- * @param cut if set to ComboMode::CutSpline don't show id+1 and id+2
  */
 void DialogTool::setCurrentSplinePathId(QComboBox *box, const quint32 &value, FillComboBox rule,
                                         const quint32 &ch1, const quint32 &ch2) const
@@ -535,7 +539,10 @@ bool DialogTool::SetObject(const quint32 &id, QComboBox *box, const QString &too
 void DialogTool::DeployFormula(QPlainTextEdit *formula, QPushButton *buttonGrowLength, int formulaBaseHeight)
 {
     SCASSERT(formula != nullptr);
-    SCASSERT(buttonGrowLength != nullptr)
+    SCASSERT(buttonGrowLength != nullptr);
+
+    const QTextCursor cursor = formula->textCursor();
+
     if (formula->height() < DIALOG_MAX_FORMULA_HEIGHT)
     {
         formula->setFixedHeight(DIALOG_MAX_FORMULA_HEIGHT);
@@ -556,6 +563,9 @@ void DialogTool::DeployFormula(QPlainTextEdit *formula, QPushButton *buttonGrowL
     setUpdatesEnabled(false);
     repaint();
     setUpdatesEnabled(true);
+
+    formula->setFocus();
+    formula->setTextCursor(cursor);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -679,7 +689,7 @@ void DialogTool::FormulaChanged()
     }
 }
 //---------------------------------------------------------------------------------------------------------------------
-void DialogTool::FormulaChangedPlainText()
+void DialogTool::FormulaChangedPlainText() //-V524
 {
     QPlainTextEdit* edit = qobject_cast<QPlainTextEdit*>(sender());
     if (edit)

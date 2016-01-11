@@ -36,6 +36,8 @@
 #include "../../../vwidgets/vmaingraphicsscene.h"
 #include "../support/dialogeditwrongformula.h"
 
+#include <QTimer>
+
 //---------------------------------------------------------------------------------------------------------------------
 DialogPointFromCircleAndTangent::DialogPointFromCircleAndTangent(const VContainer *data, const quint32 &toolId,
                                                                  QWidget *parent)
@@ -43,6 +45,10 @@ DialogPointFromCircleAndTangent::DialogPointFromCircleAndTangent(const VContaine
       timerCircleRadius(nullptr), circleRadius(), formulaBaseHeightCircleRadius(0), angleCircleRadius(INT_MIN)
 {
     ui->setupUi(this);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    ui->lineEditNamePoint->setClearButtonEnabled(true);
+#endif
 
     ui->lineEditNamePoint->setText(qApp->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
     labelEditNamePoint = ui->labelEditNamePoint;
@@ -77,8 +83,6 @@ DialogPointFromCircleAndTangent::DialogPointFromCircleAndTangent(const VContaine
             &DialogPointFromCircleAndTangent::DeployCircleRadiusTextEdit);
 
     vis = new VisToolPointFromCircleAndTangent(data);
-
-    FixateSize();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -159,7 +163,7 @@ CrossCirclesPoint DialogPointFromCircleAndTangent::GetCrossCirclesPoint() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void DialogPointFromCircleAndTangent::SetCrossCirclesPoint(CrossCirclesPoint &p)
+void DialogPointFromCircleAndTangent::SetCrossCirclesPoint(const CrossCirclesPoint &p)
 {
     const qint32 index = ui->comboBoxResult->findData(static_cast<int>(p));
     if (index != -1)

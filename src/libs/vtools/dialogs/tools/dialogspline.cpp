@@ -29,8 +29,8 @@
 #include "dialogspline.h"
 #include "ui_dialogspline.h"
 
-#include "../../libs/vgeometry/vpointf.h"
-#include "../../libs/vpatterndb/vcontainer.h"
+#include "../vgeometry/vpointf.h"
+#include "../vpatterndb/vcontainer.h"
 #include "../../visualization/vistoolspline.h"
 #include <QDebug>
 
@@ -57,8 +57,6 @@ DialogSpline::DialogSpline(const VContainer *data, const quint32 &toolId, QWidge
             this, &DialogSpline::PointNameChanged);
 
     vis = new VisToolSpline(data);
-
-    FixateSize();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

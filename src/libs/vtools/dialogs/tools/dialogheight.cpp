@@ -29,11 +29,11 @@
 #include "dialogheight.h"
 #include "ui_dialogheight.h"
 
-#include "../../libs/vgeometry/vpointf.h"
-#include "../../libs/vpatterndb/vcontainer.h"
+#include "../vgeometry/vpointf.h"
+#include "../vpatterndb/vcontainer.h"
 #include "../../tools/vabstracttool.h"
 #include "../../visualization/vistoolheight.h"
-#include "../../libs/vwidgets/vmaingraphicsscene.h"
+#include "../vwidgets/vmaingraphicsscene.h"
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
@@ -45,6 +45,11 @@ DialogHeight::DialogHeight(const VContainer *data, const quint32 &toolId, QWidge
     :DialogTool(data, toolId, parent), ui(new Ui::DialogHeight)
 {
     ui->setupUi(this);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    ui->lineEditNamePoint->setClearButtonEnabled(true);
+#endif
+
     ui->lineEditNamePoint->setText(qApp->getCurrentDocument()->GenerateLabel(LabelType::NewLabel));
     labelEditNamePoint = ui->labelEditNamePoint;
     InitOkCancelApply(ui);
@@ -65,8 +70,6 @@ DialogHeight::DialogHeight(const VContainer *data, const quint32 &toolId, QWidge
             this, &DialogHeight::PointNameChanged);
 
     vis = new VisToolHeight(data);
-
-    FixateSize();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

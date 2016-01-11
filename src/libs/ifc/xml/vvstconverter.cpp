@@ -40,8 +40,8 @@
  */
 
 const QString VVSTConverter::MeasurementMinVerStr = QStringLiteral("0.3.0");
-const QString VVSTConverter::MeasurementMaxVerStr = QStringLiteral("0.4.0");
-const QString VVSTConverter::CurrentSchema        = QStringLiteral("://schema/standard_measurements/v0.4.0.xsd");
+const QString VVSTConverter::MeasurementMaxVerStr = QStringLiteral("0.4.2");
+const QString VVSTConverter::CurrentSchema        = QStringLiteral("://schema/standard_measurements/v0.4.2.xsd");
 
 //---------------------------------------------------------------------------------------------------------------------
 VVSTConverter::VVSTConverter(const QString &fileName)
@@ -89,6 +89,10 @@ QString VVSTConverter::XSDSchema(int ver) const
         case (0x000300):
             return QStringLiteral("://schema/standard_measurements/v0.3.0.xsd");
         case (0x000400):
+            return QStringLiteral("://schema/standard_measurements/v0.4.0.xsd");
+        case (0x000401):
+            return QStringLiteral("://schema/standard_measurements/v0.4.1.xsd");
+        case (0x000402):
             return CurrentSchema;
         default:
         {
@@ -113,6 +117,20 @@ void VVSTConverter::ApplyPatches()
                 V_FALLTHROUGH
             }
             case (0x000400):
+            {
+                ToV0_4_1();
+                const QString schema = XSDSchema(0x000401);
+                ValidateXML(schema, fileName);
+                V_FALLTHROUGH
+            }
+            case (0x000401):
+            {
+                ToV0_4_2();
+                const QString schema = XSDSchema(0x000402);
+                ValidateXML(schema, fileName);
+                V_FALLTHROUGH
+            }
+            case (0x000402):
                 break;
             default:
                 break;
@@ -121,7 +139,7 @@ void VVSTConverter::ApplyPatches()
     catch (VException &e)
     {
         QString error;
-        const QString backupFileName = fileName +".backup";
+        const QString backupFileName = fileName + QLatin1Literal(".backup");
         if (SafeCopy(backupFileName, fileName, error) == false)
         {
             const QString errorMsg(tr("Error restoring backup file: %1.").arg(error));
@@ -187,19 +205,16 @@ void VVSTConverter::ConvertMeasurementsToV0_4_0()
 
     QDomElement bm = createElement(tagBM);
 
-    QMultiMap<QString, QString> names = OldNamesToNewNames_InV0_3_0();
-
-    QMutableMapIterator<QString, QString> iter( names );
-    while( iter.hasNext() )
+    const QMultiMap<QString, QString> names = OldNamesToNewNames_InV0_3_0();
+    const QList<QString> keys = names.uniqueKeys();
+    for (int i = 0; i < keys.size(); ++i)
     {
-        iter.next();
-
         qreal resValue = 0;
         qreal resSizeIncrease = 0;
         qreal resHeightIncrease = 0;
 
         // This has the same effect as a .values(), just isn't as elegant
-        const QList<QString> list = names.values( iter.key() );
+        const QList<QString> list = names.values( keys.at(i) );
         foreach(const QString &val, list )
         {
             const QDomNodeList nodeList = this->elementsByTagName(val);
@@ -221,7 +236,7 @@ void VVSTConverter::ConvertMeasurementsToV0_4_0()
             }
         }
 
-        bm.appendChild(AddMV0_4_0(iter.key(), resValue, resSizeIncrease, resHeightIncrease));
+        bm.appendChild(AddMV0_4_0(keys.at(i), resValue, resSizeIncrease, resHeightIncrease));
     }
 
     QDomElement rootElement = this->documentElement();
@@ -245,6 +260,48 @@ QDomElement VVSTConverter::AddMV0_4_0(const QString &name, qreal value, qreal si
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VVSTConverter::PM_SystemV0_4_1()
+{
+    QDomElement pm_system = createElement(QStringLiteral("pm_system"));
+    pm_system.appendChild(createTextNode(QStringLiteral("998")));
+
+    const QDomNodeList nodeList = this->elementsByTagName(QStringLiteral("size"));
+    QDomElement personal = nodeList.at(0).toElement();
+
+    QDomElement parent = personal.parentNode().toElement();
+    parent.insertBefore(pm_system, personal);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VVSTConverter::ConvertMeasurementsToV0_4_2()
+{
+    const QMap<QString, QString> names = OldNamesToNewNames_InV0_3_3();
+    auto i = names.constBegin();
+    while (i != names.constEnd())
+    {
+        const QDomNodeList nodeList = this->elementsByTagName(QStringLiteral("m"));
+        if (nodeList.isEmpty())
+        {
+            ++i;
+            continue;
+        }
+
+        for (int ii = 0; ii < nodeList.size(); ++ii)
+        {
+            const QString attrName = QStringLiteral("name");
+            QDomElement element = nodeList.at(ii).toElement();
+            const QString name = GetParametrString(element, attrName);
+            if (name == i.value())
+            {
+                SetAttribute(element, attrName, i.key());
+            }
+        }
+
+        ++i;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VVSTConverter::ToV0_4_0()
 {
     AddRootComment();
@@ -252,5 +309,21 @@ void VVSTConverter::ToV0_4_0()
     AddNewTagsForV0_4_0();
     RemoveTagsForV0_4_0();
     ConvertMeasurementsToV0_4_0();
+    Save();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VVSTConverter::ToV0_4_1()
+{
+    SetVersion(QStringLiteral("0.4.1"));
+    PM_SystemV0_4_1();
+    Save();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VVSTConverter::ToV0_4_2()
+{
+    SetVersion(QStringLiteral("0.4.2"));
+    ConvertMeasurementsToV0_4_2();
     Save();
 }

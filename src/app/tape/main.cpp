@@ -30,6 +30,7 @@
 #include "mapplication.h"
 
 #include <QMessageBox> // For QT_REQUIRE_VERSION
+#include <QTimer>
 
 // Lock producing random attribute order in XML
 // https://stackoverflow.com/questions/27378143/qt-5-produce-random-attribute-order-in-xml
@@ -48,11 +49,9 @@ int main(int argc, char *argv[])
     qt_qhash_seed.store(0); // Lock producing random attribute order in XML
 
     MApplication app(argc, argv);
-    if (not app.IsTheOnly())
-    {
-        return 0;
-    }
     app.InitOptions();
-    app.ParseCommandLine(app.arguments());
-    return app.IsTestMode() ? 0 : app.exec(); // single return point is always better than more
+
+    QTimer::singleShot(0, &app, SLOT(ProcessCMD()));
+
+    return app.exec();
 }

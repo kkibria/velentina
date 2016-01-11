@@ -28,6 +28,7 @@
 
 #include "dialogdetail.h"
 
+#include <QBuffer>
 #include <QDebug>
 
 #include "../../../vgeometry/varc.h"
@@ -46,20 +47,29 @@ DialogDetail::DialogDetail(const VContainer *data, const quint32 &toolId, QWidge
     :DialogTool(data, toolId, parent), ui(), detail(VDetail()), supplement(true), closed(true), flagWidth(true)
 {
     ui.setupUi(this);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 2, 0)
+    ui.lineEditNameDetail->setClearButtonEnabled(true);
+#endif
+
     labelEditNamePoint = ui.labelEditNameDetail;
     ui.labelUnit->setText( VDomDocument::UnitsToStr(qApp->patternUnit(), true));
     ui.labelUnitX->setText(VDomDocument::UnitsToStr(qApp->patternUnit(), true));
     ui.labelUnitY->setText(VDomDocument::UnitsToStr(qApp->patternUnit(), true));
 
+    if(qApp->patternUnit() == Unit::Inch)
+    {
+        ui.doubleSpinBoxSeams->setDecimals(5);
+    }
     // Default value for seam allowence is 1 cm. But pattern have different units, so just set 1 in dialog not enough.
     ui.doubleSpinBoxSeams->setValue(UnitConvertor(1, Unit::Cm, qApp->patternUnit()));
 
     bOk = ui.buttonBox->button(QDialogButtonBox::Ok);
     SCASSERT(bOk != nullptr);
     connect(bOk, &QPushButton::clicked, this, &DialogTool::DialogAccepted);
-    QPushButton *bCansel = ui.buttonBox->button(QDialogButtonBox::Cancel);
-    SCASSERT(bCansel != nullptr);
-    connect(bCansel, &QPushButton::clicked, this, &DialogTool::DialogRejected);
+    QPushButton *bCancel = ui.buttonBox->button(QDialogButtonBox::Cancel);
+    SCASSERT(bCancel != nullptr);
+    connect(bCancel, &QPushButton::clicked, this, &DialogTool::DialogRejected);
 
     flagName = true;//We have default name of detail.
     ChangeColor(labelEditNamePoint, okColor);
@@ -78,8 +88,8 @@ DialogDetail::DialogDetail(const VContainer *data, const quint32 &toolId, QWidge
     connect(ui.lineEditNameDetail, &QLineEdit::textChanged, this, &DialogDetail::NamePointChanged);
 
     connect(ui.toolButtonDelete, &QToolButton::clicked, this, &DialogDetail::DeleteItem);
-
-    FixateSize();
+    connect(ui.toolButtonUp, &QToolButton::clicked, this, &DialogDetail::ScrollUp);
+    connect(ui.toolButtonDown, &QToolButton::clicked, this, &DialogDetail::ScrollDown);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -119,16 +129,7 @@ void DialogDetail::ChosenObject(quint32 id, const SceneObject &type)
             EnableObjectGUI(true);
         }
 
-        if (CreateDetail().ContourPoints(data).size() < 3)
-        {
-            ValidObjects(false);
-        }
-        else
-        {
-            ValidObjects(true);
-
-        }
-
+        ValidObjects(DetailIsValid());
         this->show();
     }
 }
@@ -182,31 +183,53 @@ void DialogDetail::NewItem(quint32 id, const Tool &typeTool, const NodeDetail &t
             return;
     }
 
-    QListWidgetItem *item = new QListWidgetItem(name);
-    item->setFont(QFont("Times", 12, QFont::Bold));
-    VNodeDetail node(id, typeTool, typeNode, mx, my, reverse);
-    item->setData(Qt::UserRole, QVariant::fromValue(node));
-    ui.listWidget->addItem(item);
-    ui.listWidget->setCurrentRow(ui.listWidget->count()-1);
+    bool canAddNewPoint = false;
 
-    ui.doubleSpinBoxBiasX->blockSignals(true);
-    ui.doubleSpinBoxBiasY->blockSignals(true);
-
-    ui.doubleSpinBoxBiasX->setValue(qApp->fromPixel(node.getMx()));
-    ui.doubleSpinBoxBiasY->setValue(qApp->fromPixel(node.getMy()));
-    if (node.getTypeTool() == Tool::NodePoint)
+    if(ui.listWidget->count() == 0)
     {
-        ui.checkBoxReverse->setChecked(false);
-        ui.checkBoxReverse->setEnabled(false);
+        canAddNewPoint = true;
+        ui.toolButtonUp->setEnabled(false);
+        ui.toolButtonDown->setEnabled(false);
     }
     else
     {
-        ui.checkBoxReverse->setEnabled(true);
-        ui.checkBoxReverse->setChecked(node.getReverse());
+        const QString previousItemName = ui.listWidget->item(ui.listWidget->count()-1)->text();
+        if(QString::compare(previousItemName, name) != 0)
+        {
+            canAddNewPoint = true;
+        }
+        ui.toolButtonUp->setEnabled(true);
+        ui.toolButtonDown->setEnabled(true);
     }
 
-    ui.doubleSpinBoxBiasX->blockSignals(false);
-    ui.doubleSpinBoxBiasY->blockSignals(false);
+    if(canAddNewPoint)
+    {
+        QListWidgetItem *item = new QListWidgetItem(name);
+        item->setFont(QFont("Times", 12, QFont::Bold));
+        VNodeDetail node(id, typeTool, typeNode, mx, my, reverse);
+        item->setData(Qt::UserRole, QVariant::fromValue(node));
+        ui.listWidget->addItem(item);
+        ui.listWidget->setCurrentRow(ui.listWidget->count()-1);
+
+        ui.doubleSpinBoxBiasX->blockSignals(true);
+        ui.doubleSpinBoxBiasY->blockSignals(true);
+
+        ui.doubleSpinBoxBiasX->setValue(qApp->fromPixel(node.getMx()));
+        ui.doubleSpinBoxBiasY->setValue(qApp->fromPixel(node.getMy()));
+        if (node.getTypeTool() == Tool::NodePoint)
+        {
+            ui.checkBoxReverse->setChecked(false);
+            ui.checkBoxReverse->setEnabled(false);
+        }
+        else
+        {
+            ui.checkBoxReverse->setEnabled(true);
+            ui.checkBoxReverse->setChecked(node.getReverse());
+        }
+
+        ui.doubleSpinBoxBiasX->blockSignals(false);
+        ui.doubleSpinBoxBiasY->blockSignals(false);
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -256,8 +279,9 @@ void DialogDetail::setDetail(const VDetail &value)
     ui.listWidget->clear();
     for (int i = 0; i < detail.CountNode(); ++i)
     {
-        NewItem(detail.at(i).getId(), detail.at(i).getTypeTool(), detail.at(i).getTypeNode(), detail.at(i).getMx(),
-                detail.at(i).getMy(), detail.at(i).getReverse());
+        const VNodeDetail &node = detail.at(i);
+        NewItem(node.getId(), node.getTypeTool(), node.getTypeNode(), node.getMx(),
+                node.getMy(), node.getReverse());
     }
     ui.lineEditNameDetail->setText(detail.getName());
     ui.checkBoxSeams->setChecked(detail.getSeamAllowance());
@@ -268,6 +292,7 @@ void DialogDetail::setDetail(const VDetail &value)
     ui.listWidget->setCurrentRow(0);
     ui.listWidget->setFocus(Qt::OtherFocusReason);
     ui.toolButtonDelete->setEnabled(true);
+    ValidObjects(DetailIsValid());
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -403,9 +428,132 @@ void DialogDetail::DeleteItem()
         EnableObjectGUI(false);
     }
 
-    delete ui.listWidget->item( ui.listWidget->currentRow() );
-    if (CreateDetail().ContourPoints(data).size() < 3 )
+    delete ui.listWidget->item(ui.listWidget->currentRow());
+    ValidObjects(DetailIsValid());
+
+    if(ui.listWidget->count() < 2)
     {
-        ValidObjects(false);
+        ui.toolButtonUp->setEnabled(false);
+        ui.toolButtonDown->setEnabled(false);
     }
+    else
+    {
+        ui.toolButtonUp->setEnabled(true);
+        ui.toolButtonDown->setEnabled(true);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogDetail::ScrollUp()
+{
+    if (ui.listWidget->count() > 1)
+    {
+        QListWidgetItem *item = ui.listWidget->takeItem(0);
+        ui.listWidget->addItem(item);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void DialogDetail::ScrollDown()
+{
+    if (ui.listWidget->count() > 1)
+    {
+        QListWidgetItem *item = ui.listWidget->takeItem(ui.listWidget->count()-1);
+        ui.listWidget->insertItem(0, item);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool DialogDetail::DetailIsValid() const
+{
+    const QIcon icon = QIcon::fromTheme("dialog-warning",
+                                  QIcon(":/icons/win.icon.theme/16x16/status/dialog-warning.png"));
+
+    const QPixmap pixmap = icon.pixmap(QSize(16, 16));
+    QByteArray byteArray;
+    QBuffer buffer(&byteArray);
+    pixmap.save(&buffer, "PNG");
+    QString url = QString("<img src=\"data:image/png;base64,") + byteArray.toBase64() + QLatin1Literal("\"/> ");
+
+    if (ui.listWidget->count() < 3)
+    {
+        url += tr("You need more points!");
+        ui.helpLabel->setText(url);
+        return false;
+    }
+    else
+    {
+        if(not DetailIsClockwise())
+        {
+            url += tr("You have to choose points in a clockwise direction!");
+            ui.helpLabel->setText(url);
+            return false;
+        }
+        if (FirstPointEqualLast())
+        {
+            url += tr("First point cannot be equal to the last point!");
+            ui.helpLabel->setText(url);
+            return false;
+        }
+        else
+        {
+            for (int i=0, sz = ui.listWidget->count()-1; i<sz; ++i)
+            {
+                const QString previousRow = ui.listWidget->item(i)->text();
+                const QString nextRow = ui.listWidget->item(i+1)->text();
+
+                if (QString::compare(previousRow, nextRow) == 0)
+                {
+                    url += tr("You have double points!");
+                    ui.helpLabel->setText(url);
+                    return false;
+                }
+            }
+        }
+    }
+    ui.helpLabel->setText(tr("Ready!"));
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool DialogDetail::FirstPointEqualLast() const
+{
+    if (ui.listWidget->count() > 1)
+    {
+        const QString firstDetailPoint = ui.listWidget->item(0)->text();
+        const QString lastDetailPoint = ui.listWidget->item(ui.listWidget->count()-1)->text();
+
+        if (QString::compare(firstDetailPoint, lastDetailPoint) == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool DialogDetail::DetailIsClockwise() const
+{
+    if(ui.listWidget->count() < 3)
+    {
+        return false;
+    }
+    VDetail detail;
+    for (qint32 i = 0; i < ui.listWidget->count(); ++i)
+    {
+        QListWidgetItem *item = ui.listWidget->item(i);
+        detail.append( qvariant_cast<VNodeDetail>(item->data(Qt::UserRole)));
+    }
+    const QVector<QPointF> points = detail.ContourPoints(data);
+
+    const qreal res = VDetail::SumTrapezoids(points);
+    if (res < 0)
+    {
+        return true;
+    }
+    return false;
 }

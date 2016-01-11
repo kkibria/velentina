@@ -64,7 +64,6 @@ public slots:
     void         DeployFormulaTextEdit();
     virtual void EvalFormula() Q_DECL_OVERRIDE;
     void         ValChenged(int row);
-    void         SizeHeight();
     void         PutHere();
     void         PutVal(QListWidgetItem * item);
 
@@ -97,7 +96,7 @@ private:
     void InitVariables();
 
     template <class key, class val>
-    void ShowVariable(const QMap<key, val> var);
+    void ShowVariable(const QMap<key, val> &var);
 
     void SetDescription(const QString &name, qreal value, const QString &unit, const QString &description);
 };

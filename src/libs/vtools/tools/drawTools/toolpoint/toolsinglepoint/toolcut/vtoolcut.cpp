@@ -27,54 +27,27 @@
  *************************************************************************/
 
 #include "vtoolcut.h"
-#include "../../libs/vgeometry/vpointf.h"
-#include "../../libs/vpatterndb/vformula.h"
+#include "../vgeometry/vpointf.h"
+#include "../vpatterndb/vformula.h"
 
 //---------------------------------------------------------------------------------------------------------------------
 VToolCut::VToolCut(VAbstractPattern *doc, VContainer *data, const quint32 &id, const QString &formula,
                    const quint32 &curveCutId, const quint32 &curve1id, const quint32 &curve2id, const QString &color,
                    QGraphicsItem *parent)
-    :VToolSinglePoint(doc, data, id, parent), formula(formula), firstCurve(nullptr), secondCurve(nullptr),
+    :VToolSinglePoint(doc, data, id, parent), formula(formula),
       curveCutId(curveCutId), curve1id(curve1id), curve2id(curve2id), detailsMode(false)
 {
-    Q_ASSERT_X(curveCutId > 0, Q_FUNC_INFO, "curveCutId <= 0");
-    Q_ASSERT_X(curve1id > 0, Q_FUNC_INFO, "curve1id <= 0");
-    Q_ASSERT_X(curve2id > 0, Q_FUNC_INFO, "curve2id <= 0");
+    Q_ASSERT_X(curveCutId != 0, Q_FUNC_INFO, "curveCutId == 0"); //-V654 //-V712
+    Q_ASSERT_X(curve1id != 0, Q_FUNC_INFO, "curve1id == 0"); //-V654 //-V712
+    Q_ASSERT_X(curve2id != 0, Q_FUNC_INFO, "curve2id == 0"); //-V654 //-V712
 
     lineColor = color;
-
-    firstCurve = new VSimpleCurve(curve1id, QColor(lineColor), SimpleCurvePoint::ForthPoint, *data->GetPatternUnit(),
-                                  &factor);
-    firstCurve->setParentItem(this);
-    connect(firstCurve, &VSimpleCurve::Choosed, this, &VToolCut::CurveChoosed);
-    connect(firstCurve, &VSimpleCurve::HoverPath, this, &VToolCut::HoverPath);
-    // TODO: Now we only hide simple curves, but in future need totally delete them all.
-    firstCurve->setVisible(false);
-
-    secondCurve = new VSimpleCurve(curve2id, QColor(lineColor), SimpleCurvePoint::FirstPoint, *data->GetPatternUnit(),
-                                   &factor);
-    secondCurve->setParentItem(this);
-    connect(secondCurve, &VSimpleCurve::Choosed, this, &VToolCut::CurveChoosed);
-    connect(secondCurve, &VSimpleCurve::HoverPath, this, &VToolCut::HoverPath);
-    secondCurve->setVisible(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VToolCut::HoverPath(quint32 id, SimpleCurvePoint curvePosition, PathDirection direction)
-{
-    VSimpleCurve* simpleCurve = qobject_cast<VSimpleCurve*>(sender());
-    if (simpleCurve)
-    {
-        RefreshCurve(simpleCurve, id, curvePosition, direction);
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolCut::Disable(bool disable, const QString &namePP)
 {
     VToolSinglePoint::Disable(disable, namePP);
-    firstCurve->ChangedActivDraw(enabled);
-    secondCurve->ChangedActivDraw(enabled);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -141,8 +114,6 @@ void VToolCut::SetFormula(const VFormula &value)
  */
 void VToolCut::RefreshGeometry()
 {
-    RefreshCurve(firstCurve, curve1id, SimpleCurvePoint::ForthPoint);
-    RefreshCurve(secondCurve, curve2id, SimpleCurvePoint::FirstPoint);
     VToolSinglePoint::RefreshPointGeometry(*VDrawTool::data.GeometricObject<VPointF>(id));
 }
 
@@ -159,7 +130,7 @@ void VToolCut::RemoveReferens()
 // cppcheck-suppress unusedFunction
 void VToolCut::FullUpdateCurveFromFile(const QString &attrCurve)
 {
-    Q_ASSERT_X(attrCurve.isEmpty() == false, Q_FUNC_INFO, "attribute name is empty");
+    Q_ASSERT_X(not attrCurve.isEmpty(), Q_FUNC_INFO, "attribute name is empty");
 
     QDomElement domElement = doc->elementById(id);
     if (domElement.isElement())

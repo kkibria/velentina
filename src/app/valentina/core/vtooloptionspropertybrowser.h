@@ -32,9 +32,9 @@
 #include <QObject>
 #include <QMap>
 
-#include "../../libs/vpropertyexplorer/vproperty.h"
-#include "../../libs/vpropertyexplorer/vpropertymodel.h"
-#include "../../libs/vpropertyexplorer/vpropertyformview.h"
+#include "../vpropertyexplorer/vproperty.h"
+#include "../vpropertyexplorer/vpropertymodel.h"
+#include "../vpropertyexplorer/vpropertyformview.h"
 
 class QDockWidget;
 class QGraphicsItem;
@@ -45,7 +45,7 @@ class VToolOptionsPropertyBrowser : public QObject
 {
     Q_OBJECT
 public:
-    VToolOptionsPropertyBrowser(QDockWidget *parent);
+    explicit VToolOptionsPropertyBrowser(QDockWidget *parent);
     void ClearPropertyBrowser();
 public slots:
     void itemClicked(QGraphicsItem *item);
@@ -75,7 +75,7 @@ private:
     void SetPointName2(const QString &name);
 
     template<class Tool>
-    void SetCrossCirclesPoint(const QVariant value);
+    void SetCrossCirclesPoint(const QVariant &value);
 
     template<class Tool>
     void AddPropertyPointName(Tool *i, const QString &propertyName);

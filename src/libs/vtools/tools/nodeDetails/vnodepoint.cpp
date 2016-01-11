@@ -55,6 +55,7 @@ VNodePoint::VNodePoint(VAbstractPattern *doc, VContainer *data, quint32 id, quin
 {
     radius = ToPixel(DefPointRadius/*mm*/, Unit::Mm);
     namePoint = new VGraphicsSimpleTextItem(this);
+    connect(namePoint, &VGraphicsSimpleTextItem::PointChoosed, this, &VNodePoint::PointChoosed);
     lineName = new QGraphicsLineItem(this);
     connect(namePoint, &VGraphicsSimpleTextItem::NameChangePosition, this,
             &VNodePoint::NameChangePosition);
@@ -78,7 +79,8 @@ VNodePoint::VNodePoint(VAbstractPattern *doc, VContainer *data, quint32 id, quin
  * @param idTool tool id.
  * @param parent QObject parent
  */
-void VNodePoint::Create(VAbstractPattern *doc, VContainer *data, quint32 id, quint32 idPoint, const Document &parse,
+void VNodePoint::Create(VAbstractPattern *doc, VContainer *data, VMainGraphicsScene *scene,
+                        quint32 id, quint32 idPoint, const Document &parse,
                         const Source &typeCreation, const quint32 &idTool, QObject *parent)
 {
     VAbstractTool::AddRecord(id, Tool::NodePoint, doc);
@@ -87,18 +89,22 @@ void VNodePoint::Create(VAbstractPattern *doc, VContainer *data, quint32 id, qui
         //TODO Need create garbage collector and remove all nodes, what we don't use.
         //Better check garbage before each saving file. Check only modeling tags.
         VNodePoint *point = new VNodePoint(doc, data, id, idPoint, typeCreation, idTool, parent);
+
+        connect(scene, &VMainGraphicsScene::EnableToolMove, point, &VNodePoint::EnableToolMove);
         doc->AddTool(id, point);
-        if (idTool != 0)
+        if (idTool != NULL_ID)
         {
-            doc->IncrementReferens(idTool);
             //Some nodes we don't show on scene. Tool that create this nodes must free memory.
             VDataTool *tool = doc->getTool(idTool);
             SCASSERT(tool != nullptr);
-            point->setParent(tool);
+            point->setParent(tool);// Adopted by a tool
         }
         else
         {
-            doc->IncrementReferens(idPoint);
+            // Try to prevent memory leak
+            scene->addItem(point);// First adopted by scene
+            point->hide();// If no one will use node, it will stay hidden
+            point->SetParentType(ParentType::Scene);
         }
     }
     else
@@ -108,29 +114,15 @@ void VNodePoint::Create(VAbstractPattern *doc, VContainer *data, quint32 id, qui
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-/**
- * @brief DeleteNode delete node from detail.
- */
-void VNodePoint::DeleteNode()
-{
-    VAbstractNode::DeleteNode();
-    this->setVisible(false);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VNodePoint::RestoreNode()
-{
-    if (this->isVisible() == false)
-    {
-        VAbstractNode::RestoreNode();
-        this->setVisible(true);
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 QString VNodePoint::getTagName() const
 {
     return VNodePoint::TagName;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VNodePoint::PointChoosed()
+{
+    emit ChoosedTool(id, SceneObject::Point);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -279,17 +271,26 @@ void VNodePoint::RefreshPointGeometry(const VPointF &point)
  */
 void VNodePoint::RefreshLine()
 {
-    QRectF nameRec = namePoint->sceneBoundingRect();
-    QPointF p1, p2;
-    VGObject::LineIntersectCircle(QPointF(), radius, QLineF(QPointF(), nameRec.center()- scenePos()), p1, p2);
-    QPointF pRec = VGObject::LineIntersectRect(nameRec, QLineF(scenePos(), nameRec.center()));
-    lineName->setLine(QLineF(p1, pRec - scenePos()));
-    if (QLineF(p1, pRec - scenePos()).length() <= ToPixel(4, Unit::Mm))
+    VAbstractTool::RefreshLine(this, namePoint, lineName, radius);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VNodePoint::ShowNode()
+{
+    if (parentType != ParentType::Scene)
     {
-        lineName->setVisible(false);
+        show();
     }
-    else
-    {
-        lineName->setVisible(true);
-    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VNodePoint::HideNode()
+{
+    hide();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VNodePoint::EnableToolMove(bool move)
+{
+    namePoint->setFlag(QGraphicsItem::ItemIsMovable, move);
 }

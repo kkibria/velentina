@@ -27,6 +27,8 @@
  *************************************************************************/
 
 #include "abstracttest.h"
+#include "../vmisc/logging.h"
+#include "../vmisc/vsysexits.h"
 
 #include <QtTest>
 
@@ -53,7 +55,7 @@ QString AbstractTest::ValentinaPath() const
 {
     const QString path = QStringLiteral("/../../../app/valentina/bin/valentina");
 #ifdef Q_OS_WIN
-    return QApplication::applicationDirPath() + path + QStringLiteral(".exe");
+    return QApplication::applicationDirPath() + path + QLatin1Literal(".exe");
 #else
     return QApplication::applicationDirPath() + path;
 #endif
@@ -64,14 +66,21 @@ QString AbstractTest::TapePath() const
 {
     const QString path = QStringLiteral("/../../../app/tape/bin/tape");
 #ifdef Q_OS_WIN
-    return QApplication::applicationDirPath() + path + QStringLiteral(".exe");
+    return QApplication::applicationDirPath() + path + QLatin1Literal(".exe");
 #else
     return QApplication::applicationDirPath() + path;
 #endif
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-bool AbstractTest::Run(const QString &program, const QStringList &arguments)
+QString AbstractTest::TranslationsPath() const
+{
+    return QApplication::applicationDirPath() + QStringLiteral("/../../../app/valentina/bin/translations");
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool AbstractTest::Run(bool showWarn, int exit, int &exitCode, const QString &program, const QStringList &arguments,
+                       int msecs)
 {
     const QString parameters = QString("Program: %1 \nArguments: %2.").arg(program).arg(arguments.join(", "));
 
@@ -79,7 +88,8 @@ bool AbstractTest::Run(const QString &program, const QStringList &arguments)
     if (not info.exists())
     {
         const QString msg = QString("Can't find binary.\n%1").arg(parameters);
-        QWARN(msg.toUtf8().constData());
+        QWARN(qUtf8Printable(msg));
+        exitCode = TST_EX_BIN;
         return false;
     }
 
@@ -87,29 +97,35 @@ bool AbstractTest::Run(const QString &program, const QStringList &arguments)
     process->setWorkingDirectory(info.absoluteDir().absolutePath());
     process->start(program, arguments);
 
-    if (not process->waitForFinished())// 30 sec
+    if (not process->waitForFinished(msecs))
     {
         const QString msg = QString("The operation timed out or an error occurred.\n%1").arg(parameters);
-        QWARN(msg.toUtf8().constData());
+        QWARN(qUtf8Printable(msg));
+        exitCode = TST_EX_TIME_OUT;
         return false;
     }
 
     if (process->exitStatus() == QProcess::CrashExit)
     {
         const QString msg = QString("Program crashed.\n%1\n%2").arg(parameters)
-                .arg(QString(process->readAllStandardError()));
-        QWARN(msg.toUtf8().constData());
+                                                               .arg(QString(process->readAllStandardError()));
+        QWARN(qUtf8Printable(msg));
+        exitCode = TST_EX_CRASH;
         return false;
     }
 
-    if (process->exitCode() != 0)
+    if (process->exitCode() != V_EX_OK)
     {
-        const QString msg = QString("Failed.\n%1\n%2").arg(parameters)
-                .arg(QString(process->readAllStandardError()));
-        QWARN(msg.toUtf8().constData());
+        if (showWarn || process->exitCode() != exit)
+        {
+            const QString msg = QString("\n%1").arg(QString(process->readAllStandardError()));
+            QWARN(qUtf8Printable(msg));
+        }
+        exitCode = process->exitCode();
         return false;
     }
 
+    exitCode = process->exitCode();
     delete process;
     return true;
 }
@@ -131,8 +147,8 @@ bool AbstractTest::CopyRecursively(const QString &srcFilePath, const QString &tg
                                                     QDir::System);
         foreach (const QString &fileName, fileNames)
         {
-            const QString newSrcFilePath = srcFilePath + QLatin1Char('/') + fileName;
-            const QString newTgtFilePath = tgtFilePath + QLatin1Char('/') + fileName;
+            const QString newSrcFilePath = srcFilePath + QDir::separator() + fileName;
+            const QString newTgtFilePath = tgtFilePath + QDir::separator() + fileName;
             if (not CopyRecursively(newSrcFilePath, newTgtFilePath))
             {
                 return false;

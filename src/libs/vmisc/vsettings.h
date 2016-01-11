@@ -30,7 +30,13 @@
 #define VSETTINGS_H
 
 #include "vcommonsettings.h"
-#include "../../libs/vlayout/vbank.h"
+#include "../vlayout/vbank.h"
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 3, 0)
+#   include "../vmisc/backport/qmarginsf.h"
+#else
+#   include <QMargins>
+#endif
 
 class VSettings : public VCommonSettings
 {
@@ -38,8 +44,6 @@ class VSettings : public VCommonSettings
 public:
     VSettings(Format format, Scope scope, const QString &organization, const QString &application = QString(),
               QObject *parent = 0);
-
-    virtual QString StandardTablesPath() const Q_DECL_OVERRIDE;
 
     QString GetLabelLanguage() const;
     void SetLabelLanguage(const QString &value);
@@ -83,19 +87,24 @@ public:
     QString GetUserPassword() const;
     void SetUserPassword(const QString &value);
 
-    int GetLayoutPaperHeight() const;
-    void SetLayoutPaperHeight(int value);
+    // Layout settings
+    qreal GetLayoutPaperHeight() const;
+    void SetLayoutPaperHeight(qreal value);
 
-    int GetLayoutPaperWidth() const;
-    void SetLayoutPaperWidth(int value);
+    qreal GetLayoutPaperWidth() const;
+    void SetLayoutPaperWidth(qreal value);
 
-    unsigned int GetLayoutShift() const;
-    static unsigned int GetDefLayoutShift();
-    void SetLayoutShift(unsigned int value);
+    qreal GetLayoutShift() const;
+    static qreal GetDefLayoutShift();
+    void SetLayoutShift(qreal value);
 
-    unsigned int GetLayoutWidth() const;
-    static unsigned int GetDefLayoutWidth();
-    void SetLayoutWidth(unsigned int value);
+    qreal GetLayoutWidth() const;
+    static qreal GetDefLayoutWidth();
+    void SetLayoutWidth(qreal value);
+
+    QMarginsF GetFields() const;
+    static QMarginsF GetDefFields();
+    void SetFields(const QMarginsF &value);
 
     Cases GetLayoutGroup() const;
     static Cases GetDefLayoutGroup();
@@ -110,13 +119,20 @@ public:
     void SetLayoutRotationIncrease(int value);
 
     bool GetLayoutAutoCrop() const;
+    static bool GetDefLayoutAutoCrop();
     void SetLayoutAutoCrop(bool value);
 
     bool GetLayoutSaveLength() const;
+    static bool GetDefLayoutSaveLength();
     void SetLayoutSaveLength(bool value);
 
     bool GetLayoutUnitePages() const;
+    static bool GetDefLayoutUnitePages();
     void SetLayoutUnitePages(bool value);
+
+    bool GetIgnoreAllFields() const;
+    static bool GetDefIgnoreAllFields();
+    void SetIgnoreAllFields(bool value);
 
 private:
     Q_DISABLE_COPY(VSettings)
@@ -148,6 +164,8 @@ private:
     static const QString SettingLayoutAutoCrop;
     static const QString SettingLayoutSaveLength;
     static const QString SettingLayoutUnitePages;
+    static const QString SettingFields;
+    static const QString SettingIgnoreFields;
 };
 
 #endif // VSETTINGS_H

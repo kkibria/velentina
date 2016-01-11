@@ -112,6 +112,7 @@ QGraphicsEllipseItem *Visualization::InitPoint(const QColor &color, QGraphicsIte
     point->setBrush(QBrush(Qt::NoBrush));
     point->setPen(QPen(color, qApp->toPixel(WidthMainLine(*Visualization::data->GetPatternUnit()))/factor));
     point->setRect(PointRect(ToPixel(DefPointRadius/*mm*/, Unit::Mm)));
+    point->setPos(QPointF());
     point->setFlags(QGraphicsItem::ItemStacksBehindParent);
     point->setVisible(false);
     return point;
@@ -147,8 +148,8 @@ qreal Visualization::FindVal(const QString &expression)
             QString formula = expression;
             formula.replace("\n", " ");
             formula = qApp->TrVars()->FormulaFromUser(formula, qApp->Settings()->GetOsSeparator());
-            Calculator *cal = new Calculator(Visualization::data, qApp->patternType());
-            val = cal->EvalFormula(formula);
+            Calculator *cal = new Calculator();
+            val = cal->EvalFormula(data->PlainVariables(), formula);
             delete cal;
         }
         catch (qmu::QmuParserError &e)

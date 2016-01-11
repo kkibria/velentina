@@ -45,7 +45,7 @@ class VAbstractPattern : public QObject, public VDomDocument
 {
     Q_OBJECT
 public:
-    VAbstractPattern(QObject *parent = nullptr);
+    explicit VAbstractPattern(QObject *parent = nullptr);
     virtual ~VAbstractPattern() Q_DECL_OVERRIDE;
 
     QStringList    ListMeasurements() const;
@@ -102,6 +102,10 @@ public:
 
     QString        GetVersion() const;
     void           SetVersion();
+
+    bool           IsModified() const;
+
+    QDomElement    GetDraw(const QString &name) const;
 
     static const QString TagPattern;
     static const QString TagCalculation;
@@ -166,6 +170,10 @@ public:
     static const QString AttrS52;
     static const QString AttrS54;
     static const QString AttrS56;
+
+    static const QString AttrCustom;
+    static const QString AttrDefHeight;
+    static const QString AttrDefSize;
 
     static const QString IncrementName;
     static const QString IncrementFormula;
@@ -232,6 +240,9 @@ protected:
 
     /** @brief patternPieces list of patern pieces names for combobox*/
     QStringList    patternPieces;
+
+    /** @brief modified keep state of the document for cases that do not cover QUndoStack*/
+    mutable bool   modified;
 
     void           ToolExists(const quint32 &id) const;
 

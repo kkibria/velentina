@@ -43,6 +43,7 @@ class QGraphicsView;
 class QGraphicsItem;
 class QRectF;
 class Visualization;
+class VGraphicsSimpleTextItem;
 
 /**
  * @brief The VAbstractTool abstract class for all tools.
@@ -54,6 +55,8 @@ public:
     VAbstractTool(VAbstractPattern *doc, VContainer *data, quint32 id, QObject *parent = nullptr);
     virtual ~VAbstractTool() Q_DECL_OVERRIDE;
     quint32                 getId() const;
+
+    static const QString AttrInUse;
 
     static const QStringList    StylesList();
     static Qt::PenStyle         LineStyleToPenStyle(const QString &typeLine);
@@ -121,6 +124,9 @@ protected:
 
     virtual void SetVisualization()=0;
     void ToolCreation(const Source &typeCreation);
+
+    static void RefreshLine(QGraphicsEllipseItem *point, VGraphicsSimpleTextItem *namePoint, QGraphicsLineItem *lineName,
+                            const qreal radius);
 private:
     Q_DISABLE_COPY(VAbstractTool)
 };

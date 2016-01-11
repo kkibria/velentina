@@ -36,9 +36,20 @@
 #include "tst_varc.h"
 #include "tst_measurementregexp.h"
 #include "tst_tapecommandline.h"
+#include "tst_valentinacommandline.h"
+#include "tst_qmutokenparser.h"
+#include "tst_vmeasurements.h"
+#include "tst_qmuparsererrormsg.h"
+#include "tst_vlockguard.h"
+#include "tst_misc.h"
+#include "tst_vcommandline.h"
+#include "tst_tstranslation.h"
+#include "tst_vdetail.h"
 
 int main(int argc, char** argv)
 {
+    Q_INIT_RESOURCE(schema);
+
     QApplication app( argc, argv );// For QPrinter
 
     int status = 0;
@@ -48,6 +59,7 @@ int main(int argc, char** argv)
         delete obj;
     };
 
+    ASSERT_TEST(new TST_VDetail());
     ASSERT_TEST(new TST_VPoster());
     ASSERT_TEST(new TST_VAbstractDetail());
     ASSERT_TEST(new TST_VSpline());
@@ -56,6 +68,14 @@ int main(int argc, char** argv)
     ASSERT_TEST(new TST_VArc());
     ASSERT_TEST(new TST_MeasurementRegExp());
     ASSERT_TEST(new TST_TapeCommandLine());
+    ASSERT_TEST(new TST_ValentinaCommandLine());
+    ASSERT_TEST(new TST_QmuTokenParser());
+    ASSERT_TEST(new TST_VMeasurements());
+    ASSERT_TEST(new TST_QmuParserErrorMsg());
+    ASSERT_TEST(new TST_VLockGuard());
+    ASSERT_TEST(new TST_Misc());
+    ASSERT_TEST(new TST_VCommandLine());
+    ASSERT_TEST(new TST_TSTranslation());
 
     return status;
 }

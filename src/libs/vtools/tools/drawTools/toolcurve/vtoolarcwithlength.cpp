@@ -82,8 +82,8 @@ VToolArcWithLength *VToolArcWithLength::Create(DialogTool *dialog, VMainGraphics
     QString f1 = dialogTool->GetF1();
     QString length = dialogTool->GetLength();
     const QString color = dialogTool->GetColor();
-    VToolArcWithLength* point = nullptr;
-    point=Create(0, center, radius, f1, length, color, scene, doc, data, Document::FullParse, Source::FromGui);
+    VToolArcWithLength* point = Create(0, center, radius, f1, length, color, scene, doc, data, Document::FullParse,
+                                       Source::FromGui);
     if (point != nullptr)
     {
         point->dialog=dialogTool;
@@ -255,7 +255,15 @@ void VToolArcWithLength::ShowVisualization(bool show)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolArcWithLength::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    ContextMenu<DialogArcWithLength>(this, event);
+    try
+    {
+        ContextMenu<DialogArcWithLength>(this, event);
+    }
+    catch(const VExceptionToolWasDeleted &e)
+    {
+        Q_UNUSED(e);
+        return;//Leave this method immediately!!!
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -300,12 +308,13 @@ void VToolArcWithLength::SetVisualization()
     {
         const QSharedPointer<VArc> arc = VAbstractTool::data.GeometricObject<VArc>(id);
         VisToolArcWithLength *visual = qobject_cast<VisToolArcWithLength *>(vis);
-        SCASSERT(visual != nullptr)
+        SCASSERT(visual != nullptr);
 
+        const VTranslateVars *trVars = qApp->TrVars();
         visual->setPoint1Id(arc->GetCenter().id());
-        visual->setRadius(qApp->TrVars()->FormulaToUser(arc->GetFormulaRadius()));
-        visual->setF1(qApp->TrVars()->FormulaToUser(arc->GetFormulaF1()));
-        visual->setLength(qApp->TrVars()->FormulaToUser(arc->GetFormulaLength()));
+        visual->setRadius(trVars->FormulaToUser(arc->GetFormulaRadius()));
+        visual->setF1(trVars->FormulaToUser(arc->GetFormulaF1()));
+        visual->setLength(trVars->FormulaToUser(arc->GetFormulaLength()));
         visual->RefreshGeometry();
     }
 }

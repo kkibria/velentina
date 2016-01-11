@@ -40,19 +40,24 @@ class PathPage : public QWidget
 {
     Q_OBJECT
 public:
-    PathPage(QWidget *parent = nullptr);
+    explicit PathPage(QWidget *parent = nullptr);
     void      Apply();
 public slots:
     void TableActivated();
     void DefaultPath();
     void EditPath();
+protected:
+    virtual void changeEvent(QEvent* event) Q_DECL_OVERRIDE;
 private:
     Q_DISABLE_COPY(PathPage)
     QPushButton  *defaultButton;
     QPushButton  *editButton;
     QTableWidget *pathTable;
+    QGroupBox    *pathGroup;
+
     QGroupBox    *PathGroup();
     void         InitTable();
+    void         RetranslateUi();
 };
 
 #endif // PATHPAGE_H

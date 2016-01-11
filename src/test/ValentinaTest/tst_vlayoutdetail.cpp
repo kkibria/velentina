@@ -27,7 +27,7 @@
  *************************************************************************/
 
 #include "tst_vlayoutdetail.h"
-#include "../../libs/vlayout/vlayoutdetail.h"
+#include "../vlayout/vlayoutdetail.h"
 
 #include <QtDebug>
 
@@ -90,7 +90,7 @@ QVector<QPointF> TST_VLayoutDetail::InputPointsCase1() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-QVector<QPointF> TST_VLayoutDetail::OutputPointsCase1() const
+QVector<QPointF> TST_VLayoutDetail::OutputPointsCase1() const //-V524
 {
     QVector<QPointF> points;
 
@@ -177,7 +177,7 @@ QVector<QPointF> TST_VLayoutDetail::InputPointsCase3() const
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-QVector<QPointF> TST_VLayoutDetail::OutputPointsCase3() const
+QVector<QPointF> TST_VLayoutDetail::OutputPointsCase3() const //-V524
 {
     QVector<QPointF> points;
 

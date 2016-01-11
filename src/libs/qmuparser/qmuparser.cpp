@@ -23,6 +23,7 @@
 
 #include <QtGlobal>
 #include <QtCore/qmath.h>
+#include <QCoreApplication>
 
 using namespace std;
 
@@ -134,9 +135,10 @@ qreal QmuParser::FMod(qreal number, qreal denom)
  */
 qreal QmuParser::Sum(const qreal *a_afArg, int a_iArgc)
 {
-    if (a_iArgc == false)
+    if (a_iArgc == 0)
     {
-        throw QmuParserError("too few arguments for function sum.");
+        throw QmuParserError(QCoreApplication::translate("QmuParser", "too few arguments for function sum.",
+                                                         "parser error message"));
     }
     qreal fRes=0;
     for (int i=0; i<a_iArgc; ++i)
@@ -154,9 +156,10 @@ qreal QmuParser::Sum(const qreal *a_afArg, int a_iArgc)
  */
 qreal QmuParser::Avg(const qreal *a_afArg, int a_iArgc)
 {
-    if (a_iArgc == false)
+    if (a_iArgc == 0)
     {
-        throw QmuParserError("too few arguments for function sum.");
+        throw QmuParserError(QCoreApplication::translate("QmuParser", "too few arguments for function sum.",
+                                                         "parser error message"));
     }
     qreal fRes=0;
     for (int i=0; i<a_iArgc; ++i)
@@ -174,9 +177,10 @@ qreal QmuParser::Avg(const qreal *a_afArg, int a_iArgc)
  */
 qreal QmuParser::Min(const qreal *a_afArg, int a_iArgc)
 {
-    if (a_iArgc == false)
+    if (a_iArgc == 0)
     {
-        throw QmuParserError("too few arguments for function min.");
+        throw QmuParserError(QCoreApplication::translate("QmuParser", "too few arguments for function min.",
+                                                         "parser error message"));
     }
     qreal fRes=a_afArg[0];
     for (int i=0; i<a_iArgc; ++i)
@@ -194,9 +198,10 @@ qreal QmuParser::Min(const qreal *a_afArg, int a_iArgc)
  */
 qreal QmuParser::Max(const qreal *a_afArg, int a_iArgc)
 {
-    if (a_iArgc == false)
+    if (a_iArgc == 0)
     {
-        throw QmuParserError("too few arguments for function min.");
+        throw QmuParserError(QCoreApplication::translate("QmuParser", "too few arguments for function min.",
+                                                         "parser error message"));
     }
     qreal fRes=a_afArg[0];
     for (int i=0; i<a_iArgc; ++i)
@@ -317,8 +322,8 @@ void QmuParser::InitFun()
  */
 void QmuParser::InitConst()
 {
-    DefineConst("_pi", (qreal)M_PI);
-    DefineConst("_e", (qreal)M_E);
+    DefineConst("_pi", static_cast<qreal>(M_PI));
+    DefineConst("_e", static_cast<qreal>(M_E));
 }
 
 //---------------------------------------------------------------------------------------------------------------------

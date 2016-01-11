@@ -41,7 +41,8 @@ signals:
 
 private slots:
     void GetSegmentPoints();
-
+    void GetSegmentPoints_issue412();
+    void GetSegmentPoints_TestPuzzle();
 };
 
 #endif // TST_VSPLINE_H

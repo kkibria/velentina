@@ -185,7 +185,7 @@ QLineF VGObject::BuildLine(const QPointF &p1, const qreal &length, const qreal &
 {
     QLineF line = QLineF();
     line.setP1(p1);
-    line.setAngle(angle);// First set angle than length. Length can have negative value.
+    line.setAngle(angle);// First set angle then length. Length can have negative value.
     line.setLength(length);
     return line;
 }
@@ -445,7 +445,7 @@ bool VGObject::IsPointOnLineSegment(const QPointF &t, const QPointF &p1, const Q
  */
 bool VGObject::IsPointOnLineviaPDP(const QPointF &t, const QPointF &p1, const QPointF &p2)
 {
-    return ( qAbs(PerpDotProduct(p1, p2, t) < GetEpsilon(p1, p2)) );
+    return ( qAbs(PerpDotProduct(p1, p2, t)) < GetEpsilon(p1, p2) );
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -470,9 +470,9 @@ double VGObject::PerpDotProduct(const QPointF &t, const QPointF &p1, const QPoin
  */
 double VGObject::GetEpsilon(const QPointF &p1, const QPointF &p2)
 {
-    const int dx1 = p2.toPoint().x() - p1.toPoint().x();
-    const int dy1 = p2.toPoint().y() - p1.toPoint().y();
-    const double epsilon = 0.003 * (dx1 * dx1 + dy1 * dy1);
+    const double dx1 = p2.x() - p1.x();
+    const double dy1 = p2.y() - p1.y();
+    const double epsilon = 0.03 * (dx1 * dx1 + dy1 * dy1); //-V636
     return epsilon;
 }
 

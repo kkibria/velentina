@@ -21,6 +21,11 @@ TARGET = ParserTest
 # Console application, we use C++11 standard.
 CONFIG   += console c++11
 
+# CONFIG += testcase adds a  'make check' which is great. But by default it also
+# adds a 'make install' that installs the test cases, which we do not want.
+# Can configure it not to do that with 'no_testcase_installs'
+CONFIG += testcase no_testcase_installs
+
 # Use out-of-source builds (shadow builds)
 CONFIG   -= app_bundle debug_and_release debug_and_release_target
 
@@ -42,9 +47,6 @@ SOURCES += \
 
 # Set using ccache. Function enable_ccache() defined in common.pri.
 $$enable_ccache()
-
-# Set precompiled headers. Function set_PCH() defined in common.pri.
-$$set_PCH()
 
 CONFIG(debug, debug|release){
     # Debug mode
@@ -73,6 +75,10 @@ CONFIG(debug, debug|release){
         QMAKE_CXXFLAGS -= \
             -Wmissing-prototypes
         }
+        *-icc-*{
+            QMAKE_CXXFLAGS += \
+                $$ICC_DEBUG_CXXFLAGS
+        }
     } else {
         *-g++{
         QMAKE_CXXFLAGS += $$GCC_DEBUG_CXXFLAGS # See common.pri for more details.
@@ -81,6 +87,7 @@ CONFIG(debug, debug|release){
 
 }else{
     # Release mode
+    !win32-msvc*:CONFIG += silent
     DEFINES += QT_NO_DEBUG_OUTPUT
 
     noDebugSymbols{ # For enable run qmake with CONFIG+=noDebugSymbols
@@ -112,6 +119,8 @@ noDebugSymbols{ # For enable run qmake with CONFIG+=noDebugSymbols
                 QMAKE_POST_LINK += objcopy --only-keep-debug $(TARGET) $(TARGET).debug &&
                 QMAKE_POST_LINK += strip --strip-debug --strip-unneeded $(TARGET) &&
                 QMAKE_POST_LINK += objcopy --add-gnu-debuglink $(TARGET).debug $(TARGET)
+
+                QMAKE_DISTCLEAN += bin/${TARGET}.dbg
             }
         }
     }

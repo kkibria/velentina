@@ -29,6 +29,9 @@
 #include "vmeasurement.h"
 #include "vmeasurement_p.h"
 
+#include <QMap>
+#include <QtDebug>
+
 //---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief VMeasurement create measurement for standard table
@@ -181,6 +184,48 @@ QStringList VMeasurement::WholeListSizes(Unit patternUnit)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+bool VMeasurement::IsGradationSizeValid(const QString &size)
+{
+    if (not size.isEmpty())
+    {
+        const QStringList sizes = VMeasurement::WholeListSizes(Unit::Cm);
+        if (sizes.contains(size))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool VMeasurement::IsGradationHeightValid(const QString &height)
+{
+    if (not height.isEmpty())
+    {
+        const QStringList heights = VMeasurement::WholeListHeights(Unit::Cm);
+        if (heights.contains(height))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VMeasurement::ListValue(QStringList &list, qreal value, Unit patternUnit)
 {
     const qreal val = UnitConvertor(value, Unit::Cm, patternUnit);
@@ -232,7 +277,7 @@ bool VMeasurement::IsCustom() const
 //---------------------------------------------------------------------------------------------------------------------
 int VMeasurement::Index() const
 {
-    return d->index;
+    return static_cast<int>(d->index);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

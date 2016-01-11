@@ -64,11 +64,11 @@ public:
 
 private:
     Q_DISABLE_COPY(VObjEngine)
-    QTextStream     *stream;
-    unsigned int     globalPointsCount;
-    QIODevice       *outputDevice;
+    QSharedPointer<QTextStream> stream;
+    quint32     globalPointsCount;
+    QSharedPointer<QIODevice> outputDevice;
     del_point2d_t    points[MAX_POINTS];
-    unsigned int     planeCount;
+    quint32     planeCount;
     QSize            size;
     int              resolution;
     QMatrix          matrix;

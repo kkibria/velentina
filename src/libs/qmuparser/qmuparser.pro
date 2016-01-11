@@ -39,7 +39,7 @@ OBJECTS_DIR = obj
 
 include(qmuparser.pri)
 
-VERSION = 2.3.0
+VERSION = 2.4.1
 
 # Set "make install" command for Unix-like systems.
 unix:!macx{
@@ -61,9 +61,6 @@ unix:!macx{
 
 # Set using ccache. Function enable_ccache() defined in common.pri.
 $$enable_ccache()
-
-# Set precompiled headers. Function set_PCH() defined in common.pri.
-$$set_PCH()
 
 CONFIG(debug, debug|release){
     # Debug mode
@@ -91,6 +88,11 @@ CONFIG(debug, debug|release){
             -isystem "$${OUT_PWD}/$${MOC_DIR}" \
             $$CLANG_DEBUG_CXXFLAGS # See common.pri for more details.
         }
+        *-icc-*{
+            QMAKE_CXXFLAGS += \
+                -isystem "$${OUT_PWD}/$${MOC_DIR}" \
+                $$ICC_DEBUG_CXXFLAGS
+        }
     } else {
         *-g++{
             QMAKE_CXXFLAGS += $$GCC_DEBUG_CXXFLAGS # See common.pri for more details.
@@ -99,6 +101,7 @@ CONFIG(debug, debug|release){
 
 }else{
     # Release mode
+    !win32-msvc*:CONFIG += silent
 
     !unix:*-g++{
         QMAKE_CXXFLAGS += -fno-omit-frame-pointer # Need for exchndl.dll
@@ -125,6 +128,8 @@ CONFIG(debug, debug|release){
                     QMAKE_POST_LINK += objcopy --strip-debug bin/${TARGET} &&
                     QMAKE_POST_LINK += objcopy --add-gnu-debuglink="bin/${TARGET}.dbg" bin/${TARGET}
                 }
+
+                QMAKE_DISTCLEAN += bin/${TARGET}.dbg
             }
         }
     }

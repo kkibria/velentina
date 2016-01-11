@@ -29,6 +29,7 @@
 #include "tapeconfigurationpage.h"
 #include "../../mapplication.h"
 #include "../vmisc/vtapesettings.h"
+#include "../vpatterndb/variables/vmeasurement.h"
 #include <QDir>
 #include <QGroupBox>
 #include <QLabel>
@@ -40,6 +41,7 @@
 #include <QCheckBox>
 #include <QIcon>
 #include <QFormLayout>
+#include <QDirIterator>
 
 //---------------------------------------------------------------------------------------------------------------------
 TapeConfigurationPage::TapeConfigurationPage(QWidget *parent)
@@ -51,6 +53,7 @@ TapeConfigurationPage::TapeConfigurationPage(QWidget *parent)
       osOptionCheck(nullptr),
       langChanged(false),
       systemChanged(false),
+      defGradationChanged(false),
       unitChanged(false),
       labelLangChanged(false),
       sendReportCheck(nullptr),
@@ -60,15 +63,25 @@ TapeConfigurationPage::TapeConfigurationPage(QWidget *parent)
       systemBookValueLabel(nullptr),
       langGroup(nullptr),
       guiLabel(nullptr),
+      separatorLabel(nullptr),
+      pmSystemGroup(nullptr),
       systemLabel(nullptr),
       systemAuthorLabel(nullptr),
       systemBookLabel(nullptr),
-      separatorLabel(nullptr)
+      gradationGroup(nullptr),
+      defHeightLabel(nullptr),
+      defSizeLabel(nullptr),
+      defHeightCombo(nullptr),
+      defSizeCombo(nullptr)
 {
     QGroupBox *langGroup = LangGroup();
+    QGroupBox *pmSystemGroup = PMSystemGroup();
+    QGroupBox *gradationBox = GradationGroup();
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->addWidget(langGroup);
+    mainLayout->addWidget(pmSystemGroup);
+    mainLayout->addWidget(gradationBox);
     mainLayout->addStretch(1);
     setLayout(mainLayout);
 }
@@ -76,16 +89,17 @@ TapeConfigurationPage::TapeConfigurationPage(QWidget *parent)
 //---------------------------------------------------------------------------------------------------------------------
 void TapeConfigurationPage::Apply()
 {
-    qApp->TapeSettings()->SetOsSeparator(osOptionCheck->isChecked());
+    VTapeSettings *settings = qApp->TapeSettings();
+    settings->SetOsSeparator(osOptionCheck->isChecked());
 
     if (langChanged || systemChanged)
     {
         const QString locale = qvariant_cast<QString>(langCombo->itemData(langCombo->currentIndex()));
-        qApp->TapeSettings()->SetLocale(locale);
+        settings->SetLocale(locale);
         langChanged = false;
 
         const QString code = qvariant_cast<QString>(systemCombo->itemData(systemCombo->currentIndex()));
-        qApp->TapeSettings()->SetPMSystemCode(code);
+        settings->SetPMSystemCode(code);
         systemChanged = false;
 
         qApp->LoadTranslation(locale);
@@ -93,6 +107,13 @@ void TapeConfigurationPage::Apply()
         // Part about measurments will not be updated automatically
         qApp->RetranslateTables();
         qApp->RetranslateGroups();
+    }
+
+    if (defGradationChanged)
+    {
+        settings->SetDefHeight(defHeightCombo->currentText().toInt());
+        settings->SetDefSize(defSizeCombo->currentText().toInt());
+        defGradationChanged = false;
     }
 }
 
@@ -106,8 +127,25 @@ void TapeConfigurationPage::LangChanged()
 void TapeConfigurationPage::SystemChanged()
 {
     systemChanged = true;
-    systemAuthorValueLabel->setText(qApp->TrVars()->PMSystemAuthor(systemCombo->currentData().toString()));
-    systemBookValueLabel->setText(qApp->TrVars()->PMSystemBook(systemCombo->currentData().toString()));
+#if QT_VERSION < QT_VERSION_CHECK(5, 2, 0)
+    QString text = qApp->TrVars()->PMSystemAuthor(systemCombo->itemData(systemCombo->currentIndex()).toString());
+#else
+    QString text = qApp->TrVars()->PMSystemAuthor(systemCombo->currentData().toString());
+#endif
+    systemAuthorValueLabel->setText(text);
+    systemAuthorValueLabel->setToolTip(text);
+#if QT_VERSION < QT_VERSION_CHECK(5, 2, 0)
+    text = qApp->TrVars()->PMSystemBook(systemCombo->itemData(systemCombo->currentIndex()).toString());
+#else
+    text = qApp->TrVars()->PMSystemBook(systemCombo->currentData().toString());
+#endif
+    systemBookValueLabel->setPlainText(text);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void TapeConfigurationPage::DefGradationChanged()
+{
+    defGradationChanged = true;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -139,22 +177,27 @@ void TapeConfigurationPage::changeEvent(QEvent *event)
 QGroupBox *TapeConfigurationPage::LangGroup()
 {
     langGroup = new QGroupBox(tr("Language"));
-    guiLabel = new QLabel(tr("GUI language"));
+    guiLabel = new QLabel(tr("GUI language:"));
     langCombo = new QComboBox;
 
-    QDir dir(qApp->translationsPath());
-    const QStringList fileNames = dir.entryList(QStringList("valentina_*.qm"));
+    QStringList fileNames;
+    QDirIterator it(qApp->translationsPath(), QStringList() << QStringList("valentina_*.qm"), QDir::Files,
+                    QDirIterator::Subdirectories);
+    while (it.hasNext())
+    {
+        it.next();
+        fileNames.append(it.fileName());
+    }
 
     for (int i = 0; i < fileNames.size(); ++i)
     {
         // get locale extracted by filename
-        QString locale;
-        locale = fileNames.at(i);                  // "valentina_de_De.qm"
-        locale.truncate(locale.lastIndexOf('.'));   // "valentina_de_De"
-        locale.remove(0, locale.indexOf('_') + 1);   // "de_De"
+        QString locale = fileNames.at(i);                         // "valentina_de_De.qm"
+        locale.truncate(locale.lastIndexOf(QLatin1String(".")));  // "valentina_de_De"
+        locale.remove(0, locale.indexOf(QLatin1String("_")) + 1); // "de_De"
 
-        QLocale loc = QLocale(locale);
-        QString lang = loc.nativeLanguageName();
+        const QLocale loc(locale);
+        const QString lang = loc.nativeLanguageName();
         QIcon ico(QString("%1/%2.png").arg("://flags").arg(QLocale::countryToString(loc.country())));
 
         langCombo->addItem(ico, lang, locale);
@@ -164,12 +207,13 @@ QGroupBox *TapeConfigurationPage::LangGroup()
     {
         // English language is internal and doens't have own *.qm file.
         QIcon ico(QString("%1/%2.png").arg("://flags").arg(QLocale::countryToString(QLocale::UnitedStates)));
-        QString lang = QLocale("en_US").nativeLanguageName();
+        const QString lang = QLocale("en_US").nativeLanguageName();
         langCombo->addItem(ico, lang, "en_US");
     }
 
     // set default translators and language checked
-    qint32 index = langCombo->findData(qApp->TapeSettings()->GetLocale());
+    const VTapeSettings *settings = qApp->TapeSettings();
+    qint32 index = langCombo->findData(settings->GetLocale());
     if (index != -1)
     {
         langCombo->setCurrentIndex(index);
@@ -178,50 +222,102 @@ QGroupBox *TapeConfigurationPage::LangGroup()
             &TapeConfigurationPage::LangChanged);
 
     QFormLayout *langLayout = new QFormLayout;
+    langLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
     langLayout->addRow(guiLabel, langCombo);
 
-    //-------------------- Pattern making system
-    systemLabel = new QLabel(tr("Pattern making system"));
-    systemCombo = new QComboBox;
-
-    InitPMSystems(systemCombo);
-
-    langLayout->addRow(systemLabel, systemCombo);
-
-    //----
-    systemAuthorLabel = new QLabel(tr("Author:"));
-    systemAuthorValueLabel = new QLabel("");
-
-    langLayout->addRow(systemAuthorLabel, systemAuthorValueLabel);
-
-    //----
-    systemBookLabel = new QLabel(tr("Book:"));
-    systemBookValueLabel = new QLabel("");
-    systemBookValueLabel->setWordWrap(true);
-
-    langLayout->addRow(systemBookLabel, systemBookValueLabel);
-
-    connect(systemCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this,
-            &TapeConfigurationPage::SystemChanged);
-
-    // set default pattern making system
-    index = systemCombo->findData(qApp->TapeSettings()->GetPMSystemCode());
-    if (index != -1)
-    {
-        systemCombo->setCurrentIndex(index);
-    }
-
     //-------------------- Decimal separator setup
-    separatorLabel = new QLabel(tr("Decimal separator parts"));
+    separatorLabel = new QLabel(tr("Decimal separator parts:"));
 
     osOptionCheck = new QCheckBox(tr("With OS options (%1)").arg(QLocale::system().decimalPoint().toLatin1()));
-    osOptionCheck->setChecked(qApp->TapeSettings()->GetOsSeparator());
+    osOptionCheck->setChecked(settings->GetOsSeparator());
 
     langLayout->addRow(separatorLabel, osOptionCheck);
     //-----------------------
     langGroup->setLayout(langLayout);
 
     return langGroup;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QGroupBox *TapeConfigurationPage::PMSystemGroup()
+{
+    pmSystemGroup = new QGroupBox(tr("Pattern making system"));
+
+    systemLabel = new QLabel(tr("Pattern making system:"));
+    systemCombo = new QComboBox;
+
+    InitPMSystems(systemCombo);
+
+    QFormLayout *pmSystemLayout = new QFormLayout;
+    pmSystemLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+    pmSystemLayout->addRow(systemLabel, systemCombo);
+
+    //----
+    systemAuthorLabel = new QLabel(tr("Author:"));
+    systemAuthorValueLabel = new QLabel("");
+
+    pmSystemLayout->addRow(systemAuthorLabel, systemAuthorValueLabel);
+
+    //----
+    systemBookLabel = new QLabel(tr("Book:"));
+    systemBookValueLabel = new QPlainTextEdit("");
+    systemBookValueLabel->setReadOnly(true);
+    systemBookValueLabel->setFixedHeight(4 * QFontMetrics(systemBookValueLabel->font()).lineSpacing());
+
+    pmSystemLayout->addRow(systemBookLabel, systemBookValueLabel);
+
+    connect(systemCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this,
+            &TapeConfigurationPage::SystemChanged);
+
+    // set default pattern making system
+    const VTapeSettings *settings = qApp->TapeSettings();
+    const int index = systemCombo->findData(settings->GetPMSystemCode());
+    if (index != -1)
+    {
+        systemCombo->setCurrentIndex(index);
+    }
+
+    pmSystemGroup->setLayout(pmSystemLayout);
+    return pmSystemGroup;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QGroupBox *TapeConfigurationPage::GradationGroup()
+{
+    gradationGroup = new QGroupBox(tr("Default height and size"));
+
+    QFormLayout *gradationLayout = new QFormLayout;
+    gradationLayout->setFieldGrowthPolicy(QFormLayout::ExpandingFieldsGrow);
+
+    const VTapeSettings *settings = qApp->TapeSettings();
+
+    defHeightLabel = new QLabel(tr("Default height:"));
+    defHeightCombo = new QComboBox;
+    defHeightCombo->addItems(VMeasurement::WholeListHeights(Unit::Cm));
+    int index = defHeightCombo->findText(QString().setNum(settings->GetDefHeight()));
+    if (index != -1)
+    {
+        defHeightCombo->setCurrentIndex(index);
+    }
+    connect(defHeightCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this,
+            &TapeConfigurationPage::DefGradationChanged);
+    gradationLayout->addRow(defHeightLabel, defHeightCombo);
+
+
+    defSizeLabel = new QLabel(tr("Default size:"));
+    defSizeCombo = new QComboBox;
+    defSizeCombo->addItems(VMeasurement::WholeListSizes(Unit::Cm));
+    index = defSizeCombo->findText(QString().setNum(settings->GetDefSize()));
+    if (index != -1)
+    {
+        defSizeCombo->setCurrentIndex(index);
+    }
+    connect(defHeightCombo, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this,
+            &TapeConfigurationPage::DefGradationChanged);
+    gradationLayout->addRow(defSizeLabel, defSizeCombo);
+
+    gradationGroup->setLayout(gradationLayout);
+    return gradationGroup;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -235,71 +331,15 @@ void TapeConfigurationPage::SetLabelComboBox(const QStringList &list)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void TapeConfigurationPage::InitPMSystems(QComboBox *systemCombo)
-{
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p0_S), p0_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p1_S), p1_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p2_S), p2_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p3_S), p3_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p4_S), p4_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p5_S), p5_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p6_S), p6_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p7_S), p7_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p8_S), p8_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p9_S), p9_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p10_S), p10_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p11_S), p11_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p12_S), p12_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p13_S), p13_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p14_S), p14_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p15_S), p15_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p16_S), p16_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p17_S), p17_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p18_S), p18_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p19_S), p19_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p20_S), p20_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p21_S), p21_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p22_S), p22_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p23_S), p23_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p24_S), p24_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p25_S), p25_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p26_S), p26_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p27_S), p27_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p28_S), p28_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p29_S), p29_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p30_S), p30_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p31_S), p31_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p32_S), p32_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p33_S), p33_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p34_S), p34_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p35_S), p35_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p36_S), p36_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p37_S), p37_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p38_S), p38_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p39_S), p39_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p40_S), p40_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p41_S), p41_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p42_S), p42_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p43_S), p43_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p44_S), p44_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p45_S), p45_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p46_S), p46_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p47_S), p47_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p48_S), p48_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p49_S), p49_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p50_S), p50_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p51_S), p51_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p52_S), p52_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p53_S), p53_S);
-    systemCombo->addItem(qApp->TrVars()->PMSystemName(p54_S), p54_S);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 void TapeConfigurationPage::RetranslateUi()
 {
     langGroup->setTitle(tr("Language"));
-    guiLabel->setText(tr("GUI language"));
-    systemLabel->setText(tr("Pattern making system"));
+    guiLabel->setText(tr("GUI language:"));
+    separatorLabel->setText(tr("Decimal separator parts:"));
+    osOptionCheck->setText(tr("With OS options (%1)").arg(QLocale::system().decimalPoint().toLatin1()));
+
+    pmSystemGroup->setTitle(tr("Pattern making system"));
+    systemLabel->setText(tr("Pattern making system:"));
 
     const int index = systemCombo->currentIndex();
     systemCombo->blockSignals(true);
@@ -311,9 +351,21 @@ void TapeConfigurationPage::RetranslateUi()
     systemAuthorLabel->setText(tr("Author:"));
     systemBookLabel->setText(tr("Book:"));
 
-    systemAuthorValueLabel->setText(qApp->TrVars()->PMSystemAuthor(systemCombo->currentData().toString()));
-    systemBookValueLabel->setText(qApp->TrVars()->PMSystemBook(systemCombo->currentData().toString()));
+#if QT_VERSION < QT_VERSION_CHECK(5, 2, 0)
+    QString text = qApp->TrVars()->PMSystemAuthor(systemCombo->itemData(systemCombo->currentIndex()).toString());
+#else
+    QString text = qApp->TrVars()->PMSystemAuthor(systemCombo->currentData().toString());
+#endif
+    systemAuthorValueLabel->setText(text);
+    systemAuthorValueLabel->setToolTip(text);
+#if QT_VERSION < QT_VERSION_CHECK(5, 2, 0)
+    text = qApp->TrVars()->PMSystemBook(systemCombo->itemData(systemCombo->currentIndex()).toString());
+#else
+    text = qApp->TrVars()->PMSystemBook(systemCombo->currentData().toString());
+#endif
+    systemBookValueLabel->setPlainText(text);
 
-    separatorLabel->setText(tr("Decimal separator parts"));
-    osOptionCheck = new QCheckBox(tr("With OS options (%1)").arg(QLocale::system().decimalPoint().toLatin1()));
+    gradationGroup->setTitle(tr("Default height and size"));
+    defHeightLabel->setText(tr("Default height:"));
+    defSizeLabel->setText(tr("Default size:"));
 }

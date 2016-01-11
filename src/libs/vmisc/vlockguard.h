@@ -35,7 +35,11 @@
 #include <memory>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
+#include <QFileInfo>
 #include <QLockFile>
+#if defined(Q_OS_WIN)
+#include <windows.h>
+#endif
 #define PEDANT_COMPILER ,lock(nullptr)
 #else
 #define PEDANT_COMPILER
@@ -53,7 +57,7 @@ template <typename Guarded>
 class VLockGuard
 {
 public:
-    VLockGuard(const QString& lockName, int stale = 0, int timeout = 0);
+    explicit VLockGuard(const QString& lockName, int stale = 0, int timeout = 0);
 
     template <typename Alloc>
     VLockGuard(const QString& lockName, Alloc a, int stale = 0, int timeout=0);
@@ -64,24 +68,27 @@ public:
     const std::shared_ptr<Guarded> &GetProtected() const;
     int             GetLockError() const;
     bool            IsLocked() const;
+    QString         GetLockFile() const;
 
 private:
     Q_DISABLE_COPY(VLockGuard<Guarded>)
 
     std::shared_ptr<Guarded> holder;
     int                      lockError;
+    QString                  lockFile;
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
     std::shared_ptr<QLockFile> lock;
 #endif
 
+    // cppcheck-suppress functionStatic
     bool TryLock(const QString &lockName, int stale, int timeout);
 };
 
 //---------------------------------------------------------------------------------------------------------------------
 template <typename Guarded>
 VLockGuard<Guarded>::VLockGuard(const QString &lockName, int stale, int timeout)
-    : holder(nullptr), lockError(0) PEDANT_COMPILER
+    : holder(nullptr), lockError(0), lockFile() PEDANT_COMPILER
 {
     if (TryLock(lockName, stale, timeout))
     {
@@ -94,7 +101,7 @@ VLockGuard<Guarded>::VLockGuard(const QString &lockName, int stale, int timeout)
 //object
 template <typename Guarded> template <typename Alloc>
 VLockGuard<Guarded>::VLockGuard(const QString& lockName, Alloc a, int stale, int timeout)
-    : holder(nullptr), lockError(0) PEDANT_COMPILER
+    : holder(nullptr), lockError(0), lockFile() PEDANT_COMPILER
 {
     if (TryLock(lockName, stale, timeout))
     {
@@ -105,7 +112,7 @@ VLockGuard<Guarded>::VLockGuard(const QString& lockName, Alloc a, int stale, int
 //---------------------------------------------------------------------------------------------------------------------
 template <typename Guarded> template <typename Alloc, typename Delete>
 VLockGuard<Guarded>::VLockGuard(const QString& lockName, Alloc a, Delete d, int stale, int timeout)
-    : holder(nullptr), lockError(0) PEDANT_COMPILER
+    : holder(nullptr), lockError(0), lockFile() PEDANT_COMPILER
 {
     if (TryLock(lockName, stale, timeout))
     {
@@ -136,35 +143,48 @@ bool VLockGuard<Guarded>::IsLocked() const
 
 //---------------------------------------------------------------------------------------------------------------------
 template <typename Guarded>
+QString VLockGuard<Guarded>::GetLockFile() const
+{
+    return lockFile;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <typename Guarded>
 bool VLockGuard<Guarded>::TryLock(const QString &lockName, int stale, int timeout)
 {
     bool res = true;
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 1, 0)
 
-    lock.reset(new QLockFile(lockName));
-    lock->setStaleLockTime(stale);
+    lockFile = lockName + QLatin1Literal(".lock");
+#if defined(Q_OS_UNIX)
+    QFileInfo info(lockFile);
+    lockFile = info.absolutePath() + QLatin1Literal("/.") + info.fileName();
+#endif
+    lock.reset(new QLockFile(lockFile));
 
-    for (int i = 0; i < 2 && !lock->tryLock(timeout); i++)
+    lock->setStaleLockTime(stale);
+    lock->tryLock(timeout);
+
+    if (QLockFile::LockFailedError == lock->error())
     {
-        if (QLockFile::LockFailedError != lock->error())
-        {
-            break;
-        }
-        else
-        {
-            // This happens if a stale lock file exists and another process uses that PID.
-            // Try removing the stale file, which will fail if a real process is holding a
-            // file-level lock. A false error is more problematic than not locking properly
-            // on corner-case systems.
-            lock->removeStaleLockFile();
-            lock->tryLock(timeout);
-        }
+        // This happens if a stale lock file exists and another process uses that PID.
+        // Try removing the stale file, which will fail if a real process is holding a
+        // file-level lock. A false error is more problematic than not locking properly
+        // on corner-case systems.
+        lock->removeStaleLockFile();
+        lock->tryLock(timeout);
     }
     res = QLockFile::NoError == (lockError = lock->error());
     if (!res)
     {
         lock.reset();
+    }
+    else
+    {
+#if defined(Q_OS_WIN)
+        SetFileAttributesW(lockFile.toStdWString().c_str(), FILE_ATTRIBUTE_HIDDEN);
+#endif
     }
 #endif
     return res;
@@ -175,26 +195,33 @@ bool VLockGuard<Guarded>::TryLock(const QString &lockName, int stale, int timeou
 //use pointer and function below to persistent things like class-member, because lock is taken by constructor
 //helper functions allow to write shorter creating and setting new lock-pointer
 
-//new C++11 - "template typedef" http://stackoverflow.com/questions/2795023/c-template-typedef
-template <typename Guarded>
-using  VLockGuardPtr = std::shared_ptr<VLockGuard<Guarded>>;
+#if defined (Q_CC_INTEL)
+#pragma warning( push )
+#pragma warning( disable: 1418 )
+#endif
 
 template <typename Guarded>
-void VlpCreateLock(VLockGuardPtr<Guarded>& r, const QString& lockName, int stale = 0, int timeout = 0)
+void VlpCreateLock(std::shared_ptr<VLockGuard<Guarded>>& r, const QString& lockName, int stale = 0, int timeout = 0)
 {
     r.reset(new VLockGuard<Guarded>(lockName, stale, timeout));
 }
 
 template <typename Guarded, typename Alloc>
-void VlpCreateLock(VLockGuardPtr<Guarded>& r, const QString& lockName, Alloc a, int stale = 0, int timeout = 0)
+void VlpCreateLock(std::shared_ptr<VLockGuard<Guarded>>& r, const QString& lockName, Alloc a, int stale = 0,
+                   int timeout = 0)
 {
     r.reset(new VLockGuard<Guarded>(lockName, a, stale, timeout));
 }
 
 template <typename Guarded, typename Alloc, typename Del>
-void VlpCreateLock(VLockGuardPtr<Guarded>& r, const QString& lockName, Alloc a, Del d, int stale = 0, int timeout = 0)
+void VlpCreateLock(std::shared_ptr<VLockGuard<Guarded>>& r, const QString& lockName, Alloc a, Del d, int stale = 0,
+                   int timeout = 0)
 {
     r.reset(new VLockGuard<Guarded>(lockName, a, d, stale, timeout));
 }
+
+#if defined(Q_CC_INTEL)
+#pragma warning( pop )
+#endif
 
 #endif // VLOCKGUARD_H

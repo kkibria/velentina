@@ -29,10 +29,10 @@
 #include "vformulaproperty.h"
 #include "vformulapropertyeditor.h"
 
-#include "../../libs/vpropertyexplorer/vproperty_p.h"
+#include "../vpropertyexplorer/vproperty_p.h"
 #include "vformulapropertyeditor.h"
-#include "../../libs/vpropertyexplorer/vproperties.h"
-#include "../../libs/vpatterndb/vformula.h"
+#include "../vpropertyexplorer/vproperties.h"
+#include "../vpatterndb/vformula.h"
 
 enum class ChildType : char {Invalid = 0, Value = 1, Formula = 2};
 
@@ -52,6 +52,7 @@ VFormulaProperty::VFormulaProperty(const QString &name)
 
     VStringProperty* tmpFormula = new VStringProperty(tr("Formula"));
     addChild(tmpFormula);
+    tmpFormula->setClearButtonEnable(true);
     tmpFormula->setUpdateBehaviour(true, false);
     tmpFormula->setTypeForParent(static_cast<int>(ChildType::Formula));
 

@@ -30,12 +30,13 @@
 #define MAINWINDOWSNOGUI_H
 
 #include <QMainWindow>
+#include <QPrinter>
 
 #include "../vpatterndb/vdetail.h"
 #include "../vlayout/vlayoutdetail.h"
 #include "xml/vpattern.h"
 #include "dialogs/dialogsavelayout.h"
-#include "../../libs/vlayout/vlayoutgenerator.h"
+#include "../vlayout/vlayoutgenerator.h"
 
 
 class QGraphicsScene;
@@ -46,7 +47,7 @@ class MainWindowsNoGUI : public QMainWindow
 {
     Q_OBJECT
 public:
-    MainWindowsNoGUI(QWidget *parent = nullptr);
+    explicit MainWindowsNoGUI(QWidget *parent = nullptr);
     virtual ~MainWindowsNoGUI() Q_DECL_OVERRIDE;
 
 public slots:
@@ -87,6 +88,8 @@ protected:
     QString            curFile;
 
     bool isLayoutStale;
+    QMarginsF margins;
+    QSizeF paperSize;
 
     void PrepareDetailsForLayout(const QHash<quint32, VDetail> *details);
     void ExportLayout(const DialogSaveLayout &dialog);
@@ -95,7 +98,7 @@ protected:
     virtual void CleanLayout()=0;
     virtual void PrepareSceneList()=0;
     QIcon ScenePreview(int i) const;
-    void LayoutSettings(VLayoutGenerator& lGenerator);
+    bool LayoutSettings(VLayoutGenerator& lGenerator);
 private:
     Q_DISABLE_COPY(MainWindowsNoGUI)
 
@@ -103,7 +106,6 @@ private:
 
     void CreateShadows();
     void CreateScenes();
-
 
     void SvgFile(const QString &name, int i)const;
     void PngFile(const QString &name, int i)const;
@@ -114,13 +116,15 @@ private:
     void ObjFile(const QString &name, int i)const;
     void DxfFile(const QString &name, int i)const;
 
-    QVector<QImage> AllSheets();
+    QVector<QImage> AllSheets() const;
 
     void SaveLayoutAs();
     void PrintPreview();
     void LayoutPrint();
 
-    void SetPrinterSettings(QPrinter *printer);
+    void SetPrinterSettings(QPrinter *printer, bool prepareForPrinting = true);
+    bool IsLayoutGrayscale() const;
+    QPrinter::PaperSize FindTemplate(const QSizeF &size) const;
 
     bool isPagesUniform() const;
     QString FileName() const;

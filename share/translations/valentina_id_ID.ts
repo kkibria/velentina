@@ -40,10 +40,6 @@
         <source>Add union details</source>
         <translation type="vanished">Tambah rincian himpunan</translation>
     </message>
-    <message>
-        <source>add union details</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>CommunityPage</name>
@@ -53,7 +49,7 @@
     </message>
     <message>
         <source>Server name/IP</source>
-        <translation>Nama Server/IP</translation>
+        <translation type="vanished">Nama Server/IP</translation>
     </message>
     <message>
         <source>Secure connection</source>
@@ -69,19 +65,15 @@
     </message>
     <message>
         <source>Proxy address</source>
-        <translation>Alamat Proxy</translation>
+        <translation type="vanished">Alamat Proxy</translation>
     </message>
     <message>
         <source>Proxy port</source>
-        <translation>Saluran Proxy</translation>
+        <translation type="vanished">Saluran Proxy</translation>
     </message>
     <message>
         <source>Proxy user</source>
-        <translation>Pengguna Proxy</translation>
-    </message>
-    <message>
-        <source>Proxy pass</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">Pengguna Proxy</translation>
     </message>
     <message>
         <source>User settings</source>
@@ -89,7 +81,7 @@
     </message>
     <message>
         <source>User Name</source>
-        <translation>Nama Pengguna</translation>
+        <translation type="vanished">Nama Pengguna</translation>
     </message>
     <message>
         <source>Save password</source>
@@ -97,7 +89,35 @@
     </message>
     <message>
         <source>Password</source>
-        <translation>Sandi</translation>
+        <translation type="vanished">Sandi</translation>
+    </message>
+    <message>
+        <source>Server name/IP:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proxy address:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proxy port:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proxy user:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proxy pass:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -139,7 +159,7 @@
     <name>ConfigurationPage</name>
     <message>
         <source>Setup user interface language updated and will be used the next time start</source>
-        <translation>Pengaturan bahasa antarmuka pengguna diperbarui dan akan digunakan waktu mulai berikutnya</translation>
+        <translation type="vanished">Pengaturan bahasa antarmuka pengguna diperbarui dan akan digunakan waktu mulai berikutnya</translation>
     </message>
     <message>
         <source>Default unit updated and will be used the next pattern creation</source>
@@ -167,11 +187,11 @@
     </message>
     <message>
         <source>GUI language</source>
-        <translation>Bahasa GUI</translation>
+        <translation type="vanished">Bahasa GUI</translation>
     </message>
     <message>
         <source>Decimal separator parts</source>
-        <translation>komponen pemisah desimal</translation>
+        <translation type="vanished">komponen pemisah desimal</translation>
     </message>
     <message>
         <source>With OS options (%1)</source>
@@ -179,7 +199,7 @@
     </message>
     <message>
         <source>Default unit</source>
-        <translation>Unit Standar</translation>
+        <translation type="vanished">Unit Standar</translation>
     </message>
     <message>
         <source>Centimeters</source>
@@ -195,7 +215,7 @@
     </message>
     <message>
         <source>Label language</source>
-        <translation>label bahasa</translation>
+        <translation type="vanished">label bahasa</translation>
     </message>
     <message>
         <source>Send crash reports</source>
@@ -223,6 +243,38 @@
     </message>
     <message>
         <source>The text appears under the icon. (recommended for beginners.)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GUI language:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal separator parts:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default unit:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Label language:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pattern making system</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pattern making system:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Author:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Book:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -275,15 +327,15 @@
     </message>
     <message>
         <source>Built on %3 at %4</source>
-        <translation>Dibuat pada %3 at %4</translation>
+        <translation type="vanished">Dibuat pada %3 at %4</translation>
     </message>
     <message>
         <source>Web site : %1</source>
-        <translation>Situs web : % 1</translation>
+        <translation>Situs web : %1</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation>peringatan</translation>
+        <translation type="vanished">peringatan</translation>
     </message>
     <message>
         <source>Cannot open your default browser</source>
@@ -292,6 +344,10 @@
     <message>
         <source>Build revision:</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Built on %1 at %2</source>
+        <translation type="unfinished">Dibuat pada %3 at %2 {1 ?}</translation>
     </message>
 </context>
 <context>
@@ -318,7 +374,7 @@
     </message>
     <message>
         <source>Built on %3 at %4</source>
-        <translation type="unfinished">Dibuat pada %3 at %4</translation>
+        <translation type="obsolete">Dibuat pada %3 at %4</translation>
     </message>
     <message>
         <source>Web site : %1</source>
@@ -326,18 +382,22 @@
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">peringatan</translation>
+        <translation type="obsolete">peringatan</translation>
     </message>
     <message>
         <source>Cannot open your default browser</source>
         <translation type="unfinished">Tidak dapat membuka peramban bawaan Anda</translation>
+    </message>
+    <message>
+        <source>Built on %1 at %2</source>
+        <translation type="unfinished">Dibuat pada %3 at %2 {1 ?}</translation>
     </message>
 </context>
 <context>
     <name>DialogAlongLine</name>
     <message>
         <source>Length</source>
-        <translation>panjang</translation>
+        <translation type="vanished">panjang</translation>
     </message>
     <message>
         <source>Insert variable into the formula</source>
@@ -345,7 +405,7 @@
     </message>
     <message>
         <source>Value of length</source>
-        <translation>Nilai panjang</translation>
+        <translation type="vanished">Nilai panjang</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -353,31 +413,31 @@
     </message>
     <message>
         <source>Point label</source>
-        <translation>label titik</translation>
+        <translation type="vanished">label titik</translation>
     </message>
     <message>
         <source>First point</source>
-        <translation>Titik pertama</translation>
+        <translation type="vanished">Titik pertama</translation>
     </message>
     <message>
         <source>First point of line</source>
-        <translation>Titik pertama dari baris</translation>
+        <translation type="vanished">Titik pertama dari baris</translation>
     </message>
     <message>
         <source>Second point</source>
-        <translation>titik kedua</translation>
+        <translation type="vanished">titik kedua</translation>
     </message>
     <message>
         <source>Second point of line</source>
-        <translation>titik kedua dari baris</translation>
+        <translation type="vanished">titik kedua dari baris</translation>
     </message>
     <message>
         <source>Type of line</source>
-        <translation>Jenis baris</translation>
+        <translation type="vanished">Jenis baris</translation>
     </message>
     <message>
         <source>Show line from first point to this point</source>
-        <translation>Tampilkan garis dari titik pertama ke titik ini</translation>
+        <translation type="vanished">Tampilkan garis dari titik pertama ke titik ini</translation>
     </message>
     <message>
         <source>Input data</source>
@@ -428,11 +488,59 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Line color</source>
+        <source>Edit length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit length</source>
+        <source>Length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First point of the line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second point of the line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type of line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -444,7 +552,7 @@
     </message>
     <message>
         <source>Radius</source>
-        <translation>radius
+        <translation type="vanished">radius
 </translation>
     </message>
     <message>
@@ -453,7 +561,7 @@
     </message>
     <message>
         <source>Value of radius</source>
-        <translation>nilai radius</translation>
+        <translation type="vanished">nilai radius</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -461,7 +569,7 @@
     </message>
     <message>
         <source>First angle</source>
-        <translation>sudut pertama</translation>
+        <translation type="vanished">sudut pertama</translation>
     </message>
     <message>
         <source>Insert variable into formula</source>
@@ -469,11 +577,11 @@
     </message>
     <message>
         <source>Value of first angle</source>
-        <translation>nilai dari sudut pertama</translation>
+        <translation type="vanished">nilai dari sudut pertama</translation>
     </message>
     <message>
         <source>Second angle</source>
-        <translation>sudut kedua</translation>
+        <translation type="vanished">sudut kedua</translation>
     </message>
     <message>
         <source>Insert marked variable into formula</source>
@@ -481,15 +589,15 @@
     </message>
     <message>
         <source>Value of second angle</source>
-        <translation>nilai dari sudut kedua</translation>
+        <translation type="vanished">nilai dari sudut kedua</translation>
     </message>
     <message>
         <source>Center point</source>
-        <translation>titik tengah</translation>
+        <translation type="vanished">titik tengah</translation>
     </message>
     <message>
         <source>Select point of center of arc</source>
-        <translation>pilih titik tengah dari busur</translation>
+        <translation type="vanished">pilih titik tengah dari busur</translation>
     </message>
     <message>
         <source>Input data</source>
@@ -544,14 +652,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Edit radius</source>
         <translation type="unfinished"></translation>
     </message>
@@ -563,6 +663,46 @@
         <source>Edit second angle</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Radius:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calulation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First angle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second angle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Center point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select center point of the arc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogArcWithLength</name>
@@ -572,12 +712,12 @@
     </message>
     <message>
         <source>Radius</source>
-        <translation type="unfinished">radius
+        <translation type="obsolete">radius
 </translation>
     </message>
     <message>
         <source>Value of radius</source>
-        <translation type="unfinished">nilai radius</translation>
+        <translation type="obsolete">nilai radius</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -585,35 +725,23 @@
     </message>
     <message>
         <source>First angle</source>
-        <translation type="unfinished">sudut pertama</translation>
+        <translation type="obsolete">sudut pertama</translation>
     </message>
     <message>
         <source>Value of first angle</source>
-        <translation type="unfinished">nilai dari sudut pertama</translation>
+        <translation type="obsolete">nilai dari sudut pertama</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">panjang</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Arc length</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">panjang</translation>
     </message>
     <message>
         <source>Center point</source>
-        <translation type="unfinished">titik tengah</translation>
+        <translation type="obsolete">titik tengah</translation>
     </message>
     <message>
         <source>Select point of center of arc</source>
-        <translation type="unfinished">pilih titik tengah dari busur</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">pilih titik tengah dari busur</translation>
     </message>
     <message>
         <source>Edit radius</source>
@@ -639,12 +767,44 @@
         <source>Length can&apos;t be equal 0</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Radius:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First angle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Center point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogBisector</name>
     <message>
         <source>Length</source>
-        <translation>panjang</translation>
+        <translation type="vanished">panjang</translation>
     </message>
     <message>
         <source>Insert marked variable into the formula</source>
@@ -652,7 +812,7 @@
     </message>
     <message>
         <source>Value of length</source>
-        <translation>nilai panjang</translation>
+        <translation type="vanished">nilai panjang</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -660,39 +820,39 @@
     </message>
     <message>
         <source>Point label</source>
-        <translation>label titik</translation>
+        <translation type="vanished">label titik</translation>
     </message>
     <message>
         <source>First point</source>
-        <translation>Titik pertama</translation>
+        <translation type="vanished">Titik pertama</translation>
     </message>
     <message>
         <source>First point of angle</source>
-        <translation>Titik pertama dari sudut</translation>
+        <translation type="vanished">Titik pertama dari sudut</translation>
     </message>
     <message>
         <source>Second point</source>
-        <translation>titik kedua</translation>
+        <translation type="vanished">titik kedua</translation>
     </message>
     <message>
         <source>Second point of angle</source>
-        <translation>titik kedua dari sudut</translation>
+        <translation type="vanished">titik kedua dari sudut</translation>
     </message>
     <message>
         <source>Third point</source>
-        <translation>titik ketiga</translation>
+        <translation type="vanished">titik ketiga</translation>
     </message>
     <message>
         <source>Third point of angle</source>
-        <translation>titik ketiga dari sudut</translation>
+        <translation type="vanished">titik ketiga dari sudut</translation>
     </message>
     <message>
         <source>Type of line</source>
-        <translation>Jenis baris</translation>
+        <translation type="vanished">Jenis baris</translation>
     </message>
     <message>
         <source>Show line from second point to this point</source>
-        <translation>Tampilkan garis dari titik kedua ke titik ini</translation>
+        <translation type="vanished">Tampilkan garis dari titik kedua ke titik ini</translation>
     </message>
     <message>
         <source>Input data</source>
@@ -747,11 +907,55 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Line color</source>
+        <source>Edit length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit length</source>
+        <source>Length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Third point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type of line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -759,11 +963,11 @@
     <name>DialogCurveIntersectAxis</name>
     <message>
         <source>Angle</source>
-        <translation>sudut</translation>
+        <translation type="vanished">sudut</translation>
     </message>
     <message>
         <source>Value of angle</source>
-        <translation>nilai dari sudut</translation>
+        <translation type="vanished">nilai dari sudut</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -771,23 +975,23 @@
     </message>
     <message>
         <source>Axis point</source>
-        <translation>titik sumbu</translation>
+        <translation type="vanished">titik sumbu</translation>
     </message>
     <message>
         <source>Curve</source>
-        <translation>kurva</translation>
+        <translation type="vanished">kurva</translation>
     </message>
     <message>
         <source>Point label</source>
-        <translation>label titik</translation>
+        <translation type="vanished">label titik</translation>
     </message>
     <message>
         <source>Type of line</source>
-        <translation>Jenis baris</translation>
+        <translation type="vanished">Jenis baris</translation>
     </message>
     <message>
         <source>Show line from first point to this point</source>
-        <translation>Tampilkan garis dari titik pertama ke titik ini</translation>
+        <translation type="vanished">Tampilkan garis dari titik pertama ke titik ini</translation>
     </message>
     <message>
         <source>Input data</source>
@@ -838,15 +1042,51 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Axis Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Edit angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Axis point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Curve:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type of line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -854,15 +1094,15 @@
     <name>DialogCutArc</name>
     <message>
         <source>Length</source>
-        <translation>panjang</translation>
+        <translation type="vanished">panjang</translation>
     </message>
     <message>
         <source>Value of length</source>
-        <translation>Nilai panjang</translation>
+        <translation type="vanished">Nilai panjang</translation>
     </message>
     <message>
         <source>_</source>
-        <translation>-</translation>
+        <translation type="vanished">-</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -870,11 +1110,11 @@
     </message>
     <message>
         <source>Arc</source>
-        <translation>busur</translation>
+        <translation type="vanished">busur</translation>
     </message>
     <message>
         <source>Point label</source>
-        <translation>label titik</translation>
+        <translation type="vanished">label titik</translation>
     </message>
     <message>
         <source>Input data</source>
@@ -921,15 +1161,43 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Selected arc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Edit length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arc:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -937,15 +1205,15 @@
     <name>DialogCutSpline</name>
     <message>
         <source>Length</source>
-        <translation>panjang</translation>
+        <translation type="vanished">panjang</translation>
     </message>
     <message>
         <source>Value of length</source>
-        <translation>Nilai panjang</translation>
+        <translation type="vanished">Nilai panjang</translation>
     </message>
     <message>
         <source>_</source>
-        <translation>_</translation>
+        <translation type="vanished">_</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -953,15 +1221,15 @@
     </message>
     <message>
         <source>Curve</source>
-        <translation>kurva</translation>
+        <translation type="vanished">kurva</translation>
     </message>
     <message>
         <source>Selected curve</source>
-        <translation>kurva yang telah dipilih</translation>
+        <translation type="vanished">kurva yang telah dipilih</translation>
     </message>
     <message>
         <source>Point label</source>
-        <translation>label titik</translation>
+        <translation type="vanished">label titik</translation>
     </message>
     <message>
         <source>Input data</source>
@@ -1008,11 +1276,43 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Color</source>
+        <source>Edit length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit length</source>
+        <source>Length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Curve:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1020,15 +1320,15 @@
     <name>DialogCutSplinePath</name>
     <message>
         <source>Length</source>
-        <translation>panjang</translation>
+        <translation type="vanished">panjang</translation>
     </message>
     <message>
         <source>Value of length</source>
-        <translation>Nilai panjang</translation>
+        <translation type="vanished">Nilai panjang</translation>
     </message>
     <message>
         <source>_</source>
-        <translation>_</translation>
+        <translation type="vanished">_</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -1036,15 +1336,15 @@
     </message>
     <message>
         <source>Curve</source>
-        <translation>kurva</translation>
+        <translation type="vanished">kurva</translation>
     </message>
     <message>
         <source>Selected curve path</source>
-        <translation>jalur kurva yang telah dipilih</translation>
+        <translation type="vanished">jalur kurva yang telah dipilih</translation>
     </message>
     <message>
         <source>Point label</source>
-        <translation>label titik</translation>
+        <translation type="vanished">label titik</translation>
     </message>
     <message>
         <source>Input data</source>
@@ -1091,11 +1391,43 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Color</source>
+        <source>Edit length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit length</source>
+        <source>Length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Curve:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1106,16 +1438,8 @@
         <translation>rincial</translation>
     </message>
     <message>
-        <source>Bias X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>cm</source>
         <translation>cm</translation>
-    </message>
-    <message>
-        <source>Bias Y</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Options</source>
@@ -1123,7 +1447,7 @@
     </message>
     <message>
         <source>Name of detail</source>
-        <translation>nama rincian</translation>
+        <translation type="vanished">nama rincian</translation>
     </message>
     <message>
         <source>Seam allowance</source>
@@ -1131,7 +1455,7 @@
     </message>
     <message>
         <source>Width</source>
-        <translation>lebar</translation>
+        <translation type="vanished">lebar</translation>
     </message>
     <message>
         <source>Closed</source>
@@ -1157,6 +1481,50 @@
         <source>All objects in path should follow in clockwise direction.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Scroll down the list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scroll up the list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ready!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You need more points!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You have double points!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You have to choose points in a clockwise direction!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bias X:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bias Y:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name of detail:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First point cannot be equal to the last point!</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogEditWrongFormula</name>
@@ -1166,7 +1534,7 @@
     </message>
     <message>
         <source>Formula</source>
-        <translation>rumus</translation>
+        <translation type="vanished">rumus</translation>
     </message>
     <message>
         <source>Insert variable into formula</source>
@@ -1174,11 +1542,11 @@
     </message>
     <message>
         <source>Value of first angle</source>
-        <translation>nilai dari sudut pertama</translation>
+        <translation type="vanished">nilai dari sudut pertama</translation>
     </message>
     <message>
         <source>_</source>
-        <translation>_</translation>
+        <translation type="vanished">_</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -1190,7 +1558,7 @@
     </message>
     <message>
         <source>Size and height</source>
-        <translation>ukuran dan panjang</translation>
+        <translation type="vanished">ukuran dan panjang</translation>
     </message>
     <message>
         <source>Measurements</source>
@@ -1226,14 +1594,6 @@
     </message>
     <message>
         <source>Double click for add to formula</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1276,16 +1636,24 @@
         <source>Curve angle</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Formula:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogEndLine</name>
     <message>
         <source>Length</source>
-        <translation type="unfinished">panjang</translation>
-    </message>
-    <message>
-        <source>Value of length</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">panjang</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -1293,31 +1661,27 @@
     </message>
     <message>
         <source>Angle</source>
-        <translation type="unfinished">sudut</translation>
+        <translation type="obsolete">sudut</translation>
     </message>
     <message>
         <source>Value of angle</source>
-        <translation type="unfinished">nilai dari sudut</translation>
-    </message>
-    <message>
-        <source>Base point</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">nilai dari sudut</translation>
     </message>
     <message>
         <source>First point of line</source>
-        <translation type="unfinished">Titik pertama dari baris</translation>
+        <translation type="obsolete">Titik pertama dari baris</translation>
     </message>
     <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>Type of line</source>
-        <translation type="unfinished">Jenis baris</translation>
+        <translation type="obsolete">Jenis baris</translation>
     </message>
     <message>
         <source>Show line from first point to this point</source>
-        <translation type="unfinished">Tampilkan garis dari titik pertama ke titik ini</translation>
+        <translation type="obsolete">Tampilkan garis dari titik pertama ke titik ini</translation>
     </message>
     <message>
         <source>Measurements</source>
@@ -1332,10 +1696,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Line color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Edit angle</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1343,32 +1703,68 @@
         <source>Edit length</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type of line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogHeight</name>
     <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
-    </message>
-    <message>
-        <source>Base point</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>First point of line</source>
-        <translation type="unfinished">Titik pertama dari baris</translation>
+        <translation type="obsolete">Titik pertama dari baris</translation>
     </message>
     <message>
         <source>Second point of line</source>
-        <translation type="unfinished">titik kedua dari baris</translation>
+        <translation type="obsolete">titik kedua dari baris</translation>
     </message>
     <message>
         <source>Type of line</source>
-        <translation type="unfinished">Jenis baris</translation>
-    </message>
-    <message>
-        <source>Show line from first point to our point</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Jenis baris</translation>
     </message>
     <message>
         <source>Select first point of line</source>
@@ -1383,11 +1779,35 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Base Point</source>
+        <source>Point label:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Line color</source>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First point of line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second point of line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type of line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1653,6 +2073,18 @@
         <source>Edit increment</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Unique increment name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogIndividualMeasurements</name>
@@ -1680,10 +2112,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Critical error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Several workpieces left not arranged, but none of them match for paper</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1702,10 +2130,6 @@
 </context>
 <context>
     <name>DialogLayoutSettings</name>
-    <message>
-        <source>Paper size</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Templates:</source>
         <translation type="unfinished"></translation>
@@ -1819,11 +2243,52 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Paper format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fields</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Top:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bottom:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ignore fileds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong fields.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fields go beyond printing. 
+
+Apply settings anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>
-	Three groups: big, middle, small = 0
-	Two groups: big, small = 1
-	Descending area = 2
-</source>
+	Three groups: big, middle, small = 0;
+	Two groups: big, small = 1;
+	Descending area = 2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1831,19 +2296,19 @@
     <name>DialogLine</name>
     <message>
         <source>First point</source>
-        <translation type="unfinished">Titik pertama</translation>
+        <translation type="obsolete">Titik pertama</translation>
     </message>
     <message>
         <source>Second point</source>
-        <translation type="unfinished">titik kedua</translation>
+        <translation type="obsolete">titik kedua</translation>
     </message>
     <message>
         <source>Type of line</source>
-        <translation type="unfinished">Jenis baris</translation>
+        <translation type="obsolete">Jenis baris</translation>
     </message>
     <message>
         <source>Show line from first point to this point</source>
-        <translation type="unfinished">Tampilkan garis dari titik pertama ke titik ini</translation>
+        <translation type="obsolete">Tampilkan garis dari titik pertama ke titik ini</translation>
     </message>
     <message>
         <source>Select second point</source>
@@ -1854,7 +2319,19 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Line color</source>
+        <source>First point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type of line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1862,7 +2339,7 @@
     <name>DialogLineIntersect</name>
     <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>First line</source>
@@ -1870,11 +2347,11 @@
     </message>
     <message>
         <source>First point</source>
-        <translation type="unfinished">Titik pertama</translation>
+        <translation type="obsolete">Titik pertama</translation>
     </message>
     <message>
         <source>Second point</source>
-        <translation type="unfinished">titik kedua</translation>
+        <translation type="obsolete">titik kedua</translation>
     </message>
     <message>
         <source>Second line</source>
@@ -1896,16 +2373,36 @@
         <source>Point at line intersection</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second point:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogLineIntersectAxis</name>
     <message>
         <source>Angle</source>
-        <translation type="unfinished">sudut</translation>
+        <translation type="obsolete">sudut</translation>
     </message>
     <message>
         <source>Value of angle</source>
-        <translation type="unfinished">nilai dari sudut</translation>
+        <translation type="obsolete">nilai dari sudut</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -1913,27 +2410,19 @@
     </message>
     <message>
         <source>Axis point</source>
-        <translation type="unfinished">titik sumbu</translation>
+        <translation type="obsolete">titik sumbu</translation>
     </message>
     <message>
         <source>First point of line</source>
         <translation type="unfinished">Titik pertama dari baris</translation>
     </message>
     <message>
-        <source>First line point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Second line point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>Type of line</source>
-        <translation type="unfinished">Jenis baris</translation>
+        <translation type="obsolete">Jenis baris</translation>
     </message>
     <message>
         <source>Show line from first point to this point</source>
@@ -1968,11 +2457,55 @@
         <translation type="unfinished">titik kedua dari baris</translation>
     </message>
     <message>
-        <source>Line color</source>
+        <source>Edit angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit angle</source>
+        <source>Angle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Axis point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First line point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second line point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type of line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2071,6 +2604,22 @@
         <comment>Measurement section</comment>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Collapse All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expand All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uncheck all</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogMeasurements</name>
@@ -2130,7 +2679,7 @@
     </message>
     <message>
         <source>Pattern piece name</source>
-        <translation type="unfinished">Nama potongan pola</translation>
+        <translation type="obsolete">Nama potongan pola</translation>
     </message>
     <message>
         <source>Units:</source>
@@ -2148,16 +2697,24 @@
         <source>Inches</source>
         <translation type="unfinished">Inchi</translation>
     </message>
+    <message>
+        <source>Pattern piece name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique pattern piece name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique pattern piece name.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogNormal</name>
     <message>
         <source>Length</source>
-        <translation type="unfinished">panjang</translation>
-    </message>
-    <message>
-        <source>Value of length</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">panjang</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -2165,27 +2722,23 @@
     </message>
     <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>First point</source>
-        <translation type="unfinished">Titik pertama</translation>
+        <translation type="obsolete">Titik pertama</translation>
     </message>
     <message>
         <source>Second point</source>
-        <translation type="unfinished">titik kedua</translation>
-    </message>
-    <message>
-        <source>Additional angle degrees</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">titik kedua</translation>
     </message>
     <message>
         <source>Type of line</source>
-        <translation type="unfinished">Jenis baris</translation>
+        <translation type="obsolete">Jenis baris</translation>
     </message>
     <message>
         <source>Show line from first point to this point</source>
-        <translation type="unfinished">Tampilkan garis dari titik pertama ke titik ini</translation>
+        <translation type="obsolete">Tampilkan garis dari titik pertama ke titik ini</translation>
     </message>
     <message>
         <source>Measurements</source>
@@ -2205,18 +2758,62 @@
     </message>
     <message>
         <source>First point of line</source>
-        <translation type="unfinished">Titik pertama dari baris</translation>
+        <translation type="obsolete">Titik pertama dari baris</translation>
     </message>
     <message>
         <source>Second point of line</source>
-        <translation type="unfinished">titik kedua dari baris</translation>
-    </message>
-    <message>
-        <source>Line color</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">titik kedua dari baris</translation>
     </message>
     <message>
         <source>Edit length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional angle degrees:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type of line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2252,6 +2849,26 @@
     </message>
     <message>
         <source>All sizes (cm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default height and size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>From standard measurements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Height:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2398,26 +3015,42 @@
     </message>
     <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
-    </message>
-    <message>
-        <source>Tangent point</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>Arc</source>
-        <translation type="unfinished">busur</translation>
+        <translation type="obsolete">busur</translation>
     </message>
     <message>
         <source>Select point of center of arc</source>
-        <translation type="unfinished">pilih titik tengah dari busur</translation>
-    </message>
-    <message>
-        <source>Take</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">pilih titik tengah dari busur</translation>
     </message>
     <message>
         <source>Select an arc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tangent point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arc:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Take:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2429,7 +3062,7 @@
     </message>
     <message>
         <source>Radius</source>
-        <translation type="unfinished">radius
+        <translation type="obsolete">radius
 </translation>
     </message>
     <message>
@@ -2438,23 +3071,11 @@
     </message>
     <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
-    </message>
-    <message>
-        <source>Center of the circle</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>Select point of center of arc</source>
-        <translation type="unfinished">pilih titik tengah dari busur</translation>
-    </message>
-    <message>
-        <source>Tangent point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Take</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">pilih titik tengah dari busur</translation>
     </message>
     <message>
         <source>Select a circle center</source>
@@ -2472,17 +3093,57 @@
         <source>Radius can&apos;t be negative</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Radius:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Center of the circle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tangent point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Take:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogPointOfContact</name>
     <message>
         <source>Radius</source>
-        <translation type="unfinished">radius
+        <translation type="obsolete">radius
 </translation>
     </message>
     <message>
         <source>Value of radius</source>
-        <translation type="unfinished">nilai radius</translation>
+        <translation type="obsolete">nilai radius</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -2490,23 +3151,11 @@
     </message>
     <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
-    </message>
-    <message>
-        <source>Center of arc</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>Select point of center of arc</source>
         <translation type="unfinished">pilih titik tengah dari busur</translation>
-    </message>
-    <message>
-        <source>Top of the line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>End of the line</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Measurements</source>
@@ -2524,35 +3173,87 @@
         <source>Edit radius</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Radius:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Center of arc:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Top of the line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>End of the line:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogPointOfIntersection</name>
     <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>First point of angle</source>
-        <translation type="unfinished">Titik pertama dari sudut</translation>
+        <translation type="obsolete">Titik pertama dari sudut</translation>
     </message>
     <message>
         <source>Second point of angle</source>
-        <translation type="unfinished">titik kedua dari sudut</translation>
+        <translation type="obsolete">titik kedua dari sudut</translation>
     </message>
     <message>
         <source>Point from X and Y of two other points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>X: vertical point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Y: horizontal point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select point for Y value (horizontal)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X: vertical point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y: horizontal point:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2564,26 +3265,34 @@
     </message>
     <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
-    </message>
-    <message>
-        <source>First arc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selected arc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Second arc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Take</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>Select second an arc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First arc:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second arc:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Take:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2594,36 +3303,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Radius of the first circle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Radius of the second circle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
-    </message>
-    <message>
-        <source>Center of the first circle</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>Select point of center of arc</source>
-        <translation type="unfinished">pilih titik tengah dari busur</translation>
-    </message>
-    <message>
-        <source>Center of the second circle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Take</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">pilih titik tengah dari busur</translation>
     </message>
     <message>
         <source>Select second circle center</source>
@@ -2643,6 +3332,50 @@
     </message>
     <message>
         <source>Radius can&apos;t be negative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Radius of the first circle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Radius of the second circle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Center of the first circle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Center of the second circle:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Take:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2669,7 +3402,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>TextLabel</source>
+        <source>Destination folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path to destination folder.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select path to destination folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File base name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File base name. </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2728,7 +3477,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Output full path: </source>
+        <source>The destination directory doesn&apos;t exists or is not readable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The base filename does not match a regular expression.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2736,11 +3489,7 @@
     <name>DialogShoulderPoint</name>
     <message>
         <source>Length</source>
-        <translation type="unfinished">panjang</translation>
-    </message>
-    <message>
-        <source>Value of length</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">panjang</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -2748,27 +3497,23 @@
     </message>
     <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>First point</source>
-        <translation type="unfinished">Titik pertama</translation>
+        <translation type="obsolete">Titik pertama</translation>
     </message>
     <message>
         <source>Second point</source>
-        <translation type="unfinished">titik kedua</translation>
+        <translation type="obsolete">titik kedua</translation>
     </message>
     <message>
         <source>Third point</source>
-        <translation type="unfinished">titik ketiga</translation>
+        <translation type="obsolete">titik ketiga</translation>
     </message>
     <message>
         <source>Type of line</source>
-        <translation type="unfinished">Jenis baris</translation>
-    </message>
-    <message>
-        <source>Show line from first point to our point</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Jenis baris</translation>
     </message>
     <message>
         <source>Measurements</source>
@@ -2791,11 +3536,55 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Line color</source>
+        <source>Edit length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Edit length</source>
+        <source>Length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Third point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type of line:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2825,6 +3614,14 @@
         <source>Point label</source>
         <translation type="unfinished">label titik</translation>
     </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogSpline</name>
@@ -2853,10 +3650,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Coefficient of curvature of the curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select last point of curve</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2865,7 +3658,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Color</source>
+        <source>Coefficient of curvature of the curve:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2900,15 +3697,15 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Coefficient of curvature of the curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select point of curve path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Color</source>
+        <source>Coefficient of curvature of the curve:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2954,27 +3751,19 @@
     <name>DialogTriangle</name>
     <message>
         <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
-    </message>
-    <message>
-        <source>First point of axis</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">label titik</translation>
     </message>
     <message>
         <source>First point of line</source>
-        <translation type="unfinished">Titik pertama dari baris</translation>
-    </message>
-    <message>
-        <source>Second point of axis</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Titik pertama dari baris</translation>
     </message>
     <message>
         <source>First point</source>
-        <translation type="unfinished">Titik pertama</translation>
+        <translation type="obsolete">Titik pertama</translation>
     </message>
     <message>
         <source>Second point</source>
-        <translation type="unfinished">titik kedua</translation>
+        <translation type="obsolete">titik kedua</translation>
     </message>
     <message>
         <source>Select second point of axis</source>
@@ -2993,16 +3782,36 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>First point of the axis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Second point of the axis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Second point of line</source>
-        <translation type="unfinished">titik kedua dari baris</translation>
+        <translation type="obsolete">titik kedua dari baris</translation>
+    </message>
+    <message>
+        <source>Point label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First point of axis:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second point of axis:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second point:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3012,48 +3821,20 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>First base point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>First point of angle</source>
-        <translation type="unfinished">Titik pertama dari sudut</translation>
-    </message>
-    <message>
-        <source>Second base point</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Titik pertama dari sudut</translation>
     </message>
     <message>
         <source>Second point of angle</source>
-        <translation type="unfinished">titik kedua dari sudut</translation>
-    </message>
-    <message>
-        <source>First dart point</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">titik kedua dari sudut</translation>
     </message>
     <message>
         <source>Third point of angle</source>
-        <translation type="unfinished">titik ketiga dari sudut</translation>
-    </message>
-    <message>
-        <source>Second dart point</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">titik ketiga dari sudut</translation>
     </message>
     <message>
         <source>Show line from second point to this point</source>
-        <translation type="unfinished">Tampilkan garis dari titik kedua ke titik ini</translation>
-    </message>
-    <message>
-        <source>Third dart point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>First new dart point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Second new dart point</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Tampilkan garis dari titik kedua ke titik ini</translation>
     </message>
     <message>
         <source>Select the second base point</source>
@@ -3069,6 +3850,42 @@
     </message>
     <message>
         <source>Select the third dart point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First base point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second base point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First dart point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second dart point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Third dart point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First new dart point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose unique label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second new dart point:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3098,10 +3915,6 @@
 <context>
     <name>DialogUnionDetails</name>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Do you really want union details?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Union tool</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3129,138 +3942,17 @@
         <source>Select a point on edge</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Do you really want to unite details?&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Functions</name>
     <message>
-        <source>sin</source>
-        <comment>sine function</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>cos</source>
-        <comment>cosine function</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>tan</source>
-        <comment>tangens function</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>asin</source>
-        <comment>arcus sine function</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>acos</source>
-        <comment>arcus cosine function</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>atan</source>
-        <comment>arcus tangens function</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>sinh</source>
-        <comment>hyperbolic sine function</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>cosh</source>
-        <comment>hyperbolic cosine</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>tanh</source>
-        <comment>hyperbolic tangens function</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>asinh</source>
-        <comment>hyperbolic arcus sine function</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>acosh</source>
-        <comment>hyperbolic arcus tangens function</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>atanh</source>
-        <comment>hyperbolic arcur tangens function</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>log2</source>
-        <comment>logarithm to the base 2</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>log10</source>
-        <comment>logarithm to the base 10</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>log</source>
-        <comment>logarithm to the base 10</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ln</source>
-        <comment>logarithm to base e (2.71828...)</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>exp</source>
-        <comment>e raised to the power of x</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>sqrt</source>
-        <comment>square root of a value</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>sign</source>
-        <comment>sign function -1 if x&lt;0; 1 if x&gt;0</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>rint</source>
-        <comment>round to nearest integer</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>abs</source>
-        <comment>absolute value</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>min</source>
         <comment>min of all arguments</comment>
-        <translation type="unfinished">minimal</translation>
-    </message>
-    <message>
-        <source>max</source>
-        <comment>max of all arguments</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>sum</source>
-        <comment>sum of all arguments</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>avg</source>
-        <comment>mean value of all arguments</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>fmod</source>
-        <comment>Returns the floating-point remainder of numer/denom (rounded towards zero)</comment>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">minimal</translation>
     </message>
 </context>
 <context>
@@ -3296,6 +3988,74 @@
         <source>Something&apos;s wrong!!</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Parser error: %1. Program will be terminated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exception thrown: %1. Program will be terminated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Valentina&apos;s measurements editor.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The measurement file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The base height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The base size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set pattern file unit: cm, mm, inch.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The pattern unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid base size argument. Must be cm, mm or inch.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t begin to listen for incoming connections on name &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Test mode doesn&apos;t support openning several files.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please, provide one input file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open with the base size. Valid values: %1cm.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid base height argument. Must be %1cm.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid base size argument. Must be %1cm.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open with the base height. Valid values: %1cm.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use for unit testing. Run the program and open a file without showing the main window.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -3329,10 +4089,6 @@
     </message>
     <message>
         <source>Point at distance along line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3432,10 +4188,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3460,10 +4212,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Save &amp;As...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3472,31 +4220,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Draw</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Details</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Details mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+E</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3512,10 +4240,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ctrl+Shift+N</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Change the label of pattern piece</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3528,19 +4252,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Ctrl+T</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>History</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+H</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+L</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3557,10 +4269,6 @@
     </message>
     <message>
         <source>Exit the application</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3597,10 +4305,6 @@
     </message>
     <message>
         <source>Zoom fit best</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+=</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3756,10 +4460,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Critical error!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Error parsing file (std::bad_alloc).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3827,14 +4527,6 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
     </message>
     <message>
         <source>Reopen files.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The measurements file &lt;br/&gt;&lt;br/&gt; &lt;b&gt;%1&lt;/b&gt; &lt;br/&gt;&lt;br/&gt; %3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>could not be found. Do you want to update the file location</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3914,10 +4606,6 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>L</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select point for X value (vertical)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3938,19 +4626,11 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create a layout</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Show Curve Details</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show/hide control points and curve direction</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>F2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4006,10 +4686,6 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Print original a layout</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Print tiled</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4023,14 +4699,6 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
     </message>
     <message>
         <source>Print preview original layout</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Print preview tailed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Print preview tailed layout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4114,15 +4782,6 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The measurements file &quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&quot; could not be found.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>You can&apos;t export empty scene.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4136,10 +4795,6 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
     </message>
     <message>
         <source>Create/edit measurements</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Measurements was updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4171,21 +4826,161 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
         <source>Please, additionaly provide: %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Measurement files types have not match.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measurements was synced</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t sync measurements.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t update measurements.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The measurements file &apos;%1&apos; could not be found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The measurements file &lt;br/&gt;&lt;br/&gt; &lt;b&gt;%1&lt;/b&gt; &lt;br/&gt;&lt;br/&gt; could not be found. Do you want to update the file location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading measurements file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not supported size value &apos;%1&apos; for this pattern file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t set size. Need a file with standard measurements.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t set size. File wasn&apos;t opened.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The method %1 does nothing in GUI mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not supported height value &apos;%1&apos; for this pattern file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t set height. Need a file with standard measurements.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t set height. File wasn&apos;t opened.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please, provide one input file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print an original layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print preview tiled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print preview tiled layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with pattern pieces. These pattern pieces are base for going to the next stage &amp;quot;Details mode&amp;quot;. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with details. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail on the stage &amp;quot;Draw mode&amp;quot;. Details created on this stage will be used for creating a layout. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for creating a layout of details. This mode avaliable if was created at least one detail on the stage &amp;quot;Details mode&amp;quot;. The layout can be exported to your prefered file format and saved to your harddirve.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unload measurements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unload measurements if they was not used in a pattern file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measurements unloaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t unload measurements. Some of them are used in the pattern.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>True darts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New pattern</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open pattern</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create/Edit measurements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Locking file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This file already opened in another window. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The lock file could not be created, for lack of permissions. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown error happened, for instance a full partition prevented writing out the lock file. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The lock file could not be created, for lack of permissions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown error happened, for instance a full partition prevented writing out the lock file.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindowsNoGUI</name>
-    <message>
-        <source>For saving multypage document all sheet should have the same size. Use export function instead.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>For previewing multypage document all sheet should have the same size.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>For printing multypages document all sheet should have the same size.</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Creating file &apos;%1&apos; failed! %2</source>
         <translation type="unfinished"></translation>
@@ -4228,6 +5023,26 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
     </message>
     <message>
         <source>Several workpieces left not arranged, but none of them match for paper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t open printer %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>For saving multipage document all sheet should have the same size. Use export function instead.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>For previewing multipage document all sheet should have the same size.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>For printing multipages document all sheet should have the same size.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4395,15 +5210,15 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
         <source>Layout</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Templates</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PatternPage</name>
     <message>
         <source>User</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>User name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4419,12 +5234,1910 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Count steps (0 - no limit)</source>
+        <source>User name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count steps (0 - no limit):</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
-    <name>Pattern_making_systems</name>
+    <name>PostfixOperators</name>
+    <message>
+        <source>cm</source>
+        <comment>centimeter</comment>
+        <translation type="obsolete">cm</translation>
+    </message>
+</context>
+<context>
+    <name>QCommandLineParser</name>
+    <message>
+        <source>Displays version information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays this help.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown option &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown options: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Missing value after &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected value after &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>[options]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Usage: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arguments:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QCoreApplication</name>
+    <message>
+        <source>Based on Qt %1 (%2, %3 bit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Create new pattern piece to start working.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>mm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cm</source>
+        <translation type="unfinished">cm</translation>
+    </message>
+    <message>
+        <source>inch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Property</source>
+        <extracomment>The text that appears in the first column header</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <extracomment>The text that appears in the second column header</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>px</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>add node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>move detail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Changes applied.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QSaveFile</name>
+    <message>
+        <source>Existing file %1 is not writable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Writing canceled by application</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Partial write. Partition full?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QmuParser</name>
+    <message>
+        <source>too few arguments for function sum.</source>
+        <comment>parser error message</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>too few arguments for function min.</source>
+        <comment>parser error message</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QmuParserErrorMsg</name>
+    <message>
+        <source>Unexpected token &quot;$TOK$&quot; found at position $POS$.</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Internal error</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid function-, variable- or constant name: &quot;$TOK$&quot;.</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot;</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid binary operator identifier: &quot;$TOK$&quot;.</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot;</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid infix operator identifier: &quot;$TOK$&quot;.</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot;</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid postfix operator identifier: &quot;$TOK$&quot;.</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot;</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid pointer to callback function.</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expression is empty.</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid pointer to variable.</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected operator &quot;$TOK$&quot; found at position $POS$</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected end of expression at position $POS$</source>
+        <comment>Math parser error messages. Left untouched $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected argument separator at position $POS$</source>
+        <comment>Math parser error messages. Left untouched $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected parenthesis &quot;$TOK$&quot; at position $POS$</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected function &quot;$TOK$&quot; at position $POS$</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected value &quot;$TOK$&quot; found at position $POS$</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected variable &quot;$TOK$&quot; found at position $POS$</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Function arguments used without a function (position: $POS$)</source>
+        <comment>Math parser error messages. Left untouched $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Missing parenthesis</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Too many parameters for function &quot;$TOK$&quot; at expression position $POS$</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Too few parameters for function &quot;$TOK$&quot; at expression position $POS$</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Divide by zero</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Domain error</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name conflict</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid value for operator priority (must be greater or equal to zero).</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>user defined binary operator &quot;$TOK$&quot; conflicts with a built in operator.</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot;</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected string token found at position $POS$.</source>
+        <comment>Math parser error messages. Left untouched $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unterminated string starting at position $POS$.</source>
+        <comment>Math parser error messages. Left untouched $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>String function called with a non string type of argument.</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>String value used where a numerical argument is expected.</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No suitable overload for operator &quot;$TOK$&quot; at position $POS$.</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Function result is a string.</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parser error.</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal separator is identic to function argument separator.</source>
+        <comment>Math parser error messages.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The &quot;$TOK$&quot; operator must be preceeded by a closing bracket.</source>
+        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot;</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If-then-else operator is missing an else clause</source>
+        <comment>Math parser error messages. Do not translate operator name.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Misplaced colon at position $POS$</source>
+        <comment>Math parser error messages. Left untouched $POS$</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RenamePP</name>
+    <message>
+        <source>rename pattern piece</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SaveDetailOptions</name>
+    <message>
+        <source>save detail option</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SaveToolOptions</name>
+    <message>
+        <source>save tool option</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TMainWindow</name>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Select New for creation measurement file.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nama</translation>
+    </message>
+    <message>
+        <source>Calculated value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula</source>
+        <translation type="unfinished">rumus</translation>
+    </message>
+    <message>
+        <source>Base value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In sizes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In heights</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base value:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In sizes:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In heights:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move measurement up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move measurement down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculated value:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measurement type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show in Explorer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base size value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base height:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base height value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Given name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Family name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Birth date:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Email:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Notes:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measurements</source>
+        <translation type="unfinished">pengukuran</translation>
+    </message>
+    <message>
+        <source>Menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gradation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open individual ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation type="unfinished">Simpan</translation>
+    </message>
+    <message>
+        <source>Save As ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About &amp;Qt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About Tape</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add known</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open standard ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show information about all known measurement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>untitled %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This file already opened in another window.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not save file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>measurements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Individual measurements (*.vit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard measurements (*.vst)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;New Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit measurement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>M_%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty field.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parser error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard measurements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Height: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Individual measurements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>untitled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;Empty&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unsaved changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measurements have been modified.
+Do you want to save your changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import from a pattern</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pattern files (*.val)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pattern unit:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Find:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Find Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+G</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Find Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+G</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Individual measurements (*.vit);;Standard measurements (*.vst);;All files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard measurements (*.vst);;Individual measurements (*.vit);;All files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measurements (*.vst *.vit);;All files (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to lock. This file already opened in another window.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to lock. This file already opened in another window. Expect collissions when run 2 copies of the program.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File contains invalid known measurement(s).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File has unknown format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File &apos;%1&apos; doesn&apos;t exist!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The name of known measurement forbidden to change.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t find measurement &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The full name of known measurement forbidden to change.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Function Wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move measurement top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move measurement bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete measurement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unknown</source>
+        <comment>gender</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>male</source>
+        <comment>gender</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>female</source>
+        <comment>gender</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gender:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PM system:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create from existing ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create from existing file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export standard measurements not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measurement diagram</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:340pt;&quot;&gt;?&lt;/span&gt;&lt;/p&gt;&lt;p align=\&quot;center\&quot;&gt;Unknown measurement&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:340pt;&quot;&gt;?&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Unknown measurement&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About Qt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File was not saved yet.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measurement&apos;s name in a formula</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measurement&apos;s name in a formula.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measurement&apos;s human-readable name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Customer&apos;s name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Customer&apos;s family name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Customer&apos;s email address.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Locking file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This file already opened in another window. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The lock file could not be created, for lack of permissions. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown error happened, for instance a full partition prevented writing out the lock file. Ignore if you want to continue (not recommended, can cause a data corruption).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The lock file could not be created, for lack of permissions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown error happened, for instance a full partition prevented writing out the lock file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TableWindow</name>
+    <message>
+        <source>Save</source>
+        <translation type="obsolete">Simpan</translation>
+    </message>
+</context>
+<context>
+    <name>TapeConfigDialog</name>
+    <message>
+        <source>Apply</source>
+        <translation type="unfinished">Terapkan</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Batalkan</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished">&amp;Ok</translation>
+    </message>
+    <message>
+        <source>Config Dialog</source>
+        <translation type="unfinished">Dialog konfigurasi</translation>
+    </message>
+    <message>
+        <source>Configuration</source>
+        <translation type="unfinished">Konfigurasi</translation>
+    </message>
+    <message>
+        <source>Paths</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TapeConfigurationPage</name>
+    <message>
+        <source>Language</source>
+        <translation type="unfinished">Bahasa</translation>
+    </message>
+    <message>
+        <source>GUI language</source>
+        <translation type="obsolete">Bahasa GUI</translation>
+    </message>
+    <message>
+        <source>Pattern making system</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Author:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Book:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal separator parts</source>
+        <translation type="obsolete">komponen pemisah desimal</translation>
+    </message>
+    <message>
+        <source>With OS options (%1)</source>
+        <translation type="unfinished">dengan pilihan OS (%1)</translation>
+    </message>
+    <message>
+        <source>GUI language:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal separator parts:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pattern making system:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default height and size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default height:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TapePathPage</name>
+    <message>
+        <source>Open Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path that use Valentina</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Individual measurements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard measurements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Templates</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Utils::CheckableMessageBox</name>
+    <message>
+        <source>Do not ask again</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do not &amp;ask again</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do not &amp;show again</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VAbstractConverter</name>
+    <message>
+        <source>Couldn&apos;t get version information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Too many tags &lt;%1&gt; in file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version &quot;%1&quot; invalid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version &quot;0.0.0&quot; invalid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid version. Minimum supported version is %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid version. Maximum supported version is %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error no unique id.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not change version.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating a backup file: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating a reserv copy: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VAbstractPattern</name>
+    <message>
+        <source>Can&apos;t find tool in table.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VAbstractTool</name>
+    <message>
+        <source>black</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>green</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>blue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dark red</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dark green</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dark blue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>yellow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Confirm deletion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you really want to delete?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VApplication</name>
+    <message>
+        <source>Error parsing file. Program will be terminated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error bad id. Program will be terminated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error can&apos;t convert value. Program will be terminated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error empty parameter. Program will be terminated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error wrong id. Program will be terminated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Something&apos;s wrong!!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parser error: %1. Program will be terminated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exception thrown: %1. Program will be terminated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VCommandLine</name>
+    <message>
+        <source>Path to custom measure file (export mode).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The measure file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number corresponding to output format (default = 0, export mode): </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number corresponding to page template (default = 0, export mode): </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Template number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The page width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The measure unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished">sudut</translation>
+    </message>
+    <message>
+        <source>Auto crop unused length (export mode).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layout units (as paper&apos;s one except px, export mode).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shift length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The gap width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grouping type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot use pageformat and page explicit size/units together.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page height, width, units must be used all 3 at once.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid rotation value. That must be one of predefined values.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown page templated selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unsupported paper units.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unsupported layout units.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export options can be used with single input file only.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Test option can be used with single input file only.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The base filename of exported layout files. Use it to enable console export mode.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The base filename of layout files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The destination folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set size value a pattern file, that was opened with standard measurements (export mode). Valid values: %1cm.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The size value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set height value a pattern file, that was opened with standard measurements (export mode). Valid values: %1cm.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The height value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page width in current units like 12.0 (cannot be used with &quot;%1&quot;, export mode).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page height in current units like 12.0 (cannot be used with &quot;%1&quot;, export mode).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid gradation size value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid gradation height value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pattern making program.</source>
+        <translation type="unfinished">program pembuat pola</translation>
+    </message>
+    <message>
+        <source>Pattern file.</source>
+        <translation type="unfinished">Berkas pola.</translation>
+    </message>
+    <message>
+        <source>Shift length must be used together with shift units.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gap width must be used together with shift units.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left margin must be used together with page units.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right margin must be used together with page units.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Top margin must be used together with page units.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bottom margin must be used together with page units.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The path to output destination folder. By default the directory at which the application was started.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page height/width measure units (cannot be used with &quot;%1&quot;, export mode). Valid values: %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ignore margins printing (export mode). Disable value keys: &quot;%1&quot;, &quot;%2&quot;, &quot;%3&quot;, &quot;%4&quot;. Set all margins to 0.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page left margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found. Value will be ignored if key &quot;%1&quot; is used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page right margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found. Value will be ignored if key &quot;%1&quot; is used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page top margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found. Value will be ignored if key &quot;%1&quot; is used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page bottom margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found. Value will be ignored if key &quot;%1&quot; is used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation in degrees (one of predefined, export mode). Default value is 180. 0 is no-rotate. Valid values: %1. Each value show how many times details will be rotated. For example 180 mean two times (360/180=2) by 180 degree.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unite pages if possible (export mode). Maximum value limited by QImage that supports only a maximum of 32768x32768 px images.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save length of the sheet if set (export mode). The option tells the program to use as much as possible width of sheet. Quality of a layout can be worse when this option was used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shift layout length measured in layout units (export mode). The option show how many points along edge will be used in creating a layout.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The layout gap width x2, measured in layout units (export mode). Set distance between details and a detail and a sheet.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sets layout groupping cases (export mode): %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run the program in a test mode. The program in this mode loads a single pattern file and silently quit without showing the main window. The key have priority before key &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VContainer</name>
+    <message>
+        <source>Can&apos;t find object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t cast object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t find object. Type mismatch.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VDomDocument</name>
+    <message>
+        <source>Can&apos;t convert toUInt parameter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t convert toBool parameter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Got empty parameter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t convert toDouble parameter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t open file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t open schema file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Validation error file %3 in line %1 column %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parsing error file %3 in line %1 column %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t get node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Got wrong parameter id. Need only id &gt; 0.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This id is not unique.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load schema file &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VDrawTool</name>
+    <message>
+        <source>Edit wrong formula</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished">pilihan</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">hapus</translation>
+    </message>
+</context>
+<context>
+    <name>VFormula</name>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VFormulaProperty</name>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Formula</source>
+        <translation type="unfinished">rumus</translation>
+    </message>
+</context>
+<context>
+    <name>VMeasurements</name>
+    <message>
+        <source>Can&apos;t find measurement &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The measurement name is empty!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VPE::VBoolProperty</name>
+    <message>
+        <source>True</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>False</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VPE::VFileEditWidget</name>
+    <message>
+        <source>Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open File</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VPattern</name>
+    <message>
+        <source>Error parsing file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error can&apos;t convert value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error empty parameter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error wrong id.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error parsing file (std::bad_alloc).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating detail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating single point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point of end line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point along line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point of shoulder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point of normal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point of bisector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point of lineintersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point of contact</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating modeling point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating triangle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point of intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating cut spline point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating cut spline path point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating cut arc point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point of intersection line and axis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point of intersection curve and axis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating simple curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating curve path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating modeling simple curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating modeling curve path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating simple arc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating modeling arc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating union details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point of intersection arcs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point of intersection circles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point from circle and tangent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating point from arc and tangent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating true darts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong tag name &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown point type &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown spline type &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown arc type &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown tools type &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error not unique id.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VPatternConverter</name>
+    <message>
+        <source>Unexpected version &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error restoring backup file: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VSplinePath</name>
+    <message>
+        <source>Not enough points to create the spline.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This spline does not exist.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t cut spline path with one point</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VToolDetail</name>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished">pilihan</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">hapus</translation>
+    </message>
+</context>
+<context>
+    <name>VToolOptionsPropertyBrowser</name>
+    <message>
+        <source>Base point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point label</source>
+        <translation type="unfinished">label titik</translation>
+    </message>
+    <message>
+        <source>Position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point at distance and angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation type="unfinished">panjang</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished">sudut</translation>
+    </message>
+    <message>
+        <source>Point at distance along line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arc</source>
+        <translation type="unfinished">busur</translation>
+    </message>
+    <message>
+        <source>Radius</source>
+        <translation type="unfinished">radius
+</translation>
+    </message>
+    <message>
+        <source>First angle</source>
+        <translation type="unfinished">sudut pertama</translation>
+    </message>
+    <message>
+        <source>Second angle</source>
+        <translation type="unfinished">sudut kedua</translation>
+    </message>
+    <message>
+        <source>Point along bisector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cut arc tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tool for segmenting a curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tool segment a pathed curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Perpendicular point along line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line between points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point at line intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point along perpendicular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional angle degrees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point at intersection of arc and line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tool to make point from x &amp; y of two other points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Special point on shoulder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Curve tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Curve factor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tool for path curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tool triangle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point intersection line and axis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point intersection curve and axis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First point</source>
+        <translation type="unfinished">Titik pertama</translation>
+    </message>
+    <message>
+        <source>Second point</source>
+        <translation type="unfinished">titik kedua</translation>
+    </message>
+    <message>
+        <source>Arc with given length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>True darts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point 1 label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point 2 label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tool to make point from intersection two arcs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Take</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tool to make point from intersection two circles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First circle radius</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second circle radius</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tool to make point from circle and tangent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Circle radius</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tool to make point from arc and tangent</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VTranslateVars</name>
     <message>
         <source>Bunka</source>
         <comment>System name</comment>
@@ -4801,17 +7514,17 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>system_P25</source>
+        <source>Abling</source>
         <comment>System name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>system_P25</source>
+        <source>Bina Abling</source>
         <comment>Author name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>system_P25</source>
+        <source>Integrating Draping, Drafting and Drawing</source>
         <comment>Book name</comment>
         <translation type="unfinished"></translation>
     </message>
@@ -5181,17 +7894,17 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>system_P51</source>
+        <source>GOST 17917-86</source>
         <comment>System name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>system_P51</source>
+        <source>Ministry of consumer industry of the USSR</source>
         <comment>Author name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>system_P51</source>
+        <source>Standard figure boys</source>
         <comment>Book name</comment>
         <translation type="unfinished"></translation>
     </message>
@@ -5225,1663 +7938,21 @@ Apakah anda ingin menyimpan perubahan anda?</translation>
         <comment>System name</comment>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>PostfixOperators</name>
     <message>
-        <source>cm</source>
-        <comment>centimeter</comment>
-        <translation type="unfinished">cm</translation>
-    </message>
-    <message>
-        <source>mm</source>
-        <comment>millimeter</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>in</source>
-        <comment>inch</comment>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QCommandLineParser</name>
-    <message>
-        <source>Displays version information.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Displays this help.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown option &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown options: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Missing value after &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unexpected value after &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>[options]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Usage: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Options:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Arguments:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QCoreApplication</name>
-    <message>
-        <source>Based on Qt %1 (%2, %3 bit)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <source>Create new pattern piece to start working.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>mm</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>cm</source>
-        <translation type="unfinished">cm</translation>
-    </message>
-    <message>
-        <source>inch</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Property</source>
-        <extracomment>The text that appears in the first column header</extracomment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <extracomment>The text that appears in the second column header</extracomment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>px</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>add node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>move detail</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QmuParserErrorMsg</name>
-    <message>
-        <source>Unexpected token &quot;$TOK$&quot; found at position $POS$.</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Internal error</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid function-, variable- or constant name: &quot;$TOK$&quot;.</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot;</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid binary operator identifier: &quot;$TOK$&quot;.</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot;</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid infix operator identifier: &quot;$TOK$&quot;.</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot;</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid postfix operator identifier: &quot;$TOK$&quot;.</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot;</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid pointer to callback function.</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Expression is empty.</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid pointer to variable.</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unexpected operator &quot;$TOK$&quot; found at position $POS$</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unexpected end of expression at position $POS$</source>
-        <comment>Math parser error messages. Left untouched $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unexpected argument separator at position $POS$</source>
-        <comment>Math parser error messages. Left untouched $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unexpected parenthesis &quot;$TOK$&quot; at position $POS$</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unexpected function &quot;$TOK$&quot; at position $POS$</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unexpected value &quot;$TOK$&quot; found at position $POS$</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unexpected variable &quot;$TOK$&quot; found at position $POS$</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Function arguments used without a function (position: $POS$)</source>
-        <comment>Math parser error messages. Left untouched $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Missing parenthesis</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Too many parameters for function &quot;$TOK$&quot; at expression position $POS$</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Too few parameters for function &quot;$TOK$&quot; at expression position $POS$</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Divide by zero</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Domain error</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Name conflict</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid value for operator priority (must be greater or equal to zero).</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>user defined binary operator &quot;$TOK$&quot; conflicts with a built in operator.</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot;</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unexpected string token found at position $POS$.</source>
-        <comment>Math parser error messages. Left untouched $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unterminated string starting at position $POS$.</source>
-        <comment>Math parser error messages. Left untouched $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>String function called with a non string type of argument.</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>String value used where a numerical argument is expected.</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No suitable overload for operator &quot;$TOK$&quot; at position $POS$.</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot; and $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Function result is a string.</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Parser error.</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Decimal separator is identic to function argument separator.</source>
-        <comment>Math parser error messages.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>If-then-else operator is missing an else clause</source>
-        <comment>Math parser error messages. Do not translate operator name.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Misplaced colon at position $POS$</source>
-        <comment>Math parser error messages. Left untouched $POS$</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The &quot;$TOK$&quot; operator must be preceeded by a closing bracket.</source>
-        <comment>Math parser error messages. Left untouched &quot;$TOK$&quot;</comment>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>RenamePP</name>
-    <message>
-        <source>rename pattern piece</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SaveDetailOptions</name>
-    <message>
-        <source>save detail option</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SaveToolOptions</name>
-    <message>
-        <source>save tool option</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>TMainWindow</name>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Select New for creation measurement file.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="unfinished">Nama</translation>
-    </message>
-    <message>
-        <source>Calculated value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Formula</source>
-        <translation type="unfinished">rumus</translation>
-    </message>
-    <message>
-        <source>Base value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>In sizes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>In heights</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Details</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Formula:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Base value:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>In sizes:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>In heights:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move measurement up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move measurement down</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Calculated value:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Full name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Type:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Measurement type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Path:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Path to file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show in Explorer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Base size:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Base size value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Base height:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Base height value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Given name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Family name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Birth date:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>yyyy-MM-dd</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sex:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Email:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Notes:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Measurements</source>
-        <translation type="unfinished">pengukuran</translation>
-    </message>
-    <message>
-        <source>Menu</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gradation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open individual ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="unfinished">Simpan</translation>
-    </message>
-    <message>
-        <source>Save As ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Quit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>About Tape</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add known</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add custom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Read only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open standard ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open template</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Database</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show information about all known measurement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Preferences</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>untitled %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This file already opened in another window.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File error.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not save file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>measurements</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Individual measurements (*.vit)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Standard measurements (*.vst)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save as</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;New Window</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit measurement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>M_%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Empty field.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Parser error: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Standard measurements</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Height: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Individual measurements</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>male</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>female</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>untitled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;Empty&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unsaved changes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Measurements have been modified.
-Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Empty field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Import from a pattern</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pattern files (*.val)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pattern unit:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Find:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Find Previous</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+Shift+G</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Find Next</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+G</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Individual measurements (*.vit);;Standard measurements (*.vst);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Standard measurements (*.vst);;Individual measurements (*.vit);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Measurements (*.vst *.vit);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to lock. This file already opened in another window.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to lock. This file already opened in another window. Expect collissions when run 2 copies of the program.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File contains invalid known measurement(s).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File has unknown format.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Full name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File &apos;%1&apos; doesn&apos;t exist!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Can&apos;t find measurement.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The name of known measurement forbidden to change.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>TableWindow</name>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Simpan</translation>
-    </message>
-</context>
-<context>
-    <name>TapeConfigDialog</name>
-    <message>
-        <source>Apply</source>
-        <translation type="unfinished">Terapkan</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Batalkan</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="unfinished">&amp;Ok</translation>
-    </message>
-    <message>
-        <source>Config Dialog</source>
-        <translation type="unfinished">Dialog konfigurasi</translation>
-    </message>
-    <message>
-        <source>Configuration</source>
-        <translation type="unfinished">Konfigurasi</translation>
-    </message>
-    <message>
-        <source>Paths</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>TapeConfigurationPage</name>
-    <message>
-        <source>Language</source>
-        <translation type="unfinished">Bahasa</translation>
-    </message>
-    <message>
-        <source>GUI language</source>
-        <translation type="unfinished">Bahasa GUI</translation>
-    </message>
-    <message>
-        <source>Pattern making system</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Author:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Book:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Decimal separator parts</source>
-        <translation type="unfinished">komponen pemisah desimal</translation>
-    </message>
-    <message>
-        <source>With OS options (%1)</source>
-        <translation type="unfinished">dengan pilihan OS (%1)</translation>
-    </message>
-</context>
-<context>
-    <name>TapePathPage</name>
-    <message>
-        <source>Open Directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Path that use Valentina</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Individual measurements</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Standard measurements</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Templates</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Utils::CheckableMessageBox</name>
-    <message>
-        <source>Do not ask again</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Do not &amp;ask again</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Do not &amp;show again</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VAbstractConverter</name>
-    <message>
-        <source>Couldn&apos;t get version information.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Too many tags &lt;%1&gt; in file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Version &quot;%1&quot; invalid.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Version &quot;0.0.0&quot; invalid.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid version. Minimum supported version is %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid version. Maximum supported version is %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error no unique id.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not change version.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating a backup file: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating a reserv copy: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VAbstractPattern</name>
-    <message>
-        <source>Can&apos;t find tool in table.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VAbstractTool</name>
-    <message>
-        <source>black</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>green</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>blue</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>dark red</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>dark green</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>dark blue</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>yellow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Confirm deletion</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Do you really want to delete?</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VApplication</name>
-    <message>
-        <source>Error parsing file. Program will be terminated.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error bad id. Program will be terminated.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error can&apos;t convert value. Program will be terminated.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error empty parameter. Program will be terminated.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error wrong id. Program will be terminated.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Something&apos;s wrong!!</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VCommandLine</name>
-    <message>
-        <source>Path to output exported layout file. Use it to enable console export mode.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The exported layout file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Path to custom measure file (export mode).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The measure file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number corresponding to output format (default = 0, export mode): </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Format number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number corresponding to page template (default = 0, export mode): </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Template number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Page width in current units like 12.0 (cannot be used with &quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&quot;, export mode).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The page width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Page height in current units like 12.0 (cannot be used with &quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Page height/width measure units (cannot be used with &quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&quot;, export mode): </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The measure unit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotation in degrees (one of predefined). Default (or 0) is no-rotate (export mode).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Angle</source>
-        <translation type="unfinished">sudut</translation>
-    </message>
-    <message>
-        <source>Auto crop unused length (export mode).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unite pages if possible (export mode).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save length of the sheet if set. (export mode).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Layout units (as paper&apos;s one except px, export mode).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The unit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shift layout length measured in layout units (export mode).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shift length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gap width x2, measured in layout units. (export mode).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The gap width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sets layout groupping (export mode): </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Grouping type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot use pageformat and page explicit size/units together.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Page height, width, units must be used all 3 at once.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid rotation value. That must be one of predefined values.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown page templated selected.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unsupported paper units.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unsupported layout units.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export options can be used with single input file only.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VContainer</name>
-    <message>
-        <source>Can&apos;t find object</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Can&apos;t cast object</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Can&apos;t find object. Type mismatch.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VDomDocument</name>
-    <message>
-        <source>Can&apos;t convert toUInt parameter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Can&apos;t convert toBool parameter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Got empty parameter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Can&apos;t convert toDouble parameter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Can&apos;t open file %1:
-%2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Can&apos;t open schema file %1:
-%2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not load schema file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Validation error file %3 in line %1 column %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Parsing error file %3 in line %1 column %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t get node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Got wrong parameter id. Need only id &gt; 0.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This id is not unique.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not copy temp file to document file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not remove document file</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VDrawTool</name>
-    <message>
-        <source>Edit wrong formula</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="unfinished">pilihan</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="unfinished">hapus</translation>
-    </message>
-</context>
-<context>
-    <name>VException</name>
-    <message>
-        <source>Critical error!</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VFormula</name>
-    <message>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VFormulaProperty</name>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Formula</source>
-        <translation type="unfinished">rumus</translation>
-    </message>
-</context>
-<context>
-    <name>VMeasurements</name>
-    <message>
-        <source>Can&apos;t find measurement &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VPE::VBoolProperty</name>
-    <message>
-        <source>True</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>False</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VPE::VFileEditWidget</name>
-    <message>
-        <source>Directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open File</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VPattern</name>
-    <message>
-        <source>Error no unique id.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error parsing file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error can&apos;t convert value.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error empty parameter.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error wrong id.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Critical error!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error parsing file (std::bad_alloc).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating detail</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating single point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point of end line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point along line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point of shoulder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point of normal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point of bisector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point of lineintersection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point of contact</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating modeling point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating height</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating triangle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point of intersection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating cut spline point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating cut spline path point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating cut arc point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point of intersection line and axis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point of intersection curve and axis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating simple curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating curve path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating modeling simple curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating modeling curve path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating simple arc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating modeling arc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating union details</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point of intersection arcs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point of intersection circles</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point from circle and tangent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating point from arc and tangent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error creating or updating true darts</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VPatternConverter</name>
-    <message>
-        <source>Unexpected version &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error restoring backup file: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VSplinePath</name>
-    <message>
-        <source>Not enough points to create the spline.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This spline does not exist.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Can&apos;t cut spline path with one point</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VToolDetail</name>
-    <message>
-        <source>Options</source>
-        <translation type="unfinished">pilihan</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="unfinished">hapus</translation>
-    </message>
-</context>
-<context>
-    <name>VToolOptionsPropertyBrowser</name>
-    <message>
-        <source>Base point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Point label</source>
-        <translation type="unfinished">label titik</translation>
-    </message>
-    <message>
-        <source>Position</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Point at distance and angle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="unfinished">panjang</translation>
-    </message>
-    <message>
-        <source>Angle</source>
-        <translation type="unfinished">sudut</translation>
-    </message>
-    <message>
-        <source>Point at distance along line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Arc</source>
-        <translation type="unfinished">busur</translation>
-    </message>
-    <message>
-        <source>Radius</source>
-        <translation type="unfinished">radius
-</translation>
-    </message>
-    <message>
-        <source>First angle</source>
-        <translation type="unfinished">sudut pertama</translation>
-    </message>
-    <message>
-        <source>Second angle</source>
-        <translation type="unfinished">sudut kedua</translation>
-    </message>
-    <message>
-        <source>Point along bisector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cut arc tool</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tool for segmenting a curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tool segment a pathed curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Perpendicular point along line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line between points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Point at line intersection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Point along perpendicular</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional angle degrees</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Point at intersection of arc and line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tool to make point from x &amp; y of two other points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Special point on shoulder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Curve tool</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Curve factor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tool for path curve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tool triangle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Point intersection line and axis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Point intersection curve and axis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>First point</source>
-        <translation type="unfinished">Titik pertama</translation>
-    </message>
-    <message>
-        <source>Second point</source>
-        <translation type="unfinished">titik kedua</translation>
-    </message>
-    <message>
-        <source>Arc with given length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>True darts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Point 1 label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Point 2 label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tool to make point from intersection two arcs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Take</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tool to make point from intersection two circles</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>First circle radius</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Second circle radius</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tool to make point from circle and tangent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Circle radius</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tool to make point from arc and tangent</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VVITConverter</name>
-    <message>
-        <source>Unexpected version &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error restoring backup file: %1.</source>
+        <source>None</source>
+        <comment>System name</comment>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>VVSTConverter</name>
     <message>
-        <source>Unexpected version &quot;%1&quot;.</source>
+        <source>Valentina team</source>
+        <comment>Author name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Error restoring backup file: %1.</source>
+        <source>Valentina&apos;s internal standard</source>
+        <comment>Book name</comment>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>Variables</name>
     <message>
         <source>Line_</source>
         <comment>Left symbol _ in name</comment>
@@ -6942,6 +8013,173 @@ Do you want to save your changes?</source>
         <comment>Do not add symbol _ to the end of name</comment>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>sin</source>
+        <comment>sine function</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cos</source>
+        <comment>cosine function</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>tan</source>
+        <comment>tangens function</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>asin</source>
+        <comment>arcus sine function</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>acos</source>
+        <comment>arcus cosine function</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>atan</source>
+        <comment>arcus tangens function</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sinh</source>
+        <comment>hyperbolic sine function</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cosh</source>
+        <comment>hyperbolic cosine</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>tanh</source>
+        <comment>hyperbolic tangens function</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>asinh</source>
+        <comment>hyperbolic arcus sine function</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>acosh</source>
+        <comment>hyperbolic arcus tangens function</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>atanh</source>
+        <comment>hyperbolic arcur tangens function</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>log2</source>
+        <comment>logarithm to the base 2</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>log10</source>
+        <comment>logarithm to the base 10</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>log</source>
+        <comment>logarithm to the base 10</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ln</source>
+        <comment>logarithm to base e (2.71828...)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>exp</source>
+        <comment>e raised to the power of x</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sqrt</source>
+        <comment>square root of a value</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sign</source>
+        <comment>sign function -1 if x&lt;0; 1 if x&gt;0</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>rint</source>
+        <comment>round to nearest integer</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>abs</source>
+        <comment>absolute value</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>min</source>
+        <comment>min of all arguments</comment>
+        <translation type="unfinished">minimal</translation>
+    </message>
+    <message>
+        <source>max</source>
+        <comment>max of all arguments</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sum</source>
+        <comment>sum of all arguments</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>avg</source>
+        <comment>mean value of all arguments</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fmod</source>
+        <comment>Returns the floating-point remainder of numer/denom (rounded towards zero)</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cm</source>
+        <comment>centimeter</comment>
+        <translation type="unfinished">cm</translation>
+    </message>
+    <message>
+        <source>mm</source>
+        <comment>millimeter</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>in</source>
+        <comment>inch</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VVITConverter</name>
+    <message>
+        <source>Unexpected version &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error restoring backup file: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VVSTConverter</name>
+    <message>
+        <source>Unexpected version &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error restoring backup file: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>VisToolCurveIntersectAxis</name>
@@ -6976,65 +8214,91 @@ Do you want to save your changes?</source>
     </message>
 </context>
 <context>
+    <name>mNoisyHandler</name>
+    <message>
+        <source>DEBUG:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WARNING:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRITICAL:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FATAL:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>INFO:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Critical error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fatal error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>main</name>
     <message>
         <source>Pattern making program.</source>
-        <translation>program pembuat pola</translation>
+        <translation type="vanished">program pembuat pola</translation>
     </message>
     <message>
         <source>Pattern file.</source>
-        <translation>Berkas pola.</translation>
+        <translation type="vanished">Berkas pola.</translation>
     </message>
+</context>
+<context>
+    <name>vNoisyHandler</name>
     <message>
-        <source>Valentina&apos;s measurements editor.</source>
+        <source>DEBUG:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The measurement file.</source>
+        <source>WARNING:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Open with the base height: 92, 98, 104, 110, 116, 122, 128, 134, 140, 146, 152, 158, 164, 170, 176, 182 or 188 cm.</source>
+        <source>CRITICAL:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The base height</source>
+        <source>FATAL:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Open with the base size: 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54 or 56 cm.</source>
+        <source>INFO:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The base size</source>
+        <source>Warning.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Set pattern file unit: cm, mm, inch.</source>
+        <source>Critical error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The pattern unit</source>
+        <source>Fatal error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Error: Invalid base height argument. Must be 92, 98, 104, 110, 116, 122, 128, 134, 140, 146, 152, 158, 164, 170, 176, 182 or 188 cm.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error: Invalid base size argument. Must be 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54 or 56 cm.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error: Invalid base size argument. Must be cm, mm or inch.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use for unit testing. Run the program and open a file without showing a window.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error: Test mode doesn&apos;t support openning several files.</source>
+        <source>Information.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

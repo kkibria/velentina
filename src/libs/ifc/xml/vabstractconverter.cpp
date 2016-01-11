@@ -32,6 +32,7 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QDir>
 
 //---------------------------------------------------------------------------------------------------------------------
 VAbstractConverter::VAbstractConverter(const QString &fileName)
@@ -55,7 +56,7 @@ void VAbstractConverter::Convert()
     }
 
     QString error;
-    const QString backupFileName = fileName +".backup";
+    const QString backupFileName = fileName + QLatin1Literal(".backup");
     if (SafeCopy(fileName, backupFileName, error) == false)
     {
         const QString errorMsg(tr("Error creating a backup file: %1.").arg(error));
@@ -159,7 +160,7 @@ void VAbstractConverter::ReserveFile() const
             .arg(info.baseName())
             .arg(GetVersionStr())
             .arg(info.completeSuffix());
-    if (SafeCopy(fileName, reserveFileName, error) == false)
+    if (not SafeCopy(fileName, reserveFileName, error))
     {
         const QString errorMsg(tr("Error creating a reserv copy: %1.").arg(error));
         throw VException(errorMsg);
@@ -174,6 +175,7 @@ void VAbstractConverter::Replace(QString &formula, const QString &newName, int p
     bias = token.length() - newName.length();
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 void VAbstractConverter::CorrectionsPositions(int position, int bias, QMap<int, QString> &tokens) const
 {
     if (bias == 0)
