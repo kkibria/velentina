@@ -37,7 +37,7 @@ class TST_VSpline : public AbstractTest
 {
     Q_OBJECT
 public:
-    explicit TST_VSpline(QObject *parent = 0);
+    explicit TST_VSpline(QObject *parent = nullptr);
 
 signals:
 
