@@ -88,6 +88,7 @@ cov-int/
 /.qmake.cache
 /.qmake.stash
 *.qbs.user
+*.qbs.user.*
 *.pro.user
 *.pro.user.*
 *.moc
