@@ -87,6 +87,8 @@ cov-int/
 # Qt-es
 /.qmake.cache
 /.qmake.stash
+*.qbs.user
+*.qbs.user.*
 *.pro.user
 *.pro.user.*
 *.qbs.user
