@@ -1,7 +1,9 @@
 import qbs
 
+// qbs build noTests:false
 Project {
-name: "Tests"
+	name: "Tests"
+	condition: noTests === false
     references: [
         "ParserTest/ParserTest.qbs",
         "ValentinaTest/ValentinaTest.qbs"
