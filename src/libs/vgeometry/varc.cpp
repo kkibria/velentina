@@ -165,8 +165,8 @@ QPointF VArc::GetP2 () const
  */
 qreal VArc::AngleArc() const
 {
-    if ((qFuzzyCompare(d->f1+1, 0+1) && qFuzzyCompare(d->f2, 360)) ||
-        (qFuzzyCompare(d->f1, 360) && qFuzzyCompare(d->f2+1, 0+1)))
+    if ((qFuzzyIsNull(d->f1) && qFuzzyCompare(d->f2, 360)) ||
+        (qFuzzyCompare(d->f1, 360) && qFuzzyIsNull(d->f2)))
     {
         return 360;
     }
@@ -377,7 +377,7 @@ void VArc::FindF2(qreal length)
 //---------------------------------------------------------------------------------------------------------------------
 qreal VArc::MaxLength() const
 {
-    return 2*M_PI*d->radius;
+    return M_2PI*d->radius;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

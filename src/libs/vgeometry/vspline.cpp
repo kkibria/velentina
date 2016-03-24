@@ -32,8 +32,6 @@
 #include <QPainterPath>
 #include <QtCore/qmath.h>
 
-#define M_2PI   6.28318530717958647692528676655900576
-
 //---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief VSpline default constructor
@@ -169,7 +167,7 @@ QVector<QPointF> VSpline::SplinePoints(const QPointF &p1, const QPointF &p4, qre
     p1pX.setAngle( angle1 );
     qreal L = 0, radius = 0, angle = 90;
     radius = QLineF(QPointF(p1.x(), p4.y()), p4).length();
-    L = kCurve * radius * 4 / 3 * tan( angle * M_PI / 180.0 / 4 );
+    L = kCurve * radius * 4 / 3 * tan( angle * M_PI_4 / 180.0 );
     QLineF p1p2(p1.x(), p1.y(), p1.x() + L * kAsm1, p1.y());
     p1p2.setAngle(angle1);
     QLineF p4p3(p4.x(), p4.y(), p4.x() + L * kAsm2, p4.y());
@@ -414,7 +412,7 @@ qint32 VSpline::Cubic(QVector<qreal> &x, qreal a, qreal b, qreal c)
         x.insert(0, aa+bb-a/3.); // Real root
         x.insert(1, (-0.5)*(aa+bb)-a/3.); //Complex root
         x.insert(2, (sqrt(3.)*0.5)*fabs(aa-bb)); // Complex root
-        if (qFuzzyCompare(x.at(2) + 1, 0. + 1))
+        if (qFuzzyIsNull(x.at(2)))
         {
             return(2);
         }
