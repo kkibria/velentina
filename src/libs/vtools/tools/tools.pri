@@ -47,7 +47,9 @@ HEADERS += \
     $$PWD/drawTools/toolpoint/vabstractpoint.h \
     $$PWD/drawTools/toolpoint/tooldoublepoint/vtooldoublepoint.h \
     $$PWD/drawTools/toolpoint/tooldoublepoint/vtooltruedarts.h \
-    $$PWD/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.h
+    $$PWD/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.h \
+    $$PWD/drawTools/toolcurve/vtoolcubicbezier.h \
+    $$PWD/drawTools/toolcurve/vtoolcubicbezierpath.h
 
 SOURCES += \
     $$PWD/vtooldetail.cpp \
@@ -92,4 +94,6 @@ SOURCES += \
     $$PWD/drawTools/toolpoint/vabstractpoint.cpp \
     $$PWD/drawTools/toolpoint/tooldoublepoint/vtooldoublepoint.cpp \
     $$PWD/drawTools/toolpoint/tooldoublepoint/vtooltruedarts.cpp \
-    $$PWD/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp
+    $$PWD/drawTools/toolpoint/toolsinglepoint/vtoolpointofintersectioncurves.cpp \
+    $$PWD/drawTools/toolcurve/vtoolcubicbezier.cpp \
+    $$PWD/drawTools/toolcurve/vtoolcubicbezierpath.cpp

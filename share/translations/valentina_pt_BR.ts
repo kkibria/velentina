@@ -734,6 +734,80 @@
     </message>
 </context>
 <context>
+    <name>DialogCubicBezier</name>
+    <message>
+        <source>Cubic bezier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
+        <translation type="unfinished">Cor</translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation>Nome:</translation>
+    </message>
+    <message>
+        <source>First point:</source>
+        <translation type="unfinished">Primeiro ponto</translation>
+    </message>
+    <message>
+        <source>Second point:</source>
+        <translation type="unfinished">Segundo ponto</translation>
+    </message>
+    <message>
+        <source>Third point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fourth point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the second point of curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the third point of curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the fourth point of curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid spline</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DialogCubicBezierPath</name>
+    <message>
+        <source>Dialog cubic bezier path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List of points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
+        <translation type="unfinished">Cor</translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation>Nome:</translation>
+    </message>
+    <message>
+        <source>Invalid spline path</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DialogCurveIntersectAxis</name>
     <message>
         <source>Angle</source>
@@ -769,7 +843,7 @@
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ângulo</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -1025,7 +1099,7 @@
     <name>DialogDetail</name>
     <message>
         <source>Detail</source>
-        <translation type="unfinished"></translation>
+        <translation>Detalhe</translation>
     </message>
     <message>
         <source>cm</source>
@@ -1038,6 +1112,10 @@
     <message>
         <source>Seam allowance</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="vanished">Largura</translation>
     </message>
     <message>
         <source>Closed</source>
@@ -1156,7 +1234,7 @@
     </message>
     <message>
         <source>Length of arcs</source>
-        <translation>Comprimento dos arcos</translation>
+        <translation type="vanished">Comprimento dos arcos</translation>
     </message>
     <message>
         <source>Length of curves</source>
@@ -1187,10 +1265,6 @@
         <translation>Comprimento da linha</translation>
     </message>
     <message>
-        <source>Arc length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Curve length</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1203,19 +1277,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Angles of arcs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Angles of curves</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Arc radius</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Arc angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1295,7 +1361,7 @@
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ângulo</translation>
     </message>
     <message>
         <source>Base point:</source>
@@ -1428,18 +1494,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Curve %1_%2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Arc with center in point %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Curve point %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>%4 - point of contact of arc with the center in point %1 and line %2_%3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1456,27 +1510,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1 - cut arc with center %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 - cut curve %2_%3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 - cut curve path %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>%1 - point of intersection line %2_%3 and axis through point %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>%1 - point of intersection curve and axis through point %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Arc with center in point %1 and length %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1503,6 +1541,46 @@
         <source>%1 - point of curves intersection</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Curve</source>
+        <translation type="unfinished">Curva</translation>
+    </message>
+    <message>
+        <source>Cubic bezier curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arc</source>
+        <translation type="unfinished">Arco</translation>
+    </message>
+    <message>
+        <source>%1 with length %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spline path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cubic bezier curve path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 - cut %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>arc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>curve path</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DialogIncrements</name>
@@ -1524,7 +1602,7 @@
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linha</translation>
     </message>
     <message>
         <source>Length</source>
@@ -1559,19 +1637,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Lengths arcs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Radiuses arcs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Radius</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Angles arcs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1592,7 +1662,7 @@
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome:</translation>
     </message>
     <message>
         <source>Calculated value:</source>
@@ -1608,7 +1678,7 @@
     </message>
     <message>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Descrição:</translation>
     </message>
     <message>
         <source>Error</source>
@@ -2008,7 +2078,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ângulo</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -2503,7 +2573,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome:</translation>
     </message>
     <message>
         <source>Node Value (may be empty)</source>
@@ -3179,7 +3249,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ângulo</translation>
     </message>
     <message>
         <source>Second point:</source>
@@ -3187,7 +3257,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome:</translation>
     </message>
     <message>
         <source>Invalid spline</source>
@@ -3270,7 +3340,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ângulo</translation>
     </message>
     <message>
         <source>Second control point</source>
@@ -3278,7 +3348,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome:</translation>
     </message>
     <message>
         <source>Invalid spline path</source>
@@ -3702,7 +3772,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linha</translation>
     </message>
     <message>
         <source>Line between points</source>
@@ -3734,7 +3804,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Detail</source>
-        <translation type="unfinished"></translation>
+        <translation>Detalhe</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -4186,10 +4256,6 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>toolBar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Last Tool</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4588,6 +4654,22 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Measurements was changed. Do you want to sync measurements now?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Curve tool which uses point as control handle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select first curve point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select point of cubic bezier path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toolbar pointer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5145,7 +5227,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome:</translation>
     </message>
     <message>
         <source>Formula:</source>
@@ -5169,7 +5251,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Descrição:</translation>
     </message>
     <message>
         <source>Move measurement up</source>
@@ -5820,6 +5902,13 @@ Do you want to save your changes?</source>
     </message>
 </context>
 <context>
+    <name>VAbstractCubicBezierPath</name>
+    <message>
+        <source>Can&apos;t cut this spline</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>VAbstractPattern</name>
     <message>
         <source>Can&apos;t find tool in table.</source>
@@ -6141,6 +6230,25 @@ Do you want to save your changes?</source>
         <source>Can&apos;t find object. Type mismatch.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Number of free id exhausted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Can&apos;t create a curve with type &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VCubicBezierPath</name>
+    <message>
+        <source>Not enough points to create the spline.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This spline does not exist.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>VDomDocument</name>
@@ -6443,6 +6551,14 @@ Do you want to save your changes?</source>
         <source>Error creating or updating interactive spline path</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Error creating or updating cubic bezier curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating or updating cubic bezier path curve</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>VPatternConverter</name>
@@ -6459,10 +6575,6 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>This spline does not exist.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Can&apos;t cut spline path with one point</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6705,6 +6817,14 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>C2: length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cubic bezier curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tool cubic bezier curve</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7526,66 +7646,6 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Line_</source>
-        <comment>Left symbol _ in name</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>AngleLine_</source>
-        <comment>Left symbol _ in name</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Arc_</source>
-        <comment>Left symbol _ in name</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spl_</source>
-        <comment>Left symbol _ in name</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SplPath</source>
-        <comment>Do not add symbol _ to the end of name</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>RadiusArc_</source>
-        <comment>Left symbol _ in name</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Angle1Arc_</source>
-        <comment>Left symbol _ in name</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Angle2Arc_</source>
-        <comment>Left symbol _ in name</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Angle1Spl_</source>
-        <comment>Left symbol _ in name</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Angle2Spl_</source>
-        <comment>Left symbol _ in name</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Angle1SplPath</source>
-        <comment>Do not add symbol _ to the end of name</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Angle2SplPath</source>
-        <comment>Do not add symbol _ to the end of name</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>sin</source>
         <comment>sine function</comment>
         <translation type="unfinished"></translation>
@@ -7730,6 +7790,71 @@ Do you want to save your changes?</source>
         <comment>inch</comment>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Line_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AngleLine_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arc_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spl_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SplPath</source>
+        <comment>Do not add symbol _ to the end of the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RadiusArc_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle1Arc_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle2Arc_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle1Spl_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle2Spl_</source>
+        <comment>Left symbol _ in the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle1SplPath</source>
+        <comment>Do not add symbol _ to the end of the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle2SplPath</source>
+        <comment>Do not add symbol _ to the end of the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Seg_</source>
+        <comment>Segment. Left symbol _ in the name</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>VVITConverter</name>
@@ -7746,6 +7871,21 @@ Do you want to save your changes?</source>
     </message>
 </context>
 <context>
+    <name>VisToolCubicBezierPath</name>
+    <message>
+        <source>&lt;b&gt;Curved path&lt;/b&gt;: select seven or more points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Curved path&lt;/b&gt;: select seven or more points, &lt;b&gt;Enter&lt;/b&gt; - finish creation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Curved path&lt;/b&gt;: select more points for complete segment</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>VisToolCurveIntersectAxis</name>
     <message>
         <source>&lt;b&gt;Intersection curve and axis&lt;/b&gt;: angle = %1°; &lt;b&gt;Shift&lt;/b&gt; - sticking angle, &lt;b&gt;Enter&lt;/b&gt; - finish creation</source>
@@ -7755,7 +7895,7 @@ Do you want to save your changes?</source>
 <context>
     <name>VisToolEndLine</name>
     <message>
-        <source>&lt;b&gt;Point at distance and angle&lt;/b&gt;: angle = %1°; &lt;b&gt;Shift&lt;/b&gt; - sticking angle, &lt;b&gt;Enter&lt;/b&gt; - finish creation</source>
+        <source>&lt;b&gt;Point at distance and angle&lt;/b&gt;: angle = %1°, length = %2%3; &lt;b&gt;Shift&lt;/b&gt; - sticking angle, &lt;b&gt;Enter&lt;/b&gt; - finish creation</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

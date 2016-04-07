@@ -31,7 +31,7 @@
 #include "../vpatterndb/vtranslatevars.h"
 #include "../../../../../dialogs/tools/dialogshoulderpoint.h"
 #include "../vgeometry/vpointf.h"
-#include "../../../../../visualization/vistoolshoulderpoint.h"
+#include "../../../../../visualization/line/vistoolshoulderpoint.h"
 
 const QString VToolShoulderPoint::ToolType = QStringLiteral("shoulder");
 
@@ -100,7 +100,7 @@ QPointF VToolShoulderPoint::FindPoint(const QPointF &p1Line, const QPointF &p2Li
         qDebug()<<"Correction of length in shoulder point tool. Parameter length too small.";
         toolLength = dist;
     }
-    if (qFuzzyCompare(dist, toolLength))
+    if (VFuzzyComparePossibleNulls(dist, toolLength))
     {
         return line.p2();
     }
@@ -204,10 +204,7 @@ VToolShoulderPoint* VToolShoulderPoint::Create(const quint32 _id, QString &formu
                                                            p1Line, p2Line, pShoulder,
                                                            typeCreation);
         scene->addItem(point);
-        connect(point, &VToolShoulderPoint::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-        connect(scene, &VMainGraphicsScene::NewFactor, point, &VToolShoulderPoint::SetFactor);
-        connect(scene, &VMainGraphicsScene::DisableItem, point, &VToolShoulderPoint::Disable);
-        connect(scene, &VMainGraphicsScene::EnableToolMove, point, &VToolShoulderPoint::EnableToolMove);
+        InitToolConnections(scene, point);
         doc->AddTool(id, point);
         doc->IncrementReferens(firstPoint->getIdTool());
         doc->IncrementReferens(secondPoint->getIdTool());

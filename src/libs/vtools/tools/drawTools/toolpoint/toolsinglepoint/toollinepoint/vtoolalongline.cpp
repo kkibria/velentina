@@ -32,7 +32,7 @@
 #include "../../../../../dialogs/tools/dialogalongline.h"
 #include "../vgeometry/vpointf.h"
 #include "../ifc/exception/vexceptionobjecterror.h"
-#include "../../../../../visualization/vistoolalongline.h"
+#include "../../../../../visualization/line/vistoolalongline.h"
 
 const QString VToolAlongLine::ToolType = QStringLiteral("alongLine");
 
@@ -275,10 +275,7 @@ VToolAlongLine* VToolAlongLine::Create(const quint32 _id, const QString &pointNa
         VToolAlongLine *point = new VToolAlongLine(doc, data, id, formula, firstPointId, secondPointId, typeLine,
                                                    lineColor, typeCreation);
         scene->addItem(point);
-        connect(point, &VToolAlongLine::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-        connect(scene, &VMainGraphicsScene::NewFactor, point, &VToolAlongLine::SetFactor);
-        connect(scene, &VMainGraphicsScene::DisableItem, point, &VToolAlongLine::Disable);
-        connect(scene, &VMainGraphicsScene::EnableToolMove, point, &VToolAlongLine::EnableToolMove);
+        InitToolConnections(scene, point);
         doc->AddTool(id, point);
         doc->IncrementReferens(firstPoint->getIdTool());
         doc->IncrementReferens(secondPoint->getIdTool());

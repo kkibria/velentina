@@ -36,7 +36,7 @@
 #include "../../../vpatterndb/vcontainer.h"
 #include "../../../vpatterndb/vtranslatevars.h"
 #include "../../../ifc/xml/vdomdocument.h"
-#include "../../visualization/vistoolarc.h"
+#include "../../visualization/path/vistoolarc.h"
 #include "../support/dialogeditwrongformula.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -396,7 +396,7 @@ void DialogArc::CheckAngles()
         return;
     }
 
-    if (qFuzzyCompare(angleF1 + 1, angleF2 + 1))
+    if (VFuzzyComparePossibleNulls(angleF1, angleF2))
     {
         flagF1 = false;
         ChangeColor(ui->labelEditF1, Qt::red);

@@ -30,7 +30,7 @@
 #include "../../../../dialogs/tools/dialogpointofintersectionarcs.h"
 #include "../vgeometry/vpointf.h"
 #include "../vgeometry/varc.h"
-#include "../../../../visualization/vistoolpointofintersectionarcs.h"
+#include "../../../../visualization/line/vistoolpointofintersectionarcs.h"
 
 const QString VToolPointOfIntersectionArcs::ToolType = QStringLiteral("pointOfIntersectionArcs");
 
@@ -109,10 +109,7 @@ VToolPointOfIntersectionArcs *VToolPointOfIntersectionArcs::Create(const quint32
         VToolPointOfIntersectionArcs *point = new VToolPointOfIntersectionArcs(doc, data, id, firstArcId,
                                                                                secondArcId, pType, typeCreation);
         scene->addItem(point);
-        connect(point, &VToolPointOfIntersectionArcs::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-        connect(scene, &VMainGraphicsScene::NewFactor, point, &VToolPointOfIntersectionArcs::SetFactor);
-        connect(scene, &VMainGraphicsScene::DisableItem, point, &VToolPointOfIntersectionArcs::Disable);
-        connect(scene, &VMainGraphicsScene::EnableToolMove, point, &VToolPointOfIntersectionArcs::EnableToolMove);
+        InitToolConnections(scene, point);
         doc->AddTool(id, point);
         doc->IncrementReferens(firstArc->getIdTool());
         doc->IncrementReferens(secondArc->getIdTool());

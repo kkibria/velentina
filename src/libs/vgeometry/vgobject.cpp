@@ -304,7 +304,8 @@ QPointF VGObject::LineIntersectRect(const QRectF &rec, const QLineF &line)
 //---------------------------------------------------------------------------------------------------------------------
 int VGObject::IntersectionCircles(const QPointF &c1, double r1, const QPointF &c2, double r2, QPointF &p1, QPointF &p2)
 {
-    if (qFuzzyCompare(c1.x(), c2.x()) && qFuzzyCompare(c1.y(), c2.y()) && qFuzzyCompare(r1, r2))
+    if (VFuzzyComparePossibleNulls(c1.x(), c2.x()) && VFuzzyComparePossibleNulls(c1.y(), c2.y())
+            && VFuzzyComparePossibleNulls(r1, r2))
     {
         return 3;// Circles are equal
     }
@@ -319,7 +320,7 @@ int VGObject::IntersectionCircles(const QPointF &c1, double r1, const QPointF &c
     {
         return 0;
     }
-    else if (qFuzzyCompare(c*c, r1*r1*(a*a+b*b)))
+    else if (VFuzzyComparePossibleNulls(c*c, r1*r1*(a*a+b*b)))
     {
         p1 = QPointF(x0 + c1.x(), y0  + c1.y());
         return 1;
@@ -360,7 +361,7 @@ qint32 VGObject::LineIntersectCircle(const QPointF &center, qreal radius, const 
     // how many solutions?
     qint32 flag = 0;
     const qreal d = QLineF (center, p).length();
-    if (qFuzzyCompare(d, radius))
+    if (VFuzzyComparePossibleNulls(d, radius))
     {
         flag = 1;
     }
@@ -440,21 +441,28 @@ void VGObject::LineCoefficients(const QLineF &line, qreal *a, qreal *b, qreal *c
  */
 bool VGObject::IsPointOnLineSegment(const QPointF &t, const QPointF &p1, const QPointF &p2)
 {
+    // Round points. 1 mm now more than 3 pixels (96 dpi). So, no big reasons to work with float values.
+    // See bug issue #458 Issue with segment of curve.
+    // https://bitbucket.org/dismine/valentina/issues/458/issue-with-segment-of-curve
+    const QPoint tR = t.toPoint();
+    const QPoint p1R = p1.toPoint();
+    const QPoint p2R = p2.toPoint();
+
     // The test point must lie inside the bounding box spanned by the two line points.
-    if (not ( (p1.x() <= t.x() && t.x() <= p2.x()) || (p2.x() <= t.x() && t.x() <= p1.x()) ))
+    if (not ( (p1R.x() <= tR.x() && tR.x() <= p2R.x()) || (p2R.x() <= tR.x() && tR.x() <= p1R.x()) ))
     {
         // test point not in x-range
         return false;
     }
 
-    if (not ( (p1.y() <= t.y() && t.y() <= p2.y()) || (p2.y() <= t.y() && t.y() <= p1.y()) ))
+    if (not ( (p1R.y() <= tR.y() && tR.y() <= p2R.y()) || (p2R.y() <= tR.y() && tR.y() <= p1R.y()) ))
     {
         // test point not in y-range
         return false;
     }
 
     // Test via the perp dot product (PDP)
-    return IsPointOnLineviaPDP(t, p1, p2);
+    return IsPointOnLineviaPDP(tR, p1R, p2R);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -474,7 +482,7 @@ bool VGObject::IsPointOnLineviaPDP(const QPointF &t, const QPointF &p1, const QP
  * This is actually the same as the area of the triangle defined by the three points, multiplied by 2.
  * @return 2 * triangleArea(a,b,c)
  */
-double VGObject::PerpDotProduct(const QPointF &t, const QPointF &p1, const QPointF &p2)
+double VGObject::PerpDotProduct(const QPointF &p1, const QPointF &p2, const QPointF &t)
 {
     return (p1.x() - t.x()) * (p2.y() - t.y()) - (p1.y() - t.y()) * (p2.x() - t.x());
 }
@@ -500,7 +508,7 @@ double VGObject::GetEpsilon(const QPointF &p1, const QPointF &p2)
 int VGObject::PointInCircle(const QPointF &p, const QPointF &center, qreal radius)
 {
     const double d = QLineF (p, center).length();
-    if (qFuzzyCompare(radius, d))
+    if (VFuzzyComparePossibleNulls(radius, d))
     {
         return 1; // on circle
     }
@@ -523,10 +531,12 @@ QVector<QPointF> VGObject::GetReversePoints(const QVector<QPointF> &points)
     {
         return points;
     }
-    QVector<QPointF> reversePoints;
+    QVector<QPointF> reversePoints(points.size());
+    qint32 j = 0;
     for (qint32 i = points.size() - 1; i >= 0; --i)
     {
-        reversePoints.append(points.at(i));
+        reversePoints.replace(j, points.at(i));
+        ++j;
     }
     return reversePoints;
 }

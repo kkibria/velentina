@@ -33,6 +33,10 @@
 #include "../ifc/ifcdef.h"
 #include <QPointF>
 
+#ifndef M_2PI
+#define M_2PI 6.28318530717958647692528676655900576
+#endif
+
 enum class PathDirection : char { Hide, Show };
 
 class QPainterPath;
@@ -49,10 +53,13 @@ public:
     virtual ~VAbstractCurve() Q_DECL_OVERRIDE;
 
     virtual QVector<QPointF> GetPoints() const =0;
+    static QVector<QPointF>  GetSegmentPoints(const QVector<QPointF> &points, const QPointF &begin, const QPointF &end,
+                                              bool reverse = false);
     QVector<QPointF>         GetSegmentPoints(const QPointF &begin, const QPointF &end, bool reverse = false) const;
 
     virtual QPainterPath     GetPath(PathDirection direction = PathDirection::Hide) const;
     virtual qreal            GetLength() const =0;
+    qreal                    GetLengthByPoint(const QPointF &point) const;
     virtual QVector<QPointF> IntersectLine(const QLineF &line) const;
     virtual bool             IsIntersectLine(const QLineF &line) const;
 
@@ -63,14 +70,17 @@ public:
     void                     SetDuplicate(quint32 number);
 
     static QVector<QPointF>  CurveIntersectLine(const QVector<QPointF> &points, const QLineF &line);
+
+    virtual QString          NameForHistory(const QString &toolName) const=0;
 protected:
     QPainterPath             ShowDirection(const QVector<QPointF> &points) const;
     virtual void             CreateName() =0;
+    static qreal             PathLength(const QVector<QPointF> &path);
 private:
     QSharedDataPointer<VAbstractCurveData> d;
 
-    static QVector<QPointF>  FromBegin(const QVector<QPointF> &points, const QPointF &begin);
-    static QVector<QPointF>  ToEnd(const QVector<QPointF> &points, const QPointF &end);
+    static QVector<QPointF>  FromBegin(const QVector<QPointF> &points, const QPointF &begin, bool *ok = nullptr);
+    static QVector<QPointF>  ToEnd(const QVector<QPointF> &points, const QPointF &end, bool *ok = nullptr);
 };
 
 Q_DECLARE_TYPEINFO(VAbstractCurve, Q_MOVABLE_TYPE);

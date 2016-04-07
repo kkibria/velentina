@@ -61,19 +61,6 @@ VToolDoublePoint::~VToolDoublePoint()
 {}
 
 //---------------------------------------------------------------------------------------------------------------------
-void VToolDoublePoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    /* From question on StackOverflow
-     * https://stackoverflow.com/questions/10985028/how-to-remove-border-around-qgraphicsitem-when-selected
-     *
-     * There's no interface to disable the drawing of the selection border for the build-in QGraphicsItems. The only way
-     * I can think of is derive your own items from the build-in ones and override the paint() function:*/
-    QStyleOptionGraphicsItem myOption(*option);
-    myOption.state &= ~QStyle::State_Selected;
-    QGraphicsPathItem::paint(painter, &myOption, widget);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
 QString VToolDoublePoint::nameP1() const
 {
     return ObjectName<VPointF>(p1id);
@@ -161,24 +148,86 @@ void VToolDoublePoint::FullUpdateFromFile()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolDoublePoint::DoChangePosition(quint32 id, qreal mx, qreal my)
+{
+    if (id == p1id)
+    {
+        VPointF *point = new VPointF(*VAbstractTool::data.GeometricObject<VPointF>(p1id));
+        point->setMx(mx);
+        point->setMy(my);
+        VAbstractTool::data.UpdateGObject(p1id, point);
+        firstPoint->blockSignals(true);
+        firstPoint->setPos(QPointF(mx, my));
+        firstPoint->blockSignals(false);
+        RefreshLine(p1id);
+    }
+    else if (id == p2id)
+    {
+        VPointF *point = new VPointF(*VAbstractTool::data.GeometricObject<VPointF>(p2id));
+        point->setMx(mx);
+        point->setMy(my);
+        VAbstractTool::data.UpdateGObject(p2id, point);
+        secondPoint->blockSignals(true);
+        secondPoint->setPos(QPointF(mx, my));
+        secondPoint->blockSignals(false);
+        RefreshLine(p2id);
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolDoublePoint::AllowHover(bool enabled)
+{
+    firstPoint->setAcceptHoverEvents(enabled);
+    secondPoint->setAcceptHoverEvents(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolDoublePoint::AllowSelecting(bool enabled)
+{
+    firstPoint->setFlag(QGraphicsItem::ItemIsSelectable, enabled);
+    secondPoint->setFlag(QGraphicsItem::ItemIsSelectable, enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolDoublePoint::AllowLabelHover(bool enabled)
+{
+    firstPoint->AllowLabelHover(enabled);
+    secondPoint->AllowLabelHover(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolDoublePoint::AllowLabelSelecting(bool enabled)
+{
+    firstPoint->AllowLabelSelecting(enabled);
+    secondPoint->AllowLabelSelecting(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolDoublePoint::ToolSelectionType(const SelectionType &type)
+{
+    VAbstractTool::ToolSelectionType(type);
+    firstPoint->ToolSelectionType(type);
+    secondPoint->ToolSelectionType(type);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VToolDoublePoint::UpdateNamePosition(quint32 id)
 {
     if (id == p1id)
     {
-        VPointF *p1 = VAbstractTool::data.GeometricObject<VPointF>(p1id).data();
+        const VPointF *p1 = VAbstractTool::data.GeometricObject<VPointF>(p1id).data();
 
-        MoveDoubleLabel *moveLabel = new MoveDoubleLabel(doc, p1->mx(), p1->my(), DoublePoint::FirstPoint, this->id,
-                                                         this->scene());
-        connect(moveLabel, &MoveDoubleLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+        auto moveLabel = new MoveDoubleLabel(doc, p1->mx(), p1->my(), DoublePoint::FirstPoint, this->id, p1id, scene());
+        connect(moveLabel, &MoveDoubleLabel::ChangePosition, this, &VToolDoublePoint::DoChangePosition);
         qApp->getUndoStack()->push(moveLabel);
     }
     else if (id == p2id)
     {
-        VPointF *p2 = VAbstractTool::data.GeometricObject<VPointF>(p2id).data();
+        const VPointF *p2 = VAbstractTool::data.GeometricObject<VPointF>(p2id).data();
 
-        MoveDoubleLabel *moveLabel = new MoveDoubleLabel(doc, p2->mx(), p2->my(), DoublePoint::SecondPoint, this->id,
-                                                         this->scene());
-        connect(moveLabel, &MoveDoubleLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+        auto moveLabel = new MoveDoubleLabel(doc, p2->mx(), p2->my(), DoublePoint::SecondPoint, this->id, p2id,
+                                             scene());
+        connect(moveLabel, &MoveDoubleLabel::ChangePosition, this, &VToolDoublePoint::DoChangePosition);
         qApp->getUndoStack()->push(moveLabel);
     }
 }

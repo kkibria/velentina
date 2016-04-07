@@ -1,4 +1,11 @@
 # Version 0.5.0
+- Tool "Curve intersect axis" store data about subpaths. 
+- [#444] Length along Path seems not valid.
+- Added new curve path segment variables. 
+- Toggle ScrollHandDrag mode by clicking a middle mouse button.
+- Added horizontal scrolling by pressiong Shift + mouse wheel.
+- [#366] Update 'Point from Distance and Angle' tool to read distance and angle between points.
+- [#395] Create Curve tool which uses point as control handle.
 - pdftops updated to version 3.04.
 - [#306] Layout generator optimization. Divide into strips.
 - Fixed case with duplicate names of curves if they connect same points.
@@ -12,7 +19,14 @@
 - [#385] Add 'Open Recent' option in Tape.exe, 'File' dropdown menu.
 
 # Version 0.4.4
-- Fixed wrong handling with true darts points inside tool detail.
+- Fixed GUI issue. After full parse some widgets was incorrectly reseted.
+- [#464] Crash. Issue with modeling node objects.
+- [#463] Wrong export to DXF format.
+- Fixed issue with deleting detail nodes.
+- [#458] Issue with segment of curve.
+- Fixed disappearing curve if start and finish points of a segment are equal.
+- Fixed bug case where an open equidistant point is too far from a main path.
+- [#462] Error while creating Detail/Seam Allowance using points made with True Dart tool.
 
 # Version 0.4.3 March 6, 2016
 - [#456] Crash: broken formula + clicking on the f(x) symbol.

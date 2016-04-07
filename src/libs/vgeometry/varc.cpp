@@ -165,8 +165,8 @@ QPointF VArc::GetP2 () const
  */
 qreal VArc::AngleArc() const
 {
-    if ((qFuzzyCompare(d->f1+1, 0+1) && qFuzzyCompare(d->f2, 360)) ||
-        (qFuzzyCompare(d->f1, 360) && qFuzzyCompare(d->f2+1, 0+1)))
+    if ((qFuzzyIsNull(d->f1) && qFuzzyCompare(d->f2, 360)) ||
+        (qFuzzyCompare(d->f1, 360) && qFuzzyIsNull(d->f2)))
     {
         return 360;
     }
@@ -270,13 +270,25 @@ QPointF VArc::CutArc(const qreal &length, VArc &arc1, VArc &arc2) const
 {
     //Always need return two arcs, so we must correct wrong length.
     qreal len = 0;
-    if (length < this->GetLength()*0.02)
+    const qreal minLength = ToPixel(1, Unit::Mm);
+    const qreal fullLength = GetLength();
+
+    if (fullLength <= minLength)
     {
-        len = this->GetLength()*0.02;
+        arc1 = VArc();
+        arc2 = VArc();
+        return QPointF();
     }
-    else if ( length > this->GetLength()*0.98)
+
+    const qreal maxLength = fullLength - minLength;
+
+    if (length < minLength)
     {
-        len = this->GetLength()*0.98;
+        len = minLength;
+    }
+    else if (length > maxLength)
+    {
+        len = maxLength;
     }
     else
     {
@@ -313,6 +325,23 @@ void VArc::setId(const quint32 &id)
 {
     VAbstractCurve::setId(id);
     CreateName();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QString VArc::NameForHistory(const QString &toolName) const
+{
+    QString name = toolName + QString(" %1").arg(this->GetCenter().name());
+
+    if (VAbstractCurve::id() != NULL_ID)
+    {
+        name += QString("_%1").arg(VAbstractCurve::id());
+    }
+
+    if (GetDuplicate() > 0)
+    {
+        name += QString("_%1").arg(GetDuplicate());
+    }
+    return name;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -360,7 +389,7 @@ void VArc::FindF2(qreal length)
 //---------------------------------------------------------------------------------------------------------------------
 qreal VArc::MaxLength() const
 {
-    return 2*M_PI*d->radius;
+    return M_2PI*d->radius;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

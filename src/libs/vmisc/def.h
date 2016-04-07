@@ -55,6 +55,7 @@ enum class MeasurementsType : char { Standard, Individual , Unknown};
 enum class Unit : char { Mm = 0, Cm, Inch, Px, LAST_UNIT_DO_NOT_USE};
 enum class Source : char { FromGui, FromFile, FromTool };
 enum class NodeUsage : bool {NotInUse = false, InUse = true};
+enum class SelectionType : bool {ByMousePress, ByMouseRelease};
 
 typedef unsigned char ToolVisHolderType;
 enum class Tool : ToolVisHolderType
@@ -74,11 +75,13 @@ enum class Tool : ToolVisHolderType
     Bisector,
     LineIntersect,
     Spline,
+    CubicBezier,
     CutSpline,
     CutArc,
     Arc,
     ArcWithLength,
     SplinePath,
+    CubicBezierPath,
     CutSplinePath,
     PointOfContact,
     Detail,
@@ -127,6 +130,8 @@ enum class Vis : ToolVisHolderType
     ToolPointFromArcAndTangent,
     ToolShoulderPoint,
     ToolSpline,
+    ToolCubicBezier,
+    ToolCubicBezierPath,
     ToolTriangle,
     ToolCutSpline,
     ToolSplinePath,
@@ -136,8 +141,8 @@ enum class Vis : ToolVisHolderType
     ToolTrueDarts
 };
 
-enum class VarType : char { Measurement, Increment, LineLength, SplineLength, ArcLength, ArcRadius, LineAngle, ArcAngle,
-                            SplineAngle, Unknown };
+enum class VarType : char { Measurement, Increment, LineLength, CurveLength, LineAngle, CurveAngle, ArcRadius,
+                            Unknown };
 
 enum class GHeights : unsigned char { ALL,
                                       H92=92,   H98=98,   H104=104, H110=110, H116=116, H122=122, H128=128, H134=134,
@@ -584,22 +589,39 @@ void RestoreOverrideCursor(const QString & pixmapPath);
 
 extern const qreal PrintDPI;
 
-double ToPixel(double val, const Unit &unit);
-double FromPixel(double pix, const Unit &unit);
+double ToPixel(double val, const Unit &unit) Q_REQUIRED_RESULT;
+double FromPixel(double pix, const Unit &unit) Q_REQUIRED_RESULT;
 
-qreal UnitConvertor(qreal value, const Unit &from, const Unit &to);
+qreal UnitConvertor(qreal value, const Unit &from, const Unit &to) Q_REQUIRED_RESULT;
 
 void CheckFactor(qreal &oldFactor, const qreal &Newfactor);
 
-QStringList SupportedLocales();
-QStringList AllGroupNames();
+QStringList SupportedLocales() Q_REQUIRED_RESULT;
+QStringList AllGroupNames() Q_REQUIRED_RESULT;
 
-QString StrippedName(const QString &fullFileName);
-QString RelativeMPath(const QString &patternPath, const QString &absoluteMPath);
-QString AbsoluteMPath(const QString &patternPath, const QString &relativeMPath);
+QString StrippedName(const QString &fullFileName) Q_REQUIRED_RESULT;
+QString RelativeMPath(const QString &patternPath, const QString &absoluteMPath) Q_REQUIRED_RESULT;
+QString AbsoluteMPath(const QString &patternPath, const QString &relativeMPath) Q_REQUIRED_RESULT;
 
-QSharedPointer<QPrinter> DefaultPrinter();
+QSharedPointer<QPrinter> DefaultPrinter() Q_REQUIRED_RESULT;
 
-QPixmap darkenPixmap(const QPixmap &pixmap);
+QPixmap darkenPixmap(const QPixmap &pixmap) Q_REQUIRED_RESULT;
+
+static inline bool VFuzzyComparePossibleNulls(double p1, double p2) Q_REQUIRED_RESULT;
+static inline bool VFuzzyComparePossibleNulls(double p1, double p2)
+{
+    if(qFuzzyIsNull(p1))
+    {
+        return qFuzzyIsNull(p2);
+    }
+    else if(qFuzzyIsNull(p2))
+    {
+        return false;
+    }
+    else
+    {
+        return qFuzzyCompare(p1, p2);
+    }
+}
 
 #endif // DEF_H

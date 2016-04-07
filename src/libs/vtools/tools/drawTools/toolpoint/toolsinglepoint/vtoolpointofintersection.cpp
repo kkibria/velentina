@@ -29,7 +29,7 @@
 #include "vtoolpointofintersection.h"
 #include "../../../../dialogs/tools/dialogpointofintersection.h"
 #include "../vgeometry/vpointf.h"
-#include "../../../../visualization/vistoolpointofintersection.h"
+#include "../../../../visualization/line/vistoolpointofintersection.h"
 
 const QString VToolPointOfIntersection::ToolType = QStringLiteral("pointOfIntersection");
 
@@ -141,10 +141,7 @@ VToolPointOfIntersection *VToolPointOfIntersection::Create(const quint32 _id, co
         VToolPointOfIntersection *point = new VToolPointOfIntersection(doc, data, id, firstPointId,
                                                                        secondPointId, typeCreation);
         scene->addItem(point);
-        connect(point, &VToolPointOfIntersection::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-        connect(scene, &VMainGraphicsScene::NewFactor, point, &VToolPointOfIntersection::SetFactor);
-        connect(scene, &VMainGraphicsScene::DisableItem, point, &VToolPointOfIntersection::Disable);
-        connect(scene, &VMainGraphicsScene::EnableToolMove, point, &VToolPointOfIntersection::EnableToolMove);
+        InitToolConnections(scene, point);
         doc->AddTool(id, point);
         doc->IncrementReferens(firstPoint->getIdTool());
         doc->IncrementReferens(secondPoint->getIdTool());

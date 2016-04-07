@@ -128,15 +128,7 @@ VEllipticalArc::~VEllipticalArc()
  */
 qreal VEllipticalArc::GetLength() const
 {
-    qreal length = 0;
-    QPainterPath elArc;
-    QVector<QPointF> points = GetPoints();
-    elArc.moveTo(points.at(0));
-    for (qint32 i = 1; i < points.count(); ++i)
-    {
-        elArc.lineTo(points.at(i));
-    }
-    length = elArc.length();
+    qreal length = PathLength(GetPoints());
 
     if (d->isFlipped)
     {
@@ -198,12 +190,12 @@ QPointF VEllipticalArc::GetPoint (qreal angle) const
     {
         y = -y;
     }
-    else if (qFuzzyCompare(angle, 90))
+    else if (VFuzzyComparePossibleNulls(angle, 90))
     {
         x = 0;
         y = d->radius2;
     }
-    else if (qFuzzyCompare(angle, 270))
+    else if (VFuzzyComparePossibleNulls(angle, 270))
     {
         x = 0;
         y = -d->radius2;
@@ -330,13 +322,25 @@ QPointF VEllipticalArc::CutArc(const qreal &length, VEllipticalArc &arc1, VEllip
 {
     //Always need return two arcs, so we must correct wrong length.
     qreal len = 0;
-    if (length < this->GetLength()*0.02)
+    const qreal minLength = ToPixel(1, Unit::Mm);
+    const qreal fullLength = GetLength();
+
+    if (fullLength <= minLength)
     {
-        len = this->GetLength()*0.02;
+        arc1 = VEllipticalArc();
+        arc2 = VEllipticalArc();
+        return QPointF();
     }
-    else if ( length > this->GetLength()*0.98)
+
+    const qreal maxLength = fullLength - minLength;
+
+    if (length < minLength)
     {
-        len = this->GetLength()*0.98;
+        len = minLength;
+    }
+    else if (length > maxLength)
+    {
+        len = maxLength;
     }
     else
     {
@@ -373,6 +377,23 @@ void VEllipticalArc::setId(const quint32 &id)
 {
     VAbstractCurve::setId(id);
     CreateName();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QString VEllipticalArc::NameForHistory(const QString &toolName) const
+{
+    QString name = toolName + QString(" %1").arg(this->GetCenter().name());
+
+    if (VAbstractCurve::id() != NULL_ID)
+    {
+        name += QString("_%1").arg(VAbstractCurve::id());
+    }
+
+    if (GetDuplicate() > 0)
+    {
+        name += QString("_%1").arg(GetDuplicate());
+    }
+    return name;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

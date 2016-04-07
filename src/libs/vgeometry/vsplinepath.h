@@ -29,7 +29,7 @@
 #ifndef VSPLINEPATH_H
 #define VSPLINEPATH_H
 
-#include "vabstractcurve.h"
+#include "vabstractcubicbezierpath.h"
 #include "vspline.h"
 #include "vsplinepoint.h"
 #include <QCoreApplication>
@@ -41,7 +41,7 @@ class VSplinePathData;
 /**
  * @brief The VSplinePath class keep information about splinePath.
  */
-class VSplinePath :public VAbstractCurve
+class VSplinePath :public VAbstractCubicBezierPath
 {
     Q_DECLARE_TR_FUNCTIONS(VSplinePath)
 public:
@@ -56,16 +56,13 @@ public:
     VSplinePoint &operator[](int indx);
 
     void   append(const VSplinePoint &point);
-    qint32 Count() const;
-    qint32 CountPoint() const;
-    void   Clear();
 
-    VSpline          GetSpline(qint32 index) const;
-    QPainterPath     GetPath(PathDirection direction = PathDirection::Hide) const;
-    QVector<QPointF> GetPoints() const;
-    qreal            GetLength() const;
+    virtual qint32  CountSubSpl() const Q_DECL_OVERRIDE;
+    virtual qint32  CountPoints() const Q_DECL_OVERRIDE;
+    virtual void    Clear() Q_DECL_OVERRIDE;
+    virtual VSpline GetSpline(qint32 index) const Q_DECL_OVERRIDE;
 
-    QVector<VSplinePoint>  GetSplinePath() const;
+    virtual QVector<VSplinePoint> GetSplinePath() const Q_DECL_OVERRIDE;
     QVector<VFSplinePoint> GetFSplinePath() const;
 
     virtual qreal GetStartAngle () const Q_DECL_OVERRIDE;
@@ -75,13 +72,9 @@ public:
     VSplinePoint GetSplinePoint(qint32 indexSpline, SplinePointPosition pos) const;
 
     const VSplinePoint &at(int indx) const;
-
-    QPointF CutSplinePath(qreal length, qint32 &p1, qint32 &p2, QPointF &spl1p2, QPointF &spl1p3, QPointF &spl2p2,
-                          QPointF &spl2p3) const;
-
-    int Segment(const QPointF &p) const;
 protected:
-    virtual void CreateName() Q_DECL_OVERRIDE;
+    virtual VPointF FirstPoint() const  Q_DECL_OVERRIDE;
+    virtual VPointF LastPoint() const  Q_DECL_OVERRIDE;
 private:
     QSharedDataPointer<VSplinePathData> d;
 };

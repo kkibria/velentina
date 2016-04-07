@@ -30,7 +30,7 @@
 #include "../vgeometry/vspline.h"
 #include "../../../dialogs/tools/dialogspline.h"
 #include "../../../undocommands/movespline.h"
-#include "../../../visualization/vistoolspline.h"
+#include "../../../visualization/path/vistoolspline.h"
 #include "../vwidgets/vcontrolpointspline.h"
 #include "../qmuparser/qmutokenparser.h"
 
@@ -61,10 +61,7 @@ VToolSpline::VToolSpline(VAbstractPattern *doc, VContainer *data, quint32 id, co
     lineColor = color;
 
     this->setPen(QPen(Qt::black, qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor));
-    this->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    this->setFlag(QGraphicsItem::ItemIsFocusable, true);
     this->setFlag(QGraphicsItem::ItemIsMovable, true);
-    this->setAcceptHoverEvents(true);
     this->setPath(ToolPath());
 
     const auto spl = VAbstractTool::data.GeometricObject<VSpline>(id);
@@ -165,12 +162,12 @@ VToolSpline* VToolSpline::Create(const quint32 _id, VSpline *spline, const QStri
     if (typeCreation == Source::FromGui)
     {
         id = data->AddGObject(spline);
-        data->AddCurve<VSpline>(id);
+        data->AddCurve(data->GeometricObject<VAbstractCurve>(id), id);
     }
     else
     {
         data->UpdateGObject(id, spline);
-        data->AddCurve<VSpline>(id);
+        data->AddCurve(data->GeometricObject<VAbstractCurve>(id), id);
         if (parse != Document::FullParse)
         {
             doc->UpdateToolData(id, data);
@@ -181,14 +178,10 @@ VToolSpline* VToolSpline::Create(const quint32 _id, VSpline *spline, const QStri
     {
         auto _spl = new VToolSpline(doc, data, id, color, typeCreation);
         scene->addItem(_spl);
-        connect(_spl, &VToolSpline::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-        connect(scene, &VMainGraphicsScene::NewFactor, _spl, &VToolSpline::SetFactor);
-        connect(scene, &VMainGraphicsScene::DisableItem, _spl, &VToolSpline::Disable);
-        connect(scene, &VMainGraphicsScene::EnableToolMove, _spl, &VToolSpline::EnableToolMove);
-        connect(scene, &VMainGraphicsScene::CurveDetailsMode, _spl, &VToolSpline::DetailsMode);
+        InitSplineToolConnections(scene, _spl);
         doc->AddTool(id, _spl);
-        doc->IncrementReferens(spline->GetP1().id());
-        doc->IncrementReferens(spline->GetP4().id());
+        doc->IncrementReferens(spline->GetP1().getIdTool());
+        doc->IncrementReferens(spline->GetP4().getIdTool());
         return _spl;
     }
     return nullptr;

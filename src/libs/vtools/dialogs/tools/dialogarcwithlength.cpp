@@ -36,7 +36,7 @@
 #include "../../../vpatterndb/vcontainer.h"
 #include "../../../vpatterndb/vtranslatevars.h"
 #include "../../../ifc/xml/vdomdocument.h"
-#include "../../visualization/vistoolarcwithlength.h"
+#include "../../visualization/path/vistoolarcwithlength.h"
 #include "../support/dialogeditwrongformula.h"
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -368,7 +368,7 @@ void DialogArcWithLength::Length()
     const QString postfix = VDomDocument::UnitsToStr(qApp->patternUnit(), true);
     const qreal length = Eval(ui->plainTextEditLength->toPlainText(), flagLength, ui->labelResultLength, postfix);
 
-    if (qFuzzyCompare(length+1, 0+1))
+    if (qFuzzyIsNull(length))
     {
         flagLength = false;
         ChangeColor(labelEditFormula, Qt::red);

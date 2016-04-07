@@ -188,10 +188,8 @@ protected:
                                         const quint32 &ch1 = NULL_ID, const quint32 &ch2 = NULL_ID)const;
     void             FillComboBoxArcs(QComboBox *box, FillComboBox rule = FillComboBox::Whole,
                                       const quint32 &ch1 = NULL_ID, const quint32 &ch2 = NULL_ID)const;
-    void             FillComboBoxSplines(QComboBox *box, FillComboBox rule = FillComboBox::Whole,
-                                         const quint32 &ch1 = NULL_ID, const quint32 &ch2 = NULL_ID)const;
-    void             FillComboBoxSplinesPath(QComboBox *box, FillComboBox rule = FillComboBox::Whole,
-                                             const quint32 &ch1 = NULL_ID, const quint32 &ch2 = NULL_ID)const;
+    void             FillComboBoxSplines(QComboBox *box)const;
+    void             FillComboBoxSplinesPath(QComboBox *box)const;
     void             FillComboBoxCurves(QComboBox *box)const;
     void             FillComboBoxTypeLine(QComboBox *box, const QMap<QString, QIcon> &stylesPics) const;
     void             FillComboBoxLineColors(QComboBox *box)const;
@@ -211,15 +209,11 @@ protected:
     void             setCurrentPointId(QComboBox *box, const quint32 &value,
                                        FillComboBox rule = FillComboBox::NoChildren,
                                        const quint32 &ch1 = NULL_ID, const quint32 &ch2 = NULL_ID) const;
-    void             setCurrentSplineId(QComboBox *box, const quint32 &value,
-                                        FillComboBox rule = FillComboBox::NoChildren,
-                                        const quint32 &ch1 = NULL_ID, const quint32 &ch2 = NULL_ID) const;
+    void             setCurrentSplineId(QComboBox *box, const quint32 &value) const;
     void             setCurrentArcId(QComboBox *box, const quint32 &value,
                                      FillComboBox rule = FillComboBox::NoChildren,
                                      const quint32 &ch1 = NULL_ID, const quint32 &ch2 = NULL_ID) const;
-    void             setCurrentSplinePathId(QComboBox *box, const quint32 &value,
-                                            FillComboBox rule = FillComboBox::NoChildren,
-                                            const quint32 &ch1 = NULL_ID, const quint32 &ch2 = NULL_ID) const;
+    void             setCurrentSplinePathId(QComboBox *box, const quint32 &value) const;
     void             setCurrentCurveId(QComboBox *box, const quint32 &value) const;
 
     quint32          getCurrentObjectId(QComboBox *box) const;
@@ -260,9 +254,17 @@ protected:
 private:
     void FillList(QComboBox *box, const QMap<QString, quint32> &list)const;
 
+    template <typename T>
+    void PrepareList(QMap<QString, quint32> &list, quint32 id) const;
+
+    bool IsSpline(const QSharedPointer<VGObject> &obj) const;
+    bool IsSplinePath(const QSharedPointer<VGObject> &obj) const;
+
     template <typename GObject>
     void FillCombo(QComboBox *box, GOType gType, FillComboBox rule = FillComboBox::Whole,
                    const quint32 &ch1 = NULL_ID, const quint32 &ch2 = NULL_ID) const;
+
+
 };
 
 //---------------------------------------------------------------------------------------------------------------------

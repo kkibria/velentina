@@ -136,7 +136,7 @@ private:
     void           SplinesCommonAttributes(const QDomElement &domElement, quint32 &id, quint32 &idObject,
                                            quint32 &idTool);
     template <typename T>
-    QRectF ToolBoundingRect(const QRectF &rec, const quint32 &id) const;
+    QRectF         ToolBoundingRect(const QRectF &rec, const quint32 &id) const;
     void           ParseCurrentPP();
     QString        GetLabelBase(quint32 index)const;
 
@@ -171,11 +171,13 @@ private:
     void ParseOldToolSpline(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
 
     void ParseToolSpline(VMainGraphicsScene *scene, QDomElement &domElement, const Document &parse);
+    void ParseToolCubicBezier(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
 
     // TODO. Delete if minimal supported version is 0.2.7
     void ParseOldToolSplinePath(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
 
     void ParseToolSplinePath(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
+    void ParseToolCubicBezierPath(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse);
     void ParseNodeSpline(const QDomElement &domElement, const Document &parse);
     void ParseNodeSplinePath(const QDomElement &domElement, const Document &parse);
 

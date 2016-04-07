@@ -29,7 +29,9 @@
 #include "vtooldetail.h"
 #include "nodeDetails/nodedetails.h"
 #include "../vgeometry/varc.h"
+#include "../vgeometry/vcubicbezier.h"
 #include "../vgeometry/vsplinepath.h"
+#include "../vgeometry/vcubicbezierpath.h"
 #include "../vwidgets/vmaingraphicsscene.h"
 #include "../vwidgets/vmaingraphicsview.h"
 #include "../dialogs/tools/dialogtool.h"
@@ -109,7 +111,6 @@ VToolDetail::VToolDetail(VAbstractPattern *doc, VContainer *data, const quint32 
     seamAllowance->setBrush(QBrush(Qt::FDiagPattern));
 
     this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-    this->setFlag(QGraphicsItem::ItemIsFocusable, true);
 
     connect(scene, &VMainGraphicsScene::EnableToolMove, this, &VToolDetail::EnableToolMove);
     if (typeCreation == Source::FromGui || typeCreation == Source::FromTool)
@@ -178,13 +179,29 @@ void VToolDetail::Create(DialogTool *dialog, VMainGraphicsScene *scene, VAbstrac
             break;
             case (Tool::NodeSpline):
             {
-                id = CreateNode<VSpline>(data, nodeD.getId());
+                const auto obj = data->GetGObject(nodeD.getId());
+                if (obj->getType() == GOType::Spline)
+                {
+                    id = CreateNode<VSpline>(data, nodeD.getId());
+                }
+                else
+                {
+                    id = CreateNode<VCubicBezier>(data, nodeD.getId());
+                }
                 VNodeSpline::Create(doc, data, id, nodeD.getId(), Document::FullParse, Source::FromGui);
             }
             break;
             case (Tool::NodeSplinePath):
             {
-                id = CreateNode<VSplinePath>(data, nodeD.getId());
+                const auto obj = data->GetGObject(nodeD.getId());
+                if (obj->getType() == GOType::SplinePath)
+                {
+                    id = CreateNode<VSplinePath>(data, nodeD.getId());
+                }
+                else
+                {
+                    id = CreateNode<VCubicBezierPath>(data, nodeD.getId());
+                }
                 VNodeSplinePath::Create(doc, data, id, nodeD.getId(), Document::FullParse, Source::FromGui);
             }
             break;
@@ -236,6 +253,8 @@ void VToolDetail::Create(const quint32 &_id, const VDetail &newDetail, VMainGrap
         VToolDetail *detail = new VToolDetail(doc, data, id, typeCreation, scene, drawName);
         scene->addItem(detail);
         connect(detail, &VToolDetail::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
+        connect(scene, &VMainGraphicsScene::EnableDetailItemHover, detail, &VToolDetail::AllowHover);
+        connect(scene, &VMainGraphicsScene::EnableDetailItemSelection, detail, &VToolDetail::AllowSelecting);
         doc->AddTool(id, detail);
     }
 }
@@ -441,6 +460,8 @@ void VToolDetail::keyReleaseEvent(QKeyEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolDetail::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    // Special for not selectable item first need to call standard mousePressEvent then accept event
+    VNoBrushScalePathItem::mousePressEvent(event);
     if (flags() & QGraphicsItem::ItemIsMovable)
     {
         if (event->button() == Qt::LeftButton && event->type() != QEvent::GraphicsSceneMouseDoubleClick)
@@ -454,7 +475,7 @@ void VToolDetail::mousePressEvent(QGraphicsSceneMouseEvent *event)
         emit ChoosedTool(id, SceneObject::Detail);
     }
 
-    VNoBrushScalePathItem::mousePressEvent(event);
+    event->accept();// Special for not selectable item first need to call standard mousePressEvent then accept event
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -672,5 +693,17 @@ void VToolDetail::InitTool(VMainGraphicsScene *scene, const VNodeDetail &node)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolDetail::EnableToolMove(bool move)
 {
-    this->setFlag(QGraphicsItem::ItemIsMovable, move);
+    setFlag(QGraphicsItem::ItemIsMovable, move);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolDetail::AllowHover(bool enabled)
+{
+    setAcceptHoverEvents(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolDetail::AllowSelecting(bool enabled)
+{
+    setFlag(QGraphicsItem::ItemIsSelectable, enabled);
 }

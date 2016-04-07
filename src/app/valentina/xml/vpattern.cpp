@@ -43,6 +43,8 @@
 #include "../qmuparser/qmuparsererror.h"
 #include "../vgeometry/varc.h"
 #include "../vgeometry/vsplinepath.h"
+#include "../vgeometry/vcubicbezier.h"
+#include "../vgeometry/vcubicbezierpath.h"
 #include "../core/vapplication.h"
 #include "../vpatterndb/calculator.h"
 
@@ -941,22 +943,8 @@ void VPattern::ParseToolBasePoint(VMainGraphicsScene *scene, const QDomElement &
         const qreal x = qApp->toPixel(GetParametrDouble(domElement, AttrX, "10.0"));
         const qreal y = qApp->toPixel(GetParametrDouble(domElement, AttrY, "10.0"));
 
-        data->UpdateGObject(id, new VPointF(x, y, name, mx, my));
-        VDrawTool::AddRecord(id, Tool::BasePoint, this);
-        if (parse != Document::FullParse)
-        {
-            UpdateToolData(id, data);
-        }
-        if (parse == Document::FullParse)
-        {
-            spoint = new VToolBasePoint(this, data, id, Source::FromFile, nameActivPP);
-            scene->addItem(spoint);
-            connect(spoint, &VToolBasePoint::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-            connect(scene, &VMainGraphicsScene::NewFactor, spoint, &VToolBasePoint::SetFactor);
-            connect(scene, &VMainGraphicsScene::DisableItem, spoint, &VToolBasePoint::Disable);
-            connect(scene, &VMainGraphicsScene::EnableToolMove, spoint, &VToolBasePoint::EnableToolMove);
-            tools[id] = spoint;
-        }
+        VPointF *point = new VPointF(x, y, name, mx, my);
+        VToolBasePoint::Create(id, nameActivPP, point, scene, this, data, parse, Source::FromFile);
     }
     catch (const VExceptionBadId &e)
     {
@@ -1289,7 +1277,16 @@ void VPattern::ParseNodePoint(const QDomElement &domElement, const Document &par
         PointsCommonAttributes(domElement, id, mx, my);
         const quint32 idObject = GetParametrUInt(domElement, VAbstractNode::AttrIdObject, NULL_ID_STR);
         const quint32 idTool = GetParametrUInt(domElement, VAbstractNode::AttrIdTool, NULL_ID_STR);
-        const QSharedPointer<VPointF> point = data->GeometricObject<VPointF>(idObject );
+        QSharedPointer<VPointF> point;
+        try
+        {
+            point = data->GeometricObject<VPointF>(idObject);
+        }
+        catch (const VExceptionBadId &e)
+        { // Possible case. Parent was deleted, but the node object is still here.
+            Q_UNUSED(e);
+            return;// Just ignore
+        }
         data->UpdateGObject(id, new VPointF(point->toQPointF(), point->name(), mx, my, idObject,
                                             Draw::Modeling));
         VNodePoint::Create(this, data, sceneDetail, id, idObject, parse, Source::FromFile, idTool);
@@ -1942,6 +1939,46 @@ void VPattern::ParseToolSpline(VMainGraphicsScene *scene, QDomElement &domElemen
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseToolCubicBezier(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse)
+{
+    SCASSERT(scene != nullptr);
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        quint32 id = 0;
+
+        ToolsCommonAttributes(domElement, id);
+        const quint32 point1 = GetParametrUInt(domElement, AttrPoint1, NULL_ID_STR);
+        const quint32 point2 = GetParametrUInt(domElement, AttrPoint2, NULL_ID_STR);
+        const quint32 point3 = GetParametrUInt(domElement, AttrPoint3, NULL_ID_STR);
+        const quint32 point4 = GetParametrUInt(domElement, AttrPoint4, NULL_ID_STR);
+
+        const QString color = GetParametrString(domElement, AttrColor, ColorBlack);
+        const quint32 duplicate = GetParametrUInt(domElement, AttrDuplicate, "0");
+
+        auto p1 = data->GeometricObject<VPointF>(point1);
+        auto p2 = data->GeometricObject<VPointF>(point2);
+        auto p3 = data->GeometricObject<VPointF>(point3);
+        auto p4 = data->GeometricObject<VPointF>(point4);
+
+        VCubicBezier *spline = new VCubicBezier(*p1, *p2, *p3, *p4);
+        if (duplicate > 0)
+        {
+            spline->SetDuplicate(duplicate);
+        }
+
+        VToolCubicBezier::Create(id, spline, color, scene, this, data, parse, Source::FromFile);
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating cubic bezier curve"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VPattern::ParseOldToolSplinePath(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse)
 {
     SCASSERT(scene != nullptr);
@@ -2092,6 +2129,58 @@ void VPattern::ParseToolSplinePath(VMainGraphicsScene *scene, const QDomElement 
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VPattern::ParseToolCubicBezierPath(VMainGraphicsScene *scene, const QDomElement &domElement, const Document &parse)
+{
+    SCASSERT(scene != nullptr);
+    Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
+
+    try
+    {
+        quint32 id = 0;
+
+        ToolsCommonAttributes(domElement, id);
+        const QString color = GetParametrString(domElement, AttrColor, ColorBlack);
+        const quint32 duplicate = GetParametrUInt(domElement, AttrDuplicate, "0");
+
+        QVector<VPointF> points;
+
+        const QDomNodeList nodeList = domElement.childNodes();
+        const qint32 num = nodeList.size();
+        for (qint32 i = 0; i < num; ++i)
+        {
+            const QDomElement element = nodeList.at(i).toElement();
+            if (element.isNull() == false)
+            {
+                if (element.tagName() == AttrPathPoint)
+                {
+                    const quint32 pSpline = GetParametrUInt(element, AttrPSpline, NULL_ID_STR);
+                    const VPointF p = *data->GeometricObject<VPointF>(pSpline);
+                    points.append(p);
+                    if (parse == Document::FullParse)
+                    {
+                        IncrementReferens(p.getIdTool());
+                    }
+                }
+            }
+        }
+
+        auto path = new VCubicBezierPath(points);
+        if (duplicate > 0)
+        {
+            path->SetDuplicate(duplicate);
+        }
+
+        VToolCubicBezierPath::Create(id, path, color, scene, this, data, parse, Source::FromFile);
+    }
+    catch (const VExceptionBadId &e)
+    {
+        VExceptionObjectError excep(tr("Error creating or updating cubic bezier path curve"), domElement);
+        excep.AddMoreInformation(e.ErrorMessage());
+        throw excep;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VPattern::ParseNodeSpline(const QDomElement &domElement, const Document &parse)
 {
     Q_ASSERT_X(not domElement.isNull(), Q_FUNC_INFO, "domElement is null");
@@ -2103,10 +2192,30 @@ void VPattern::ParseNodeSpline(const QDomElement &domElement, const Document &pa
         quint32 idTool = 0;
 
         SplinesCommonAttributes(domElement, id, idObject, idTool);
-        VSpline *spl = new VSpline(*data->GeometricObject<VSpline>(idObject));
-        spl->setIdObject(idObject);
-        spl->setMode(Draw::Modeling);
-        data->UpdateGObject(id, spl);
+        try
+        {
+            const auto obj = data->GetGObject(idObject);
+            if (obj->getType() == GOType::Spline)
+            {
+                VSpline *spl = new VSpline(*data->GeometricObject<VSpline>(idObject));
+                spl->setIdObject(idObject);
+                spl->setMode(Draw::Modeling);
+                data->UpdateGObject(id, spl);
+            }
+            else
+            {
+                VCubicBezier *spl = new VCubicBezier(*data->GeometricObject<VCubicBezier>(idObject));
+                spl->setIdObject(idObject);
+                spl->setMode(Draw::Modeling);
+                data->UpdateGObject(id, spl);
+            }
+        }
+        catch (const VExceptionBadId &e)
+        { // Possible case. Parent was deleted, but the node object is still here.
+            Q_UNUSED(e);
+            return;// Just ignore
+        }
+
         VNodeSpline::Create(this, data, id, idObject, parse, Source::FromFile, idTool);
     }
     catch (const VExceptionBadId &e)
@@ -2129,10 +2238,29 @@ void VPattern::ParseNodeSplinePath(const QDomElement &domElement, const Document
         quint32 idTool = 0;
 
         SplinesCommonAttributes(domElement, id, idObject, idTool);
-        VSplinePath *path = new VSplinePath(*data->GeometricObject<VSplinePath>(idObject));
-        path->setIdObject(idObject);
-        path->setMode(Draw::Modeling);
-        data->UpdateGObject(id, path);
+        try
+        {
+            const auto obj = data->GetGObject(idObject);
+            if (obj->getType() == GOType::SplinePath)
+            {
+                VSplinePath *path = new VSplinePath(*data->GeometricObject<VSplinePath>(idObject));
+                path->setIdObject(idObject);
+                path->setMode(Draw::Modeling);
+                data->UpdateGObject(id, path);
+            }
+            else
+            {
+                VCubicBezierPath *spl = new VCubicBezierPath(*data->GeometricObject<VCubicBezierPath>(idObject));
+                spl->setIdObject(idObject);
+                spl->setMode(Draw::Modeling);
+                data->UpdateGObject(id, spl);
+            }
+        }
+        catch (const VExceptionBadId &e)
+        { // Possible case. Parent was deleted, but the node object is still here.
+            Q_UNUSED(e);
+            return;// Just ignore
+        }
         VNodeSplinePath::Create(this, data, id, idObject, parse, Source::FromFile, idTool);
     }
     catch (const VExceptionBadId &e)
@@ -2200,7 +2328,16 @@ void VPattern::ParseNodeArc(const QDomElement &domElement, const Document &parse
         ToolsCommonAttributes(domElement, id);
         const quint32 idObject = GetParametrUInt(domElement, VAbstractNode::AttrIdObject, NULL_ID_STR);
         const quint32 idTool = GetParametrUInt(domElement, VAbstractNode::AttrIdTool, NULL_ID_STR);
-        VArc *arc = new VArc(*data->GeometricObject<VArc>(idObject));
+        VArc *arc = nullptr;
+        try
+        {
+            arc = new VArc(*data->GeometricObject<VArc>(idObject));
+        }
+        catch (const VExceptionBadId &e)
+        { // Possible case. Parent was deleted, but the node object is still here.
+            Q_UNUSED(e);
+            return;// Just ignore
+        }
         arc->setIdObject(idObject);
         arc->setMode(Draw::Modeling);
         data->UpdateGObject(id, arc);
@@ -2375,12 +2512,14 @@ void VPattern::ParseSplineElement(VMainGraphicsScene *scene, QDomElement &domEle
     Q_ASSERT_X(domElement.isNull() == false, Q_FUNC_INFO, "domElement is null");
     Q_ASSERT_X(type.isEmpty() == false, Q_FUNC_INFO, "type of spline is empty");
 
-    QStringList splines = QStringList() << VToolSpline::OldToolType     /*0*/
-                                        << VToolSpline::ToolType        /*1*/
-                                        << VToolSplinePath::OldToolType /*2*/
-                                        << VToolSplinePath::ToolType    /*3*/
-                                        << VNodeSpline::ToolType        /*4*/
-                                        << VNodeSplinePath::ToolType;   /*5*/
+    QStringList splines = QStringList() << VToolSpline::OldToolType        /*0*/
+                                        << VToolSpline::ToolType           /*1*/
+                                        << VToolSplinePath::OldToolType    /*2*/
+                                        << VToolSplinePath::ToolType       /*3*/
+                                        << VNodeSpline::ToolType           /*4*/
+                                        << VNodeSplinePath::ToolType       /*5*/
+                                        << VToolCubicBezier::ToolType      /*6*/
+                                        << VToolCubicBezierPath::ToolType; /*7*/
     switch (splines.indexOf(type))
     {
         case 0: //VToolSpline::OldToolType
@@ -2406,6 +2545,14 @@ void VPattern::ParseSplineElement(VMainGraphicsScene *scene, QDomElement &domEle
         case 5: //VNodeSplinePath::ToolType
             qCDebug(vXML, "VNodeSplinePath.");
             ParseNodeSplinePath(domElement, parse);
+            break;
+        case 6: //VToolCubicBezier::ToolType
+            qCDebug(vXML, "VToolCubicBezier.");
+            ParseToolCubicBezier(scene, domElement, parse);
+            break;
+        case 7: //VToolCubicBezierPath::ToolType
+            qCDebug(vXML, "VToolCubicBezierPath.");
+            ParseToolCubicBezierPath(scene, domElement, parse);
             break;
         default:
             VException e(tr("Unknown spline type '%1'.").arg(type));
@@ -2956,13 +3103,11 @@ void VPattern::PrepareForParse(const Document &parse)
     {
         data->ClearUniqueNames();
         data->ClearVariables(VarType::Increment);
-        data->ClearVariables(VarType::ArcLength);
         data->ClearVariables(VarType::LineAngle);
         data->ClearVariables(VarType::LineLength);
-        data->ClearVariables(VarType::SplineLength);
+        data->ClearVariables(VarType::CurveLength);
         data->ClearVariables(VarType::ArcRadius);
-        data->ClearVariables(VarType::ArcAngle);
-        data->ClearVariables(VarType::SplineAngle);
+        data->ClearVariables(VarType::CurveAngle);
     }
 }
 
@@ -2973,8 +3118,16 @@ void VPattern::ToolsCommonAttributes(const QDomElement &domElement, quint32 &id)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+#if defined(Q_CC_GNU)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wswitch-default"
+#endif
+
 QRectF VPattern::ActiveDrawBoundingRect() const
 {
+    // This check helps to find missed tools in the switch
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 41, "Not all tools was used.");
+
     QRectF rec;
 
     for (qint32 i = 0; i< history.size(); ++i)
@@ -2985,6 +3138,12 @@ QRectF VPattern::ActiveDrawBoundingRect() const
             switch ( tool.getTypeTool() )
             {
                 case Tool::Arrow:
+                case Tool::SinglePoint:
+                case Tool::DoublePoint:
+                case Tool::LinePoint:
+                case Tool::AbstractSpline:
+                case Tool::Cut:
+                case Tool::LAST_ONE_DO_NOT_USE:
                     Q_UNREACHABLE();
                     break;
                 case Tool::BasePoint:
@@ -3014,11 +3173,17 @@ QRectF VPattern::ActiveDrawBoundingRect() const
                 case Tool::Spline:
                     rec = ToolBoundingRect<VToolSpline>(rec, tool.getId());
                     break;
+                case Tool::CubicBezier:
+                    rec = ToolBoundingRect<VToolCubicBezier>(rec, tool.getId());
+                    break;
                 case Tool::Arc:
                     rec = ToolBoundingRect<VToolArc>(rec, tool.getId());
                     break;
                 case Tool::SplinePath:
                     rec = ToolBoundingRect<VToolSplinePath>(rec, tool.getId());
+                    break;
+                case Tool::CubicBezierPath:
+                    rec = ToolBoundingRect<VToolCubicBezierPath>(rec, tool.getId());
                     break;
                 case Tool::PointOfContact:
                     rec = ToolBoundingRect<VToolPointOfContact>(rec, tool.getId());
@@ -3041,28 +3206,50 @@ QRectF VPattern::ActiveDrawBoundingRect() const
                 case Tool::CutSplinePath:
                     rec = ToolBoundingRect<VToolCutSplinePath>(rec, tool.getId());
                     break;
-                //Because "history" not only show history of pattern, but help restore current data for each pattern's
-                //piece, we need add record about details and nodes, but don't show them.
+                case Tool::ArcWithLength:
+                    rec = ToolBoundingRect<VToolArcWithLength>(rec, tool.getId());
+                    break;
+                case Tool::LineIntersectAxis:
+                    rec = ToolBoundingRect<VToolLineIntersectAxis>(rec, tool.getId());
+                    break;
+                case Tool::PointOfIntersectionArcs:
+                    rec = ToolBoundingRect<VToolPointOfIntersectionArcs>(rec, tool.getId());
+                    break;
+                case Tool::PointOfIntersectionCircles:
+                    rec = ToolBoundingRect<VToolPointOfIntersectionCircles>(rec, tool.getId());
+                    break;
+                case Tool::PointOfIntersectionCurves:
+                    rec = ToolBoundingRect<VToolPointOfIntersectionCurves>(rec, tool.getId());
+                    break;
+                case Tool::CurveIntersectAxis:
+                    rec = ToolBoundingRect<VToolCurveIntersectAxis>(rec, tool.getId());
+                    break;
+                case Tool::PointFromCircleAndTangent:
+                    rec = ToolBoundingRect<VToolPointFromCircleAndTangent>(rec, tool.getId());
+                    break;
+                case Tool::PointFromArcAndTangent:
+                    rec = ToolBoundingRect<VToolPointFromArcAndTangent>(rec, tool.getId());
+                    break;
+                case Tool::TrueDarts:
+                    rec = ToolBoundingRect<VToolTrueDarts>(rec, tool.getId());
+                    break;
+                //These tools are not accesseble in Draw mode, but still 'history' contains them.
                 case Tool::Detail:
-                    break;
                 case Tool::UnionDetails:
-                    break;
                 case Tool::NodeArc:
-                    break;
                 case Tool::NodePoint:
-                    break;
                 case Tool::NodeSpline:
-                    break;
                 case Tool::NodeSplinePath:
-                    break;
-                default:
-                    qDebug()<<"Got wrong tool type. Ignore.";
                     break;
             }
         }
     }
     return rec;
 }
+
+#if defined(Q_CC_GNU)
+    #pragma GCC diagnostic pop
+#endif
 
 //---------------------------------------------------------------------------------------------------------------------
 template <typename T>
@@ -3071,7 +3258,7 @@ QRectF VPattern::ToolBoundingRect(const QRectF &rec, const quint32 &id) const
     QRectF recTool = rec;
     if (tools.contains(id))
     {
-        T *vTool = qobject_cast<T *>(tools.value(id));
+        const T *vTool = qobject_cast<T *>(tools.value(id));
         SCASSERT(vTool != nullptr);
 
         QRectF childrenRect = vTool->childrenBoundingRect();

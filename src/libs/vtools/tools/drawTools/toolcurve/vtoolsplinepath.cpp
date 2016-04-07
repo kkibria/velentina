@@ -29,7 +29,7 @@
 #include "vtoolsplinepath.h"
 #include "../../../dialogs/tools/dialogsplinepath.h"
 #include "../../../undocommands/movesplinepath.h"
-#include "../../../visualization/vistoolsplinepath.h"
+#include "../../../visualization/path/vistoolsplinepath.h"
 #include "../vwidgets/vcontrolpointspline.h"
 #include "../qmuparser/qmutokenparser.h"
 
@@ -62,13 +62,10 @@ VToolSplinePath::VToolSplinePath(VAbstractPattern *doc, VContainer *data, quint3
 
     this->setPath(ToolPath());
     this->setPen(QPen(Qt::black, qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor));
-    this->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    this->setFlag(QGraphicsItem::ItemIsFocusable, true);
     this->setFlag(QGraphicsItem::ItemIsMovable, true);
-    this->setAcceptHoverEvents(true);
 
     const QSharedPointer<VSplinePath> splPath = data->GeometricObject<VSplinePath>(id);
-    for (qint32 i = 1; i<=splPath->Count(); ++i)
+    for (qint32 i = 1; i<=splPath->CountSubSpl(); ++i)
     {
         const VSpline spl = splPath->GetSpline(i);
 
@@ -138,7 +135,7 @@ VToolSplinePath* VToolSplinePath::Create(DialogTool *dialog, VMainGraphicsScene 
     SCASSERT(dialogTool != nullptr);
     VSplinePath *path = new VSplinePath(dialogTool->GetPath());
     const QString color = dialogTool->GetColor();
-    for (qint32 i = 0; i < path->CountPoint(); ++i)
+    for (qint32 i = 0; i < path->CountPoints(); ++i)
     {
         doc->IncrementReferens((*path)[i].P().getIdTool());
     }
@@ -169,12 +166,12 @@ VToolSplinePath* VToolSplinePath::Create(const quint32 _id, VSplinePath *path, c
     if (typeCreation == Source::FromGui)
     {
         id = data->AddGObject(path);
-        data->AddCurve<VSplinePath>(id);
+        data->AddCurveWithSegments(data->GeometricObject<VAbstractCubicBezierPath>(id), id);
     }
     else
     {
         data->UpdateGObject(id, path);
-        data->AddCurve<VSplinePath>(id);
+        data->AddCurveWithSegments(data->GeometricObject<VAbstractCubicBezierPath>(id), id);
         if (parse != Document::FullParse)
         {
             doc->UpdateToolData(id, data);
@@ -185,11 +182,7 @@ VToolSplinePath* VToolSplinePath::Create(const quint32 _id, VSplinePath *path, c
     {
         VToolSplinePath *spl = new VToolSplinePath(doc, data, id, color, typeCreation);
         scene->addItem(spl);
-        connect(spl, &VToolSplinePath::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-        connect(scene, &VMainGraphicsScene::NewFactor, spl, &VToolSplinePath::SetFactor);
-        connect(scene, &VMainGraphicsScene::DisableItem, spl, &VToolSplinePath::Disable);
-        connect(scene, &VMainGraphicsScene::EnableToolMove, spl, &VToolSplinePath::EnableToolMove);
-        connect(scene, &VMainGraphicsScene::CurveDetailsMode, spl, &VToolSplinePath::DetailsMode);
+        InitSplinePathToolConnections(scene, spl);
         doc->AddTool(id, spl);
         return spl;
     }
@@ -302,7 +295,7 @@ void VToolSplinePath::SetSplinePathAttributes(QDomElement &domElement, const VSp
 void VToolSplinePath::UpdatePathPoints(VAbstractPattern *doc, QDomElement &element, const VSplinePath &path)
 {
     VDomDocument::RemoveAllChildren(element);
-    for (qint32 i = 0; i < path.CountPoint(); ++i)
+    for (qint32 i = 0; i < path.CountPoints(); ++i)
     {
         AddPathPoint(doc, element, path.at(i));
     }
@@ -389,10 +382,10 @@ void VToolSplinePath::AddPathPoint(VAbstractPattern *doc, QDomElement &domElemen
  */
 void VToolSplinePath::RemoveReferens()
 {
-    const VSplinePath splPath = *VAbstractTool::data.GeometricObject<VSplinePath>(id);
-    for (qint32 i = 0; i < splPath.Count(); ++i)
+    const QSharedPointer<VSplinePath> splPath = VAbstractTool::data.GeometricObject<VSplinePath>(id);
+    for (qint32 i = 0; i < splPath->CountSubSpl(); ++i)
     {
-        doc->DecrementReferens(splPath.at(i).P().getIdTool());
+        doc->DecrementReferens(splPath->at(i).P().getIdTool());
     }
 }
 
@@ -407,7 +400,7 @@ void VToolSplinePath::SaveDialog(QDomElement &domElement)
     SCASSERT(dialogTool != nullptr);
 
     const VSplinePath splPath = dialogTool->GetPath();
-    for (qint32 i = 1; i <= splPath.Count(); ++i)
+    for (qint32 i = 1; i <= splPath.CountSubSpl(); ++i)
     {
         VSpline spl = splPath.GetSpline(i);
         qint32 j = i*2;
@@ -605,7 +598,7 @@ bool VToolSplinePath::IsMovable(int index) const
     const auto splPath = VAbstractTool::data.GeometricObject<VSplinePath>(id);
 
     //index == -1 - can delete, but decided to left
-    if (index == -1 || index < 1 || index > splPath->Count())
+    if (index == -1 || index < 1 || index > splPath->CountSubSpl())
     {
         return false;
     }
@@ -641,7 +634,7 @@ void VToolSplinePath::RefreshGeometry()
                       qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor));
 
     const auto splPath = VAbstractTool::data.GeometricObject<VSplinePath>(id);
-    for (qint32 i = 1; i<=splPath->Count(); ++i)
+    for (qint32 i = 1; i<=splPath->CountSubSpl(); ++i)
     {
         const qint32 j = i*2;
 

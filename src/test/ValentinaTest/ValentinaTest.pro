@@ -54,8 +54,10 @@ SOURCES += \
     tst_vcommandline.cpp \
     tst_tstranslation.cpp \
     tst_vdetail.cpp \
+    tst_vabstractcurve.cpp \
     tst_findpoint.cpp \
-    tst_vellipticalarc.cpp
+    tst_vellipticalarc.cpp \
+    tst_vcubicbezierpath.cpp
 
 HEADERS += \
     tst_vposter.h \
@@ -77,8 +79,10 @@ HEADERS += \
     tst_vcommandline.h \
     tst_tstranslation.h \
     tst_vdetail.h \
+    tst_vabstractcurve.h \
     tst_findpoint.h \
-    tst_vellipticalarc.h
+    tst_vellipticalarc.h \
+    tst_vcubicbezierpath.h
 
 # Set using ccache. Function enable_ccache() defined in common.pri.
 $$enable_ccache()
