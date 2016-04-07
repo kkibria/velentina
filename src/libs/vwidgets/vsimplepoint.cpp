@@ -39,18 +39,18 @@
 //---------------------------------------------------------------------------------------------------------------------
 VSimplePoint::VSimplePoint(quint32 id, const QColor &currentColor, Unit patternUnit, qreal *factor, QObject *parent)
     :VAbstractSimple(id, currentColor, patternUnit, factor, parent), QGraphicsEllipseItem(),
-      radius(ToPixel(DefPointRadius/*mm*/, Unit::Mm)), namePoint(nullptr), lineName(nullptr)
+      radius(ToPixel(DefPointRadius/*mm*/, Unit::Mm)), namePoint(nullptr), lineName(nullptr),
+      selectionType(SelectionType::ByMouseRelease)
 {
     namePoint = new VGraphicsSimpleTextItem(this);
     connect(namePoint, &VGraphicsSimpleTextItem::ShowContextMenu, this, &VSimplePoint::ContextMenu);
     connect(namePoint, &VGraphicsSimpleTextItem::DeleteTool, this, &VSimplePoint::DeleteFromLabel);
     connect(namePoint, &VGraphicsSimpleTextItem::PointChoosed, this, &VSimplePoint::PointChoosed);
+    connect(namePoint, &VGraphicsSimpleTextItem::PointSelected, this, &VSimplePoint::PointSelected);
     connect(namePoint, &VGraphicsSimpleTextItem::NameChangePosition, this, &VSimplePoint::ChangedPosition);
     lineName = new QGraphicsLineItem(this);
     this->setBrush(QBrush(Qt::NoBrush));
     SetPen(this, currentColor, WidthHairLine(patternUnit));
-    this->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    this->setFlag(QGraphicsItem::ItemIsFocusable, true);
     this->setAcceptHoverEvents(true);
 }
 
@@ -64,19 +64,6 @@ void VSimplePoint::ChangedActivDraw(const bool &flag)
     enabled = flag;
     setEnabled(enabled);
     SetPen(this, currentColor, WidthHairLine(patternUnit));
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VSimplePoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    /* From question on StackOverflow
-     * https://stackoverflow.com/questions/10985028/how-to-remove-border-around-qgraphicsitem-when-selected
-     *
-     * There's no interface to disable the drawing of the selection border for the build-in QGraphicsItems. The only way
-     * I can think of is derive your own items from the build-in ones and override the paint() function:*/
-    QStyleOptionGraphicsItem myOption(*option);
-    myOption.state &= ~QStyle::State_Selected;
-    QGraphicsEllipseItem::paint(painter, &myOption, widget);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -149,6 +136,25 @@ void VSimplePoint::EnableToolMove(bool move)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VSimplePoint::AllowLabelHover(bool enabled)
+{
+    namePoint->setAcceptHoverEvents(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VSimplePoint::AllowLabelSelecting(bool enabled)
+{
+    namePoint->setFlag(QGraphicsItem::ItemIsSelectable, enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VSimplePoint::ToolSelectionType(const SelectionType &type)
+{
+    selectionType = type;
+    namePoint->LabelSelectionType(type);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VSimplePoint::DeleteFromLabel()
 {
     emit Delete();
@@ -158,6 +164,12 @@ void VSimplePoint::DeleteFromLabel()
 void VSimplePoint::PointChoosed()
 {
     emit Choosed(id);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VSimplePoint::PointSelected(bool selected)
+{
+    emit Selected(selected, id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -175,11 +187,32 @@ void VSimplePoint::ContextMenu(QGraphicsSceneContextMenuEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void VSimplePoint::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton)
-    {
-        emit Choosed(id);
-    }
+    // Special for not selectable item first need to call standard mousePressEvent then accept event
     QGraphicsEllipseItem::mousePressEvent(event);
+    if (selectionType == SelectionType::ByMouseRelease)
+    {
+        event->accept();// Special for not selectable item first need to call standard mousePressEvent then accept event
+    }
+    else
+    {
+        if (event->button() == Qt::LeftButton)
+        {
+            emit Choosed(id);
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VSimplePoint::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (selectionType == SelectionType::ByMouseRelease)
+    {
+        if (event->button() == Qt::LeftButton)
+        {
+            emit Choosed(id);
+        }
+    }
+    QGraphicsEllipseItem::mouseReleaseEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -194,6 +227,20 @@ void VSimplePoint::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
     SetPen(this, currentColor, WidthHairLine(patternUnit));
     QGraphicsEllipseItem::hoverLeaveEvent(event);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QVariant VSimplePoint::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
+{
+    if (change == QGraphicsItem::ItemSelectedChange)
+    {
+        namePoint->blockSignals(true);
+        namePoint->setSelected(value.toBool());
+        namePoint->blockSignals(false);
+        emit Selected(value.toBool(), id);
+    }
+
+    return QGraphicsEllipseItem::itemChange(change, value);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

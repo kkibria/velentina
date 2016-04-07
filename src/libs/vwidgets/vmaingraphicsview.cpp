@@ -44,15 +44,27 @@ const int GraphicsViewZoom::updateInterval = 40;
 
 //---------------------------------------------------------------------------------------------------------------------
 GraphicsViewZoom::GraphicsViewZoom(QGraphicsView* view)
-  : QObject(view), _view(view), _modifiers(Qt::ControlModifier), _zoom_factor_base(1.0015),
-    target_scene_pos(QPointF()), target_viewport_pos(QPointF()), anim(nullptr), _numScheduledScrollings(0)
+  : QObject(view),
+    _view(view),
+    _modifiers(Qt::ControlModifier),
+    _zoom_factor_base(1.0015),
+    target_scene_pos(QPointF()),
+    target_viewport_pos(QPointF()),
+    verticalScrollAnim(new QTimeLine(duration, this)),
+    _numScheduledVerticalScrollings(0),
+    horizontalScrollAnim(new QTimeLine(duration, this)),
+    _numScheduledHorizontalScrollings(0)
 {
   _view->viewport()->installEventFilter(this);
   _view->setMouseTracking(true);
-  anim = new QTimeLine(duration, this);
-  anim->setUpdateInterval(updateInterval);
-  connect(anim, &QTimeLine::valueChanged, this, &GraphicsViewZoom::scrollingTime, Qt::UniqueConnection);
-  connect(anim, &QTimeLine::finished, this, &GraphicsViewZoom::animFinished, Qt::UniqueConnection);
+
+  verticalScrollAnim->setUpdateInterval(updateInterval);
+  connect(verticalScrollAnim, &QTimeLine::valueChanged, this, &GraphicsViewZoom::VerticalScrollingTime);
+  connect(verticalScrollAnim, &QTimeLine::finished, this, &GraphicsViewZoom::animFinished);
+
+  horizontalScrollAnim->setUpdateInterval(updateInterval);
+  connect(horizontalScrollAnim, &QTimeLine::valueChanged, this, &GraphicsViewZoom::HorizontalScrollingTime);
+  connect(horizontalScrollAnim, &QTimeLine::finished, this, &GraphicsViewZoom::animFinished);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -91,20 +103,20 @@ void GraphicsViewZoom::set_zoom_factor_base(double value)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void GraphicsViewZoom::scrollingTime(qreal x)
+void GraphicsViewZoom::VerticalScrollingTime(qreal x)
 {
     Q_UNUSED(x);
     // Try to adapt scrolling to speed of rotating mouse wheel and scale factor
     // Value of _numScheduledScrollings is too short, so we scale the value
 
-    qreal scroll = (qAbs(_numScheduledScrollings)*(10 + 10/_view->transform().m22()))/(duration/updateInterval);
+    qreal scroll = (qAbs(_numScheduledVerticalScrollings)*(10 + 10/_view->transform().m22()))/(duration/updateInterval);
 
     if (qAbs(scroll) < 1)
     {
         scroll = 1;
     }
 
-    if (_numScheduledScrollings > 0)
+    if (_numScheduledVerticalScrollings > 0)
     {
         scroll = scroll * -1;
     }
@@ -112,10 +124,32 @@ void GraphicsViewZoom::scrollingTime(qreal x)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void GraphicsViewZoom::HorizontalScrollingTime(qreal x)
+{
+    Q_UNUSED(x);
+    // Try to adapt scrolling to speed of rotating mouse wheel and scale factor
+    // Value of _numScheduledScrollings is too short, so we scale the value
+
+    qreal scroll = (qAbs(_numScheduledHorizontalScrollings)*(10 + 10/_view->transform().m11()))/
+            (duration/updateInterval);
+
+    if (qAbs(scroll) < 1)
+    {
+        scroll = 1;
+    }
+
+    if (_numScheduledHorizontalScrollings > 0)
+    {
+        scroll = scroll * -1;
+    }
+    _view->horizontalScrollBar()->setValue(qRound(_view->horizontalScrollBar()->value() + scroll));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void GraphicsViewZoom::animFinished()
 {
-    _numScheduledScrollings = 0;
-    anim->stop();
+    _numScheduledVerticalScrollings = 0;
+    verticalScrollAnim->stop();
 
     /*
      * In moust cases cursor position on view doesn't change, but for scene after scrolling position will be different.
@@ -154,6 +188,7 @@ bool GraphicsViewZoom::eventFilter(QObject *object, QEvent *event)
     else if (event->type() == QEvent::Wheel)
     {
         QWheelEvent* wheel_event = static_cast<QWheelEvent*>(event);
+        SCASSERT(wheel_event != nullptr);
         if (QApplication::keyboardModifiers() == _modifiers)
         {
             if (wheel_event->orientation() == Qt::Vertical)
@@ -166,34 +201,14 @@ bool GraphicsViewZoom::eventFilter(QObject *object, QEvent *event)
         }
         else
         {
-            const QPoint numPixels = wheel_event->pixelDelta();
-            const QPoint numDegrees = wheel_event->angleDelta() / 8;
-            int numSteps;
-
-            if (not numPixels.isNull())
+            if (QApplication::keyboardModifiers() == Qt::ShiftModifier)
             {
-                numSteps = numPixels.y();
-            }
-            else if (not numDegrees.isNull())
-            {
-                numSteps = numDegrees.y() / 15;
+                return StartHorizontalScrollings(wheel_event);
             }
             else
             {
-                return true;//Just ignore
+                return StartVerticalScrollings(wheel_event);
             }
-
-            _numScheduledScrollings += numSteps;
-            if (_numScheduledScrollings * numSteps < 0)
-            {  // if user moved the wheel in another direction, we reset previously scheduled scalings
-                _numScheduledScrollings = numSteps;
-            }
-
-            if (anim->state() != QTimeLine::Running)
-            {
-                anim->start();
-            }
-            return true;
         }
     }
 
@@ -231,12 +246,82 @@ void GraphicsViewZoom::FictiveSceneRect(QGraphicsScene *sc, QGraphicsView *view)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+bool GraphicsViewZoom::StartVerticalScrollings(QWheelEvent *wheel_event)
+{
+    SCASSERT(wheel_event != nullptr);
+
+    const QPoint numPixels = wheel_event->pixelDelta();
+    const QPoint numDegrees = wheel_event->angleDelta() / 8;
+    int numSteps;
+
+    if (not numPixels.isNull())
+    {
+        numSteps = numPixels.y();
+    }
+    else if (not numDegrees.isNull())
+    {
+        numSteps = numDegrees.y() / 15;
+    }
+    else
+    {
+        return true;//Just ignore
+    }
+
+    _numScheduledVerticalScrollings += numSteps;
+    if (_numScheduledVerticalScrollings * numSteps < 0)
+    {  // if user moved the wheel in another direction, we reset previously scheduled scalings
+        _numScheduledVerticalScrollings = numSteps;
+    }
+
+    if (verticalScrollAnim->state() != QTimeLine::Running)
+    {
+        verticalScrollAnim->start();
+    }
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool GraphicsViewZoom::StartHorizontalScrollings(QWheelEvent *wheel_event)
+{
+    SCASSERT(wheel_event != nullptr);
+
+    const QPoint numPixels = wheel_event->pixelDelta();
+    const QPoint numDegrees = wheel_event->angleDelta() / 8;
+    int numSteps;
+
+    if (not numPixels.isNull())
+    {
+        numSteps = numPixels.y();
+    }
+    else if (not numDegrees.isNull())
+    {
+        numSteps = numDegrees.y() / 15;
+    }
+    else
+    {
+        return true;//Just ignore
+    }
+
+    _numScheduledHorizontalScrollings += numSteps;
+    if (_numScheduledHorizontalScrollings * numSteps < 0)
+    {  // if user moved the wheel in another direction, we reset previously scheduled scalings
+        _numScheduledHorizontalScrollings = numSteps;
+    }
+
+    if (horizontalScrollAnim->state() != QTimeLine::Running)
+    {
+        horizontalScrollAnim->start();
+    }
+    return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief VMainGraphicsView constructor.
  * @param parent parent object.
  */
 VMainGraphicsView::VMainGraphicsView(QWidget *parent)
-    :QGraphicsView(parent), zoom(nullptr), showToolOptions(true)
+    :QGraphicsView(parent), zoom(nullptr), showToolOptions(true), isAllowRubberBand(true)
 {
     zoom = new GraphicsViewZoom(this);
     this->setResizeAnchor(QGraphicsView::AnchorUnderMouse);
@@ -297,43 +382,52 @@ void VMainGraphicsView::ZoomFitBest()
  */
 void VMainGraphicsView::mousePressEvent(QMouseEvent *mousePress)
 {
-    if (mousePress->button() & Qt::LeftButton)
+    switch (mousePress->button())
     {
-        switch (QGuiApplication::keyboardModifiers())
+        case Qt::LeftButton:
         {
-            case Qt::ControlModifier:
-                QGraphicsView::setDragMode(QGraphicsView::ScrollHandDrag);
-                break;
-            case Qt::NoModifier:
-                if (showToolOptions)
+            if (isAllowRubberBand)
+            {
+                QGraphicsView::setDragMode(QGraphicsView::RubberBandDrag);
+            }
+            if (showToolOptions)
+            {
+                QList<QGraphicsItem *> list = items(mousePress->pos());
+                if (list.size() == 0)
                 {
-                    QList<QGraphicsItem *> list = items(mousePress->pos());
-                    if (list.size() == 0)
+                    emit itemClicked(nullptr);
+                    break;
+                }
+                for (int i = 0; i < list.size(); ++i)
+                {
+                    if (this->scene()->items().contains(list.at(i)))
                     {
-                        emit itemClicked(nullptr);
-                        break;
-                    }
-                    for (int i = 0; i < list.size(); ++i)
-                    {
-                        if (this->scene()->items().contains(list.at(i)))
+                        if (list.at(i)->type() <= VSimplePoint::Type &&
+                            list.at(i)->type() > QGraphicsItem::UserType)
                         {
-                            if (list.at(i)->type() <= VSimplePoint::Type &&
-                                list.at(i)->type() > QGraphicsItem::UserType)
-                            {
-                                emit itemClicked(list.at(i));
-                                break;
-                            }
-                            else
-                            {
-                                emit itemClicked(nullptr);
-                            }
+                            emit itemClicked(list.at(i));
+                            break;
+                        }
+                        else
+                        {
+                            emit itemClicked(nullptr);
                         }
                     }
                 }
-                break;
-            default:
-                break;
+            }
+            break;
         }
+        case Qt::MiddleButton:
+        {
+            QGraphicsView::setDragMode(QGraphicsView::ScrollHandDrag);
+            // create a new mouse event that simulates a click of the left button instead of the middle button
+            QMouseEvent mouseEvent (mousePress->type(), mousePress->pos(), Qt::LeftButton, Qt::LeftButton,
+                                    mousePress->modifiers());
+            QGraphicsView::mousePressEvent(&mouseEvent);
+            return;
+        }
+        default:
+            break;
     }
     QGraphicsView::mousePressEvent(mousePress);
 }
@@ -345,8 +439,8 @@ void VMainGraphicsView::mousePressEvent(QMouseEvent *mousePress)
  */
 void VMainGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
-    QGraphicsView::mouseReleaseEvent ( event );
-    QGraphicsView::setDragMode( QGraphicsView::RubberBandDrag );
+    QGraphicsView::mouseReleaseEvent ( event ); // First because need to hide a rubber band
+    QGraphicsView::setDragMode( QGraphicsView::NoDrag );
     if (event->button() == Qt::LeftButton)
     {
         emit MouseRelease();
@@ -357,6 +451,12 @@ void VMainGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 void VMainGraphicsView::setShowToolOptions(bool value)
 {
     showToolOptions = value;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsView::AllowRubberBand(bool value)
+{
+    isAllowRubberBand = value;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

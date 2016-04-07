@@ -29,7 +29,7 @@
 #include "vtoolsplinepath.h"
 #include "../../../dialogs/tools/dialogsplinepath.h"
 #include "../../../undocommands/movesplinepath.h"
-#include "../../../visualization/vistoolsplinepath.h"
+#include "../../../visualization/path/vistoolsplinepath.h"
 #include "../vwidgets/vcontrolpointspline.h"
 #include "../qmuparser/qmutokenparser.h"
 
@@ -62,10 +62,7 @@ VToolSplinePath::VToolSplinePath(VAbstractPattern *doc, VContainer *data, quint3
 
     this->setPath(ToolPath());
     this->setPen(QPen(Qt::black, qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor));
-    this->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    this->setFlag(QGraphicsItem::ItemIsFocusable, true);
     this->setFlag(QGraphicsItem::ItemIsMovable, true);
-    this->setAcceptHoverEvents(true);
 
     const QSharedPointer<VSplinePath> splPath = data->GeometricObject<VSplinePath>(id);
     for (qint32 i = 1; i<=splPath->CountSubSpl(); ++i)
@@ -169,12 +166,12 @@ VToolSplinePath* VToolSplinePath::Create(const quint32 _id, VSplinePath *path, c
     if (typeCreation == Source::FromGui)
     {
         id = data->AddGObject(path);
-        data->AddCurve<VSplinePath>(id);
+        data->AddCurveWithSegments(data->GeometricObject<VAbstractCubicBezierPath>(id), id);
     }
     else
     {
         data->UpdateGObject(id, path);
-        data->AddCurve<VSplinePath>(id);
+        data->AddCurveWithSegments(data->GeometricObject<VAbstractCubicBezierPath>(id), id);
         if (parse != Document::FullParse)
         {
             doc->UpdateToolData(id, data);
@@ -185,11 +182,7 @@ VToolSplinePath* VToolSplinePath::Create(const quint32 _id, VSplinePath *path, c
     {
         VToolSplinePath *spl = new VToolSplinePath(doc, data, id, color, typeCreation);
         scene->addItem(spl);
-        connect(spl, &VToolSplinePath::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-        connect(scene, &VMainGraphicsScene::NewFactor, spl, &VToolSplinePath::SetFactor);
-        connect(scene, &VMainGraphicsScene::DisableItem, spl, &VToolSplinePath::Disable);
-        connect(scene, &VMainGraphicsScene::EnableToolMove, spl, &VToolSplinePath::EnableToolMove);
-        connect(scene, &VMainGraphicsScene::CurveDetailsMode, spl, &VToolSplinePath::DetailsMode);
+        InitSplinePathToolConnections(scene, spl);
         doc->AddTool(id, spl);
         return spl;
     }

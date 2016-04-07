@@ -86,10 +86,13 @@ public:
     enum { Type = UserType + static_cast<int>(Tool::Detail)};
     virtual QString    getTagName() const Q_DECL_OVERRIDE;
     virtual void       ShowVisualization(bool show) Q_DECL_OVERRIDE;
+    virtual void       GroupVisibility(quint32 object, bool visible) Q_DECL_OVERRIDE;
 public slots:
     virtual void       FullUpdateFromFile () Q_DECL_OVERRIDE;
     virtual void       FullUpdateFromGuiOk(int result);
     void               EnableToolMove(bool move);
+    virtual void       AllowHover(bool enabled) Q_DECL_OVERRIDE;
+    virtual void       AllowSelecting(bool enabled) Q_DECL_OVERRIDE;
 protected:
     virtual void       AddToFile () Q_DECL_OVERRIDE;
     virtual void       RefreshDataInFile() Q_DECL_OVERRIDE;

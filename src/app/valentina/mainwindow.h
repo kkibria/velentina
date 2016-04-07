@@ -48,6 +48,7 @@ class QLabel;
 class DialogIncrements;
 class DialogTool;
 class DialogHistory;
+class VWidgetGroups;
 
 /**
  * @brief The MainWindow class main windows.
@@ -120,6 +121,7 @@ public slots:
     void               ToolTriangle(bool checked);
     void               ToolPointOfIntersection(bool checked);
     void               ToolUnionDetails(bool checked);
+    void               ToolGroup(bool checked);
     void               ToolCutArc(bool checked);
     void               ToolLineIntersectAxis(bool checked);
     void               ToolCurveIntersectAxis(bool checked);
@@ -134,6 +136,7 @@ public slots:
 
     void               ClosedDialogDetail(int result);
     void               ClosedDialogUnionDetails(int result);
+    void               ClosedDialogGroup(int result);
 
 //tmp
     void               LastUsedTool();
@@ -157,6 +160,27 @@ public slots:
 signals:
     void               RefreshHistory();
     void               EnableItemMove(bool move);
+    void               ItemsSelection(SelectionType type) const;
+
+    void               EnableLabelSelection(bool enable) const;
+    void               EnablePointSelection(bool enable) const;
+    void               EnableLineSelection(bool enable) const;
+    void               EnableArcSelection(bool enable) const;
+    void               EnableSplineSelection(bool enable) const;
+    void               EnableSplinePathSelection(bool enable) const;
+    void               EnableNodeLabelSelection(bool enable) const;
+    void               EnableNodePointSelection(bool enable) const;
+    void               EnableDetailSelection(bool enable) const;
+
+    void               EnableLabelHover(bool enable) const;
+    void               EnablePointHover(bool enable) const;
+    void               EnableLineHover(bool enable) const;
+    void               EnableArcHover(bool enable) const;
+    void               EnableSplineHover(bool enable) const;
+    void               EnableSplinePathHover(bool enable) const;
+    void               EnableNodeLabelHover(bool enable) const;
+    void               EnableNodePointHover(bool enable) const;
+    void               EnableDetailHover(bool enable) const;
 protected:
     virtual void       keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
     virtual void       showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
@@ -180,6 +204,9 @@ private slots:
 
     void ChangedSize(const QString &text);
     void ChangedHeight(const QString & text);
+
+    void DockToolOptionsVisibilityChanged(bool visible);
+    void DockGropsVisibilityChanged(bool visible);
 
 private:
     Q_DISABLE_COPY(MainWindow)
@@ -232,6 +259,9 @@ private:
     /** @brief currentToolBoxIndex save current set of tools. */
     qint32             currentToolBoxIndex;
 
+    bool               isDockToolOptionsVisible;
+    bool               isDockGroupsVisible;
+
     /** @brief drawMode true if we current draw scene. */
     bool               drawMode;
 
@@ -247,6 +277,7 @@ private:
     QPointer<QLabel>   gradationHeightsLabel;
     QPointer<QLabel>   gradationSizesLabel;
     VToolOptionsPropertyBrowser *toolOptions;
+    VWidgetGroups *groupsWidget;
     std::shared_ptr<VLockGuard<char>> lock;
 
     void               SetDefaultHeight();
@@ -304,7 +335,7 @@ private:
     void               UpdateSizesList(const QStringList &list);
 
     void               AddDocks();
-    void               PropertyBrowser();
+    void               InitDocksContain();
     bool               OpenNewValentina(const QString &fileName = QString())const;
     void               FileClosedCorrect();
     QStringList        GetUnlokedRestoreFileList()const;
@@ -331,6 +362,18 @@ private:
     void               UpdateWindowTitle();
 
     bool               IgnoreLocking(int error, const QString &path);
+
+    void ToolSelectPoint() const;
+    void ToolSelectPointByPress() const;
+    void ToolSelectPointByRelease() const;
+    void ToolSelectSpline() const;
+    void ToolSelectSplinePath() const;
+    void ToolSelectArc() const;
+    void ToolSelectPointArc() const;
+    void ToolSelectCurve() const;
+    void ToolSelectAllDrawObjects() const;
+    void ToolSelectGroupObjects() const;
+    void ToolSelectDetail() const;
 };
 
 #endif // MAINWINDOW_H

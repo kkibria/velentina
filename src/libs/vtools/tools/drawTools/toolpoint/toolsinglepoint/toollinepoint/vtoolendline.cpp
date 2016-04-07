@@ -33,7 +33,7 @@
 #include "../../../../../dialogs/tools/dialogendline.h"
 #include "../../../../../dialogs/support/dialogeditwrongformula.h"
 #include "../vgeometry/vpointf.h"
-#include "../../../../../visualization/vistoolendline.h"
+#include "../../../../../visualization/line/vistoolendline.h"
 
 const QString VToolEndLine::ToolType = QStringLiteral("endLine");
 
@@ -165,10 +165,7 @@ VToolEndLine* VToolEndLine::Create(const quint32 _id, const QString &pointName, 
         VToolEndLine *point = new VToolEndLine(doc, data, id, typeLine, lineColor, formulaLength, formulaAngle,
                                                basePointId, typeCreation);
         scene->addItem(point);
-        connect(point, &VToolSinglePoint::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-        connect(scene, &VMainGraphicsScene::NewFactor, point, &VToolEndLine::SetFactor);
-        connect(scene, &VMainGraphicsScene::DisableItem, point, &VToolEndLine::Disable);
-        connect(scene, &VMainGraphicsScene::EnableToolMove, point, &VToolEndLine::EnableToolMove);
+        InitToolConnections(scene, point);
         doc->AddTool(id, point);
         doc->IncrementReferens(basePoint->getIdTool());
         return point;

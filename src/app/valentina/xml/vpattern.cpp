@@ -129,7 +129,7 @@ void VPattern::Parse(const Document &parse)
     SCASSERT(sceneDraw != nullptr);
     SCASSERT(sceneDetail != nullptr);
     QStringList tags = QStringList() << TagDraw << TagIncrements << TagAuthor << TagDescription << TagNotes
-                                        << TagMeasurements << TagVersion << TagGradation << TagUnit;
+                                     << TagMeasurements << TagVersion << TagGradation << TagImage << TagUnit;
     PrepareForParse(parse);
     QDomNode domNode = documentElement().firstChild();
     while (domNode.isNull() == false)
@@ -183,7 +183,10 @@ void VPattern::Parse(const Document &parse)
                     case 7: // TagGradation
                         qCDebug(vXML, "Tag gradation.");
                         break;
-                    case 8: // TagUnit
+                    case 8: // TagImage
+                        qCDebug(vXML, "Tag image.");
+                        break;
+                    case 9: // TagUnit
                         qCDebug(vXML, "Tag unit.");
                         break;
                     default:
@@ -466,7 +469,7 @@ void VPattern::customEvent(QEvent *event)
  */
 void VPattern::ParseDrawElement(const QDomNode &node, const Document &parse)
 {
-    QStringList tags = QStringList() << TagCalculation << TagModeling << TagDetails;
+    QStringList tags = QStringList() << TagCalculation << TagModeling << TagDetails << TagGroups;
     QDomNode domNode = node.firstChild();
     while (domNode.isNull() == false)
     {
@@ -489,6 +492,10 @@ void VPattern::ParseDrawElement(const QDomNode &node, const Document &parse)
                     case 2: // TagDetails
                         qCDebug(vXML, "Tag details.");
                         ParseDetails(domElement, parse);
+                        break;
+                    case 3: // TagGroups
+                        qCDebug(vXML, "Tag groups.");
+                        ParseGroups(domElement);
                         break;
                     default:
                         VException e(tr("Wrong tag name '%1'.").arg(domElement.tagName()));
@@ -940,22 +947,8 @@ void VPattern::ParseToolBasePoint(VMainGraphicsScene *scene, const QDomElement &
         const qreal x = qApp->toPixel(GetParametrDouble(domElement, AttrX, "10.0"));
         const qreal y = qApp->toPixel(GetParametrDouble(domElement, AttrY, "10.0"));
 
-        data->UpdateGObject(id, new VPointF(x, y, name, mx, my));
-        VDrawTool::AddRecord(id, Tool::BasePoint, this);
-        if (parse != Document::FullParse)
-        {
-            UpdateToolData(id, data);
-        }
-        if (parse == Document::FullParse)
-        {
-            spoint = new VToolBasePoint(this, data, id, Source::FromFile, nameActivPP);
-            scene->addItem(spoint);
-            connect(spoint, &VToolBasePoint::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-            connect(scene, &VMainGraphicsScene::NewFactor, spoint, &VToolBasePoint::SetFactor);
-            connect(scene, &VMainGraphicsScene::DisableItem, spoint, &VToolBasePoint::Disable);
-            connect(scene, &VMainGraphicsScene::EnableToolMove, spoint, &VToolBasePoint::EnableToolMove);
-            tools[id] = spoint;
-        }
+        VPointF *point = new VPointF(x, y, name, mx, my);
+        VToolBasePoint::Create(id, nameActivPP, point, scene, this, data, parse, Source::FromFile);
     }
     catch (const VExceptionBadId &e)
     {
@@ -1288,7 +1281,16 @@ void VPattern::ParseNodePoint(const QDomElement &domElement, const Document &par
         PointsCommonAttributes(domElement, id, mx, my);
         const quint32 idObject = GetParametrUInt(domElement, VAbstractNode::AttrIdObject, NULL_ID_STR);
         const quint32 idTool = GetParametrUInt(domElement, VAbstractNode::AttrIdTool, NULL_ID_STR);
-        const QSharedPointer<VPointF> point = data->GeometricObject<VPointF>(idObject );
+        QSharedPointer<VPointF> point;
+        try
+        {
+            point = data->GeometricObject<VPointF>(idObject);
+        }
+        catch (const VExceptionBadId &e)
+        { // Possible case. Parent was deleted, but the node object is still here.
+            Q_UNUSED(e);
+            return;// Just ignore
+        }
         data->UpdateGObject(id, new VPointF(point->toQPointF(), point->name(), mx, my, idObject,
                                             Draw::Modeling));
         VNodePoint::Create(this, data, sceneDetail, id, idObject, parse, Source::FromFile, idTool);
@@ -2194,20 +2196,28 @@ void VPattern::ParseNodeSpline(const QDomElement &domElement, const Document &pa
         quint32 idTool = 0;
 
         SplinesCommonAttributes(domElement, id, idObject, idTool);
-        const auto obj = data->GetGObject(idObject);
-        if (obj->getType() == GOType::Spline)
+        try
         {
-            VSpline *spl = new VSpline(*data->GeometricObject<VSpline>(idObject));
-            spl->setIdObject(idObject);
-            spl->setMode(Draw::Modeling);
-            data->UpdateGObject(id, spl);
+            const auto obj = data->GetGObject(idObject);
+            if (obj->getType() == GOType::Spline)
+            {
+                VSpline *spl = new VSpline(*data->GeometricObject<VSpline>(idObject));
+                spl->setIdObject(idObject);
+                spl->setMode(Draw::Modeling);
+                data->UpdateGObject(id, spl);
+            }
+            else
+            {
+                VCubicBezier *spl = new VCubicBezier(*data->GeometricObject<VCubicBezier>(idObject));
+                spl->setIdObject(idObject);
+                spl->setMode(Draw::Modeling);
+                data->UpdateGObject(id, spl);
+            }
         }
-        else
-        {
-            VCubicBezier *spl = new VCubicBezier(*data->GeometricObject<VCubicBezier>(idObject));
-            spl->setIdObject(idObject);
-            spl->setMode(Draw::Modeling);
-            data->UpdateGObject(id, spl);
+        catch (const VExceptionBadId &e)
+        { // Possible case. Parent was deleted, but the node object is still here.
+            Q_UNUSED(e);
+            return;// Just ignore
         }
 
         VNodeSpline::Create(this, data, id, idObject, parse, Source::FromFile, idTool);
@@ -2232,20 +2242,28 @@ void VPattern::ParseNodeSplinePath(const QDomElement &domElement, const Document
         quint32 idTool = 0;
 
         SplinesCommonAttributes(domElement, id, idObject, idTool);
-        const auto obj = data->GetGObject(idObject);
-        if (obj->getType() == GOType::SplinePath)
+        try
         {
-            VSplinePath *path = new VSplinePath(*data->GeometricObject<VSplinePath>(idObject));
-            path->setIdObject(idObject);
-            path->setMode(Draw::Modeling);
-            data->UpdateGObject(id, path);
+            const auto obj = data->GetGObject(idObject);
+            if (obj->getType() == GOType::SplinePath)
+            {
+                VSplinePath *path = new VSplinePath(*data->GeometricObject<VSplinePath>(idObject));
+                path->setIdObject(idObject);
+                path->setMode(Draw::Modeling);
+                data->UpdateGObject(id, path);
+            }
+            else
+            {
+                VCubicBezierPath *spl = new VCubicBezierPath(*data->GeometricObject<VCubicBezierPath>(idObject));
+                spl->setIdObject(idObject);
+                spl->setMode(Draw::Modeling);
+                data->UpdateGObject(id, spl);
+            }
         }
-        else
-        {
-            VCubicBezierPath *spl = new VCubicBezierPath(*data->GeometricObject<VCubicBezierPath>(idObject));
-            spl->setIdObject(idObject);
-            spl->setMode(Draw::Modeling);
-            data->UpdateGObject(id, spl);
+        catch (const VExceptionBadId &e)
+        { // Possible case. Parent was deleted, but the node object is still here.
+            Q_UNUSED(e);
+            return;// Just ignore
         }
         VNodeSplinePath::Create(this, data, id, idObject, parse, Source::FromFile, idTool);
     }
@@ -2314,7 +2332,16 @@ void VPattern::ParseNodeArc(const QDomElement &domElement, const Document &parse
         ToolsCommonAttributes(domElement, id);
         const quint32 idObject = GetParametrUInt(domElement, VAbstractNode::AttrIdObject, NULL_ID_STR);
         const quint32 idTool = GetParametrUInt(domElement, VAbstractNode::AttrIdTool, NULL_ID_STR);
-        VArc *arc = new VArc(*data->GeometricObject<VArc>(idObject));
+        VArc *arc = nullptr;
+        try
+        {
+            arc = new VArc(*data->GeometricObject<VArc>(idObject));
+        }
+        catch (const VExceptionBadId &e)
+        { // Possible case. Parent was deleted, but the node object is still here.
+            Q_UNUSED(e);
+            return;// Just ignore
+        }
         arc->setIdObject(idObject);
         arc->setMode(Draw::Modeling);
         data->UpdateGObject(id, arc);
@@ -2862,7 +2889,7 @@ bool VPattern::IsDefCustom() const
     const QDomElement domElement = domNode.toElement();
     if (domElement.isNull() == false)
     {
-        return GetParametrBool(domElement, AttrCustom, QStringLiteral("false"));
+        return GetParametrBool(domElement, AttrCustom, falseStr);
     }
     else
     {
@@ -2875,7 +2902,7 @@ void VPattern::SetDefCustom(bool value)
 {
     CheckTagExists(TagGradation);
     QDomNodeList tags = elementsByTagName(TagGradation);
-    if (tags.size() == 0)
+    if (tags.isEmpty())
     {
         qDebug()<<"Can't save attribute "<<AttrCustom<<Q_FUNC_INFO;
         return;
@@ -2936,7 +2963,7 @@ void VPattern::SetDefCustomHeight(int value)
 {
     CheckTagExists(TagGradation);
     QDomNodeList tags = elementsByTagName(TagGradation);
-    if (tags.size() == 0)
+    if (tags.isEmpty())
     {
         qDebug()<<"Can't save attribute "<<AttrDefHeight<<Q_FUNC_INFO;
         return;
@@ -2995,7 +3022,7 @@ void VPattern::SetDefCustomSize(int value)
 {
     CheckTagExists(TagGradation);
     QDomNodeList tags = elementsByTagName(TagGradation);
-    if (tags.size() == 0)
+    if (tags.isEmpty())
     {
         qDebug()<<"Can't save attribute "<<AttrDefSize<<Q_FUNC_INFO;
         return;
@@ -3031,7 +3058,7 @@ bool VPattern::IsReadOnly() const
         return false;
     }
 
-    return GetParametrBool(pattern, AttrReadOnly, QStringLiteral("false"));
+    return GetParametrBool(pattern, AttrReadOnly, falseStr);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3080,13 +3107,11 @@ void VPattern::PrepareForParse(const Document &parse)
     {
         data->ClearUniqueNames();
         data->ClearVariables(VarType::Increment);
-        data->ClearVariables(VarType::ArcLength);
         data->ClearVariables(VarType::LineAngle);
         data->ClearVariables(VarType::LineLength);
-        data->ClearVariables(VarType::SplineLength);
+        data->ClearVariables(VarType::CurveLength);
         data->ClearVariables(VarType::ArcRadius);
-        data->ClearVariables(VarType::ArcAngle);
-        data->ClearVariables(VarType::SplineAngle);
+        data->ClearVariables(VarType::CurveAngle);
     }
 }
 
@@ -3105,7 +3130,7 @@ void VPattern::ToolsCommonAttributes(const QDomElement &domElement, quint32 &id)
 QRectF VPattern::ActiveDrawBoundingRect() const
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 41, "Not all tools was used.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 42, "Not all tools was used.");
 
     QRectF rec;
 
@@ -3219,6 +3244,7 @@ QRectF VPattern::ActiveDrawBoundingRect() const
                 case Tool::NodePoint:
                 case Tool::NodeSpline:
                 case Tool::NodeSplinePath:
+                case Tool::Group:
                     break;
             }
         }

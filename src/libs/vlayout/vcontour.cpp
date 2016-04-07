@@ -32,6 +32,7 @@
 
 #include <QPointF>
 #include <QLineF>
+#include <QPainterPath>
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 1, 0)
 #   include "../vmisc/vmath.h"
@@ -133,7 +134,7 @@ QVector<QPointF> VContour::UniteWithContour(const VLayoutDetail &detail, int glo
     }
     else
     {
-        if (globalI <= 0 || globalI > EdgesCount())
+        if (globalI <= 0 || globalI > GlobalEdgesCount())
         {
             return QVector<QPointF>();
         }
@@ -205,24 +206,11 @@ QVector<QPointF> VContour::UniteWithContour(const VLayoutDetail &detail, int glo
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-int VContour::EdgesCount() const
+int VContour::GlobalEdgesCount() const
 {
     if (d->globalContour.isEmpty())
     {
-        if (d->shift == 0)
-        {
-            return 1;
-        }
-
-        const int n = qFloor(EmptySheetEdge().length()/d->shift);
-        if (n <= 0)
-        {
-            return 1;
-        }
-        else
-        {
-            return n;
-        }
+        return 10;
     }
     else
     {
@@ -236,36 +224,28 @@ QLineF VContour::GlobalEdge(int i) const
     if (d->globalContour.isEmpty()) //-V807
     {
         // Because sheet is blank we have one global edge for all cases - Ox axis.
-        const QLineF axis = EmptySheetEdge();
-        if (d->shift == 0)
-        {
-            return axis;
-        }
-
-        const int n = qFloor(axis.length()/d->shift);
-
-        if (i < 1 || i > n)
+        if (i < 1 || i > GlobalEdgesCount())
         { // Doesn't exist such edge
-            return QLineF();
+            return EmptySheetEdge();
         }
 
-        const qreal nShift = axis.length()/n;
+        const qreal nShift = EmptySheetEdge().length()/GlobalEdgesCount();
         return QLineF(nShift*(i-1), 0, nShift*i, 0);
     }
     else
     {
-        if (i < 1 || i > EdgesCount())
+        if (i < 1 || i > GlobalEdgesCount())
         { // Doesn't exist such edge
             return QLineF();
         }
         QLineF edge;
-        if (i < EdgesCount())
+        if (i < GlobalEdgesCount())
         {
             edge = QLineF(d->globalContour.at(i-1), d->globalContour.at(i));
         }
         else
         { // Closed countour
-            edge = QLineF(d->globalContour.at(EdgesCount()-1), d->globalContour.at(0));
+            edge = QLineF(d->globalContour.at(GlobalEdgesCount()-1), d->globalContour.at(0));
         }
         return edge;
     }
@@ -280,23 +260,39 @@ QVector<QPointF> VContour::CutEdge(const QLineF &edge) const
         points.append(edge.p1());
         points.append(edge.p2());
     }
-
-    const int n = qFloor(edge.length()/d->shift);
-
-    if (n <= 0)
-    {
-        points.append(edge.p1());
-        points.append(edge.p2());
-    }
     else
     {
-        const qreal nShift = edge.length()/n;
-        for (int i = 1; i <= n+1; ++i)
+        const int n = qFloor(edge.length()/d->shift);
+
+        if (n <= 0)
         {
-            QLineF l1 = edge;
-            l1.setLength(nShift*(i-1));
-            points.append(l1.p2());
+            points.append(edge.p1());
+            points.append(edge.p2());
         }
+        else
+        {
+            const qreal nShift = edge.length()/n;
+            for (int i = 1; i <= n+1; ++i)
+            {
+                QLineF l1 = edge;
+                l1.setLength(nShift*(i-1));
+                points.append(l1.p2());
+            }
+        }
+    }
+    return points;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QVector<QPointF> VContour::CutEmptySheetEdge() const
+{
+    QVector<QPointF> points;
+    const qreal nShift = EmptySheetEdge().length()/GlobalEdgesCount();
+    for (int i = 1; i <= GlobalEdgesCount()+1; ++i)
+    {
+        QLineF l1 = EmptySheetEdge();
+        l1.setLength(nShift*(i-1));
+        points.append(l1.p2());
     }
     return points;
 }
@@ -305,6 +301,35 @@ QVector<QPointF> VContour::CutEdge(const QLineF &edge) const
 const QPointF &VContour::at(int i) const
 {
     return d->globalContour.at(i);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QRectF VContour::BoundingRect() const
+{
+    QVector<QPointF> points = GetContour();
+    if (points.isEmpty())
+    {
+        return QRectF();
+    }
+    points.append(points.first());
+    return QPolygonF(points).boundingRect();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QPainterPath VContour::ContourPath() const
+{
+    QPainterPath path;
+    path.setFillRule(Qt::WindingFill);
+
+    const QVector<QPointF> points = GetContour();
+    path.moveTo(points.at(0));
+    for (qint32 i = 1; i < points.count(); ++i)
+    {
+        path.lineTo(points.at(i));
+    }
+    path.lineTo(points.at(0));
+
+    return path;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

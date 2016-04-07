@@ -80,14 +80,6 @@ void VMainGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 
     QGraphicsScene::mousePressEvent(event);
-    if (QGuiApplication::keyboardModifiers() == Qt::ControlModifier)
-    {
-        QList<QGraphicsItem *> items = selectedItems();
-        for (int i=0; i< items.size(); i++)
-        {
-            items[i]->setSelected(false);
-        }
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -267,6 +259,12 @@ void VMainGraphicsScene::ChoosedItem(quint32 id, const SceneObject &type)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::SelectedItem(bool selected, quint32 object, quint32 tool)
+{
+    emit SelectedObject(selected, object, tool);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief SetFactor set current scale factor of scene.
  * @param factor scene scale factor. scene scale factor.
@@ -287,4 +285,118 @@ void VMainGraphicsScene::EnableItemMove(bool move)
 void VMainGraphicsScene::EnableDetailsMode(bool mode)
 {
     emit CurveDetailsMode(mode);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ItemsSelection(const SelectionType &type)
+{
+    emit ItemSelection(type);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleLabelSelection(bool enabled)
+{
+    emit EnableLabelItemSelection(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::TogglePointSelection(bool enabled)
+{
+    emit EnablePointItemSelection(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleLineSelection(bool enabled)
+{
+    emit EnableLineItemSelection(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleArcSelection(bool enabled)
+{
+    emit EnableArcItemSelection(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleSplineSelection(bool enabled)
+{
+    emit EnableSplineItemSelection(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleSplinePathSelection(bool enabled)
+{
+    emit EnableSplinePathItemSelection(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleNodeLabelSelection(bool enabled)
+{
+    emit EnableNodeLabelItemSelection(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleNodePointSelection(bool enabled)
+{
+    emit EnableNodePointItemSelection(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleDetailSelection(bool enabled)
+{
+    emit EnableDetailItemSelection(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleLabelHover(bool enabled)
+{
+    emit EnableLabelItemHover(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::TogglePointHover(bool enabled)
+{
+    emit EnablePointItemHover(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleLineHover(bool enabled)
+{
+    emit EnableLineItemHover(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleArcHover(bool enabled)
+{
+    emit EnableArcItemHover(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleSplineHover(bool enabled)
+{
+    emit EnableSplineItemHover(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleSplinePathHover(bool enabled)
+{
+    emit EnableSplinePathItemHover(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleNodeLabelHover(bool enabled)
+{
+    emit EnableNodeLabelItemHover(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleNodePointHover(bool enabled)
+{
+    emit EnableNodePointItemHover(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VMainGraphicsScene::ToggleDetailHover(bool enabled)
+{
+    emit EnableDetailItemHover(enabled);
 }

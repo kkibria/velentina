@@ -106,6 +106,11 @@ public:
     QString        GetNotes() const;
     void           SetNotes(const QString &text);
 
+    QString        GetImage() const;
+    QString        GetImageExtension() const;
+    void           SetImage(const QString &text, const QString &extension);
+    void           DeleteImage();
+
     QString        GetVersion() const;
     void           SetVersion();
 
@@ -114,17 +119,30 @@ public:
 
     QDomElement    GetDraw(const QString &name) const;
 
+    void           ParseGroups(const QDomElement &domElement);
+    QDomElement    CreateGroups();
+    QDomElement    CreateGroup(quint32 id, const QString &name, const QMap<quint32, quint32> &groupData);
+    QString        GetGroupName(quint32 id);
+    void           SetGroupName(quint32 id, const QString &name);
+    QMap<quint32, QPair<QString, bool> > GetGroups();
+    bool           GetGroupVisivility(quint32 id);
+    void           SetGroupVisivility(quint32 id, bool visible);
+
     static const QString TagPattern;
     static const QString TagCalculation;
     static const QString TagModeling;
     static const QString TagDetails;
     static const QString TagAuthor;
     static const QString TagDescription;
+    static const QString TagImage;
     static const QString TagNotes;
     static const QString TagMeasurements;
     static const QString TagIncrements;
     static const QString TagIncrement;
     static const QString TagDraw;
+    static const QString TagGroups;
+    static const QString TagGroup;
+    static const QString TagGroupItem;
     static const QString TagPoint;
     static const QString TagLine;
     static const QString TagSpline;
@@ -136,6 +154,9 @@ public:
     static const QString TagUnit;
 
     static const QString AttrName;
+    static const QString AttrVisible;
+    static const QString AttrObject;
+    static const QString AttrTool;
     static const QString AttrType;
 
     static const QString AttrAll;
@@ -181,6 +202,7 @@ public:
     static const QString AttrCustom;
     static const QString AttrDefHeight;
     static const QString AttrDefSize;
+    static const QString AttrExtension;
 
     static const QString IncrementName;
     static const QString IncrementFormula;
@@ -257,7 +279,8 @@ protected:
 
     void           SetActivPP(const QString& name);
 
-    void           CheckTagExists(const QString &tag);
+    QDomElement    CheckTagExists(const QString &tag);
+    void           InsertTag(const QStringList &tags, const QDomElement &element);
 
 private:
     Q_DISABLE_COPY(VAbstractPattern)
@@ -273,6 +296,8 @@ private:
     bool IsVariable(const QString& token) const;
     bool IsPostfixOperator(const QString& token) const;
     bool IsFunction(const QString& token) const;
+
+    QPair<bool, QMap<quint32, quint32> > ParseItemElement(const QDomElement &domElement);
 };
 
 //---------------------------------------------------------------------------------------------------------------------

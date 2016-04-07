@@ -1,4 +1,10 @@
 # Version 0.5.0
+- New feature. Groups.
+- Tool "Curve intersect axis" store data about subpaths. 
+- [#444] Length along Path seems not valid.
+- Added new curve path segment variables. 
+- Toggle ScrollHandDrag mode by clicking a middle mouse button.
+- Added horizontal scrolling by pressiong Shift + mouse wheel.
 - [#366] Update 'Point from Distance and Angle' tool to read distance and angle between points.
 - [#395] Create Curve tool which uses point as control handle.
 - pdftops updated to version 3.04.
@@ -14,6 +20,9 @@
 - [#385] Add 'Open Recent' option in Tape.exe, 'File' dropdown menu.
 
 # Version 0.4.4
+- Fixed GUI issue. After full parse some widgets was incorrectly reseted.
+- [#464] Crash. Issue with modeling node objects.
+- [#463] Wrong export to DXF format.
 - Fixed issue with deleting detail nodes.
 - [#458] Issue with segment of curve.
 - Fixed disappearing curve if start and finish points of a segment are equal.

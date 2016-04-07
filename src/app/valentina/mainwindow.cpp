@@ -54,6 +54,8 @@
 #include "tools/vtooldetail.h"
 #include "tools/vtooluniondetails.h"
 #include "dialogs/dialogs.h"
+#include "dialogs/vwidgetgroups.h"
+#include "../vtools/undocommands/addgroup.h"
 
 #include <QInputDialog>
 #include <QDebug>
@@ -111,11 +113,16 @@ MainWindow::MainWindow(QWidget *parent)
       dialogTable(nullptr),
       dialogTool(nullptr),
       dialogHistory(nullptr), comboBoxDraws(nullptr), patternPieceLabel(nullptr), mode(Draw::Calculation),
-      currentDrawIndex(0), currentToolBoxIndex(0), drawMode(true), recentFileActs(),
+      currentDrawIndex(0), currentToolBoxIndex(0),
+      isDockToolOptionsVisible(true),
+      isDockGroupsVisible(true),
+      drawMode(true), recentFileActs(),
       separatorAct(nullptr),
       leftGoToStage(nullptr), rightGoToStage(nullptr), autoSaveTimer(nullptr), guiEnabled(true),
       gradationHeights(nullptr), gradationSizes(nullptr), gradationHeightsLabel(nullptr), gradationSizesLabel(nullptr),
-      toolOptions(nullptr), lock(nullptr)
+      toolOptions(nullptr),
+      groupsWidget(nullptr),
+      lock(nullptr)
 {
     for (int i = 0; i < MaxRecentFiles; ++i)
     {
@@ -150,7 +157,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBox->setCurrentIndex(0);
 
     ReadSettings();
-    PropertyBrowser();
+    InitDocksContain();
 
     setCurrentFile("");
     WindowsLocale();
@@ -242,18 +249,11 @@ void MainWindow::AddPP(const QString &PPName)
     ui->view->itemClicked(nullptr);//hide options previous tool
     const QString label = doc->GenerateLabel(LabelType::NewPatternPiece);
     const QPointF startPosition = StartPositionNewPP();
-    const quint32 id = pattern->AddGObject(new VPointF(startPosition.x(), startPosition.y(), label, 5, 10));
-    VToolBasePoint *spoint = new VToolBasePoint(doc, pattern, id, Source::FromGui, PPName);
-    sceneDraw->addItem(spoint);
+    VPointF *point = new VPointF(startPosition.x(), startPosition.y(), label, 5, 10);
+    auto spoint = VToolBasePoint::Create(0, PPName, point, sceneDraw, doc, pattern, Document::FullParse,
+                                         Source::FromGui);
     ui->view->itemClicked(spoint);
 
-    connect(spoint, &VToolSinglePoint::ChoosedTool, sceneDraw, &VMainGraphicsScene::ChoosedItem);
-    connect(sceneDraw, &VMainGraphicsScene::DisableItem, spoint, &VToolBasePoint::Disable);
-    connect(sceneDraw, &VMainGraphicsScene::NewFactor, spoint, &VToolBasePoint::SetFactor);
-    connect(sceneDraw, &VMainGraphicsScene::EnableToolMove, spoint, &VToolBasePoint::EnableToolMove);
-
-    doc->AddTool(id, spoint);
-    VDrawTool::AddRecord(id, Tool::BasePoint, doc);
     SetEnableTool(true);
     SetEnableWidgets(true);
 
@@ -308,9 +308,35 @@ void MainWindow::InitScenes()
     currentScene = sceneDraw;
     qApp->setCurrentScene(currentScene);
     connect(this, &MainWindow::EnableItemMove, sceneDraw, &VMainGraphicsScene::EnableItemMove);
+    connect(this, &MainWindow::ItemsSelection, sceneDraw, &VMainGraphicsScene::ItemsSelection);
+
+    connect(this, &MainWindow::EnableLabelSelection, sceneDraw, &VMainGraphicsScene::ToggleLabelSelection);
+    connect(this, &MainWindow::EnablePointSelection, sceneDraw, &VMainGraphicsScene::TogglePointSelection);
+    connect(this, &MainWindow::EnableLineSelection, sceneDraw, &VMainGraphicsScene::ToggleLineSelection);
+    connect(this, &MainWindow::EnableArcSelection, sceneDraw, &VMainGraphicsScene::ToggleArcSelection);
+    connect(this, &MainWindow::EnableSplineSelection, sceneDraw, &VMainGraphicsScene::ToggleSplineSelection);
+    connect(this, &MainWindow::EnableSplinePathSelection, sceneDraw, &VMainGraphicsScene::ToggleSplinePathSelection);
+
+    connect(this, &MainWindow::EnableLabelHover, sceneDraw, &VMainGraphicsScene::ToggleLabelHover);
+    connect(this, &MainWindow::EnablePointHover, sceneDraw, &VMainGraphicsScene::TogglePointHover);
+    connect(this, &MainWindow::EnableLineHover, sceneDraw, &VMainGraphicsScene::ToggleLineHover);
+    connect(this, &MainWindow::EnableArcHover, sceneDraw, &VMainGraphicsScene::ToggleArcHover);
+    connect(this, &MainWindow::EnableSplineHover, sceneDraw, &VMainGraphicsScene::ToggleSplineHover);
+    connect(this, &MainWindow::EnableSplinePathHover, sceneDraw, &VMainGraphicsScene::ToggleSplinePathHover);
+
     connect(sceneDraw, &VMainGraphicsScene::mouseMove, this, &MainWindow::mouseMove);
+
     sceneDetails = new VMainGraphicsScene();
     connect(this, &MainWindow::EnableItemMove, sceneDetails, &VMainGraphicsScene::EnableItemMove);
+
+    connect(this, &MainWindow::EnableNodeLabelSelection, sceneDetails, &VMainGraphicsScene::ToggleNodeLabelSelection);
+    connect(this, &MainWindow::EnableNodePointSelection, sceneDetails, &VMainGraphicsScene::ToggleNodePointSelection);
+    connect(this, &MainWindow::EnableDetailSelection, sceneDetails, &VMainGraphicsScene::ToggleDetailSelection);
+
+    connect(this, &MainWindow::EnableNodeLabelHover, sceneDetails, &VMainGraphicsScene::ToggleNodeLabelHover);
+    connect(this, &MainWindow::EnableNodePointHover, sceneDetails, &VMainGraphicsScene::ToggleNodePointHover);
+    connect(this, &MainWindow::EnableDetailHover, sceneDetails, &VMainGraphicsScene::ToggleDetailHover);
+
     connect(sceneDetails, &VMainGraphicsScene::mouseMove, this, &MainWindow::mouseMove);
 
     ui->view->setScene(currentScene);
@@ -533,6 +559,7 @@ void MainWindow::SetToolButton(bool checked, Tool t, const QString &cursor, cons
         SCASSERT(scene != nullptr);
 
         connect(scene, &VMainGraphicsScene::ChoosedObject, dialogTool, &DialogTool::ChosenObject);
+        connect(scene, &VMainGraphicsScene::SelectedObject, dialogTool, &DialogTool::SelectedObject);
         connect(dialogTool, &DialogTool::DialogClosed, this, closeDialogSlot);
         connect(dialogTool, &DialogTool::ToolTip, this, &MainWindow::ShowToolTip);
         ui->view->itemClicked(nullptr);
@@ -689,6 +716,7 @@ void MainWindow::ApplyDialog()
  */
 void MainWindow::ToolEndLine(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogEndLine>(checked, Tool::EndLine, ":/cursor/endline_cursor.png", tr("Select point"),
                                           &MainWindow::ClosedDialogWithApply<VToolEndLine>,
                                           &MainWindow::ApplyDialog<VToolEndLine>);
@@ -701,6 +729,7 @@ void MainWindow::ToolEndLine(bool checked)
  */
 void MainWindow::ToolLine(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogLine>(checked, Tool::Line, ":/cursor/line_cursor.png", tr("Select first point"),
                                        &MainWindow::ClosedDialogWithApply<VToolLine>,
                                        &MainWindow::ApplyDialog<VToolLine>);
@@ -713,6 +742,7 @@ void MainWindow::ToolLine(bool checked)
  */
 void MainWindow::ToolAlongLine(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogAlongLine>(checked, Tool::AlongLine, ":/cursor/alongline_cursor.png",
                                             tr("Select point"), &MainWindow::ClosedDialogWithApply<VToolAlongLine>,
                                             &MainWindow::ApplyDialog<VToolAlongLine>);
@@ -725,6 +755,7 @@ void MainWindow::ToolAlongLine(bool checked)
  */
 void MainWindow::ToolShoulderPoint(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogShoulderPoint>(checked, Tool::ShoulderPoint, ":/cursor/shoulder_cursor.png",
                                                 tr("Select point"),
                                                 &MainWindow::ClosedDialogWithApply<VToolShoulderPoint>,
@@ -738,6 +769,7 @@ void MainWindow::ToolShoulderPoint(bool checked)
  */
 void MainWindow::ToolNormal(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogNormal>(checked, Tool::Normal, ":/cursor/normal_cursor.png",
                                          tr("Select first point of line"),
                                          &MainWindow::ClosedDialogWithApply<VToolNormal>,
@@ -751,6 +783,7 @@ void MainWindow::ToolNormal(bool checked)
  */
 void MainWindow::ToolBisector(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogBisector>(checked, Tool::Bisector, ":/cursor/bisector_cursor.png",
                                            tr("Select first point of angle"),
                                            &MainWindow::ClosedDialogWithApply<VToolBisector>,
@@ -764,6 +797,7 @@ void MainWindow::ToolBisector(bool checked)
  */
 void MainWindow::ToolLineIntersect(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogLineIntersect>(checked, Tool::LineIntersect, ":/cursor/intersect_cursor.png",
                                                 tr("Select first point of first line"),
                                                 &MainWindow::ClosedDialogWithApply<VToolLineIntersect>,
@@ -777,6 +811,7 @@ void MainWindow::ToolLineIntersect(bool checked)
  */
 void MainWindow::ToolSpline(bool checked)
 {
+    ToolSelectPointByPress();
     SetToolButtonWithApply<DialogSpline>(checked, Tool::Spline, ":/cursor/spline_cursor.png",
                                          tr("Select first point curve"),
                                          &MainWindow::ClosedDialogWithApply<VToolSpline>,
@@ -786,6 +821,7 @@ void MainWindow::ToolSpline(bool checked)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolCubicBezier(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogCubicBezier>(checked, Tool::CubicBezier, ":/cursor/cubic_bezier_cursor.png",
                                               tr("Select first curve point"),
                                               &MainWindow::ClosedDialogWithApply<VToolCubicBezier>,
@@ -799,6 +835,7 @@ void MainWindow::ToolCubicBezier(bool checked)
  */
 void MainWindow::ToolCutSpline(bool checked)
 {
+    ToolSelectSpline();
     SetToolButtonWithApply<DialogCutSpline>(checked, Tool::CutSpline, ":/cursor/spline_cut_point_cursor.png",
                                             tr("Select simple curve"),
                                             &MainWindow::ClosedDialogWithApply<VToolCutSpline>,
@@ -812,6 +849,7 @@ void MainWindow::ToolCutSpline(bool checked)
  */
 void MainWindow::ToolArc(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogArc>(checked, Tool::Arc, ":/cursor/arc_cursor.png",
                                       tr("Select point of center of arc"), &MainWindow::ClosedDialogWithApply<VToolArc>,
                                       &MainWindow::ApplyDialog<VToolArc>);
@@ -824,6 +862,7 @@ void MainWindow::ToolArc(bool checked)
  */
 void MainWindow::ToolSplinePath(bool checked)
 {
+    ToolSelectPointByPress();
     SetToolButtonWithApply<DialogSplinePath>(checked, Tool::SplinePath, ":/cursor/splinepath_cursor.png",
                                              tr("Select point of curve path"),
                                              &MainWindow::ClosedDialogWithApply<VToolSplinePath>,
@@ -833,6 +872,7 @@ void MainWindow::ToolSplinePath(bool checked)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolCubicBezierPath(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogCubicBezierPath>(checked, Tool::CubicBezierPath,
                                                   ":/cursor/cubic_bezier_path_cursor.png",
                                                   tr("Select point of cubic bezier path"),
@@ -847,6 +887,7 @@ void MainWindow::ToolCubicBezierPath(bool checked)
  */
 void MainWindow::ToolCutSplinePath(bool checked)
 {
+    ToolSelectSplinePath();
     SetToolButtonWithApply<DialogCutSplinePath>(checked, Tool::CutSplinePath,
                                                 ":/cursor/splinepath_cut_point_cursor.png", tr("Select curve path"),
                                                 &MainWindow::ClosedDialogWithApply<VToolCutSplinePath>,
@@ -860,6 +901,7 @@ void MainWindow::ToolCutSplinePath(bool checked)
  */
 void MainWindow::ToolPointOfContact(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogPointOfContact>(checked, Tool::PointOfContact, ":/cursor/pointcontact_cursor.png",
                                                  tr("Select first point of line"),
                                                  &MainWindow::ClosedDialogWithApply<VToolPointOfContact>,
@@ -873,6 +915,7 @@ void MainWindow::ToolPointOfContact(bool checked)
  */
 void MainWindow::ToolDetail(bool checked)
 {
+    ToolSelectAllDrawObjects();
     SetToolButton<DialogDetail>(checked, Tool::Detail, "://cursor/new_detail_cursor.png",
                                 tr("Select points, arcs, curves clockwise."), &MainWindow::ClosedDialogDetail);
 }
@@ -899,6 +942,7 @@ void MainWindow::ClosedDialogDetail(int result)
  */
 void MainWindow::ToolHeight(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogHeight>(checked, Tool::Height, ":/cursor/height_cursor.png", tr("Select base point"),
                                          &MainWindow::ClosedDialogWithApply<VToolHeight>,
                                          &MainWindow::ApplyDialog<VToolHeight>);
@@ -911,6 +955,7 @@ void MainWindow::ToolHeight(bool checked)
  */
 void MainWindow::ToolTriangle(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogTriangle>(checked, Tool::Triangle, ":/cursor/triangle_cursor.png",
                                            tr("Select first point of axis"),
                                            &MainWindow::ClosedDialogWithApply<VToolTriangle>,
@@ -924,6 +969,7 @@ void MainWindow::ToolTriangle(bool checked)
  */
 void MainWindow::ToolPointOfIntersection(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogPointOfIntersection>(checked, Tool::PointOfIntersection,
                                                       ":/cursor/pointofintersect_cursor.png",
                                                       tr("Select point for X value (vertical)"),
@@ -938,6 +984,7 @@ void MainWindow::ToolPointOfIntersection(bool checked)
  */
 void MainWindow::ToolUnionDetails(bool checked)
 {
+    ToolSelectDetail();
     SetToolButton<DialogUnionDetails>(checked, Tool::UnionDetails, ":/cursor/union_cursor.png",
                                       tr("Select detail"), &MainWindow::ClosedDialogUnionDetails);
 }
@@ -954,12 +1001,45 @@ void MainWindow::ClosedDialogUnionDetails(int result)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolGroup(bool checked)
+{
+    ToolSelectGroupObjects();
+    currentScene->clearSelection();
+    SetToolButton<DialogGroup>(checked, Tool::Group, ":/cursor/group_plus_cursor.png",
+                               tr("Select one or more objects, <b>Enter</b> - finish creation"),
+                               &MainWindow::ClosedDialogGroup);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ClosedDialogGroup(int result)
+{
+    SCASSERT(dialogTool != nullptr);
+    if (result == QDialog::Accepted)
+    {
+        VMainGraphicsScene *scene = qobject_cast<VMainGraphicsScene *>(currentScene);
+        SCASSERT(scene != nullptr);
+
+        DialogGroup *dialog = qobject_cast<DialogGroup*>(dialogTool);
+        SCASSERT(dialog != nullptr);
+        const QDomElement group = doc->CreateGroup(pattern->getNextId(), dialog->GetName(), dialog->GetGroup());
+        if (not group.isNull())
+        {
+            AddGroup *addGroup = new AddGroup(group, doc);
+            connect(addGroup, &AddGroup::UpdateGroups, groupsWidget, &VWidgetGroups::UpdateGroups);
+            qApp->getUndoStack()->push(addGroup);
+        }
+    }
+    ArrowTool();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief ToolCutArc handler tool cutArc.
  * @param checked true - button checked.
  */
 void MainWindow::ToolCutArc(bool checked)
 {
+    ToolSelectArc();
     SetToolButtonWithApply<DialogCutArc>(checked, Tool::CutArc, ":/cursor/arc_cut_cursor.png",
                                          tr("Select arc"), &MainWindow::ClosedDialogWithApply<VToolCutArc>,
                                          &MainWindow::ApplyDialog<VToolCutArc>);
@@ -968,6 +1048,7 @@ void MainWindow::ToolCutArc(bool checked)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolLineIntersectAxis(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogLineIntersectAxis>(checked, Tool::LineIntersectAxis,
                                                     ":/cursor/line_intersect_axis_cursor.png",
                                                     tr("Select first point of line"),
@@ -978,6 +1059,7 @@ void MainWindow::ToolLineIntersectAxis(bool checked)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolCurveIntersectAxis(bool checked)
 {
+    ToolSelectAllDrawObjects();
     SetToolButtonWithApply<DialogCurveIntersectAxis>(checked, Tool::CurveIntersectAxis,
                                                      ":/cursor/curve_intersect_axis_cursor.png",
                                                      tr("Select curve"),
@@ -988,6 +1070,7 @@ void MainWindow::ToolCurveIntersectAxis(bool checked)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolArcIntersectAxis(bool checked)
 {
+    ToolSelectAllDrawObjects();
     // Reuse ToolCurveIntersectAxis but with different cursor and tool tip
     SetToolButtonWithApply<DialogCurveIntersectAxis>(checked, Tool::CurveIntersectAxis,
                                                      ":/cursor/arc_intersect_axis_cursor.png",
@@ -999,6 +1082,7 @@ void MainWindow::ToolArcIntersectAxis(bool checked)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolPointOfIntersectionArcs(bool checked)
 {
+    ToolSelectArc();
     SetToolButtonWithApply<DialogPointOfIntersectionArcs>(checked, Tool::PointOfIntersectionArcs,
                                                           "://cursor/point_of_intersection_arcs.png",
                                                           tr("Select first an arc"),
@@ -1009,6 +1093,7 @@ void MainWindow::ToolPointOfIntersectionArcs(bool checked)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolPointOfIntersectionCircles(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogPointOfIntersectionCircles>(checked, Tool::PointOfIntersectionCircles,
                                                              "://cursor/point_of_intersection_circles.png",
                                                              tr("Select first circle center "),
@@ -1019,6 +1104,7 @@ void MainWindow::ToolPointOfIntersectionCircles(bool checked)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolPointOfIntersectionCurves(bool checked)
 {
+    ToolSelectCurve();
     SetToolButtonWithApply<DialogPointOfIntersectionCurves>(checked, Tool::PointOfIntersectionCurves,
                                                              "://cursor/intersection_curves_cursor.png",
                                                              tr("Select first curve"),
@@ -1029,6 +1115,7 @@ void MainWindow::ToolPointOfIntersectionCurves(bool checked)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolPointFromCircleAndTangent(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogPointFromCircleAndTangent>(checked, Tool::PointFromCircleAndTangent,
                                                             "://cursor/point_from_circle_and_tangent_cursor.png",
                                                             tr("Select point on tangent "),
@@ -1039,6 +1126,7 @@ void MainWindow::ToolPointFromCircleAndTangent(bool checked)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolPointFromArcAndTangent(bool checked)
 {
+    ToolSelectPointArc();
     SetToolButtonWithApply<DialogPointFromArcAndTangent>(checked, Tool::PointFromArcAndTangent,
                                                          "://cursor/point_from_arc_and_tangent_cursor.png",
                                                          tr("Select point on tangent "),
@@ -1049,6 +1137,7 @@ void MainWindow::ToolPointFromArcAndTangent(bool checked)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolArcWithLength(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogArcWithLength>(checked, Tool::ArcWithLength,
                                                 "://cursor/arc_with_length_cursor.png",
                                                 tr("Select point of the center of the arc"),
@@ -1059,6 +1148,7 @@ void MainWindow::ToolArcWithLength(bool checked)
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::ToolTrueDarts(bool checked)
 {
+    ToolSelectPointByRelease();
     SetToolButtonWithApply<DialogTrueDarts>(checked, Tool::TrueDarts,
                                                 "://cursor/true_darts_cursor.png",
                                                 tr("Select the first base line point"),
@@ -1649,7 +1739,7 @@ void MainWindow::InitToolButtons()
     connect(ui->toolButtonPointFromArcAndTangent, &QToolButton::clicked, this, &MainWindow::ToolPointFromArcAndTangent);
     connect(ui->toolButtonArcWithLength, &QToolButton::clicked, this, &MainWindow::ToolArcWithLength);
     connect(ui->toolButtonTrueDarts, &QToolButton::clicked, this, &MainWindow::ToolTrueDarts);
-
+    connect(ui->toolButtonGroup, &QToolButton::clicked, this, &MainWindow::ToolGroup);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -1690,7 +1780,7 @@ void MainWindow::mouseMove(const QPointF &scenePos)
 void MainWindow::CancelTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 41, "Not all tools was handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 42, "Not all tools was handled.");
 
     qCDebug(vMainWindow, "Canceling tool.");
     delete dialogTool;
@@ -1814,6 +1904,9 @@ void MainWindow::CancelTool()
         case Tool::TrueDarts:
             ui->toolButtonTrueDarts->setChecked(false);
             break;
+        case Tool::Group:
+            ui->toolButtonGroup->setChecked(false);
+            break;
     }
     currentScene->setFocus(Qt::OtherFocusReason);
     currentScene->clearSelection();
@@ -1841,6 +1934,32 @@ void  MainWindow::ArrowTool()
     ui->actionStopTool->setEnabled(false);
     currentTool = Tool::Arrow;
     emit EnableItemMove(true);
+    emit ItemsSelection(SelectionType::ByMouseRelease);
+
+    // Only true for rubber band selection
+    emit EnableLabelSelection(true);
+    emit EnablePointSelection(false);
+    emit EnableLineSelection(false);
+    emit EnableArcSelection(false);
+    emit EnableSplineSelection(false);
+    emit EnableSplinePathSelection(false);
+    emit EnableNodeLabelSelection(true);
+    emit EnableNodePointSelection(true);
+    emit EnableDetailSelection(true);// Disable when done visualization details
+
+    // Hovering
+    emit EnableLabelHover(true);
+    emit EnablePointHover(true);
+    emit EnableLineHover(true);
+    emit EnableArcHover(true);
+    emit EnableSplineHover(true);
+    emit EnableSplinePathHover(true);
+    emit EnableNodeLabelHover(true);
+    emit EnableNodePointHover(true);
+    emit EnableDetailHover(true);
+
+    ui->view->AllowRubberBand(true);
+
     QCursor cur(Qt::ArrowCursor);
     ui->view->setCursor(cur);
     helpLabel->setText("");
@@ -1938,28 +2057,12 @@ void MainWindow::ActionDraw(bool checked)
         RestoreCurrentScene();
 
         mode = Draw::Calculation;
-        comboBoxDraws->setEnabled(true);
         comboBoxDraws->setCurrentIndex(currentDrawIndex);//restore current pattern peace
         drawMode = true;
 
         SetEnableTool(true);
+        SetEnableWidgets(true);
         ui->toolBox->setCurrentIndex(currentToolBoxIndex);
-
-        ui->actionHistory->setEnabled(true);
-        ui->actionOptionDraw->setEnabled(true);
-        ui->actionNewDraw->setEnabled(true);
-        ui->actionTable->setEnabled(true);
-        ui->actionArrowTool->setEnabled(true);
-        ui->actionShowCurveDetails->setEnabled(true);
-        actionDockWidgetToolOptions->setEnabled(true);
-        if (qApp->getUndoStack()->canUndo())
-        {
-            undoAction->setEnabled(true);
-        }
-        if (qApp->getUndoStack()->canRedo())
-        {
-            redoAction->setEnabled(true);
-        }
 
         if (qApp->patternType() == MeasurementsType::Standard)
         {
@@ -1967,7 +2070,8 @@ void MainWindow::ActionDraw(bool checked)
         }
 
         ui->dockWidgetLayoutPages->setVisible(false);
-        ui->dockWidgetToolOptions->setVisible(true);
+        ui->dockWidgetToolOptions->setVisible(isDockToolOptionsVisible);
+        ui->dockWidgetGroups->setVisible(isDockGroupsVisible);
     }
     else
     {
@@ -1992,7 +2096,6 @@ void MainWindow::ActionDetails(bool checked)
             drawMode = false;
         }
         comboBoxDraws->setCurrentIndex(comboBoxDraws->count()-1);// Need to get data about all details
-        comboBoxDraws->setEnabled(false);
 
         if(not qApp->getOpeningPattern())
         {
@@ -2028,23 +2131,8 @@ void MainWindow::ActionDetails(bool checked)
         }
         mode = Draw::Modeling;
         SetEnableTool(true);
-        ui->toolBox->setCurrentIndex(4);
-
-        ui->actionHistory->setEnabled(false);
-        ui->actionOptionDraw->setEnabled(false);
-        ui->actionNewDraw->setEnabled(false);
-        ui->actionTable->setEnabled(false);
-        ui->actionArrowTool->setEnabled(true);
-        ui->actionShowCurveDetails->setEnabled(false);
-        actionDockWidgetToolOptions->setEnabled(true);
-        if (qApp->getUndoStack()->canUndo())
-        {
-            undoAction->setEnabled(true);
-        }
-        if (qApp->getUndoStack()->canRedo())
-        {
-            redoAction->setEnabled(true);
-        }
+        SetEnableWidgets(true);
+        ui->toolBox->setCurrentIndex(5);
 
         if (qApp->patternType() == MeasurementsType::Standard)
         {
@@ -2052,7 +2140,8 @@ void MainWindow::ActionDetails(bool checked)
         }
 
         ui->dockWidgetLayoutPages->setVisible(false);
-        ui->dockWidgetToolOptions->setVisible(true);
+        ui->dockWidgetToolOptions->setVisible(isDockToolOptionsVisible);
+        ui->dockWidgetGroups->setVisible(isDockGroupsVisible);
 
         helpLabel->setText("");
     }
@@ -2079,7 +2168,6 @@ void MainWindow::ActionLayout(bool checked)
             drawMode = false;
         }
         comboBoxDraws->setCurrentIndex(comboBoxDraws->count()-1);// Need to get data about all details
-        comboBoxDraws->setEnabled(false);
 
         const QHash<quint32, VDetail> *details = pattern->DataDetails();
         if(not qApp->getOpeningPattern())
@@ -2119,17 +2207,9 @@ void MainWindow::ActionLayout(bool checked)
         }
         mode = Draw::Layout;
         SetEnableTool(true);
-        ui->toolBox->setCurrentIndex(5);
+        SetEnableWidgets(true);
+        ui->toolBox->setCurrentIndex(6);
 
-        ui->actionHistory->setEnabled(false);
-        ui->actionOptionDraw->setEnabled(false);
-        ui->actionNewDraw->setEnabled(false);
-        ui->actionArrowTool->setEnabled(false);
-        ui->actionTable->setEnabled(false);
-        ui->actionShowCurveDetails->setEnabled(false);
-        actionDockWidgetToolOptions->setEnabled(false);
-        undoAction->setEnabled(false);
-        redoAction->setEnabled(false);
         mouseCoordinate->setText("");
 
         if (qApp->patternType() == MeasurementsType::Standard)
@@ -2138,7 +2218,14 @@ void MainWindow::ActionLayout(bool checked)
         }
 
         ui->dockWidgetLayoutPages->setVisible(true);
+
+        ui->dockWidgetToolOptions->blockSignals(true);
         ui->dockWidgetToolOptions->setVisible(false);
+        ui->dockWidgetToolOptions->blockSignals(false);
+
+        ui->dockWidgetGroups->blockSignals(true);
+        ui->dockWidgetGroups->setVisible(false);
+        ui->dockWidgetGroups->blockSignals(false);
 
         ShowPaper(ui->listWidget->currentRow());
 
@@ -2511,7 +2598,7 @@ void MainWindow::FullParseFile()
         return;
     }
 
-    QString patternPiece = QString();
+    QString patternPiece;
     if (comboBoxDraws->currentIndex() != -1)
     {
         patternPiece = comboBoxDraws->itemText(comboBoxDraws->currentIndex());
@@ -2519,6 +2606,18 @@ void MainWindow::FullParseFile()
     comboBoxDraws->blockSignals(true);
     comboBoxDraws->clear();
     comboBoxDraws->addItems(doc->getPatternPieces());
+    if (not drawMode)
+    {
+        comboBoxDraws->setCurrentIndex(comboBoxDraws->count()-1);
+    }
+    else
+    {
+        const qint32 index = comboBoxDraws->findText(patternPiece);
+        if ( index != -1 )
+        {
+            comboBoxDraws->setCurrentIndex(index);
+        }
+    }
     comboBoxDraws->blockSignals(false);
     ui->actionPattern_properties->setEnabled(true);
 
@@ -2597,34 +2696,36 @@ void MainWindow::SetEnabledGUI(bool enabled)
  */
 void MainWindow::SetEnableWidgets(bool enable)
 {
-    comboBoxDraws->setEnabled(enable);
-    ui->actionOptionDraw->setEnabled(enable);
-    if (enable && not patternReadOnly)
-    {
-        ui->actionSave->setEnabled(enable);
-    }
-    else
-    {
-        ui->actionSave->setEnabled(false);
-    }
+    const bool drawStage = (mode == Draw::Calculation);
+    const bool designStage = (drawStage || mode == Draw::Modeling);
+
+    comboBoxDraws->setEnabled(enable && drawStage);
+    ui->actionOptionDraw->setEnabled(enable && drawStage);
+    ui->actionSave->setEnabled(enable && not patternReadOnly);
     ui->actionSaveAs->setEnabled(enable);
-    ui->actionPattern_properties->setEnabled(enable);
-    ui->actionEdit_pattern_code->setEnabled(enable);
+    ui->actionPattern_properties->setEnabled(enable && designStage);
+    ui->actionEdit_pattern_code->setEnabled(enable && designStage);
     ui->actionZoomIn->setEnabled(enable);
     ui->actionZoomOut->setEnabled(enable);
-    ui->actionArrowTool->setEnabled(enable);
-    ui->actionHistory->setEnabled(enable);
-    ui->actionNewDraw->setEnabled(enable);
+    ui->actionArrowTool->setEnabled(enable && designStage);
+    ui->actionHistory->setEnabled(enable && drawStage);
+    ui->actionNewDraw->setEnabled(enable && drawStage);
     ui->actionDraw->setEnabled(enable);
     ui->actionDetails->setEnabled(enable);
     ui->actionLayout->setEnabled(enable);
-    ui->actionTable->setEnabled(enable);
+    ui->actionTable->setEnabled(enable && drawStage);
     ui->actionZoomFitBest->setEnabled(enable);
     ui->actionZoomOriginal->setEnabled(enable);
-    ui->actionShowCurveDetails->setEnabled(enable);
-    ui->actionLoadIndividual->setEnabled(enable);
-    ui->actionLoadStandard->setEnabled(enable);
-    ui->actionUnloadMeasurements->setEnabled(enable);
+    ui->actionShowCurveDetails->setEnabled(enable && drawStage);
+    ui->actionLoadIndividual->setEnabled(enable && designStage);
+    ui->actionLoadStandard->setEnabled(enable && designStage);
+    ui->actionUnloadMeasurements->setEnabled(enable && designStage);
+
+    actionDockWidgetToolOptions->setEnabled(enable && designStage);
+    actionDockWidgetGroups->setEnabled(enable && designStage);
+
+    undoAction->setEnabled(enable && designStage && qApp->getUndoStack()->canUndo());
+    redoAction->setEnabled(enable && designStage && qApp->getUndoStack()->canRedo());
 
     //Now we don't want allow user call context menu
     sceneDraw->SetDisableTools(!enable, doc->GetNameActivPP());
@@ -2830,6 +2931,18 @@ void MainWindow::ChangedHeight(const QString &text)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void MainWindow::DockToolOptionsVisibilityChanged(bool visible)
+{
+    isDockToolOptionsVisible = visible;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::DockGropsVisibilityChanged(bool visible)
+{
+    isDockGroupsVisible = visible;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void MainWindow::SetDefaultHeight()
 {
     const QString defHeight = QString().setNum(doc->GetDefCustomHeight());
@@ -2996,6 +3109,7 @@ void MainWindow::SetEnableTool(bool enable)
     ui->toolButtonPointFromArcAndTangent->setEnabled(drawTools);
     ui->toolButtonArcWithLength->setEnabled(drawTools);
     ui->toolButtonTrueDarts->setEnabled(drawTools);
+    ui->toolButtonGroup->setEnabled(drawTools);
 
     ui->actionLast_tool->setEnabled(drawTools);
 
@@ -3146,6 +3260,9 @@ void MainWindow::ReadSettings()
 
     // Text under tool buton icon
     ToolBarStyles();
+
+    isDockToolOptionsVisible = ui->dockWidgetToolOptions->isVisible();
+    isDockGroupsVisible = ui->dockWidgetGroups->isVisible();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -3252,13 +3369,6 @@ void MainWindow::CreateMenus()
     separatorAct->setSeparator(true);
     ui->menuPatternPiece->insertAction(ui->actionPattern_properties, separatorAct);
 
-    //Add dock
-    actionDockWidgetToolOptions = ui->dockWidgetToolOptions->toggleViewAction();
-    ui->menuPatternPiece->insertAction(ui->actionPattern_properties, actionDockWidgetToolOptions);
-
-    separatorAct = new QAction(this);
-    separatorAct->setSeparator(true);
-    ui->menuPatternPiece->insertAction(ui->actionPattern_properties, separatorAct);
     AddDocks();
 }
 
@@ -3270,7 +3380,7 @@ void MainWindow::CreateMenus()
 void MainWindow::LastUsedTool()
 {
     // This check helps to find missed tools in the switch
-    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 41, "Not all tools was handled.");
+    Q_STATIC_ASSERT_X(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 42, "Not all tools was handled.");
 
     if (currentTool == lastUsedTool)
     {
@@ -3417,6 +3527,10 @@ void MainWindow::LastUsedTool()
             ui->toolButtonTrueDarts->setChecked(true);
             ToolTrueDarts(true);
             break;
+        case Tool::Group:
+            ui->toolButtonGroup->setChecked(true);
+            ToolGroup(true);
+            break;
     }
 }
 
@@ -3427,7 +3541,15 @@ void MainWindow::LastUsedTool()
 //---------------------------------------------------------------------------------------------------------------------
 void MainWindow::AddDocks()
 {
-    ui->menuPatternPiece->insertAction(ui->actionPattern_properties, ui->dockWidgetToolOptions->toggleViewAction());
+    //Add dock
+    actionDockWidgetToolOptions = ui->dockWidgetToolOptions->toggleViewAction();
+    ui->menuPatternPiece->insertAction(ui->actionPattern_properties, actionDockWidgetToolOptions);
+    connect(ui->dockWidgetToolOptions, &QDockWidget::visibilityChanged, this,
+            &MainWindow::DockToolOptionsVisibilityChanged);
+
+    actionDockWidgetGroups = ui->dockWidgetGroups->toggleViewAction();
+    ui->menuPatternPiece->insertAction(ui->actionPattern_properties, actionDockWidgetGroups);
+    connect(ui->dockWidgetGroups, &QDockWidget::visibilityChanged, this, &MainWindow::DockGropsVisibilityChanged);
 
     separatorAct = new QAction(this);
     separatorAct->setSeparator(true);
@@ -3435,13 +3557,17 @@ void MainWindow::AddDocks()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-void MainWindow::PropertyBrowser()
+void MainWindow::InitDocksContain()
 {
     qCDebug(vMainWindow, "Initialization property browser.");
     toolOptions = new VToolOptionsPropertyBrowser(ui->dockWidgetToolOptions);
 
     connect(ui->view, &VMainGraphicsView::itemClicked, toolOptions, &VToolOptionsPropertyBrowser::itemClicked);
     connect(doc, &VPattern::FullUpdateFromFile, toolOptions, &VToolOptionsPropertyBrowser::UpdateOptions);
+
+    qCDebug(vMainWindow, "Initialization groups dock.");
+    groupsWidget = new VWidgetGroups(doc, this);
+    ui->dockWidgetGroups->setWidget(groupsWidget);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -4024,6 +4150,7 @@ void MainWindow::ChangePP(int index, bool zoomBestFit)
             }
         }
         toolOptions->itemClicked(nullptr);//hide options for tool in previous pattern piece
+        groupsWidget->UpdateGroups();
     }
 }
 
@@ -4405,4 +4532,226 @@ bool MainWindow::IgnoreLocking(int error, const QString &path)
         return false;
     }
     return true;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectPoint() const
+{
+    // Only true for rubber band selection
+    emit EnableLabelSelection(false);
+    emit EnablePointSelection(false);
+    emit EnableLineSelection(false);
+    emit EnableArcSelection(false);
+    emit EnableSplineSelection(false);
+    emit EnableSplinePathSelection(false);
+
+    // Hovering
+    emit EnableLabelHover(true);
+    emit EnablePointHover(true);
+    emit EnableLineHover(false);
+    emit EnableArcHover(false);
+    emit EnableSplineHover(false);
+    emit EnableSplinePathHover(false);
+
+    ui->view->AllowRubberBand(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectPointByRelease() const
+{
+    ToolSelectPoint();
+    emit ItemsSelection(SelectionType::ByMouseRelease);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectPointByPress() const
+{
+    ToolSelectPoint();
+    emit ItemsSelection(SelectionType::ByMousePress);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectSpline() const
+{
+    // Only true for rubber band selection
+    emit EnableLabelSelection(false);
+    emit EnablePointSelection(false);
+    emit EnableLineSelection(false);
+    emit EnableArcSelection(false);
+    emit EnableSplineSelection(false);
+    emit EnableSplinePathSelection(false);
+
+    // Hovering
+    emit EnableLabelHover(false);
+    emit EnablePointHover(false);
+    emit EnableLineHover(false);
+    emit EnableArcHover(false);
+    emit EnableSplineHover(true);
+    emit EnableSplinePathHover(false);
+
+    emit ItemsSelection(SelectionType::ByMouseRelease);
+
+    ui->view->AllowRubberBand(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectSplinePath() const
+{
+    // Only true for rubber band selection
+    emit EnableLabelSelection(false);
+    emit EnablePointSelection(false);
+    emit EnableLineSelection(false);
+    emit EnableArcSelection(false);
+    emit EnableSplineSelection(false);
+    emit EnableSplinePathSelection(false);
+
+    // Hovering
+    emit EnableLabelHover(false);
+    emit EnablePointHover(false);
+    emit EnableLineHover(false);
+    emit EnableArcHover(false);
+    emit EnableSplineHover(false);
+    emit EnableSplinePathHover(true);
+
+    emit ItemsSelection(SelectionType::ByMouseRelease);
+
+    ui->view->AllowRubberBand(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectArc() const
+{
+    // Only true for rubber band selection
+    emit EnableLabelSelection(false);
+    emit EnablePointSelection(false);
+    emit EnableLineSelection(false);
+    emit EnableArcSelection(false);
+    emit EnableSplineSelection(false);
+    emit EnableSplinePathSelection(false);
+
+    // Hovering
+    emit EnableLabelHover(false);
+    emit EnablePointHover(false);
+    emit EnableLineHover(false);
+    emit EnableArcHover(true);
+    emit EnableSplineHover(false);
+    emit EnableSplinePathHover(false);
+
+    emit ItemsSelection(SelectionType::ByMouseRelease);
+
+    ui->view->AllowRubberBand(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectPointArc() const
+{
+    // Only true for rubber band selection
+    emit EnableLabelSelection(false);
+    emit EnablePointSelection(false);
+    emit EnableLineSelection(false);
+    emit EnableArcSelection(false);
+    emit EnableSplineSelection(false);
+    emit EnableSplinePathSelection(false);
+
+    // Hovering
+    emit EnableLabelHover(true);
+    emit EnablePointHover(true);
+    emit EnableLineHover(false);
+    emit EnableArcHover(true);
+    emit EnableSplineHover(false);
+    emit EnableSplinePathHover(false);
+
+    emit ItemsSelection(SelectionType::ByMouseRelease);
+
+    ui->view->AllowRubberBand(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectCurve() const
+{
+    // Only true for rubber band selection
+    emit EnableLabelSelection(false);
+    emit EnablePointSelection(false);
+    emit EnableLineSelection(false);
+    emit EnableArcSelection(false);
+    emit EnableSplineSelection(false);
+    emit EnableSplinePathSelection(false);
+
+    // Hovering
+    emit EnableLabelHover(false);
+    emit EnablePointHover(false);
+    emit EnableLineHover(false);
+    emit EnableArcHover(true);
+    emit EnableSplineHover(true);
+    emit EnableSplinePathHover(true);
+
+    emit ItemsSelection(SelectionType::ByMouseRelease);
+
+    ui->view->AllowRubberBand(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectAllDrawObjects() const
+{
+    // Only true for rubber band selection
+    emit EnableLabelSelection(false);
+    emit EnablePointSelection(false);
+    emit EnableLineSelection(false);
+    emit EnableArcSelection(false);
+    emit EnableSplineSelection(false);
+    emit EnableSplinePathSelection(false);
+
+    // Hovering
+    emit EnableLabelHover(true);
+    emit EnablePointHover(true);
+    emit EnableLineHover(false);
+    emit EnableArcHover(true);
+    emit EnableSplineHover(true);
+    emit EnableSplinePathHover(true);
+
+    emit ItemsSelection(SelectionType::ByMouseRelease);
+
+    ui->view->AllowRubberBand(false);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectGroupObjects() const
+{
+    // Only true for rubber band selection
+    emit EnableLabelSelection(true);
+    emit EnablePointSelection(true);
+    emit EnableLineSelection(true);
+    emit EnableArcSelection(true);
+    emit EnableSplineSelection(true);
+    emit EnableSplinePathSelection(true);
+
+    // Hovering
+    emit EnableLabelHover(true);
+    emit EnablePointHover(true);
+    emit EnableLineHover(true);
+    emit EnableArcHover(true);
+    emit EnableSplineHover(true);
+    emit EnableSplinePathHover(true);
+
+    emit ItemsSelection(SelectionType::ByMouseRelease);
+
+    ui->view->AllowRubberBand(true);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void MainWindow::ToolSelectDetail() const
+{
+    // Only true for rubber band selection
+    emit EnableNodeLabelSelection(false);
+    emit EnableNodePointSelection(false);
+    emit EnableDetailSelection(true);// Disable when done visualization details
+
+    // Hovering
+    emit EnableNodeLabelHover(true);
+    emit EnableNodePointHover(true);
+    emit EnableDetailHover(true);
+
+    emit ItemsSelection(SelectionType::ByMouseRelease);
+
+    ui->view->AllowRubberBand(false);
 }

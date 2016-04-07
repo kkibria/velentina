@@ -28,7 +28,7 @@
 
 #include "vtoolcubicbezierpath.h"
 #include "../../../dialogs/tools/dialogcubicbezierpath.h"
-#include "../../../visualization/vistoolcubicbezierpath.h"
+#include "../../../visualization/path/vistoolcubicbezierpath.h"
 
 const QString VToolCubicBezierPath::ToolType = QStringLiteral("cubicBezierPath");
 
@@ -42,9 +42,6 @@ VToolCubicBezierPath::VToolCubicBezierPath(VAbstractPattern *doc, VContainer *da
 
     this->setPath(ToolPath());
     this->setPen(QPen(Qt::black, qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor));
-    this->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    this->setFlag(QGraphicsItem::ItemIsFocusable, true);
-    this->setAcceptHoverEvents(true);
 
     ToolCreation(typeCreation);
 }
@@ -95,12 +92,12 @@ VToolCubicBezierPath *VToolCubicBezierPath::Create(const quint32 _id, VCubicBezi
     if (typeCreation == Source::FromGui)
     {
         id = data->AddGObject(path);
-        data->AddCurve<VCubicBezierPath>(id);
+        data->AddCurveWithSegments(data->GeometricObject<VAbstractCubicBezierPath>(id), id);
     }
     else
     {
         data->UpdateGObject(id, path);
-        data->AddCurve<VCubicBezierPath>(id);
+        data->AddCurveWithSegments(data->GeometricObject<VAbstractCubicBezierPath>(id), id);
         if (parse != Document::FullParse)
         {
             doc->UpdateToolData(id, data);
@@ -111,9 +108,7 @@ VToolCubicBezierPath *VToolCubicBezierPath::Create(const quint32 _id, VCubicBezi
     {
         VToolCubicBezierPath *spl = new VToolCubicBezierPath(doc, data, id, color, typeCreation);
         scene->addItem(spl);
-        connect(spl, &VToolCubicBezierPath::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-        connect(scene, &VMainGraphicsScene::NewFactor, spl, &VToolCubicBezierPath::SetFactor);
-        connect(scene, &VMainGraphicsScene::DisableItem, spl, &VToolCubicBezierPath::Disable);
+        InitSplinePathToolConnections(scene, spl);
         doc->AddTool(id, spl);
         return spl;
     }

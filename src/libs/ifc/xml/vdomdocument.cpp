@@ -255,7 +255,7 @@ bool VDomDocument::GetParametrBool(const QDomElement &domElement, const QString 
 //---------------------------------------------------------------------------------------------------------------------
 NodeUsage VDomDocument::GetParametrUsage(const QDomElement &domElement, const QString &name) const
 {
-    const bool value = GetParametrBool(domElement, name, QStringLiteral("true"));
+    const bool value = GetParametrBool(domElement, name, trueStr);
     if (value)
     {
         return NodeUsage::InUse;
@@ -271,11 +271,11 @@ void VDomDocument::SetParametrUsage(QDomElement &domElement, const QString &name
 {
     if (value == NodeUsage::InUse)
     {
-        domElement.setAttribute(name, QStringLiteral("true"));
+        domElement.setAttribute(name, trueStr);
     }
     else
     {
-        domElement.setAttribute(name, QStringLiteral("false"));
+        domElement.setAttribute(name, falseStr);
     }
 }
 
@@ -698,20 +698,25 @@ bool VDomDocument::setTagText(const QString &tag, const QString &text)
         if (domNode.isNull() == false && domNode.isElement())
         {
             const QDomElement domElement = domNode.toElement();
-            if (domElement.isNull() == false)
-            {
-                QDomElement parent = domElement.parentNode().toElement();
-                QDomElement newTag = createElement(tag);
-                if (not text.isEmpty())
-                {
-                    const QDomText newTagText = createTextNode(text);
-                    newTag.appendChild(newTagText);
-                }
-
-                parent.replaceChild(newTag, domElement);
-                return true;
-            }
+            return setTagText(domElement, text);
         }
+    }
+    return false;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+bool VDomDocument::setTagText(const QDomElement &domElement, const QString &text)
+{
+    if (domElement.isNull() == false)
+    {
+        QDomElement parent = domElement.parentNode().toElement();
+        QDomElement newTag = createElement(domElement.tagName());
+
+        const QDomText newTagText = createTextNode(text);
+        newTag.appendChild(newTagText);
+
+        parent.replaceChild(newTag, domElement);
+        return true;
     }
     return false;
 }

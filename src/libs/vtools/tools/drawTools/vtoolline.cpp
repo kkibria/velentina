@@ -31,7 +31,7 @@
 #include <QKeyEvent>
 #include "../vgeometry/vpointf.h"
 #include "../../dialogs/tools/dialogline.h"
-#include "../../visualization/vistoolline.h"
+#include "../../visualization/line/vistoolline.h"
 
 const QString VToolLine::TagName = QStringLiteral("line");
 
@@ -59,8 +59,6 @@ VToolLine::VToolLine(VAbstractPattern *doc, VContainer *data, quint32 id, quint3
     const QSharedPointer<VPointF> second = data->GeometricObject<VPointF>(secondPoint);
     this->setLine(QLineF(first->toQPointF(), second->toQPointF()));
     this->setFlag(QGraphicsItem::ItemStacksBehindParent, true);
-    this->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    this->setFlag(QGraphicsItem::ItemIsFocusable, true);
     this->setAcceptHoverEvents(true);
     this->setPen(QPen(Qt::black, qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor,
                       LineStyleToPenStyle(typeLine)));
@@ -151,9 +149,9 @@ VToolLine * VToolLine::Create(const quint32 &_id, const quint32 &firstPoint, con
     {
         VToolLine *line = new VToolLine(doc, data, id, firstPoint, secondPoint, typeLine, lineColor, typeCreation);
         scene->addItem(line);
-        connect(line, &VToolLine::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-        connect(scene, &VMainGraphicsScene::NewFactor, line, &VToolLine::SetFactor);
-        connect(scene, &VMainGraphicsScene::DisableItem, line, &VToolLine::Disable);
+        InitDrawToolConnections(scene, line);
+        connect(scene, &VMainGraphicsScene::EnablePointItemSelection, line, &VToolLine::AllowSelecting);
+        connect(scene, &VMainGraphicsScene::EnableLineItemHover, line, &VToolLine::AllowHover);
         doc->AddTool(id, line);
 
         const QSharedPointer<VPointF> first = data->GeometricObject<VPointF>(firstPoint);
@@ -164,19 +162,6 @@ VToolLine * VToolLine::Create(const quint32 &_id, const quint32 &firstPoint, con
         return line;
     }
     return nullptr;
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VToolLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    /* From question on StackOverflow
-     * https://stackoverflow.com/questions/10985028/how-to-remove-border-around-qgraphicsitem-when-selected
-     *
-     * There's no interface to disable the drawing of the selection border for the build-in QGraphicsItems. The only way
-     * I can think of is derive your own items from the build-in ones and override the paint() function:*/
-    QStyleOptionGraphicsItem myOption(*option);
-    myOption.state &= ~QStyle::State_Selected;
-    QGraphicsLineItem::paint(painter, &myOption, widget);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -226,6 +211,18 @@ void VToolLine::Disable(bool disable, const QString &namePP)
     this->setPen(QPen(CorrectColor(baseColor),
                       qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor,
                       LineStyleToPenStyle(typeLine)));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLine::AllowHover(bool enabled)
+{
+    setAcceptHoverEvents(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLine::AllowSelecting(bool enabled)
+{
+    setFlag(QGraphicsItem::ItemIsSelectable, enabled);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -329,15 +326,7 @@ QVariant VToolLine::itemChange(QGraphicsItem::GraphicsItemChange change, const Q
 {
     if (change == QGraphicsItem::ItemSelectedChange)
     {
-        if (value == true)
-        {
-            // do stuff if selected
-            this->setFocus();
-        }
-        else
-        {
-            // do stuff if not selected
-        }
+        emit ChangedToolSelection(value.toBool(), id, id);
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -479,6 +468,13 @@ void VToolLine::SetLineColor(const QString &value)
 
     QSharedPointer<VGObject> obj;//We don't have object for line in data container. Just will send empty object.
     SaveOption(obj);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolLine::GroupVisibility(quint32 object, bool visible)
+{
+    Q_UNUSED(object);
+    setVisible(visible);
 }
 
 //---------------------------------------------------------------------------------------------------------------------

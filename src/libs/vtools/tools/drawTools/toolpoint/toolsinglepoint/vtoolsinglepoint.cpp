@@ -66,11 +66,10 @@ VToolSinglePoint::VToolSinglePoint(VAbstractPattern *doc, VContainer *data, quin
     connect(namePoint, &VGraphicsSimpleTextItem::ShowContextMenu, this, &VToolSinglePoint::contextMenuEvent);
     connect(namePoint, &VGraphicsSimpleTextItem::DeleteTool, this, &VToolSinglePoint::DeleteFromLabel);
     connect(namePoint, &VGraphicsSimpleTextItem::PointChoosed, this, &VToolSinglePoint::PointChoosed);
+    connect(namePoint, &VGraphicsSimpleTextItem::PointSelected, this, &VToolSinglePoint::PointSelected);
     connect(namePoint, &VGraphicsSimpleTextItem::NameChangePosition, this, &VToolSinglePoint::NameChangePosition);
     lineName = new QGraphicsLineItem(this);
     this->setBrush(QBrush(Qt::NoBrush));
-    this->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    this->setFlag(QGraphicsItem::ItemIsFocusable, true);
     this->setAcceptHoverEvents(true);
     RefreshPointGeometry(*VAbstractTool::data.GeometricObject<VPointF>(id));
 }
@@ -78,19 +77,6 @@ VToolSinglePoint::VToolSinglePoint(VAbstractPattern *doc, VContainer *data, quin
 //---------------------------------------------------------------------------------------------------------------------
 VToolSinglePoint::~VToolSinglePoint()
 {}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VToolSinglePoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    /* From question on StackOverflow
-     * https://stackoverflow.com/questions/10985028/how-to-remove-border-around-qgraphicsitem-when-selected
-     *
-     * There's no interface to disable the drawing of the selection border for the build-in QGraphicsItems. The only way
-     * I can think of is derive your own items from the build-in ones and override the paint() function:*/
-    QStyleOptionGraphicsItem myOption(*option);
-    myOption.state &= ~QStyle::State_Selected;
-    QGraphicsEllipseItem::paint(painter, &myOption, widget);
-}
 
 //---------------------------------------------------------------------------------------------------------------------
 QString VToolSinglePoint::name() const
@@ -112,6 +98,13 @@ void VToolSinglePoint::SetEnabled(bool enabled)
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSinglePoint::GroupVisibility(quint32 object, bool visible)
+{
+    Q_UNUSED(object);
+    setVisible(visible);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief NameChangePosition handle change posion point label.
  * @param pos new position.
@@ -128,9 +121,27 @@ void VToolSinglePoint::NameChangePosition(const QPointF &pos)
 void VToolSinglePoint::UpdateNamePosition(quint32 id)
 {
     const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(id);
-    MoveLabel *moveLabel = new MoveLabel(doc, point->mx(), point->my(), id, this->scene());
-    connect(moveLabel, &MoveLabel::NeedLiteParsing, doc, &VAbstractPattern::LiteParseTree);
+    auto moveLabel = new MoveLabel(doc, point->mx(), point->my(), id, scene());
+    connect(moveLabel, &MoveLabel::ChangePosition, this, &VToolSinglePoint::DoChangePosition);
     qApp->getUndoStack()->push(moveLabel);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSinglePoint::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    // Special for not selectable item first need to call standard mousePressEvent then accept event
+    QGraphicsEllipseItem::mousePressEvent(event);
+    if (selectionType == SelectionType::ByMouseRelease)
+    {
+        event->accept();// Special for not selectable item first need to call standard mousePressEvent then accept event
+    }
+    else
+    {
+        if (event->button() == Qt::LeftButton)
+        {
+            PointChoosed();
+        }
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -165,6 +176,12 @@ void VToolSinglePoint::PointChoosed()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
+void VToolSinglePoint::PointSelected(bool selected)
+{
+    setSelected(selected);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief FullUpdateFromFile update tool data form file.
  */
@@ -177,16 +194,19 @@ void VToolSinglePoint::FullUpdateFromFile()
 
 //---------------------------------------------------------------------------------------------------------------------
 /**
- * @brief mousePressEvent  handle mouse press events.
+ * @brief mouseReleaseEvent  handle mouse release events.
  * @param event mouse release event.
  */
-void VToolSinglePoint::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void VToolSinglePoint::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton)
+    if (selectionType == SelectionType::ByMouseRelease)
     {
-        PointChoosed();
+        if (event->button() == Qt::LeftButton)
+        {
+            PointChoosed();
+        }
     }
-    QGraphicsEllipseItem::mousePressEvent(event);
+    QGraphicsEllipseItem::mouseReleaseEvent(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -249,7 +269,8 @@ void VToolSinglePoint::RefreshLine(quint32 id)
 {
     Q_UNUSED(id)
     VAbstractTool::RefreshLine(this, namePoint, lineName, radius);
-    lineName->setPen(QPen(CorrectColor(Qt::black), qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor));
+    lineName->setPen(QPen(CorrectColor(Qt::black),
+                          qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor));
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -263,15 +284,10 @@ QVariant VToolSinglePoint::itemChange(QGraphicsItem::GraphicsItemChange change, 
 {
     if (change == QGraphicsItem::ItemSelectedChange)
     {
-        if (value == true)
-        {
-            // do stuff if selected
-            this->setFocus();
-        }
-        else
-        {
-            // do stuff if not selected
-        }
+        namePoint->blockSignals(true);
+        namePoint->setSelected(value.toBool());
+        namePoint->blockSignals(false);
+        emit ChangedToolSelection(value.toBool(), id, id);
     }
 
     return QGraphicsEllipseItem::itemChange(change, value);
@@ -320,4 +336,48 @@ void VToolSinglePoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &o
     doc->SetAttribute(tag, AttrName, point->name());
     doc->SetAttribute(tag, AttrMx, qApp->fromPixel(point->mx()));
     doc->SetAttribute(tag, AttrMy, qApp->fromPixel(point->my()));
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSinglePoint::DoChangePosition(quint32 id, qreal mx, qreal my)
+{
+    VPointF *point = new VPointF(*VAbstractTool::data.GeometricObject<VPointF>(id));
+    point->setMx(mx);
+    point->setMy(my);
+    VAbstractTool::data.UpdateGObject(id, point);
+    namePoint->blockSignals(true);
+    namePoint->setPos(QPointF(mx, my));
+    namePoint->blockSignals(false);
+    RefreshLine(id);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSinglePoint::AllowHover(bool enabled)
+{
+    setAcceptHoverEvents(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSinglePoint::AllowSelecting(bool enabled)
+{
+    setFlag(QGraphicsItem::ItemIsSelectable, enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSinglePoint::AllowLabelHover(bool enabled)
+{
+    namePoint->setAcceptHoverEvents(enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSinglePoint::AllowLabelSelecting(bool enabled)
+{
+    namePoint->setFlag(QGraphicsItem::ItemIsSelectable, enabled);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+void VToolSinglePoint::ToolSelectionType(const SelectionType &type)
+{
+    VAbstractTool::ToolSelectionType(type);
+    namePoint->LabelSelectionType(type);
 }

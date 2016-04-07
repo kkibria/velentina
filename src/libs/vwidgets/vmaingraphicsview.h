@@ -71,25 +71,32 @@ public:
 signals:
     void zoomed();
 public slots:
-    void scrollingTime(qreal x);
+    void VerticalScrollingTime(qreal x);
+    void HorizontalScrollingTime(qreal x);
     void animFinished();
 protected:
     virtual bool eventFilter(QObject* object, QEvent* event) Q_DECL_OVERRIDE;
 private:
     Q_DISABLE_COPY(GraphicsViewZoom)
-    QGraphicsView*        _view;
+    QGraphicsView        *_view;
     Qt::KeyboardModifiers _modifiers;
     double                _zoom_factor_base;
     QPointF               target_scene_pos;
     QPointF               target_viewport_pos;
-    QTimeLine            *anim;
-    /** @brief _numScheduledScalings keep number scheduled scalings. */
-    qint32   _numScheduledScrollings;
+    QTimeLine            *verticalScrollAnim;
+    /** @brief _numScheduledVerticalScrollings keep number scheduled vertical scrollings. */
+    qint32                _numScheduledVerticalScrollings;
+    QTimeLine            *horizontalScrollAnim;
+    /** @brief _numScheduledHorizontalScrollings keep number scheduled horizontal scrollings. */
+    qint32                _numScheduledHorizontalScrollings;
 
     static const int duration;
     static const int updateInterval;
 
     void FictiveSceneRect(QGraphicsScene *sc, QGraphicsView *view);
+
+    bool StartVerticalScrollings(QWheelEvent* wheel_event);
+    bool StartHorizontalScrollings(QWheelEvent* wheel_event);
 };
 
 /**
@@ -102,6 +109,7 @@ public:
 
     explicit VMainGraphicsView(QWidget *parent = nullptr);
     void setShowToolOptions(bool value);
+    void AllowRubberBand(bool value);
 
     static void NewSceneRect(QGraphicsScene *sc, QGraphicsView *view);
     static QRectF SceneVisibleArea(QGraphicsView *view);
@@ -131,6 +139,7 @@ private:
     Q_DISABLE_COPY(VMainGraphicsView)
     GraphicsViewZoom* zoom;
     bool     showToolOptions;
+    bool     isAllowRubberBand;
 };
 
 #endif // VMAINGRAPHICSVIEW_H

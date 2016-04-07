@@ -48,18 +48,23 @@ public:
 public slots:
     virtual void ShowTool(quint32 id, bool enable) Q_DECL_OVERRIDE;
     void         DeleteFromLabel();
+    virtual void DoChangePosition(quint32 id, qreal mx, qreal my) =0;
 
 protected:
-    void    SetPointName(quint32 id, const QString &name);
+    void SetPointName(quint32 id, const QString &name);
 
     template <typename T>
-    void    ChangePosition(T *item, quint32 id, const QPointF &pos);
+    void ChangePosition(T *item, quint32 id, const QPointF &pos);
+
 
     virtual void UpdateNamePosition(quint32 id)=0;
     virtual void RefreshLine(quint32 id)=0;
 
     template <typename T>
     void SetToolEnabled(T *item, bool enabled);
+
+    template <typename T>
+    static void InitToolConnections(VMainGraphicsScene *scene, T *tool);
 
 private:
     Q_DISABLE_COPY(VAbstractPoint)
@@ -111,13 +116,23 @@ void VAbstractPoint::SetToolEnabled(T *item, bool enabled)
 template <typename T>
 void VAbstractPoint::ChangePosition(T *item, quint32 id, const QPointF &pos)
 {
-    VPointF *point = new VPointF(*VAbstractTool::data.GeometricObject<VPointF>(id));
     const QPointF p = pos - item->pos();
-    point->setMx(p.x());
-    point->setMy(p.y());
-    VAbstractTool::data.UpdateGObject(id, point);
-    RefreshLine(id);
+    DoChangePosition(id, p.x(), p.y());
     UpdateNamePosition(id);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <typename T>
+void VAbstractPoint::InitToolConnections(VMainGraphicsScene *scene, T *tool)
+{
+    SCASSERT(scene != nullptr);
+    SCASSERT(tool != nullptr);
+
+    InitDrawToolConnections(scene, tool);
+    QObject::connect(scene, &VMainGraphicsScene::EnablePointItemHover, tool, &T::AllowHover);
+    QObject::connect(scene, &VMainGraphicsScene::EnablePointItemSelection, tool, &T::AllowSelecting);
+    QObject::connect(scene, &VMainGraphicsScene::EnableLabelItemHover, tool, &T::AllowLabelHover);
+    QObject::connect(scene, &VMainGraphicsScene::EnableLabelItemSelection, tool, &T::AllowLabelSelecting);
 }
 
 #endif // VABSTRACTPOINT_H

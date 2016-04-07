@@ -61,6 +61,9 @@ public:
     QString      GetLineColor() const;
     virtual void SetLineColor(const QString &value);
 
+signals:
+    void ChangedToolSelection(bool selected, quint32 object, quint32 tool);
+
 public slots:
     virtual void ShowTool(quint32 id, bool enable);
     virtual void ChangedActivDraw(const QString &newName);
@@ -70,6 +73,7 @@ public slots:
     virtual void SetFactor(qreal factor);
     virtual void EnableToolMove(bool move);
     virtual void Disable(bool disable, const QString &namePP)=0;
+    virtual void DetailsMode(bool mode);
 protected:
 
     enum class RemoveOption : bool {Disable = false, Enable = true};
@@ -115,6 +119,9 @@ protected:
 
     template <typename T>
     QString ObjectName(quint32 id) const;
+
+    template <typename T>
+    static void InitDrawToolConnections(VMainGraphicsScene *scene, T *tool);
 private:
     Q_DISABLE_COPY(VDrawTool)
 };
@@ -224,6 +231,22 @@ QString VDrawTool::ObjectName(quint32 id) const
                 qUtf8Printable(e.DetailedInformation()));
         return QString("");// Return empty string for property browser
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+template <typename T>
+void VDrawTool::InitDrawToolConnections(VMainGraphicsScene *scene, T *tool)
+{
+    SCASSERT(scene != nullptr);
+    SCASSERT(tool != nullptr);
+
+    QObject::connect(tool, &T::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
+    QObject::connect(tool, &T::ChangedToolSelection, scene, &VMainGraphicsScene::SelectedItem);
+    QObject::connect(scene, &VMainGraphicsScene::NewFactor, tool, &T::SetFactor);
+    QObject::connect(scene, &VMainGraphicsScene::DisableItem, tool, &T::Disable);
+    QObject::connect(scene, &VMainGraphicsScene::EnableToolMove, tool, &T::EnableToolMove);
+    QObject::connect(scene, &VMainGraphicsScene::CurveDetailsMode, tool, &T::DetailsMode);
+    QObject::connect(scene, &VMainGraphicsScene::ItemSelection, tool, &T::ToolSelectionType);
 }
 
 #endif // VDRAWTOOL_H

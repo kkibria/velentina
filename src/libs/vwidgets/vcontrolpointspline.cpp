@@ -74,7 +74,6 @@ VControlPointSpline::VControlPointSpline(const qint32 &indexSpline, SplinePointP
 {
     Init();
 
-    this->setFlag(QGraphicsItem::ItemIsSelectable, true);
     this->setFlag(QGraphicsItem::ItemIsMovable, true);
     this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     this->setAcceptHoverEvents(true);
@@ -88,19 +87,6 @@ VControlPointSpline::~VControlPointSpline()
 {
     //Disable cursor-arrow-openhand
     RestoreOverrideCursor(cursorArrowOpenHand);
-}
-
-//---------------------------------------------------------------------------------------------------------------------
-void VControlPointSpline::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    /* From question on StackOverflow
-     * https://stackoverflow.com/questions/10985028/how-to-remove-border-around-qgraphicsitem-when-selected
-     *
-     * There's no interface to disable the drawing of the selection border for the build-in QGraphicsItems. The only way
-     * I can think of is derive your own items from the build-in ones and override the paint() function:*/
-    QStyleOptionGraphicsItem myOption(*option);
-    myOption.state &= ~QStyle::State_Selected;
-    QGraphicsEllipseItem::paint(painter, &myOption, widget);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -157,8 +143,6 @@ QVariant VControlPointSpline::itemChange(QGraphicsItem::GraphicsItemChange chang
 
                 if (not freeLength)
                 {
-                    qreal length = controlLine->line().length();
-                    qreal l2 = oldLine.length();
                     newLine.setLength(oldLine.length());
                 }
 

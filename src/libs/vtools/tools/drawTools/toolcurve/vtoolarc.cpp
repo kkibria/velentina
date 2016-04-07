@@ -32,7 +32,7 @@
 #include "../../../dialogs/tools/dialogarc.h"
 #include "../vgeometry/varc.h"
 #include "../vpatterndb/vformula.h"
-#include "../../../visualization/vistoolarc.h"
+#include "../../../visualization/path/vistoolarc.h"
 
 #include <QKeyEvent>
 
@@ -58,9 +58,6 @@ VToolArc::VToolArc(VAbstractPattern *doc, VContainer *data, quint32 id, const QS
 
     this->setPath(ToolPath());
     this->setPen(QPen(Qt::black, qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor));
-    this->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    this->setFlag(QGraphicsItem::ItemIsFocusable, true);
-    this->setAcceptHoverEvents(true);
 
     ToolCreation(typeCreation);
 }
@@ -134,18 +131,18 @@ VToolArc* VToolArc::Create(const quint32 _id, const quint32 &center, QString &ra
     calcF1 = CheckFormula(_id, f1, data);
     calcF2 = CheckFormula(_id, f2, data);
 
-    VPointF c = *data->GeometricObject<VPointF>(center);
+    const VPointF c = *data->GeometricObject<VPointF>(center);
     VArc *arc = new VArc(c, calcRadius, radius, calcF1, f1, calcF2, f2 );
     quint32 id = _id;
     if (typeCreation == Source::FromGui)
     {
         id = data->AddGObject(arc);
-        data->AddArc(id);
+        data->AddArc(data->GeometricObject<VArc>(id), id);
     }
     else
     {
         data->UpdateGObject(id, arc);
-        data->AddArc(id);
+        data->AddArc(data->GeometricObject<VArc>(id), id);
         if (parse != Document::FullParse)
         {
             doc->UpdateToolData(id, data);
@@ -156,9 +153,7 @@ VToolArc* VToolArc::Create(const quint32 _id, const quint32 &center, QString &ra
     {
         VToolArc *toolArc = new VToolArc(doc, data, id, color, typeCreation);
         scene->addItem(toolArc);
-        connect(toolArc, &VToolArc::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-        connect(scene, &VMainGraphicsScene::NewFactor, toolArc, &VToolArc::SetFactor);
-        connect(scene, &VMainGraphicsScene::DisableItem, toolArc, &VToolArc::Disable);
+        InitArcToolConnections(scene, toolArc);
         doc->AddTool(id, toolArc);
         doc->IncrementReferens(c.getIdTool());
         return toolArc;

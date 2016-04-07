@@ -55,7 +55,6 @@ VToolBasePoint::VToolBasePoint (VAbstractPattern *doc, VContainer *data, quint32
     this->setPen(QPen(baseColor, qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor));
     this->setFlag(QGraphicsItem::ItemIsMovable, true);
     this->setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
-    this->setFlag(QGraphicsItem::ItemIsFocusable, false);
     SetColorLabel(Qt::black);
     ToolCreation(typeCreation);
 }
@@ -78,6 +77,38 @@ void VToolBasePoint::setDialog()
     SCASSERT(dialogTool != nullptr);
     const QSharedPointer<VPointF> p = VAbstractTool::data.GeometricObject<VPointF>(id);
     dialogTool->SetData(p->name(), p->toQPointF());
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+VToolBasePoint *VToolBasePoint::Create(quint32 _id, const QString &nameActivPP, VPointF *point,
+                                       VMainGraphicsScene *scene, VAbstractPattern *doc, VContainer *data,
+                                       const Document &parse, const Source &typeCreation)
+{
+    SCASSERT(point != nullptr);
+
+    quint32 id = _id;
+    if (typeCreation == Source::FromGui)
+    {
+        id = data->AddGObject(point);
+    }
+    else
+    {
+        data->UpdateGObject(id, point);
+        if (parse != Document::FullParse)
+        {
+            doc->UpdateToolData(id, data);
+        }
+    }
+    VDrawTool::AddRecord(id, Tool::BasePoint, doc);
+    if (parse == Document::FullParse)
+    {
+        VToolBasePoint *spoint = new VToolBasePoint(doc, data, id, typeCreation, nameActivPP);
+        scene->addItem(spoint);
+        InitToolConnections(scene, spoint);
+        doc->AddTool(id, spoint);
+        return spoint;
+    }
+    return nullptr;
 }
 
 //---------------------------------------------------------------------------------------------------------------------

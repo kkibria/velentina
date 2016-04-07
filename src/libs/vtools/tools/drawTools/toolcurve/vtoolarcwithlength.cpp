@@ -32,7 +32,7 @@
 #include "../../../dialogs/tools/dialogarcwithlength.h"
 #include "../vgeometry/varc.h"
 #include "../vpatterndb/vformula.h"
-#include "../../../visualization/vistoolarcwithlength.h"
+#include "../../../visualization/path/vistoolarcwithlength.h"
 
 #include <QKeyEvent>
 
@@ -49,9 +49,6 @@ VToolArcWithLength::VToolArcWithLength(VAbstractPattern *doc, VContainer *data, 
 
     this->setPath(ToolPath());
     this->setPen(QPen(Qt::black, qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor));
-    this->setFlag(QGraphicsItem::ItemIsSelectable, true);
-    this->setFlag(QGraphicsItem::ItemIsFocusable, true);
-    this->setAcceptHoverEvents(true);
 
     ToolCreation(typeCreation);
 }
@@ -103,18 +100,18 @@ VToolArcWithLength *VToolArcWithLength::Create(const quint32 _id, const quint32 
     calcLength = qApp->toPixel(CheckFormula(_id, length, data));
     calcF1 = CheckFormula(_id, f1, data);
 
-    VPointF c = *data->GeometricObject<VPointF>(center);
+    const VPointF c = *data->GeometricObject<VPointF>(center);
     VArc *arc = new VArc(calcLength, length, c, calcRadius, radius, calcF1, f1);
     quint32 id = _id;
     if (typeCreation == Source::FromGui)
     {
         id = data->AddGObject(arc);
-        data->AddArc(id);
+        data->AddArc(data->GeometricObject<VArc>(id), id);
     }
     else
     {
         data->UpdateGObject(id, arc);
-        data->AddArc(id);
+        data->AddArc(data->GeometricObject<VArc>(id), id);
         if (parse != Document::FullParse)
         {
             doc->UpdateToolData(id, data);
@@ -125,9 +122,7 @@ VToolArcWithLength *VToolArcWithLength::Create(const quint32 _id, const quint32 
     {
         VToolArcWithLength *toolArc = new VToolArcWithLength(doc, data, id, color, typeCreation);
         scene->addItem(toolArc);
-        connect(toolArc, &VToolArcWithLength::ChoosedTool, scene, &VMainGraphicsScene::ChoosedItem);
-        connect(scene, &VMainGraphicsScene::NewFactor, toolArc, &VToolArcWithLength::SetFactor);
-        connect(scene, &VMainGraphicsScene::DisableItem, toolArc, &VToolArcWithLength::Disable);
+        InitArcToolConnections(scene, toolArc);
         doc->AddTool(id, toolArc);
         doc->IncrementReferens(c.getIdTool());
         return toolArc;

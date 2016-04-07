@@ -45,8 +45,6 @@ public:
     virtual ~VSimplePoint() Q_DECL_OVERRIDE;
 
     virtual void ChangedActivDraw(const bool &flag) Q_DECL_OVERRIDE;
-    virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option,
-                       QWidget * widget = 0) Q_DECL_OVERRIDE;
 
     virtual int  type() const Q_DECL_OVERRIDE {return Type;}
     enum { Type = UserType + static_cast<int>(Vis::SimplePoint)};
@@ -55,6 +53,9 @@ public:
     void RefreshGeometry(const VPointF &point);
     void SetEnabled(bool enabled);
     void EnableToolMove(bool move);
+    void AllowLabelHover(bool enabled);
+    void AllowLabelSelecting(bool enabled);
+    void ToolSelectionType(const SelectionType &type);
 
     QColor GetCurrentColor() const;
     void   SetCurrentColor(const QColor &value);
@@ -64,6 +65,7 @@ signals:
      * @param id point id.
      */
     void Choosed(quint32 id);
+    void Selected(bool selected, quint32 id);
     void ShowContextMenu(QGraphicsSceneContextMenuEvent * event);
     void Delete();
     void NameChangedPosition(const QPointF &pos);
@@ -71,13 +73,16 @@ signals:
 public slots:
     void DeleteFromLabel();
     void PointChoosed();
+    void PointSelected(bool selected);
     void ChangedPosition(const QPointF &pos);
     void ContextMenu(QGraphicsSceneContextMenuEvent * event);
 
 protected:
-    virtual void mousePressEvent ( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
-    virtual void hoverEnterEvent ( QGraphicsSceneHoverEvent * event ) Q_DECL_OVERRIDE;
-    virtual void hoverLeaveEvent ( QGraphicsSceneHoverEvent * event ) Q_DECL_OVERRIDE;
+    virtual void     mousePressEvent( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
+    virtual void     mouseReleaseEvent ( QGraphicsSceneMouseEvent * event ) Q_DECL_OVERRIDE;
+    virtual void     hoverEnterEvent ( QGraphicsSceneHoverEvent * event ) Q_DECL_OVERRIDE;
+    virtual void     hoverLeaveEvent ( QGraphicsSceneHoverEvent * event ) Q_DECL_OVERRIDE;
+    virtual QVariant itemChange ( GraphicsItemChange change, const QVariant &value ) Q_DECL_OVERRIDE;
 
 private:
     Q_DISABLE_COPY(VSimplePoint)
@@ -90,6 +95,8 @@ private:
 
     /** @brief lineName line what we see if label moved too away from point. */
     QGraphicsLineItem       *lineName;
+
+    SelectionType selectionType;
 
 };
 
