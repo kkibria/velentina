@@ -1,0 +1,203 @@
+# Version 0.5.0
+- [#193] Undeletable zombie arc objects.
+- New feature. Groups.
+- Tool "Curve intersect axis" store data about subpaths. 
+- [#444] Length along Path seems not valid.
+- Added new curve path segment variables. 
+- Toggle ScrollHandDrag mode by clicking a middle mouse button.
+- Added horizontal scrolling by pressiong Shift + mouse wheel.
+- [#366] Update 'Point from Distance and Angle' tool to read distance and angle between points.
+- [#395] Create Curve tool which uses point as control handle.
+- pdftops updated to version 3.04.
+- [#306] Layout generator optimization. Divide into strips.
+- Fixed case with duplicate names of curves if they connect same points.
+- [#216] Better powerful way creation curved path.
+- Improved exporting to dxf. QPainterPath export as Polyline.
+- Show additional message dialog if measurements was changed. Related to issue [#440].
+- [#132] Intersect Curves.
+- Added language Chinese (China) and Portuguese (Brazil).
+- New icon for VAL file. Updated Tape logo. Updated ico for standard measurements.
+- [#325] Check pattern for inverse compatibility.
+- [#385] Add 'Open Recent' option in Tape.exe, 'File' dropdown menu.
+
+# Version 0.4.4
+- Updated measurement templates with all measurements. Added new template Aldrich/Women measurements.
+- Updated description measurements N06 and N07. Add new measurements A23 and J10.
+- Fixed GUI issue. After full parse some widgets was incorrectly reseted.
+- [#464] Crash. Issue with modeling node objects.
+- [#463] Wrong export to DXF format.
+- Fixed issue with deleting detail nodes.
+- [#458] Issue with segment of curve.
+- Fixed disappearing curve if start and finish points of a segment are equal.
+- Fixed bug case where an open equidistant point is too far from a main path.
+- [#462] Error while creating Detail/Seam Allowance using points made with True Dart tool.
+
+# Version 0.4.3 March 6, 2016
+- [#456] Crash: broken formula + clicking on the f(x) symbol.
+- [#454] Crash: using CRTL+Z while using line tool
+- Fixed broken saving pattern description.
+- Fixed UI bug. Release a dialog size for deploying a formula field.
+- Fixed broken formula when for system locale thousand separator is a space.
+- Using QGraphicsScene instead of VMainGraphicsScene caused a crash.
+- Fixed bug disabling tool True darts.
+- Fixed wrong calculation tool True darts.
+- [#405] Fixed crash after deleting first pattern piece in the list.
+- [#421] Fixed warning: unable to set geometry.
+
+# Version 0.4.2 February 17, 2016
+- Measurement Diagram is not shown on Mac OS X.
+- In dialog 'tool Spline Path' fixed broken selecting new point into the list of points.
+- Regesign dialogs tool 'Spline' and 'Spline Path' for avoiding text squeeze.
+- Fixed getting correct reversed segment for single in the list curve.
+- Fixed triggering validation a detail. Two new cases: has been changed Reverse option and the list 
+has been scrolled. Fixed validation when the list conatains only curve.
+- Fixed broken path to measurements after using Save As option.
+- Tool line. Block selecting the same point twice.
+- [#443] Not valid dxf file. libdxf updated to version 3.12.2.0. Fixed drawing subpaths.
+- Fixed combobox width in Dialog "Tool True Dart point".
+- [#441] Broken reference incrementation for tool "True Dart point".
+- [#439] Widen Formula Dialog.
+- Fixed broken tool dialogs "Intersection arcs" and "Point from arc and tangent".
+- [#442] 'Broken Formula' error when using Intersect Circles tool.
+
+# Version 0.4.1 January 29, 2016
+- [#438] Broken switching pattern pieces.
+- Fixed wrong title for dialog "New pattern".
+
+# Version 0.4.0 January 27, 2016
+- [#209] New tool for Point from arc and tangent (Draw)
+- [#232] Intersection of Arcs (Draw)
+- [#246] Arc with Given Length (Draw)
+- [#259] Draw free curve path point at distance (Draw)
+- [#301] True darts (Draw)
+- [#73] Seam Allowance - Width
+- [#329] Add ScrollUp/ScrollDown Button in Detail view
+- [#179] Export to DXF
+- [#202] Posterazor feature
+- [#277] Add 'Letter' and 'Legal' to paper size selection
+- [#334] Command Line Support
+- [#290] Add paper type 'Roll - 36" & 'Roll - 44" to 'Create Layout' paper size
+- [#172] Search field for dialog measurements
+- [#181] Better measurements standard
+- [#314] New measurement structure
+- [#275] Add 'Show Curve Details' icon on top menu bar to show/hide control points and curve direction
+- [#282] Add dialog for File/New, update Create Pattern Piece dialog
+- [#284] Remove History icon from work menu, add to top menu
+- [#285] Remove Table of Variables icon from work menu
+- [#286] Add 'Mode' menu picklist to top menu, create enable/disable for design workflow
+
+# Version 0.3.3 Released May 20, 2015
+- [#297] Scaling Error - Print.
+- [#304] Layout appears different than my pattern.
+
+# Version 0.3.2 Released May 15, 2015
+- [#298] Segmented Curve isn't selected in Seam Allowance tool.
+- [#299] Error when opening .val file.
+- [#302] Error when creating layout.
+
+# Version 0.3.1 Released April 24, 2015
+- [#263] Regression. Union tool doesn't work.
+- For tool Curve intersect axis fixed wrong calculation point in case with too small scene rect size.
+- Fixed crash if a seam allowance doesn't contain 0 points.
+- [#267] Error in the creation of obj files.
+- QMuParser. Bugfix for Bulkmode: Expressions with like "a=b, b*10" did not compute properly.
+- QMuParser. Fix for ParserTokenReader::ExtractOperatorToken incorrectly uses ValidInfixOprtChars().
+- Example of file name in dialog Save Layout appears only after user change format.
+- Fixed regression with removing loops in seam allowance.
+- Removed transparent field for a layout png file.
+
+# Version 0.3.0 Released March 23, 2015
+- Fixed creation equidistant if points less than 4.
+- [#203], [#89], [#90] New Layout Editor.
+- To File/Preferences/Paths added path to export a layout.
+- [#223] Fixed removing stale lock file on Windows.
+- [#222], [#204], [#207], [#205], [#212], [#218], [#210], [#219], [#220], [#248] Minor changes in GUI.
+- [#230] Fixed hangs if curve path has not unique points.
+- [#196] Fixed crash Detail dialog.
+- [#208] Vertical bar for tool "Point from X and Y".
+- Fixed package (.dmg) for Mac OSX.
+- [#171] Show images for pen styles instead of just names.
+- [#74] Fold Line in pattern piece. Pattern format updated to version 0.1.3.
+- [#242] Tool Dialogs: Label at bottom doesn't update for empty lists.
+- [#217] Bug with mouse cursor.
+- Dynamic update tool property browser after applying options changes.
+- [#215] Drag a curve to edit it.
+- [#184] Delete button "Equal" in dialogs.
+- [#183] Message "Changes saved" in dialog Increments.
+- [#234] Fixed problem with formula editing in vtooloptionspropertybrowser and "," decimal separator .
+- Continue improving log system.
+- Close property browser when reset window.
+- [#241] Repeat last used tool.
+- [#253] Show detail information about standard measurements file in dialog Increments.
+- [#249] Set default base height and base size according base values in standard measurements file.
+- New localization language - Spanish.
+- Fixed bug with About Valentina dialog on Windows.
+- [#235] Delete point without confirmation / configurable.
+- Version for Mac OS support export to .ps, .eps.
+- New localization language - Finnish.
+
+# Version 0.2.9 Released January 1, 2015
+- Export a layout to Wavefront .obj format.
+- New validation rules for point labels
+- Export layout in two new formats .ps and .eps.
+- Fixed support .svg format.
+- Support individual measurements.
+- Support mm, cm and inch units in patterns.
+- New math parser. 
+- Support language independent measurements.
+- Apply button in tool dialog.
+- Multi lines formula fields.
+- Recent file list.
+- Support local separator for numbers in formulas.
+- Support Clang.
+- Support Undo/Redo.
+- Optimization parsing pattern file.
+- New logo.
+- Support zoom to original scaling and Zoom Fit Best.
+- Use Zoom Fit Best for pattern piece after selection.
+- Open patterns from list of command line arguments. File association with pattern file format (.val).
+- Additional chackings in tool dialog.
+- Visualization for draw tools.
+- Allow user fix broken formula.
+- All point labels must be unique.
+- Support gradation options (only for standard measurements).
+- Fix special line that join point and label.
+- Show path direction when selected.
+- Show tools buttons in two columns instead of three.
+- Show cursor if item can be moved.
+- Second way edit tool property.
+- Zoom under mouse pointer.
+- Auto creation label.
+- Show in tooltip parser error message.
+- Show curve foot if only curve is selected.
+- Option hide unused measurements in list.
+- New tool line intersect axis.
+- New tool arc(curve) intersect axis.
+- Save and restore last window position and size.
+- User manual.
+- Propose reopen files after crash.
+- Use form layout in tool dialog.
+- Support delete action if you select tool from label.
+- Button "Stop using tool".
+- Value for angle also can be formula.
+- Fixed disabling GUI after error.
+- Don't set scroll bars to minimum after creation layout.
+- Menu Help->Report Bug...
+- Option "Standard table" in dialog changed to better "Measurements".
+- Fixed tool cut curved path.
+- Menu Window->Close window.
+- Support creation and sending crash reports. Only for Windows and Mingw compiler.
+
+# Version 0.2.2 Released February 11, 2014
+- Macros Q_DECL_NOEXCEPT_EXPR don't work in gcc 4.6.
+- Change in build dependency for deb package. Add new architecture for deb file.
+- Added spec file for rpm package.
+- Fix valentina.desktop.
+
+# Version 0.2.1 Released December 8, 2013
+- Problem with compilation in console on Ubuntu.
+- Problem with compilation on windows with msvc.
+
+# Version 0.2.0 Released October 29, 2013
+- First public release.
+
