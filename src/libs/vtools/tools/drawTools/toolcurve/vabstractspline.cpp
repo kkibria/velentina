@@ -32,8 +32,6 @@
 
 #include <QKeyEvent>
 
-const QString VAbstractSpline::TagName = QStringLiteral("spline");
-
 //---------------------------------------------------------------------------------------------------------------------
 VAbstractSpline::VAbstractSpline(VAbstractPattern *doc, VContainer *data, quint32 id, QGraphicsItem *parent)
     :VDrawTool(doc, data, id), QGraphicsPathItem(parent), controlPoints(QVector<VControlPointSpline *>()),
@@ -49,7 +47,7 @@ VAbstractSpline::~VAbstractSpline()
 //---------------------------------------------------------------------------------------------------------------------
 QString VAbstractSpline::getTagName() const
 {
-    return VAbstractSpline::TagName;
+    return VAbstractPattern::TagSpline;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -251,7 +249,7 @@ VSpline VAbstractSpline::CorrectedSpline(const VSpline &spline, const SplinePoin
     VSpline spl;
     if (position == SplinePointPosition::FirstPoint)
     {
-        QLineF line(spline.GetP1().toQPointF(), pos);
+        QLineF line(spline.GetP1(), pos);
 
         qreal newAngle1 = line.angle();
         QString newAngle1F = QString().setNum(newAngle1);
@@ -277,7 +275,7 @@ VSpline VAbstractSpline::CorrectedSpline(const VSpline &spline, const SplinePoin
     }
     else
     {
-        QLineF line(spline.GetP4().toQPointF(), pos);
+        QLineF line(spline.GetP4(), pos);
 
         qreal newAngle2 = line.angle();
         QString newAngle2F = QString().setNum(newAngle2);
