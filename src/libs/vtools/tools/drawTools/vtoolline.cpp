@@ -33,8 +33,6 @@
 #include "../../dialogs/tools/dialogline.h"
 #include "../../visualization/line/vistoolline.h"
 
-const QString VToolLine::TagName = QStringLiteral("line");
-
 //---------------------------------------------------------------------------------------------------------------------
 /**
  * @brief VToolLine constructor.
@@ -57,7 +55,7 @@ VToolLine::VToolLine(VAbstractPattern *doc, VContainer *data, quint32 id, quint3
     //Line
     const QSharedPointer<VPointF> first = data->GeometricObject<VPointF>(firstPoint);
     const QSharedPointer<VPointF> second = data->GeometricObject<VPointF>(secondPoint);
-    this->setLine(QLineF(first->toQPointF(), second->toQPointF()));
+    this->setLine(QLineF(*first, *second));
     this->setFlag(QGraphicsItem::ItemStacksBehindParent, true);
     this->setAcceptHoverEvents(true);
     this->setPen(QPen(Qt::black, qApp->toPixel(WidthHairLine(*VAbstractTool::data.GetPatternUnit()))/factor,
@@ -167,7 +165,7 @@ VToolLine * VToolLine::Create(const quint32 &_id, const quint32 &firstPoint, con
 //---------------------------------------------------------------------------------------------------------------------
 QString VToolLine::getTagName() const
 {
-    return VToolLine::TagName;
+    return VAbstractPattern::TagLine;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -249,7 +247,7 @@ void VToolLine::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
  */
 void VToolLine::AddToFile()
 {
-    QDomElement domElement = doc->createElement(TagName);
+    QDomElement domElement = doc->createElement(getTagName());
     QSharedPointer<VGObject> obj = QSharedPointer<VGObject> ();
     SaveOptions(domElement, obj);
     AddToCalculation(domElement);
@@ -503,6 +501,6 @@ void VToolLine::RefreshGeometry()
 {
     const QSharedPointer<VPointF> first = VAbstractTool::data.GeometricObject<VPointF>(firstPoint);
     const QSharedPointer<VPointF> second = VAbstractTool::data.GeometricObject<VPointF>(secondPoint);
-    this->setLine(QLineF(first->toQPointF(), second->toQPointF()));
+    this->setLine(QLineF(*first, *second));
     this->setPen(QPen(CorrectColor(lineColor), pen().widthF(), LineStyleToPenStyle(typeLine)));
 }

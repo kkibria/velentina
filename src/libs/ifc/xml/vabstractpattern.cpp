@@ -38,6 +38,7 @@ const QString VAbstractPattern::TagPattern      = QStringLiteral("pattern");
 const QString VAbstractPattern::TagCalculation  = QStringLiteral("calculation");
 const QString VAbstractPattern::TagModeling     = QStringLiteral("modeling");
 const QString VAbstractPattern::TagDetails      = QStringLiteral("details");
+const QString VAbstractPattern::TagDetail       = QStringLiteral("detail");
 const QString VAbstractPattern::TagAuthor       = QStringLiteral("author");
 const QString VAbstractPattern::TagDescription  = QStringLiteral("description");
 const QString VAbstractPattern::TagNotes        = QStringLiteral("notes");
@@ -54,6 +55,7 @@ const QString VAbstractPattern::TagLine         = QStringLiteral("line");
 const QString VAbstractPattern::TagSpline       = QStringLiteral("spline");
 const QString VAbstractPattern::TagArc          = QStringLiteral("arc");
 const QString VAbstractPattern::TagTools        = QStringLiteral("tools");
+const QString VAbstractPattern::TagOperation    = QStringLiteral("operation");
 const QString VAbstractPattern::TagGradation    = QStringLiteral("gradation");
 const QString VAbstractPattern::TagHeights      = QStringLiteral("heights");
 const QString VAbstractPattern::TagSizes        = QStringLiteral("sizes");
@@ -1201,6 +1203,7 @@ QStringList VAbstractPattern::ListExpressions() const
     list << ListArcExpressions();
     list << ListSplineExpressions();
     list << ListIncrementExpressions();
+    list << ListOperationExpressions();
 
     return list;
 }
@@ -1208,6 +1211,10 @@ QStringList VAbstractPattern::ListExpressions() const
 //---------------------------------------------------------------------------------------------------------------------
 QStringList VAbstractPattern::ListPointExpressions() const
 {
+    // Check if new tool doesn't bring new attribute with a formula.
+    // If no just increment number
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 43);
+
     QStringList expressions;
     const QDomNodeList list = elementsByTagName(TagPoint);
     for (int i=0; i < list.size(); ++i)
@@ -1275,6 +1282,10 @@ QStringList VAbstractPattern::ListPointExpressions() const
 //---------------------------------------------------------------------------------------------------------------------
 QStringList VAbstractPattern::ListArcExpressions() const
 {
+    // Check if new tool doesn't bring new attribute with a formula.
+    // If no just increment number
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 43);
+
     QStringList expressions;
     const QDomNodeList list = elementsByTagName(TagArc);
     for (int i=0; i < list.size(); ++i)
@@ -1332,6 +1343,10 @@ QStringList VAbstractPattern::ListSplineExpressions() const
 //---------------------------------------------------------------------------------------------------------------------
 QStringList VAbstractPattern::ListPathPointExpressions() const
 {
+    // Check if new tool doesn't bring new attribute with a formula.
+    // If no just increment number
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 43);
+
     QStringList expressions;
     const QDomNodeList list = elementsByTagName(AttrPathPoint);
     for (int i=0; i < list.size(); ++i)
@@ -1381,6 +1396,33 @@ QStringList VAbstractPattern::ListIncrementExpressions() const
         try
         {
             expressions.append(GetParametrString(dom, IncrementFormula));
+        }
+        catch (VExceptionEmptyParameter &e)
+        {
+            Q_UNUSED(e)
+        }
+    }
+
+    return expressions;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QStringList VAbstractPattern::ListOperationExpressions() const
+{
+    // Check if new tool doesn't bring new attribute with a formula.
+    // If no just increment number
+    Q_STATIC_ASSERT(static_cast<int>(Tool::LAST_ONE_DO_NOT_USE) == 43);
+
+    QStringList expressions;
+    const QDomNodeList list = elementsByTagName(TagOperation);
+    for (int i=0; i < list.size(); ++i)
+    {
+        const QDomElement dom = list.at(i).toElement();
+
+        // Each tag can contains several attributes.
+        try
+        {
+            expressions.append(GetParametrString(dom, AttrAngle));
         }
         catch (VExceptionEmptyParameter &e)
         {

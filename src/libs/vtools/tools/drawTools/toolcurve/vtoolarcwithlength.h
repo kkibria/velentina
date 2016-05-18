@@ -37,10 +37,6 @@ class VToolArcWithLength : public VAbstractSpline
 {
     Q_OBJECT
 public:
-    VToolArcWithLength(VAbstractPattern *doc, VContainer *data, quint32 id, const QString &color,
-                       const Source &typeCreation,
-                       QGraphicsItem * parent = nullptr);
-
     virtual void     setDialog() Q_DECL_OVERRIDE;
     static VToolArcWithLength* Create(DialogTool *dialog, VMainGraphicsScene  *scene, VAbstractPattern *doc,
                                       VContainer *data);
@@ -48,7 +44,7 @@ public:
                                       QString &length, const QString &color, VMainGraphicsScene  *scene,
                                       VAbstractPattern *doc,
                                       VContainer *data, const Document &parse, const Source &typeCreation);
-    static const QString TagName;
+
     static const QString ToolType;
     virtual int      type() const Q_DECL_OVERRIDE {return Type;}
     enum { Type = UserType + static_cast<int>(Tool::ArcWithLength)};
@@ -74,6 +70,11 @@ protected:
     virtual void     SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &obj) Q_DECL_OVERRIDE;
     virtual void     SetVisualization() Q_DECL_OVERRIDE;
 private:
+    Q_DISABLE_COPY(VToolArcWithLength)
+
+    VToolArcWithLength(VAbstractPattern *doc, VContainer *data, quint32 id, const QString &color,
+                       const Source &typeCreation, QGraphicsItem * parent = nullptr);
+
     virtual void RefreshGeometry() Q_DECL_OVERRIDE;
 
 };
