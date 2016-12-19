@@ -6,7 +6,10 @@ matrix:
     sudo: required
     compiler: clang
     env: DEPLOY=false
-    cache: ccache
+    cache:
+    - ccache
+    directories:
+      - '$HOME/.sonar/cache'
   - os: osx
     compiler: clang
     env: DEPLOY=true
@@ -59,9 +62,11 @@ script:
 - $CXX --version
 - |
   if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-    make -j$(nproc);
+    build-wrapper-linux-x86-64 --out-dir ../bw-outputs make -j$(nproc);
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:"$TRAVIS_BUILD_DIR/build/src/libs/vpropertyexplorer/bin:$TRAVIS_BUILD_DIR/build/src/libs/qmuparser/bin";
     xvfb-run -a make --silent check TESTARGS="-silent";
+    cd ..;
+    sonar-scanner;
   else
     make -j1;
   fi  
@@ -83,8 +88,12 @@ deploy:
   file: ../share/bintray.json
   user: dismine
   key:
-    secure: FGRiPJ/j0fzaCndLDruaDuSdP0H1kfSGW/b/ZPQpr2uVdNKp7PvGfEfElqOJhwcSM/vq9PEic2KLY/SE6zXtwW9I1ijqmxBvgQ+XB89L/cQb5weWEnUuGdBzQe7BGWNVDkH8Rv2xZQxK2v34UE2uxq1W1nXtf8oug9N0AtPmMUGOxOVjnMkx1g0HPNFgvXJjf9VuOEsWOHd/Lv7prnGFmJsoMg+6zTsh4hRdiIdoqXK/weEGY1+aJ5GBlJvRRzTT8pQ767afzOLeNx1wYIapc36txpXcIfpRX/EFZL1btPasB9FNv6D1gSqmZTfd3pDukzN17LhOhFZKTJCDWYzOraVs85p3nejPZRUgVdLq5VZmQAqyKfGLBIkatZC/y8xFGlbwrUvSztH6DcISBmLRDdONSyE6Q+lbUaW37FwFr8xLp4tJFTV+qUreBQtT86UHmhODtY8HQQyMMWY/C+i2Ro1cTQ1/fCg/Vnk3Ae77Z6knqA7A7ZcMMiHTtg9/qzGmtSrF0i2qFUkQZMlUlWfqJa5vyrVxtJkDqsSeEZE2XvRgWisKaVN3F5lEkcNBwwk9HyDm0G8k/mupL7FkS9QAwZoycsgQZCPh1nasGaD3g5AvNJzltxwxCPZc56leTbqQi1/qGWhwbtaRHXUyaDmb0eMV7VH+ENcS6qdebSz5eK0=
+    secure: xVM/jvRAnn/eCpFwYGzP5x5kGKw90PhRG6cLwUIuXy1fg95OM9z8QZh/HRH/sRo4Dw3JRhjpImeXyMFC0FDtILDZa+G1qr5I5cfv87ZUmBzRGwZ6X3pXErsRbhOHNahPmtJet0OJothMP/iApbZizyO1fbsKTPcIum0SZjRCUJPE+rHay5OIJwaeVexAjyX36Y9ekjClHd3H+EP9mn45avzAYm30tHjiMLhmVUlv2d/PhuvijiYoamOSZUkCE6Q2SH/yBfJJeAixOgfyCAXXZVysCo6oCBfFswzw9Ic9X15YyQGmzYuLv8/g/1+leISVJvlMUW3BymWc3NKnpfYa2v0lHnZvNRkDFa7koxlIyNeVcdaISM5PUXW5db3K+fq7Ra854ga2PIoV7VsB5+cJg0BjDMedy4ZoxP8JMQhWgTWb29YSTPm43TO+/zSLO0Eruc6YQGYqorXGBOCWi6oxvC0ESI0mT+0iji/P96Rfz5yHdVxSh/bNj8+lSXhLYnSgDx2SMhV5+Xlwrg1iHf6VJ350dgWr8RVohHkyDD9dVcQipMarH4EhIPD5LZ5cfzAIu9NFVk77jtoFB1nC9CBYuQpv9mJ9Yafnxz8isfOgdzrcT/6NfgYvlbalDF4chWs3PhnhrZu3bVZ274gqvJiMEvnkHjdZvu62kSv5k8EDcpU=
   dry-run: false
   on:
     all_branches: true
     condition: $DEPLOY = true
+addons:
+  sonarqube:
+    token:
+      secure: oH/mO3ocMzMRXi4krBKMbskzfR5r5DwyL9d+qr3AxKqlFLojvZDXBRogn/jnceDIuajol/OI/8uMxR5k+N241jj5/iEYun9t1Lejh+VOhgIEEuzPkeAFzlLoK91LWigqNuf0vTI2laaYxO9oRUIEKoTgBkkwMeMWu/8raIvUhyKyqHMofWp/9htuqHcSav3AN/Plu6wiC3Sg6wSalu4YNbL1hQBIKuZeRVmSMkh8f9llGPy33sljYDDCZ4RcyJlvLq+Ffh95tCnp88f8cSnxju1bEOEF/5iYQXoOwtCltRMy2XbkCm4lmdPwSU4EQdZ+2b4ka/Ptb3g5zQJ/RGSf6qYjR541XntvlqS5mDa254HbENnmP27X9eopbKTdYgyjBj63XAsOY5NaKFQSKdICxTFuC8/TrYD9xWxOqgzhkO/MNJYQqkR0vubgng6OninoFKZGPo/fFAU6CQS0b+8nRGsnD7g00MfWGPoS8YCLYehVSSORMic+Oo58c6lIgxkzCLoWvzmZONqF6RQ89gdQ5fiyHvq8rhzw6EBagBIRn/S8YCfRgJce5jQ5RgK66AiJpOYGKHfRp3CLlD3pO1hz6VTGMnqn1TplFbK6CgrM4oTTBZ7fqD9+BHOWk15tsj+Pcl8Vi9SjiK+XU2tVCePuNQNYF4x2QGD2Ftmul49pF0I=
