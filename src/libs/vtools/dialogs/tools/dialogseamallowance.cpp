@@ -226,6 +226,7 @@ void DialogSeamAllowance::SetPiece(const VPiece &piece)
     ChangeCurrentData(ui->comboBoxPatternLabelBottomRightPin, m_oldGeom.BottomRightPin());
 
     m_oldGrainline = piece.GetGrainlineGeometry();
+    ChangeCurrentData(ui->comboBoxGrainlineCenterPin, m_oldGrainline.CenterPin());
     ChangeCurrentData(ui->comboBoxGrainlineTopPin, m_oldGrainline.TopPin());
     ChangeCurrentData(ui->comboBoxGrainlineBottomPin, m_oldGrainline.BottomPin());
 
@@ -1287,7 +1288,8 @@ void DialogSeamAllowance::GrainlinePinPointChanged()
     QColor color = okColor;
     const quint32 topPinId = getCurrentObjectId(ui->comboBoxGrainlineTopPin);
     const quint32 bottomPinId = getCurrentObjectId(ui->comboBoxGrainlineBottomPin);
-    if (topPinId != NULL_ID && bottomPinId != NULL_ID && topPinId != bottomPinId)
+    if ((topPinId == NULL_ID && bottomPinId == NULL_ID) ||
+        (topPinId != NULL_ID && bottomPinId != NULL_ID && topPinId != bottomPinId))
     {
         flagGPin = true;
         color = okColor;
@@ -1410,6 +1412,7 @@ VPiece DialogSeamAllowance::CreatePiece() const
     piece.GetGrainlineGeometry().SetRotation(GetFormulaFromUser(ui->lineEditRotFormula));
     piece.GetGrainlineGeometry().SetLength(GetFormulaFromUser(ui->lineEditLenFormula));
     piece.GetGrainlineGeometry().SetArrowType(static_cast<ArrowType>(ui->comboBoxArrow->currentIndex()));
+    piece.GetGrainlineGeometry().SetCenterPin(getCurrentObjectId(ui->comboBoxGrainlineCenterPin));
     piece.GetGrainlineGeometry().SetTopPin(getCurrentObjectId(ui->comboBoxGrainlineTopPin));
     piece.GetGrainlineGeometry().SetBottomPin(getCurrentObjectId(ui->comboBoxGrainlineBottomPin));
 
@@ -1882,6 +1885,7 @@ void DialogSeamAllowance::InitGrainlineTab()
     m_iRotBaseHeight = ui->lineEditRotFormula->height();
     m_iLenBaseHeight = ui->lineEditLenFormula->height();
 
+    InitPinPoint(ui->comboBoxGrainlineCenterPin);
     InitPinPoint(ui->comboBoxGrainlineTopPin);
     InitPinPoint(ui->comboBoxGrainlineBottomPin);
 
@@ -1904,6 +1908,7 @@ void DialogSeamAllowance::InitPinsTab()
 //---------------------------------------------------------------------------------------------------------------------
 void DialogSeamAllowance::InitAllPinComboboxes()
 {
+    InitPinPoint(ui->comboBoxGrainlineCenterPin);
     InitPinPoint(ui->comboBoxGrainlineTopPin);
     InitPinPoint(ui->comboBoxGrainlineBottomPin);
 

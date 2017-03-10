@@ -62,7 +62,7 @@
 #include <QMenu>
 #include <QMessageBox>
 
-// Current version of seam allowance tag nned for backward compatibility
+// Current version of seam allowance tag need for backward compatibility
 const quint8 VToolSeamAllowance::pieceVersion = 2;
 
 const QString VToolSeamAllowance::TagCSA     = QStringLiteral("csa");
@@ -78,6 +78,7 @@ const QString VToolSeamAllowance::AttrUnited         = QStringLiteral("united");
 const QString VToolSeamAllowance::AttrFont           = QStringLiteral("fontSize");
 const QString VToolSeamAllowance::AttrTopLeftPin     = QStringLiteral("topLeftPin");
 const QString VToolSeamAllowance::AttrBottomRightPin = QStringLiteral("bottomRightPin");
+const QString VToolSeamAllowance::AttrCenterPin      = QStringLiteral("centerPin");
 const QString VToolSeamAllowance::AttrTopPin         = QStringLiteral("topPin");
 const QString VToolSeamAllowance::AttrBottomPin      = QStringLiteral("bottomPin");
 
@@ -338,6 +339,15 @@ void VToolSeamAllowance::AddGrainline(VAbstractPattern *doc, QDomElement &domEle
     doc->SetAttribute(domData, VAbstractPattern::AttrRotation, glGeom.GetRotation());
     doc->SetAttribute(domData, VAbstractPattern::AttrArrows, int(glGeom.GetArrowType()));
 
+    if (glGeom.CenterPin() > NULL_ID)
+    {
+        doc->SetAttribute(domData, AttrCenterPin, glGeom.CenterPin());
+    }
+    else
+    {
+        domData.removeAttribute(AttrCenterPin);
+    }
+
     if (glGeom.TopPin() > NULL_ID)
     {
         doc->SetAttribute(domData, AttrTopPin, glGeom.TopPin());
@@ -485,7 +495,7 @@ void VToolSeamAllowance::UpdateLabel()
         QPointF pos;
         qreal labelWidth = 0;
         qreal labelHeight = 0;
-        const VTextGraphicsItem::MoveType type = FindLabelGeometry(labelData, labelWidth, labelHeight, pos);
+        const VTextGraphicsItem::MoveTypes type = FindLabelGeometry(labelData, labelWidth, labelHeight, pos);
         m_dataLabel->SetMoveType(type);
 
         QFont fnt = qApp->font();
@@ -534,7 +544,7 @@ void VToolSeamAllowance::UpdatePatternInfo()
         QPointF pos;
         qreal labelWidth = 0;
         qreal labelHeight = 0;
-        const VTextGraphicsItem::MoveType type = FindLabelGeometry(geom, labelWidth, labelHeight, pos);
+        const VTextGraphicsItem::MoveTypes type = FindLabelGeometry(geom, labelWidth, labelHeight, pos);
         m_patternInfo->SetMoveType(type);
 
         QFont fnt = qApp->font();
@@ -586,8 +596,8 @@ void VToolSeamAllowance::UpdateGrainline()
         qreal dRotation = 0;
         qreal dLength = 0;
 
-        const VGrainlineItem::MoveType type = FindGrainlineGeometry(geom, dLength, dRotation, pos);
-        if (type == VGrainlineItem::Error)
+        const VGrainlineItem::MoveTypes type = FindGrainlineGeometry(geom, dLength, dRotation, pos);
+        if (type & VGrainlineItem::Error)
         {
             m_grainLine->hide();
             return;
@@ -1157,7 +1167,7 @@ void VToolSeamAllowance::SaveDialogChange()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-VPieceItem::MoveType VToolSeamAllowance::FindLabelGeometry(const VPatternLabelData& labelData, qreal &labelWidth,
+VPieceItem::MoveTypes VToolSeamAllowance::FindLabelGeometry(const VPatternLabelData& labelData, qreal &labelWidth,
                                                            qreal &labelHeight, QPointF &pos)
 {
     const quint32 topLeftPin = labelData.TopLeftPin();
@@ -1176,7 +1186,7 @@ VPieceItem::MoveType VToolSeamAllowance::FindLabelGeometry(const VPatternLabelDa
 
             pos = labelRect.topLeft();
 
-            return VTextGraphicsItem::OnlyRotatable;
+            return VTextGraphicsItem::IsRotatable;
         }
         catch(const VExceptionBadId &)
         {
@@ -1191,7 +1201,7 @@ VPieceItem::MoveType VToolSeamAllowance::FindLabelGeometry(const VPatternLabelDa
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-VPieceItem::MoveType VToolSeamAllowance::FindGrainlineGeometry(const VGrainlineData& geom, qreal &length,
+VPieceItem::MoveTypes VToolSeamAllowance::FindGrainlineGeometry(const VGrainlineData& geom, qreal &length,
                                                                qreal &rotationAngle, QPointF &pos)
 {
     const quint32 topPin = geom.TopPin();
@@ -1223,16 +1233,21 @@ VPieceItem::MoveType VToolSeamAllowance::FindGrainlineGeometry(const VGrainlineD
         }
     }
 
-    bool isResizable = false;
-    bool isRotatable = false;
+    VPieceItem::MoveTypes restrictions = VPieceItem::AllModifications;
     try
     {
-        isRotatable = qmu::QmuTokenParser::IsSingle(geom.GetRotation());
+        if (not qmu::QmuTokenParser::IsSingle(geom.GetRotation()))
+        {
+            restrictions &= ~ VPieceItem::IsRotatable;
+        }
 
         Calculator cal1;
         rotationAngle = cal1.EvalFormula(VAbstractTool::data.PlainVariables(), geom.GetRotation());
 
-        isResizable = qmu::QmuTokenParser::IsSingle(geom.GetLength());
+        if (not qmu::QmuTokenParser::IsSingle(geom.GetLength()))
+        {
+            restrictions &= ~ VPieceItem::IsResizable;
+        }
 
         Calculator cal2;
         length = cal2.EvalFormula(VAbstractTool::data.PlainVariables(), geom.GetLength());
@@ -1243,25 +1258,35 @@ VPieceItem::MoveType VToolSeamAllowance::FindGrainlineGeometry(const VGrainlineD
         return VPieceItem::Error;
     }
 
-    pos = geom.GetPos();
-
-    if (isResizable && isRotatable)
+    const quint32 centerPin = geom.CenterPin();
+    if (centerPin != NULL_ID)
     {
-        return VPieceItem::AllModifications;
+        try
+        {
+            const auto centerPinPoint = VAbstractTool::data.GeometricObject<VPointF>(centerPin);
+
+            const qreal cLength = ToPixel(length, *VDataTool::data.GetPatternUnit());
+            QLineF grainline(centerPinPoint->x(), centerPinPoint->y(),
+                             centerPinPoint->x() + cLength / 2.0, centerPinPoint->y());
+
+            grainline.setAngle(rotationAngle);
+            grainline = QLineF(grainline.p2(), grainline.p1());
+            grainline.setLength(cLength);
+
+            pos = grainline.p2();
+            restrictions &= ~ VPieceItem::IsMovable;
+        }
+        catch(const VExceptionBadId &)
+        {
+            pos = geom.GetPos();
+        }
     }
     else
     {
-        if (isResizable)
-        {
-            return VPieceItem::OnlyResizable;
-        }
-
-        if (isRotatable)
-        {
-            return VPieceItem::OnlyRotatable;
-        }
+        pos = geom.GetPos();
     }
-    return VPieceItem::OnlyMovable;
+
+    return restrictions;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
