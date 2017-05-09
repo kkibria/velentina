@@ -66,6 +66,7 @@ for(_translation_name, INSTALL_TRANSLATIONS) {
             }
             system(rm -fv $${OUT_PWD}/$$DESTDIR/translations/*.qm)
         }
+        QMAKE_CLEAN += $$shell_path($$_translation_name)
     }
     QMAKE_CLEAN += $$shell_path($$_translation_name)
 }

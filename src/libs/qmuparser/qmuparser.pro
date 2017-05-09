@@ -44,6 +44,9 @@ VERSION = 2.5.0
 # Allow MAC OS X to find library inside a bundle
 macx:QMAKE_SONAME_PREFIX = @rpath
 
+# Allow MAC OS X to find library inside a bundle
+macx:QMAKE_SONAME_PREFIX = @rpath
+
 # Set "make install" command for Unix-like systems.
 unix:!macx{
     isEmpty(PREFIX_LIB){

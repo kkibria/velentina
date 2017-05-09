@@ -732,7 +732,7 @@
   </connection>
  </connections>
  <buttongroups>
-  <buttongroup name="buttonGroup"/>
   <buttongroup name="buttonGroupPrinciple"/>
+  <buttongroup name="buttonGroup"/>
  </buttongroups>
 </ui>
