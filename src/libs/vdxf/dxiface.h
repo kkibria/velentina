@@ -118,6 +118,11 @@ public:
 
     void AddEntity(DRW_Entity* e);
     UTF8STRING AddFont(const QFont &f);
+    void AddBlock(dx_ifaceBlock* block);
+
+    void AddQtLTypes();
+    void AddDefLayers();
+    void AddAAMALayers();
 
 private:
     Q_DISABLE_COPY(dx_iface)
@@ -126,8 +131,6 @@ private:
     DRW::Version version;
 
     void InitHeader(VarMeasurement varMeasurement, VarInsunits varInsunits);
-    void InitLTypes();
-    void InitLayers();
     void InitTextstyles();
     void InitAppId();
 
