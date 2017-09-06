@@ -84,6 +84,7 @@ void TST_VAbstractPiece::EquidistantRemoveLoop_data()
 
 #ifndef Q_OS_WIN // Disabled due to "undefined behavior" problem
 #ifndef Q_CC_CLANG
+#if INTPTR_MAX == INT32_MAX
     QTest::newRow("Issue 548. Case2") << InputPointsIssue548Case2()
                                       << 37.795275590551185 // seam allowance width (1.0 cm)
                                       << OutputPointsIssue548Case2();
@@ -91,6 +92,7 @@ void TST_VAbstractPiece::EquidistantRemoveLoop_data()
     QTest::newRow("Issue 548. Case3") << InputPointsIssue548Case3()
                                       << 75.59055118110237 // seam allowance width (2.0 cm)
                                       << OutputPointsIssue548Case3();
+#endif
 #endif
 #endif
 
@@ -2504,7 +2506,9 @@ void TST_VAbstractPiece::BrokenDetailEquidistant_data() const
 
 #ifndef Q_OS_WIN // Disabled due to "undefined behavior" problem
 #ifndef Q_CC_CLANG
+#if INTPTR_MAX == INT32_MAX
     QTest::newRow("GAVAUDAN Laure.") << points << 37.795275590551185 << ekvOrig;
+#endif
 #endif
 #endif
 
@@ -2979,10 +2983,11 @@ void TST_VAbstractPiece::TestCorrectEquidistantPoints() const
     Comparison(after, expect);
 }
 
-#ifndef Q_OS_WIN
 //---------------------------------------------------------------------------------------------------------------------
 void TST_VAbstractPiece::PossibleInfiniteClearLoops_data() const
 {
+#ifndef Q_OS_WIN
+#if INTPTR_MAX == INT32_MAX
     QTest::addColumn<QVector<QPointF>>("path");
     QTest::addColumn<QVector<QPointF>>("expect");
 
@@ -3110,18 +3115,24 @@ void TST_VAbstractPiece::PossibleInfiniteClearLoops_data() const
 
     // See the file "collection/bugs/possible_inf_loop.val"
     QTest::newRow("Possible infinite loop") << path << expect;
+
+#endif //#if INTPTR_MAX == INT32_MAX
+#endif //#ifndef Q_OS_WIN
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void TST_VAbstractPiece::PossibleInfiniteClearLoops() const
 {
+#ifndef Q_OS_WIN
+#if INTPTR_MAX == INT32_MAX
     QFETCH(QVector<QPointF>, path);
     QFETCH(QVector<QPointF>, expect);
 
     QVector<QPointF> res = VAbstractPiece::CheckLoops(path);
     Comparison(res, expect);
-}
+#endif //#if INTPTR_MAX == INT32_MAX
 #endif //#ifndef Q_OS_WIN
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 void TST_VAbstractPiece::Case3() const
