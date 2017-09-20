@@ -65,18 +65,20 @@ VToolDoublePoint::VToolDoublePoint(VAbstractPattern *doc, VContainer *data, quin
 {
     firstPoint = new VSimplePoint(p1id, QColor(Qt::black));
     firstPoint->setParentItem(this);
+    firstPoint->setToolTip(ComplexToolTip(p1id));
     connect(firstPoint, &VSimplePoint::Choosed, this, &VToolDoublePoint::Point1Choosed);
     connect(firstPoint, &VSimplePoint::Selected, this, &VToolDoublePoint::Point1Selected);
-    connect(firstPoint, &VSimplePoint::ShowContextMenu, this, &VToolDoublePoint::contextMenuEvent);
+    connect(firstPoint, &VSimplePoint::ShowContextMenu, this, &VToolDoublePoint::ShowContextMenu);
     connect(firstPoint, &VSimplePoint::Delete, this, &VToolDoublePoint::DeleteFromLabel);
     connect(firstPoint, &VSimplePoint::NameChangedPosition, this, &VToolDoublePoint::Label1ChangePosition);
     firstPoint->RefreshPointGeometry(*VAbstractTool::data.GeometricObject<VPointF>(p1id));
 
     secondPoint = new VSimplePoint(p2id, QColor(Qt::black));
     secondPoint->setParentItem(this);
+    secondPoint->setToolTip(ComplexToolTip(p2id));
     connect(secondPoint, &VSimplePoint::Choosed, this, &VToolDoublePoint::Point2Choosed);
     connect(secondPoint, &VSimplePoint::Selected, this, &VToolDoublePoint::Point2Selected);
-    connect(secondPoint, &VSimplePoint::ShowContextMenu, this, &VToolDoublePoint::contextMenuEvent);
+    connect(secondPoint, &VSimplePoint::ShowContextMenu, this, &VToolDoublePoint::ShowContextMenu);
     connect(secondPoint, &VSimplePoint::Delete, this, &VToolDoublePoint::DeleteFromLabel);
     connect(secondPoint, &VSimplePoint::NameChangedPosition, this, &VToolDoublePoint::Label2ChangePosition);
     secondPoint->RefreshPointGeometry(*VAbstractTool::data.GeometricObject<VPointF>(p2id));
@@ -162,20 +164,22 @@ void VToolDoublePoint::Point2Choosed()
 //---------------------------------------------------------------------------------------------------------------------
 void VToolDoublePoint::Point1Selected(bool selected)
 {
-    emit ChangedToolSelection(selected, p1id, id);
+    emit ChangedToolSelection(selected, p1id, m_id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolDoublePoint::Point2Selected(bool selected)
 {
-    emit ChangedToolSelection(selected, p2id, id);
+    emit ChangedToolSelection(selected, p2id, m_id);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
 void VToolDoublePoint::FullUpdateFromFile()
 {
     ReadAttributes();
+    firstPoint->setToolTip(ComplexToolTip(p1id));
     firstPoint->RefreshPointGeometry(*VAbstractTool::data.GeometricObject<VPointF>(p1id));
+    secondPoint->setToolTip(ComplexToolTip(p2id));
     secondPoint->RefreshPointGeometry(*VAbstractTool::data.GeometricObject<VPointF>(p2id));
     SetVisualization();
 }
@@ -244,7 +248,7 @@ void VToolDoublePoint::UpdateNamePosition(quint32 id)
     {
         const VPointF *p1 = VAbstractTool::data.GeometricObject<VPointF>(p1id).data();
 
-        auto moveLabel = new MoveDoubleLabel(doc, p1->mx(), p1->my(), DoublePoint::FirstPoint, this->id, p1id);
+        auto moveLabel = new MoveDoubleLabel(doc, p1->mx(), p1->my(), DoublePoint::FirstPoint, m_id, p1id);
         connect(moveLabel, &MoveDoubleLabel::ChangePosition, this, &VToolDoublePoint::DoChangePosition);
         qApp->getUndoStack()->push(moveLabel);
     }
@@ -252,7 +256,7 @@ void VToolDoublePoint::UpdateNamePosition(quint32 id)
     {
         const VPointF *p2 = VAbstractTool::data.GeometricObject<VPointF>(p2id).data();
 
-        auto moveLabel = new MoveDoubleLabel(doc, p2->mx(), p2->my(), DoublePoint::SecondPoint, this->id, p2id);
+        auto moveLabel = new MoveDoubleLabel(doc, p2->mx(), p2->my(), DoublePoint::SecondPoint, m_id, p2id);
         connect(moveLabel, &MoveDoubleLabel::ChangePosition, this, &VToolDoublePoint::DoChangePosition);
         qApp->getUndoStack()->push(moveLabel);
     }
@@ -312,7 +316,7 @@ void VToolDoublePoint::keyReleaseEvent(QKeyEvent *event)
 //---------------------------------------------------------------------------------------------------------------------
 void VToolDoublePoint::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    Q_UNUSED(event)
+    ShowContextMenu(event);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -359,7 +363,20 @@ void VToolDoublePoint::SaveOptions(QDomElement &tag, QSharedPointer<VGObject> &o
 void VToolDoublePoint::AddToFile()
 {
     QDomElement domElement = doc->createElement(getTagName());
-    QSharedPointer<VGObject> obj = VContainer::GetFakeGObject(id);
+    QSharedPointer<VGObject> obj = VContainer::GetFakeGObject(m_id);
     SaveOptions(domElement, obj);
     AddToCalculation(domElement);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QString VToolDoublePoint::ComplexToolTip(quint32 itemId) const
+{
+    const QSharedPointer<VPointF> point = VAbstractTool::data.GeometricObject<VPointF>(itemId);
+
+    const QString toolTip = QString("<table>"
+                                    "<tr> <td><b>%1:</b> %2</td> </tr>"
+                                    "%3"
+                                    "</table>")
+            .arg(tr("Label"), point->name(), MakeToolTip());
+    return toolTip;
 }
