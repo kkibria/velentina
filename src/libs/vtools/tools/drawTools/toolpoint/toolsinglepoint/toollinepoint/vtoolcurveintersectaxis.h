@@ -61,7 +61,7 @@ public:
                                            VMainGraphicsScene  *scene, VAbstractPattern *doc, VContainer *data,
                                            const Document &parse, const Source &typeCreation);
 
-    static QPointF FindPoint(const QPointF &point, qreal angle, const QSharedPointer<VAbstractCurve> &curve);
+    static QPointF FindPoint(const QPointF &point, qreal angle, const QVector<QPointF> &curvePoints);
 
     static const QString ToolType;
     virtual int       type() const Q_DECL_OVERRIDE {return Type;}
