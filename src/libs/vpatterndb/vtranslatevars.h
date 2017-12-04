@@ -63,6 +63,7 @@ public:
 
     virtual void Retranslate() Q_DECL_OVERRIDE;
 
+    QMap<QString, QString> GetTranslatedFunctions() const;
     QMap<QString, qmu::QmuTranslation> GetFunctions() const;
 
 private:
@@ -75,12 +76,15 @@ private:
     QMap<QString, qmu::QmuTranslation> postfixOperators;
     QMap<QString, qmu::QmuTranslation> placeholders;
     QMap<QString, qmu::QmuTranslation> stDescriptions;
+    QMap<QString, QString> translatedFunctions;
 
     void InitPatternMakingSystems();
     void InitVariables();
     void InitFunctions();
     void InitPostfixOperators();
     void InitPlaceholder();
+
+    void PrepareFunctionTranslations();
 
     void InitSystem(const QString &code, const qmu::QmuTranslation &name, const qmu::QmuTranslation &author,
                     const qmu::QmuTranslation &book);

@@ -54,13 +54,16 @@ VTranslateVars::VTranslateVars()
       functions(QMap<QString, qmu::QmuTranslation>()),
       postfixOperators(QMap<QString, qmu::QmuTranslation>()),
       placeholders(QMap<QString, qmu::QmuTranslation>()),
-      stDescriptions(QMap<QString, qmu::QmuTranslation>())
+      stDescriptions(QMap<QString, qmu::QmuTranslation>()),
+      translatedFunctions(QMap<QString, QString>())
 {
     InitPatternMakingSystems();
     InitVariables();
     InitFunctions();
     InitPostfixOperators();
     InitPlaceholder();
+
+    PrepareFunctionTranslations();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -458,6 +461,22 @@ void VTranslateVars::InitPlaceholder()
 #undef translate
 
 //---------------------------------------------------------------------------------------------------------------------
+void VTranslateVars::PrepareFunctionTranslations()
+{
+    translatedFunctions.clear();
+    QMap<QString, qmu::QmuTranslation>::const_iterator i = functions.constBegin();
+    while (i != functions.constEnd())
+    {
+        const QString translated = i.value().translate();
+        if (i.key() != translated)
+        {
+            translatedFunctions.insert(translated, i.key());
+        }
+        ++i;
+    }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
 void VTranslateVars::InitSystem(const QString &code, const qmu::QmuTranslation &name, const qmu::QmuTranslation &author,
                                 const qmu::QmuTranslation &book)
 {
@@ -756,7 +775,9 @@ QString VTranslateVars::FormulaFromUser(const QString &formula, bool osSeparator
     }
     QString newFormula = formula;// Local copy for making changes
 
-    QScopedPointer<qmu::QmuTokenParser> cal(new qmu::QmuTokenParser(formula, osSeparator));// Eval formula
+    // Eval formula
+    QScopedPointer<qmu::QmuTokenParser> cal(new qmu::QmuTokenParser(formula, osSeparator, true,
+                                                                    qApp->TrVars()->GetTranslatedFunctions()));
     QMap<int, QString> tokens = cal->GetTokens();// Tokens (variables, measurements)
     QMap<int, QString> numbers = cal->GetNumbers();// All numbers in expression for changing decimal separator
     delete cal.take();
@@ -1011,6 +1032,14 @@ void VTranslateVars::Retranslate()
     InitFunctions();
     InitPostfixOperators();
     InitPlaceholder();
+
+    PrepareFunctionTranslations();
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+QMap<QString, QString> VTranslateVars::GetTranslatedFunctions() const
+{
+    return translatedFunctions;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
