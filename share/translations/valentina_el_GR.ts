@@ -1219,7 +1219,7 @@
     </message>
     <message>
         <source>Segment a curved path</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαχωρίστε ένα καμπύλο μονοπάτι</translation>
     </message>
     <message>
         <source>Color</source>
@@ -2489,7 +2489,7 @@
     </message>
     <message>
         <source>Descending area</source>
-        <translation type="unfinished"></translation>
+        <translation>Σμίκρυνση περιοχής</translation>
     </message>
     <message>
         <source>Millimiters</source>
@@ -3722,10 +3722,6 @@ Apply settings anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Each point in the path must be unique!</source>
-        <translation type="vanished">Κάθε σημείο στο μονοπάτι πρέπει να είναι μοναδικό!</translation>
-    </message>
-    <message>
         <source>Marks</source>
         <translation>Σημάδια</translation>
     </message>
@@ -3800,6 +3796,10 @@ Apply settings anyway?</source>
         <translation type="vanished">Επιλέξτε το κεντρικό σημείο του τόξου</translation>
     </message>
     <message>
+        <source>Take</source>
+        <translation type="vanished">Πάρε</translation>
+    </message>
+    <message>
         <source>Select an arc</source>
         <translation>Επιλογή ενός τόξου</translation>
     </message>
@@ -3825,7 +3825,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Take:</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάρε:</translation>
     </message>
 </context>
 <context>
@@ -3857,6 +3857,10 @@ Apply settings anyway?</source>
     <message>
         <source>Tangent point</source>
         <translation type="vanished">Σημείο εφαπτομένης</translation>
+    </message>
+    <message>
+        <source>Take</source>
+        <translation type="vanished">Πάρε</translation>
     </message>
     <message>
         <source>Select a circle center</source>
@@ -3912,7 +3916,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Take:</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάρε:</translation>
     </message>
 </context>
 <context>
@@ -4076,6 +4080,10 @@ Apply settings anyway?</source>
         <translation type="vanished">Δεύτερο τόξο</translation>
     </message>
     <message>
+        <source>Take</source>
+        <translation type="vanished">Πάρε</translation>
+    </message>
+    <message>
         <source>Select second an arc</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4101,7 +4109,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Take:</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάρε:</translation>
     </message>
     <message>
         <source>Tool point of intersetion arcs</source>
@@ -4141,6 +4149,10 @@ Apply settings anyway?</source>
     <message>
         <source>Center of the second circle</source>
         <translation type="vanished">Κέντρο του δεύτερου κύκλου</translation>
+    </message>
+    <message>
+        <source>Take</source>
+        <translation type="vanished">Πάρε</translation>
     </message>
     <message>
         <source>Select second circle center</source>
@@ -4204,7 +4216,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Take:</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάρε:</translation>
     </message>
     <message>
         <source>Tool point of intersection circles</source>
@@ -4343,6 +4355,10 @@ Apply settings anyway?</source>
         <translation>Περιήγηση...</translation>
     </message>
     <message>
+        <source>TextLabel</source>
+        <translation type="vanished">ΚείμενοΕτικέτας</translation>
+    </message>
+    <message>
         <source>Destination folder</source>
         <translation>Φάκελος προορισμού</translation>
     </message>
@@ -4356,7 +4372,15 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>File base name</source>
-        <translation type="unfinished"></translation>
+        <translation>Όνομα αρχείου βάσης</translation>
+    </message>
+    <message>
+        <source>File base name. </source>
+        <translation type="vanished">Όνομα αρχείου βάσης.</translation>
+    </message>
+    <message>
+        <source>File base name.</source>
+        <translation type="vanished">Όνομα αρχείου βάσης.</translation>
     </message>
     <message>
         <source>Path to destination folder</source>
@@ -4598,7 +4622,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Excluded</source>
-        <translation type="unfinished"></translation>
+        <translation>Εξαιρούμενο</translation>
     </message>
     <message>
         <source>Passmark</source>
@@ -4859,19 +4883,19 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Edit first control point angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία γωνίας του πρώτου σημείου ελέγχου</translation>
     </message>
     <message>
         <source>Edit second control point angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία γωνίας του δεύτερου σημείου ελέγχου</translation>
     </message>
     <message>
         <source>Edit first control point length</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία μήκους του πρώτου σημείου ελέγχου</translation>
     </message>
     <message>
         <source>Edit second control point length</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία μήκους του δεύτερου σημείου ελέγχου</translation>
     </message>
     <message>
         <source>Error</source>
@@ -4986,19 +5010,19 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Edit first control point angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία γωνίας του πρώτου σημείου ελέγχου</translation>
     </message>
     <message>
         <source>Edit second control point angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία γωνίας του δεύτερου σημείου ελέγχου</translation>
     </message>
     <message>
         <source>Edit first control point length</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία μήκους του πρώτου σημείου ελέγχου</translation>
     </message>
     <message>
         <source>Edit second control point length</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία μήκους του δεύτερου σημείου ελέγχου</translation>
     </message>
     <message>
         <source>Error</source>
@@ -5112,7 +5136,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Value can&apos;t be less than 0</source>
-        <translation type="unfinished"></translation>
+        <translation>Η τιμή δεν μπορεί να είναι λιγότερο από 0</translation>
     </message>
 </context>
 <context>
@@ -5402,7 +5426,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Feed download failed: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Η λήψη της φόρτωσης απέτυχε: %1.</translation>
     </message>
     <message>
         <source>Feed parsing failed: %1 %2.</source>
@@ -5440,7 +5464,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Error bad id. Program will be terminated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα κακής ταυτότητας. Το πρόγραμμα θα τερματιστεί.</translation>
     </message>
     <message>
         <source>Error can&apos;t convert value. Program will be terminated.</source>
@@ -5488,7 +5512,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>The pattern unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Η μονάδα του πατρόν</translation>
     </message>
     <message>
         <source>Invalid base size argument. Must be cm, mm or inch.</source>
@@ -5496,7 +5520,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Can&apos;t begin to listen for incoming connections on name &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν μπορεί να αρχίσει να ακούει τις εισερχόμενες συνδέσεις στο όνομα &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Test mode doesn&apos;t support openning several files.</source>
@@ -5935,7 +5959,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Bad id.</source>
-        <translation type="unfinished"></translation>
+        <translation>Κακή ταυτότητα.</translation>
     </message>
     <message>
         <source>File saved</source>
@@ -6037,7 +6061,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Segment a curved path</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαχωρίστε ένα καμπύλο μονοπάτι</translation>
     </message>
     <message>
         <source>Point intersect curve and axis</source>
@@ -6290,7 +6314,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Please, additionaly provide: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Παρακαλώ, παρέχετε επιπλέον: %1</translation>
     </message>
     <message>
         <source>Measurement files types have not match.</source>
@@ -6358,7 +6382,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Print an original layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Εκτύπωση μίας αρχικής διάταξης</translation>
     </message>
     <message>
         <source>Preview tiled PDF</source>
@@ -6366,7 +6390,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Print preview tiled layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Προεπισκόπηση εκτύπωσης τεμαχισμένης διάταξης</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mode for working with pattern pieces. These pattern pieces are base for going to the next stage &amp;quot;Details mode&amp;quot;. Before you will be able to enable the &amp;quot;Details mode&amp;quot; need create at least one detail.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -6434,7 +6458,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Unknown error happened, for instance a full partition prevented writing out the lock file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Παρουσιάστηκε άγνωστο σφάλμα, για παράδειγμα μία πλήρης διχοτόμηση εμπόδισε την εγγραφή του αρχείου κλειδώματος.</translation>
     </message>
     <message>
         <source>Report Bug...</source>
@@ -6451,6 +6475,10 @@ Do you want to save your changes?</source>
     <message>
         <source>(read only)</source>
         <translation type="vanished">(μόνο για ανάγνωση)</translation>
+    </message>
+    <message>
+        <source>Measurements was changed. Do you want to sync measurements now?</source>
+        <translation type="vanished">Έγινε αλλαγή των μετρήσεων. Θέλετε να συγχρονίσετε τις μετρήσεις τώρα;</translation>
     </message>
     <message>
         <source>Curve tool which uses point as control handle</source>
@@ -6606,7 +6634,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>read only</source>
-        <translation type="unfinished"></translation>
+        <translation>μόνο για ανάγνωση</translation>
     </message>
     <message>
         <source>Variables Table</source>
@@ -6618,11 +6646,11 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Load Individual</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρτωση Ατομικών</translation>
     </message>
     <message>
         <source>Load Individual measurements file</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρτωση φακέλου Ατομικών μετρήσεων</translation>
     </message>
     <message>
         <source>Load Multisize</source>
@@ -6638,7 +6666,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Edit Current</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία Τρέχοντος</translation>
     </message>
     <message>
         <source>Edit linked to the pattern measurements</source>
@@ -6682,7 +6710,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Insert node tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Εισάγετε εργαλείο κόμβου</translation>
     </message>
     <message>
         <source>Select an item to insert</source>
@@ -6694,7 +6722,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Forum</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρουμ</translation>
     </message>
     <message>
         <source>Select one or more objects, hold &lt;b&gt;%1&lt;/b&gt; - for multiple selection, &lt;b&gt;Enter&lt;/b&gt; - finish creation</source>
@@ -6869,6 +6897,10 @@ Do you want to save your changes?</source>
         <translation type="vanished">Επεξεργασία</translation>
     </message>
     <message>
+        <source>Type</source>
+        <translation type="vanished">Τύπος</translation>
+    </message>
+    <message>
         <source>Path</source>
         <translation type="vanished">Μονοπάτι</translation>
     </message>
@@ -6984,11 +7016,11 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Pattern editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία πατρόν</translation>
     </message>
     <message>
         <source>Reset warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Επαναφορά προειδοποιήσεων</translation>
     </message>
     <message>
         <source>Toolbar</source>
@@ -7031,7 +7063,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Τύπος</translation>
     </message>
     <message>
         <source>Path</source>
@@ -7059,15 +7091,15 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>My Patterns</source>
-        <translation type="unfinished"></translation>
+        <translation>Τα Πατρόν μου</translation>
     </message>
     <message>
         <source>My Layouts</source>
-        <translation type="unfinished"></translation>
+        <translation>Διατάξεις μου</translation>
     </message>
     <message>
         <source>My Templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Πρότυπά μου</translation>
     </message>
 </context>
 <context>
@@ -7213,7 +7245,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>add node</source>
-        <translation type="unfinished"></translation>
+        <translation>προσθήκη κόμβου</translation>
     </message>
     <message>
         <source>move detail</source>
@@ -7245,7 +7277,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Got wrong parameter id. Need only id &gt; 0.</source>
-        <translation type="unfinished"></translation>
+        <translation>Λήψη λάθους παραμέτρου ταυτότητας. Χρειάζεται μόνο ταυτότητα &gt; 0.</translation>
     </message>
     <message>
         <source>United detail</source>
@@ -8020,7 +8052,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Unknown error happened, for instance a full partition prevented writing out the lock file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Παρουσιάστηκε άγνωστο σφάλμα, για παράδειγμα μία πλήρης διχοτόμηση εμπόδισε την εγγραφή του αρχείου κλειδώματος.</translation>
     </message>
     <message>
         <source>Export to CSV</source>
@@ -8084,7 +8116,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>read only</source>
-        <translation type="unfinished"></translation>
+        <translation>μόνο για ανάγνωση</translation>
     </message>
     <message>
         <source>Multisize measurements</source>
@@ -8524,6 +8556,10 @@ Do you want to save your changes?</source>
         <translation type="vanished">Επεξεργασία</translation>
     </message>
     <message>
+        <source>Type</source>
+        <translation type="vanished">Τύπος</translation>
+    </message>
+    <message>
         <source>Path</source>
         <translation type="vanished">Μονοπάτι</translation>
     </message>
@@ -8576,7 +8612,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Reset warnings</source>
-        <translation type="unfinished"></translation>
+        <translation>Επαναφορά προειδοποιήσεων</translation>
     </message>
     <message>
         <source>Toolbar</source>
@@ -8611,7 +8647,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Τύπος</translation>
     </message>
     <message>
         <source>Path</source>
@@ -8639,7 +8675,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>My Templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Πρότυπά μου</translation>
     </message>
 </context>
 <context>
@@ -8692,7 +8728,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Error no unique id.</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα λόγω μη μοναδικής ταυτότητας.</translation>
     </message>
     <message>
         <source>Could not change version.</source>
@@ -8831,7 +8867,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Error bad id. Program will be terminated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα κακής ταυτότητας. Το πρόγραμμα θα τερματιστεί.</translation>
     </message>
     <message>
         <source>Error can&apos;t convert value. Program will be terminated.</source>
@@ -9171,6 +9207,10 @@ Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Got wrong parameter id. Need only id &gt; 0.</source>
+        <translation type="vanished">Λήψη λάθους παραμέτρου ταυτότητας. Χρειάζεται μόνο ταυτότητα &gt; 0.</translation>
+    </message>
+    <message>
         <source>This id is not unique.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9269,6 +9309,10 @@ Do you want to save your changes?</source>
 </context>
 <context>
     <name>VPattern</name>
+    <message>
+        <source>Error no unique id.</source>
+        <translation type="vanished">Σφάλμα λόγω μη μοναδικής ταυτότητας.</translation>
+    </message>
     <message>
         <source>Error parsing file.</source>
         <translation>Σφάλμα κατά την ανάλυση του αρχείου.</translation>
@@ -9435,7 +9479,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Error not unique id.</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα λόγω μη μοναδικής ταυτότητας.</translation>
     </message>
     <message>
         <source>Error creating or updating point of intersection curves</source>
@@ -9783,6 +9827,10 @@ Do you want to save your changes?</source>
         <translation>Εργαλείο δημιουργίας σημείου στην τομή δυο τόξων</translation>
     </message>
     <message>
+        <source>Take</source>
+        <translation type="vanished">Πάρε</translation>
+    </message>
+    <message>
         <source>Tool to make point from intersection two circles</source>
         <translation>Εργαλείο δημιουργίας σημείου στην τομή δυο κύκλων</translation>
     </message>
@@ -10044,7 +10092,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Take:</source>
-        <translation type="unfinished"></translation>
+        <translation>Πάρε:</translation>
     </message>
     <message>
         <source>Center of the first circle:</source>

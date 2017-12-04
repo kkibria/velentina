@@ -9213,7 +9213,7 @@ Vuoi salvare le tue modifiche?</translation>
     </message>
     <message>
         <source>Page left margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found.</source>
-        <translation type="vanished">Margine della pagina a sinistra in unità correnti come 3.0 (modalità di esportazione). Ne non impostato verrà utilizzato il valore di default della stampante. O 0 se nessuna stampante viene trovata.  </translation>
+        <translation type="vanished">Margine della pagina a sinistra in unità correnti come 3.0 (modalità di esportazione). Ne non impostato verrà utilizzato il valore di default della stampante. O 0 se nessuna stampante viene trovata.</translation>
     </message>
     <message>
         <source>Page right margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found.</source>

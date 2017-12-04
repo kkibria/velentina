@@ -3759,23 +3759,23 @@ Appliquer les réglages quand-même ?</translation>
     </message>
     <message>
         <source>Passmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Repères de montage</translation>
     </message>
     <message>
         <source>Passmark:</source>
-        <translation type="unfinished"></translation>
+        <translation>Repère de montage :</translation>
     </message>
     <message>
         <source>One line</source>
-        <translation type="unfinished"></translation>
+        <translation>Un trait</translation>
     </message>
     <message>
         <source>Two lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Deux traits</translation>
     </message>
     <message>
         <source>Three lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Trois traits</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -3791,7 +3791,7 @@ Appliquer les réglages quand-même ?</translation>
     </message>
     <message>
         <source>Passmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Repère de montage</translation>
     </message>
     <message>
         <source>Marks</source>
@@ -4702,7 +4702,7 @@ Appliquer les réglages quand-même ?</translation>
     </message>
     <message>
         <source>Passmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Repère de montage</translation>
     </message>
     <message>
         <source>Each point in the path must be unique!</source>
@@ -4710,7 +4710,7 @@ Appliquer les réglages quand-même ?</translation>
     </message>
     <message>
         <source>Passmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Repères de montage</translation>
     </message>
     <message>
         <source>To open all detail&apos;s features complete creating the main path.</source>
@@ -8474,19 +8474,19 @@ Voulez-vous enregistrer les changements?</translation>
     <name>TabPassmarks</name>
     <message>
         <source>Passmark:</source>
-        <translation type="unfinished"></translation>
+        <translation>Repère de montage :</translation>
     </message>
     <message>
         <source>One line</source>
-        <translation type="unfinished"></translation>
+        <translation>Un trait</translation>
     </message>
     <message>
         <source>Two lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Deux traits</translation>
     </message>
     <message>
         <source>Three lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Trois traits</translation>
     </message>
     <message>
         <source>T mark</source>
@@ -9274,19 +9274,19 @@ Voulez-vous enregistrer les changements?</translation>
     </message>
     <message>
         <source>Page left margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found.</source>
-        <translation type="vanished">Marge gauche de la page en unité courante, ex. 3.0 (mode exportation).   Si non renseigné, la valeur par défaut de l&apos;imprimante sera utilisé. Ou 0 si aucune imprimante n&apos;a été trouvé. </translation>
+        <translation type="vanished">Marge gauche de la page en unité courante, ex. 3.0 (mode exportation).   Si non renseigné, la valeur par défaut de l&apos;imprimante sera utilisé. Ou 0 si aucune imprimante n&apos;a été trouvé.</translation>
     </message>
     <message>
         <source>Page right margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found.</source>
-        <translation type="vanished">Marge droite de la page en unité courante, ex. 3.0 (mode exportation).   Si non renseigné, la valeur par défaut de l&apos;imprimante sera utilisé. Ou 0 si aucune imprimante n&apos;a été trouvé. </translation>
+        <translation type="vanished">Marge droite de la page en unité courante, ex. 3.0 (mode exportation).   Si non renseigné, la valeur par défaut de l&apos;imprimante sera utilisé. Ou 0 si aucune imprimante n&apos;a été trouvé.</translation>
     </message>
     <message>
         <source>Page top margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found.</source>
-        <translation type="vanished">Marge haute de la page en unité courante, ex. 3.0 (mode exportation).   Si non renseigné, la valeur par défaut de l&apos;imprimante sera utilisé. Ou 0 si aucune imprimante n&apos;a été trouvé. </translation>
+        <translation type="vanished">Marge haute de la page en unité courante, ex. 3.0 (mode exportation).   Si non renseigné, la valeur par défaut de l&apos;imprimante sera utilisé. Ou 0 si aucune imprimante n&apos;a été trouvé.</translation>
     </message>
     <message>
         <source>Page bottom margin in current units like 3.0 (export mode). If not set will be used value from default printer. Or 0 if none printers was found.</source>
-        <translation type="vanished">Marge basse de la page en unité courante, ex. 3.0 (mode exportation).   Si non renseigné, la valeur par défaut de l&apos;imprimante sera utilisé. Ou 0 si aucune imprimante n&apos;a été trouvé. </translation>
+        <translation type="vanished">Marge basse de la page en unité courante, ex. 3.0 (mode exportation).   Si non renseigné, la valeur par défaut de l&apos;imprimante sera utilisé. Ou 0 si aucune imprimante n&apos;a été trouvé.</translation>
     </message>
     <message>
         <source>Shift length must be used together with shift units.</source>
@@ -9956,6 +9956,14 @@ Voulez-vous enregistrer les changements?</translation>
         <source>rotate pattern info label</source>
         <translation type="vanished">tourne l&apos;étiquette d&apos;information du patron</translation>
     </message>
+    <message>
+        <source>move grainline</source>
+        <translation type="vanished">déplacer le droit-fil</translation>
+    </message>
+    <message>
+        <source>resize grainline</source>
+        <translation type="vanished">redimensionner le droit-fil</translation>
+    </message>
 </context>
 <context>
     <name>VToolOptionsPropertyBrowser</name>
@@ -10508,11 +10516,11 @@ Voulez-vous enregistrer les changements?</translation>
     </message>
     <message>
         <source>move grainline</source>
-        <translation type="unfinished"></translation>
+        <translation>déplacer le droit-fil</translation>
     </message>
     <message>
         <source>resize grainline</source>
-        <translation type="unfinished"></translation>
+        <translation>redimensionner le droit-fil</translation>
     </message>
     <message>
         <source>rotate grainline</source>
@@ -11781,7 +11789,7 @@ Voulez-vous enregistrer les changements?</translation>
     <name>VWidgetDetails</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <source>Unnamed</source>
@@ -11805,15 +11813,19 @@ Voulez-vous enregistrer les changements?</translation>
     </message>
     <message>
         <source>Invert selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverser la sélection</translation>
     </message>
     <message>
         <source>invert selection</source>
-        <translation type="unfinished"></translation>
+        <translation>inverser la sélection</translation>
     </message>
 </context>
 <context>
     <name>VWidgetGroups</name>
+    <message>
+        <source>Form</source>
+        <translation type="vanished">Formulaire</translation>
+    </message>
     <message>
         <source>Rename</source>
         <translation>Renommer</translation>

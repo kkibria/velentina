@@ -40,6 +40,34 @@
         <translation type="vanished">服务器名/IP地址</translation>
     </message>
     <message>
+        <source>Secure connection</source>
+        <translation type="vanished">安全连接</translation>
+    </message>
+    <message>
+        <source>Proxy settings</source>
+        <translation type="vanished">代理设置</translation>
+    </message>
+    <message>
+        <source>Use Proxy</source>
+        <translation type="vanished">使用代理</translation>
+    </message>
+    <message>
+        <source>Proxy address</source>
+        <translation type="vanished">代理地址</translation>
+    </message>
+    <message>
+        <source>Proxy port</source>
+        <translation type="vanished">代理端口</translation>
+    </message>
+    <message>
+        <source>Proxy user</source>
+        <translation type="vanished">代理用户</translation>
+    </message>
+    <message>
+        <source>User settings</source>
+        <translation type="vanished">用户设置</translation>
+    </message>
+    <message>
         <source>User Name</source>
         <translation type="vanished">用户名</translation>
     </message>
@@ -56,6 +84,18 @@
         <translation type="vanished">服务器名/IP:</translation>
     </message>
     <message>
+        <source>Proxy address:</source>
+        <translation type="vanished">代理地址：</translation>
+    </message>
+    <message>
+        <source>Proxy port:</source>
+        <translation type="vanished">代理端口：</translation>
+    </message>
+    <message>
+        <source>Proxy user:</source>
+        <translation type="vanished">代理用户：</translation>
+    </message>
+    <message>
         <source>User Name:</source>
         <translation type="vanished">用户名:</translation>
     </message>
@@ -67,8 +107,32 @@
 <context>
     <name>ConfigDialog</name>
     <message>
+        <source>Apply</source>
+        <translation type="vanished">应用</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="vanished">&amp;取消</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="vanished">＆确定</translation>
+    </message>
+    <message>
+        <source>Config Dialog</source>
+        <translation type="vanished">配置窗口</translation>
+    </message>
+    <message>
+        <source>Configuration</source>
+        <translation type="vanished">配置</translation>
+    </message>
+    <message>
         <source>Pattern</source>
         <translation type="vanished">样板</translation>
+    </message>
+    <message>
+        <source>Community</source>
+        <translation type="vanished">社区</translation>
     </message>
     <message>
         <source>Paths</source>
@@ -94,6 +158,10 @@
         <translation type="vanished">GUI 语言</translation>
     </message>
     <message>
+        <source>Default unit</source>
+        <translation type="vanished">默认单位</translation>
+    </message>
+    <message>
         <source>Centimeters</source>
         <translation type="vanished">公分</translation>
     </message>
@@ -106,8 +174,28 @@
         <translation type="vanished">英寸</translation>
     </message>
     <message>
+        <source>Send crash reports</source>
+        <translation type="vanished">发送崩溃报告</translation>
+    </message>
+    <message>
+        <source>Send crash reports (recommended)</source>
+        <translation type="vanished">发送软件崩溃报告（推荐）</translation>
+    </message>
+    <message>
+        <source>Pattern Editing</source>
+        <translation type="vanished">样板修改</translation>
+    </message>
+    <message>
+        <source>Confirm item deletion</source>
+        <translation type="vanished">确认删除</translation>
+    </message>
+    <message>
         <source>Toolbar</source>
         <translation type="vanished">工具栏</translation>
+    </message>
+    <message>
+        <source>GUI language:</source>
+        <translation type="vanished">GUI语言:</translation>
     </message>
     <message>
         <source>Default unit:</source>
@@ -3170,7 +3258,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>配置</translation>
     </message>
     <message>
         <source>Pattern</source>
@@ -3841,7 +3929,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>配置</translation>
     </message>
     <message>
         <source>Paths</source>
@@ -4057,7 +4145,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;取消</translation>
     </message>
     <message>
         <source>Error while calculation formula. You can try to undo last operation or fix broken formula.</source>
@@ -5462,7 +5550,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>GUI language:</source>
-        <translation type="unfinished"></translation>
+        <translation>GUI语言:</translation>
     </message>
     <message>
         <source>Decimal separator parts:</source>
@@ -5494,11 +5582,11 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Send crash reports</source>
-        <translation type="unfinished"></translation>
+        <translation>发送崩溃报告</translation>
     </message>
     <message>
         <source>Send crash reports (recommended)</source>
-        <translation type="unfinished"></translation>
+        <translation>发送软件崩溃报告（推荐）</translation>
     </message>
     <message>
         <source>Pattern editing</source>
@@ -6876,6 +6964,26 @@ Do you want to save your changes?</source>
 <context>
     <name>TapeConfigDialog</name>
     <message>
+        <source>Apply</source>
+        <translation type="vanished">应用</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="vanished">&amp;取消</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="vanished">＆确定</translation>
+    </message>
+    <message>
+        <source>Config Dialog</source>
+        <translation type="vanished">配置窗口</translation>
+    </message>
+    <message>
+        <source>Configuration</source>
+        <translation type="vanished">配置</translation>
+    </message>
+    <message>
         <source>Paths</source>
         <translation type="vanished">路径</translation>
     </message>
@@ -6893,6 +7001,10 @@ Do you want to save your changes?</source>
     <message>
         <source>Author:</source>
         <translation type="vanished">作者:</translation>
+    </message>
+    <message>
+        <source>GUI language:</source>
+        <translation type="vanished">GUI语言:</translation>
     </message>
 </context>
 <context>
@@ -6914,7 +7026,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>GUI language:</source>
-        <translation type="unfinished"></translation>
+        <translation>GUI语言:</translation>
     </message>
     <message>
         <source>Decimal separator parts:</source>

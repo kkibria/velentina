@@ -343,15 +343,15 @@
     </message>
     <message>
         <source>Lining</source>
-        <translation type="unfinished"></translation>
+        <translation>Futter</translation>
     </message>
     <message>
         <source>Interfacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Futter</translation>
     </message>
     <message>
         <source>Interlining</source>
-        <translation type="unfinished"></translation>
+        <translation>Zwischenfutter</translation>
     </message>
 </context>
 <context>
@@ -928,7 +928,7 @@
     </message>
     <message>
         <source>Tool cubic bezier</source>
-        <translation type="unfinished"></translation>
+        <translation>Kubische Bezierkurven-Werkzeug</translation>
     </message>
 </context>
 <context>
@@ -959,7 +959,7 @@
     </message>
     <message>
         <source>Tool cubic bezier path</source>
-        <translation type="unfinished"></translation>
+        <translation>Kubisches Bezierkurven-Werkzeug</translation>
     </message>
 </context>
 <context>
@@ -1397,6 +1397,14 @@
         <translation type="vanished">Der erste Punkt kann nicht gleich dem letzten Punkt sein!</translation>
     </message>
     <message>
+        <source>General</source>
+        <translation type="vanished">Allgemein</translation>
+    </message>
+    <message>
+        <source>Pattern piece data</source>
+        <translation type="vanished">Schnittteildaten</translation>
+    </message>
+    <message>
         <source>Material/Cut number/Placement</source>
         <translation type="vanished">Material/Schnittnummer/Platzierung</translation>
     </message>
@@ -1425,20 +1433,88 @@
         <translation type="vanished">Entfernen</translation>
     </message>
     <message>
+        <source>Letter:</source>
+        <translation type="vanished">Letter:</translation>
+    </message>
+    <message>
+        <source>Detail label visible</source>
+        <translation type="vanished">Detailbeschriftung sichtbar</translation>
+    </message>
+    <message>
+        <source>Pattern label visible</source>
+        <translation type="vanished">Musterbeschriftung sichtbar</translation>
+    </message>
+    <message>
         <source>Fabric</source>
         <translation type="vanished">Stoff</translation>
+    </message>
+    <message>
+        <source>Lining</source>
+        <translation type="vanished">Futter</translation>
+    </message>
+    <message>
+        <source>Interfacing</source>
+        <translation type="vanished">Futter</translation>
+    </message>
+    <message>
+        <source>Interlining</source>
+        <translation type="vanished">Zwischenfutter</translation>
     </message>
     <message>
         <source>None</source>
         <translation type="vanished">Keine</translation>
     </message>
     <message>
+        <source>Cut on fold</source>
+        <translation type="vanished">im Bruch zuschneiden</translation>
+    </message>
+    <message>
         <source>Cut %1 of %2%3</source>
         <translation type="vanished">%1 von %2%3 schneiden</translation>
     </message>
     <message>
+        <source> on Fold</source>
+        <translation type="vanished">im Bruch</translation>
+    </message>
+    <message>
         <source>Update</source>
         <translation type="vanished">Updaten</translation>
+    </message>
+    <message>
+        <source>on Fold</source>
+        <translation type="vanished">im Bruch</translation>
+    </message>
+    <message>
+        <source>You can choose one of the predefined materials or enter a new one</source>
+        <translation type="vanished">Sie können eines der vordefinierten Materialien auswählen oder ein neues Material eingeben</translation>
+    </message>
+    <message>
+        <source>Forbid piece be mirrored in a layout.</source>
+        <translation type="vanished">Spiegeln im Layout verhindern.</translation>
+    </message>
+    <message>
+        <source>Forbid flipping</source>
+        <translation type="vanished">Umdrehen verhindern</translation>
+    </message>
+    <message>
+        <source>Letter of pattern piece</source>
+        <translation type="vanished">Buchstabe des Schnitteils</translation>
+    </message>
+    <message>
+        <source>Name can&apos;t be empty</source>
+        <translation type="vanished">Name kann nicht leer sein</translation>
+    </message>
+    <message>
+        <source>Grainline</source>
+        <translation type="vanished">Fadenlauf</translation>
+    </message>
+    <message>
+        <source>Grainline visible</source>
+        <translation type="vanished">Fadenlauf sichtbar</translation>
+    </message>
+    <message>
+        <source>Rotation:</source>
+        <translation type="vanished">Drehung:</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -1459,6 +1535,30 @@
     <message>
         <source>Length:</source>
         <translation type="vanished">Länge:</translation>
+    </message>
+    <message>
+        <source>Infinite/undefined result</source>
+        <translation type="vanished">Unendliches/Undefiniertes Ergebnis</translation>
+    </message>
+    <message>
+        <source>Length should be positive</source>
+        <translation type="vanished">Länge sollte positiv sein</translation>
+    </message>
+    <message>
+        <source>Arrows:</source>
+        <translation type="vanished">Pfeile:</translation>
+    </message>
+    <message>
+        <source>Both</source>
+        <translation type="vanished">Beide</translation>
+    </message>
+    <message>
+        <source>Just front</source>
+        <translation type="vanished">Nur vorne</translation>
+    </message>
+    <message>
+        <source>Just rear</source>
+        <translation type="vanished">Nur hinten</translation>
     </message>
 </context>
 <context>
@@ -1593,7 +1693,7 @@
     </message>
     <message>
         <source>Functions</source>
-        <translation type="unfinished"></translation>
+        <translation>Funktionen</translation>
     </message>
     <message>
         <source>Lengths to control points</source>
@@ -1601,14 +1701,14 @@
     </message>
     <message>
         <source>Filter list by keyword</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste nach Stichwort filtern</translation>
     </message>
 </context>
 <context>
     <name>DialogEllipticalArc</name>
     <message>
         <source>Radius1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius1:</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -1628,7 +1728,7 @@
     </message>
     <message>
         <source>Radius2:</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius2:</translation>
     </message>
     <message>
         <source>First angle:</source>
@@ -1644,7 +1744,7 @@
     </message>
     <message>
         <source>Rotation angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotations-Winkel:</translation>
     </message>
     <message>
         <source>Center point:</source>
@@ -1672,11 +1772,11 @@
     </message>
     <message>
         <source>Edit radius1</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeite Radius1</translation>
     </message>
     <message>
         <source>Edit radius2</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeite Radius2</translation>
     </message>
     <message>
         <source>Edit first angle</source>
@@ -1688,11 +1788,11 @@
     </message>
     <message>
         <source>Edit rotation angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeite Rotations-Winkel</translation>
     </message>
     <message>
         <source>Elliptical arc</source>
-        <translation type="unfinished"></translation>
+        <translation>Elliptischer Bogen</translation>
     </message>
 </context>
 <context>
@@ -1810,7 +1910,7 @@
     </message>
     <message>
         <source>With header</source>
-        <translation type="unfinished"></translation>
+        <translation>Mit Überschrift</translation>
     </message>
     <message>
         <source>Codec:</source>
@@ -1865,15 +1965,15 @@
     </message>
     <message>
         <source>Vertical axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertikale Achse</translation>
     </message>
     <message>
         <source>Horizontal axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale Achse</translation>
     </message>
     <message>
         <source>Flipping by axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Über Achse spiegeln</translation>
     </message>
 </context>
 <context>
@@ -1896,23 +1996,23 @@
     </message>
     <message>
         <source>Select first line point</source>
-        <translation type="unfinished"></translation>
+        <translation>Ersten Punkt der Linie auswählen</translation>
     </message>
     <message>
         <source>Select first line point that is not part of the list of objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle ersten Punkt der Linie, der nicht Teil der Liste der Objekte ist</translation>
     </message>
     <message>
         <source>Select second line point</source>
-        <translation type="unfinished"></translation>
+        <translation>Zweiten Punkt der Linie auswählen</translation>
     </message>
     <message>
         <source>Select second line point that is not part of the list of objects</source>
-        <translation type="unfinished"></translation>
+        <translation>Wähle zweiten Punkt der Linie, der nicht Teil der Liste der Objekte ist</translation>
     </message>
     <message>
         <source>Flipping by line</source>
-        <translation type="unfinished"></translation>
+        <translation>Über Linie spiegeln</translation>
     </message>
 </context>
 <context>
@@ -2177,7 +2277,7 @@
     </message>
     <message>
         <source>Elliptical arc</source>
-        <translation type="unfinished"></translation>
+        <translation>Elliptischer Bogen</translation>
     </message>
 </context>
 <context>
@@ -2607,11 +2707,11 @@ Einstellungen trotzdem anwenden?</translation>
     </message>
     <message>
         <source>Enabling for sheets that have big height will speed up creating.</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Erlauben von besonders hohen Seiten verschnellert das Erstellen.</translation>
     </message>
     <message>
         <source>Printer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Drucker:</translation>
     </message>
     <message>
         <source>None</source>
@@ -3364,15 +3464,15 @@ Einstellungen trotzdem anwenden?</translation>
     </message>
     <message>
         <source>Use %1 and %2 to insert pattern size and height</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutze %1 und %2, um Schnittmustergröße und -höhe einzufügen</translation>
     </message>
     <message>
         <source>Show date of layout creation (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Layout-Erstelldatum anzeigen (%1)</translation>
     </message>
     <message>
         <source>Show measurements file</source>
-        <translation type="unfinished"></translation>
+        <translation>Maßdatei anzeigen</translation>
     </message>
 </context>
 <context>
@@ -3534,11 +3634,11 @@ Einstellungen trotzdem anwenden?</translation>
     </message>
     <message>
         <source>Unnamed path</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbenannter Pfad</translation>
     </message>
     <message>
         <source>Create name for your path</source>
-        <translation type="unfinished"></translation>
+        <translation>Pfadnamen erstellen</translation>
     </message>
     <message>
         <source>Type:</source>
@@ -3622,19 +3722,19 @@ Einstellungen trotzdem anwenden?</translation>
     </message>
     <message>
         <source>Current seam aloowance</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuelle Nahtzugabe</translation>
     </message>
     <message>
         <source>Edit seam allowance width</source>
-        <translation type="unfinished"></translation>
+        <translation>Breite der Nahtzugabe ändern</translation>
     </message>
     <message>
         <source>Edit seam allowance width before</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeite Nahtzugabe vor</translation>
     </message>
     <message>
         <source>Edit seam allowance width after</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeite Nahtzugabe nach</translation>
     </message>
     <message>
         <source>Internal path</source>
@@ -4445,7 +4545,7 @@ Einstellungen trotzdem anwenden?</translation>
     </message>
     <message>
         <source>Grainline</source>
-        <translation type="unfinished"></translation>
+        <translation>Fadenlauf</translation>
     </message>
     <message>
         <source>Select main path objects clockwise, &lt;b&gt;Shift&lt;/b&gt; - reverse direction curve, &lt;b&gt;Enter&lt;/b&gt; - finish creation</source>
@@ -4457,7 +4557,7 @@ Einstellungen trotzdem anwenden?</translation>
     </message>
     <message>
         <source>on Fold</source>
-        <translation type="unfinished"></translation>
+        <translation>im Bruch</translation>
     </message>
     <message>
         <source>Reverse</source>
@@ -4477,11 +4577,11 @@ Einstellungen trotzdem anwenden?</translation>
     </message>
     <message>
         <source>Infinite/undefined result</source>
-        <translation type="unfinished"></translation>
+        <translation>Unendliches/Undefiniertes Ergebnis</translation>
     </message>
     <message>
         <source>Length should be positive</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge sollte positiv sein</translation>
     </message>
     <message>
         <source>Parser error: %1</source>
@@ -4493,19 +4593,19 @@ Einstellungen trotzdem anwenden?</translation>
     </message>
     <message>
         <source>Current seam allowance</source>
-        <translation type="unfinished"></translation>
+        <translation>aktuelle Nahtzugabe</translation>
     </message>
     <message>
         <source>Edit seam allowance width</source>
-        <translation type="unfinished"></translation>
+        <translation>Breite der Nahtzugabe ändern</translation>
     </message>
     <message>
         <source>Edit seam allowance width before</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeite Nahtzugabe vor</translation>
     </message>
     <message>
         <source>Edit seam allowance width after</source>
-        <translation type="unfinished"></translation>
+        <translation>Bearbeite Nahtzugabe nach</translation>
     </message>
     <message>
         <source>You need more points!</source>
@@ -4541,19 +4641,19 @@ Einstellungen trotzdem anwenden?</translation>
     </message>
     <message>
         <source>Cut on fold</source>
-        <translation type="unfinished"></translation>
+        <translation>im Bruch zuschneiden</translation>
     </message>
     <message>
         <source>Both</source>
-        <translation type="unfinished"></translation>
+        <translation>Beide</translation>
     </message>
     <message>
         <source>Just front</source>
-        <translation type="unfinished"></translation>
+        <translation>Nur vorne</translation>
     </message>
     <message>
         <source>Just rear</source>
-        <translation type="unfinished"></translation>
+        <translation>Nur hinten</translation>
     </message>
     <message>
         <source>Pins</source>
@@ -5370,7 +5470,7 @@ Einstellungen trotzdem anwenden?</translation>
     <name>FvUpdateWindow</name>
     <message>
         <source>Software Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Software Update</translation>
     </message>
     <message>
         <source>A new version of %1 is available!</source>
@@ -6581,7 +6681,7 @@ Sollen die Änderungen gespeichert werden?</translation>
     </message>
     <message>
         <source>Measurements have been synced</source>
-        <translation type="unfinished"></translation>
+        <translation>Maße wurden aktualisiert</translation>
     </message>
     <message>
         <source>Tools for creating elliptical arcs.</source>
@@ -6609,27 +6709,27 @@ Sollen die Änderungen gespeichert werden?</translation>
     </message>
     <message>
         <source>The document has no write permissions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokument hat keine Schreibrechte.</translation>
     </message>
     <message>
         <source>Cannot set permissions for %1 to writable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Berechtigungen für %1 können nicht auf beschreibbar gesetzt werden.</translation>
     </message>
     <message>
         <source>Could not save the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei konnte nicht gespeichert werden.</translation>
     </message>
     <message>
         <source>Could not save the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei konnte nicht gespeichert werden</translation>
     </message>
     <message>
         <source>read only</source>
-        <translation type="unfinished"></translation>
+        <translation>schreibgeschützt</translation>
     </message>
     <message>
         <source>Variables Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Variablentabelle</translation>
     </message>
     <message>
         <source>Contains information about increments and internal variables</source>
@@ -6637,11 +6737,11 @@ Sollen die Änderungen gespeichert werden?</translation>
     </message>
     <message>
         <source>Load Individual</source>
-        <translation type="unfinished"></translation>
+        <translation>Lade eigene Maße</translation>
     </message>
     <message>
         <source>Load Individual measurements file</source>
-        <translation type="unfinished"></translation>
+        <translation>Lade eigene Maßdatei</translation>
     </message>
     <message>
         <source>Load Multisize</source>
@@ -6950,6 +7050,22 @@ Sollen die Änderungen gespeichert werden?</translation>
         <source>Count steps (0 - no limit):</source>
         <translation type="vanished">Schritte (0 - unbegrenzt):</translation>
     </message>
+    <message>
+        <source>User defined materials</source>
+        <translation type="vanished">Benutzerdefinierte Materialien</translation>
+    </message>
+    <message>
+        <source>Delete all</source>
+        <translation type="vanished">alles löschen</translation>
+    </message>
+    <message>
+        <source>Workpiece</source>
+        <translation type="vanished">Werkstück</translation>
+    </message>
+    <message>
+        <source>Forbid flipping</source>
+        <translation type="vanished">Umdrehen verhindern</translation>
+    </message>
 </context>
 <context>
     <name>PreferencesConfigurationPage</name>
@@ -7090,15 +7206,15 @@ Sollen die Änderungen gespeichert werden?</translation>
     </message>
     <message>
         <source>My Patterns</source>
-        <translation type="unfinished"></translation>
+        <translation>Meine Schnittmuster</translation>
     </message>
     <message>
         <source>My Layouts</source>
-        <translation type="unfinished"></translation>
+        <translation>Meine Layouts</translation>
     </message>
     <message>
         <source>My Templates</source>
-        <translation type="unfinished"></translation>
+        <translation>meine Vorlagen</translation>
     </message>
 </context>
 <context>
@@ -7129,19 +7245,19 @@ Sollen die Änderungen gespeichert werden?</translation>
     </message>
     <message>
         <source>User defined materials</source>
-        <translation type="unfinished"></translation>
+        <translation>Benutzerdefinierte Materialien</translation>
     </message>
     <message>
         <source>Delete all</source>
-        <translation type="unfinished"></translation>
+        <translation>alles löschen</translation>
     </message>
     <message>
         <source>Workpiece</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkstück</translation>
     </message>
     <message>
         <source>Forbid flipping</source>
-        <translation type="unfinished"></translation>
+        <translation>Umdrehen verhindern</translation>
     </message>
     <message>
         <source>Show a passmark both in the seam allowance and on the seam line.</source>
@@ -8123,15 +8239,15 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Customer&apos;s name</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunden Vorname</translation>
     </message>
     <message>
         <source>Customer&apos;s family name</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunden Nachname</translation>
     </message>
     <message>
         <source>Customer&apos;s email address</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunden E-Mail Adresse</translation>
     </message>
     <message>
         <source>Height:</source>
@@ -8143,7 +8259,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>All files</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle Dateien</translation>
     </message>
     <message>
         <source>The measurements document has no write permissions.</source>
@@ -8151,19 +8267,19 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Cannot set permissions for %1 to writable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Berechtigungen für %1 können nicht auf beschreibbar gesetzt werden.</translation>
     </message>
     <message>
         <source>Could not save the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei konnte nicht gespeichert werden.</translation>
     </message>
     <message>
         <source>Could not save the file</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei konnte nicht gespeichert werden</translation>
     </message>
     <message>
         <source>read only</source>
-        <translation type="unfinished"></translation>
+        <translation>schreibgeschützt</translation>
     </message>
     <message>
         <source>Multisize measurements</source>
@@ -8186,11 +8302,11 @@ Do you want to save your changes?</source>
     <name>TabGrainline</name>
     <message>
         <source>Grainline visible</source>
-        <translation type="unfinished"></translation>
+        <translation>Fadenlauf sichtbar</translation>
     </message>
     <message>
         <source>Rotation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Drehung:</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -8226,7 +8342,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Arrows:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pfeile:</translation>
     </message>
 </context>
 <context>
@@ -8237,11 +8353,11 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Letter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Letter:</translation>
     </message>
     <message>
         <source>Letter of pattern piece</source>
-        <translation type="unfinished"></translation>
+        <translation>Buchstabe des Schnitteils</translation>
     </message>
     <message>
         <source>Name of detail:</source>
@@ -8253,7 +8369,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Name can&apos;t be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Name kann nicht leer sein</translation>
     </message>
     <message>
         <source>Material/Cut number/Placement</source>
@@ -8269,7 +8385,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>You can choose one of the predefined materials or enter a new one</source>
-        <translation type="unfinished"></translation>
+        <translation>Sie können eines der vordefinierten Materialien auswählen oder ein neues Material eingeben</translation>
     </message>
     <message>
         <source>Placement:</source>
@@ -8293,7 +8409,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Detail label visible</source>
-        <translation type="unfinished"></translation>
+        <translation>Detailbeschriftung sichtbar</translation>
     </message>
     <message>
         <source>Width:</source>
@@ -8337,7 +8453,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Pattern label visible</source>
-        <translation type="unfinished"></translation>
+        <translation>Musterbeschriftung sichtbar</translation>
     </message>
 </context>
 <context>
@@ -8411,11 +8527,11 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Forbid piece be mirrored in a layout.</source>
-        <translation type="unfinished"></translation>
+        <translation>Spiegeln im Layout verhindern.</translation>
     </message>
     <message>
         <source>Forbid flipping</source>
-        <translation type="unfinished"></translation>
+        <translation>Umdrehen verhindern</translation>
     </message>
     <message>
         <source>Ready!</source>
@@ -8726,7 +8842,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>My Templates</source>
-        <translation type="unfinished"></translation>
+        <translation>meine Vorlagen</translation>
     </message>
 </context>
 <context>
@@ -9695,7 +9811,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Unnamed path</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbenannter Pfad</translation>
     </message>
     <message>
         <source>Error creating or updating a piece path</source>
@@ -9761,12 +9877,24 @@ Do you want to save your changes?</source>
 <context>
     <name>VTextManager</name>
     <message>
+        <source> on Fold</source>
+        <translation type="vanished">im Bruch</translation>
+    </message>
+    <message>
+        <source>on Fold</source>
+        <translation type="vanished">im Bruch</translation>
+    </message>
+    <message>
+        <source>Cut</source>
+        <translation type="vanished">Schnitt</translation>
+    </message>
+    <message>
         <source>cut</source>
-        <translation type="unfinished"></translation>
+        <translation>zuschneiden</translation>
     </message>
     <message>
         <source>on fold</source>
-        <translation type="unfinished"></translation>
+        <translation>im Bruch</translation>
     </message>
 </context>
 <context>
@@ -9778,6 +9906,22 @@ Do you want to save your changes?</source>
     <message>
         <source>Delete</source>
         <translation type="vanished">Löschen</translation>
+    </message>
+    <message>
+        <source>move pattern piece label</source>
+        <translation type="vanished">verschiebe Schnittmuster-Beschriftung</translation>
+    </message>
+    <message>
+        <source>move grainline</source>
+        <translation type="vanished">verschiebe Fadenlauf</translation>
+    </message>
+    <message>
+        <source>resize grainline</source>
+        <translation type="vanished">Fadenlauf-Größe verändern</translation>
+    </message>
+    <message>
+        <source>rotate grainline</source>
+        <translation type="vanished">Fadenlauf drehen</translation>
     </message>
 </context>
 <context>
@@ -10028,11 +10172,11 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Vertical axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertikale Achse</translation>
     </message>
     <message>
         <source>Horizontal axis</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale Achse</translation>
     </message>
     <message>
         <source>Tool move</source>
@@ -10048,7 +10192,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Elliptical arc</source>
-        <translation type="unfinished"></translation>
+        <translation>Elliptischer Bogen</translation>
     </message>
     <message>
         <source>Point label:</source>
@@ -10288,7 +10432,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Rotation angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotations-Winkel:</translation>
     </message>
     <message>
         <source>Fourth point:</source>
@@ -10299,11 +10443,11 @@ Do you want to save your changes?</source>
     <name>VToolSeamAllowance</name>
     <message>
         <source>Current seam allowance</source>
-        <translation type="unfinished"></translation>
+        <translation>aktuelle Nahtzugabe</translation>
     </message>
     <message>
         <source>move pattern piece label</source>
-        <translation type="unfinished"></translation>
+        <translation>verschiebe Schnittmuster Beschriftung</translation>
     </message>
     <message>
         <source>resize pattern piece label</source>
@@ -10327,15 +10471,15 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>move grainline</source>
-        <translation type="unfinished"></translation>
+        <translation>verschiebe Fadenlauf</translation>
     </message>
     <message>
         <source>resize grainline</source>
-        <translation type="unfinished"></translation>
+        <translation>Fadenlauf-Größe verändern</translation>
     </message>
     <message>
         <source>rotate grainline</source>
-        <translation type="unfinished"></translation>
+        <translation>Fadenlauf drehen</translation>
     </message>
     <message>
         <source>Options</source>

@@ -3797,10 +3797,6 @@ Apply settings anyway?</source>
         <translation>Надсечка</translation>
     </message>
     <message>
-        <source>Each point in the path must be unique!</source>
-        <translation type="vanished">Каждая точка в контуре должна быть уникальной!</translation>
-    </message>
-    <message>
         <source>Marks</source>
         <translation>Вид метки</translation>
     </message>
@@ -3830,7 +3826,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Each point in the &lt;b&gt;custom seam allowance&lt;/b&gt; path must be unique!</source>
-        <translation type="unfinished"></translation>
+        <translation>Каждая точка в &lt;b&gt;пользовательской прибавке на швы&lt;/b&gt; должна быть уникальной!</translation>
     </message>
 </context>
 <context>

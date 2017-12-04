@@ -253,7 +253,7 @@
     </message>
     <message>
         <source>GUI language:</source>
-        <translation type="vanished">Idioma de interfaz gráfica de usuario:</translation>
+        <translation type="vanished">Idioma del interfaz gráfica de usuario:</translation>
     </message>
     <message>
         <source>Decimal separator parts:</source>
@@ -2463,7 +2463,7 @@
     </message>
     <message>
         <source>Uknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Desconocido</translation>
     </message>
 </context>
 <context>
@@ -3099,7 +3099,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Move</source>
-        <translation type="unfinished"></translation>
+        <translation>Mover</translation>
     </message>
 </context>
 <context>

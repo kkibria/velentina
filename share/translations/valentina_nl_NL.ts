@@ -3797,10 +3797,6 @@ Toch de instellingen aanpassen?</translation>
         <translation>Pasmarkering</translation>
     </message>
     <message>
-        <source>Each point in the path must be unique!</source>
-        <translation type="vanished">Elk punt in het pad moet uniek zijn!</translation>
-    </message>
-    <message>
         <source>Marks</source>
         <translation>Markeringen</translation>
     </message>
@@ -3830,7 +3826,7 @@ Toch de instellingen aanpassen?</translation>
     </message>
     <message>
         <source>Each point in the &lt;b&gt;custom seam allowance&lt;/b&gt; path must be unique!</source>
-        <translation type="unfinished"></translation>
+        <translation>Elk punt in de &lt;b&gt; aangepaste naadtoeslag&lt;/b&gt;  pad moet uniek zijn!</translation>
     </message>
 </context>
 <context>

@@ -410,11 +410,11 @@
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>First point:</source>
@@ -442,11 +442,11 @@
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
 </context>
 <context>
@@ -509,7 +509,7 @@
     </message>
     <message>
         <source>Edit radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit poloměr</translation>
     </message>
     <message>
         <source>Edit first angle</source>
@@ -521,7 +521,7 @@
     </message>
     <message>
         <source>Radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Poloměr:</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -532,12 +532,16 @@
         <translation>Hodnota</translation>
     </message>
     <message>
+        <source>Calulation</source>
+        <translation type="vanished">Výpočet</translation>
+    </message>
+    <message>
         <source>First angle:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Second angle:</source>
@@ -604,7 +608,7 @@
     </message>
     <message>
         <source>Edit radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit poloměr</translation>
     </message>
     <message>
         <source>Edit the first angle</source>
@@ -628,7 +632,7 @@
     </message>
     <message>
         <source>Radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Poloměr:</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -640,7 +644,7 @@
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>First angle:</source>
@@ -743,19 +747,19 @@
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>First point:</source>
@@ -829,7 +833,7 @@
     <name>DialogCubicBezierPath</name>
     <message>
         <source>Point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bod:</translation>
     </message>
     <message>
         <source>List of points</source>
@@ -904,11 +908,11 @@
     </message>
     <message>
         <source>Edit angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit úhel</translation>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -920,7 +924,7 @@
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Axis point:</source>
@@ -932,15 +936,15 @@
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>Type of line:</source>
@@ -1003,7 +1007,7 @@
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Arc:</source>
@@ -1011,15 +1015,15 @@
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
 </context>
 <context>
@@ -1074,7 +1078,7 @@
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Curve:</source>
@@ -1082,15 +1086,15 @@
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
 </context>
 <context>
@@ -1145,7 +1149,7 @@
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Curve:</source>
@@ -1153,15 +1157,15 @@
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
 </context>
 <context>
@@ -1233,6 +1237,10 @@
     <message>
         <source>Value</source>
         <translation type="vanished">Hodnota</translation>
+    </message>
+    <message>
+        <source>Calculation</source>
+        <translation type="vanished">Výpočet</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -1347,7 +1355,7 @@
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Name</source>
@@ -1386,7 +1394,7 @@
     </message>
     <message>
         <source>Calulation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -1402,7 +1410,7 @@
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Second angle:</source>
@@ -1513,7 +1521,7 @@
     </message>
     <message>
         <source>Edit angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit úhel</translation>
     </message>
     <message>
         <source>Edit length</source>
@@ -1533,11 +1541,11 @@
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
         <source>Base point:</source>
@@ -1545,15 +1553,15 @@
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>Type of line:</source>
@@ -1615,7 +1623,7 @@
     </message>
     <message>
         <source>Suffix:</source>
-        <translation type="unfinished"></translation>
+        <translation>Přípona:</translation>
     </message>
     <message>
         <source>Axis type:</source>
@@ -1654,7 +1662,7 @@
     </message>
     <message>
         <source>Suffix:</source>
-        <translation type="unfinished"></translation>
+        <translation>Přípona:</translation>
     </message>
     <message>
         <source>Second line point:</source>
@@ -1752,15 +1760,15 @@
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>Base point:</source>
@@ -2070,7 +2078,7 @@
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -2105,7 +2113,7 @@
     </message>
     <message>
         <source>Piece:</source>
-        <translation type="unfinished"></translation>
+        <translation>Díl:</translation>
     </message>
     <message>
         <source>Uknown</source>
@@ -2427,15 +2435,15 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>First point:</source>
@@ -2514,11 +2522,11 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Edit angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit úhel</translation>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -2530,7 +2538,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Axis point:</source>
@@ -2546,15 +2554,15 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>Type of line:</source>
@@ -2685,7 +2693,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -2705,11 +2713,11 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Suffix:</source>
-        <translation type="unfinished"></translation>
+        <translation>Přípona:</translation>
     </message>
     <message>
         <source>Edit angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit úhel</translation>
     </message>
     <message>
         <source>Edit length</source>
@@ -2717,7 +2725,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Move</source>
@@ -2886,19 +2894,19 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>First point:</source>
@@ -3243,7 +3251,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Piece:</source>
-        <translation type="unfinished"></translation>
+        <translation>Díl:</translation>
     </message>
     <message>
         <source>Type of pen:</source>
@@ -3271,7 +3279,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -3303,7 +3311,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
         <source>Select main path objects, &lt;b&gt;Shift&lt;/b&gt; - reverse direction curve, &lt;b&gt;Enter&lt;/b&gt; - finish creation</source>
@@ -3430,15 +3438,15 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bod:</translation>
     </message>
     <message>
         <source>Piece:</source>
-        <translation type="unfinished"></translation>
+        <translation>Díl:</translation>
     </message>
     <message>
         <source>Pin</source>
-        <translation type="unfinished"></translation>
+        <translation>Špendík</translation>
     </message>
 </context>
 <context>
@@ -3465,15 +3473,15 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>Tangent point:</source>
@@ -3512,11 +3520,11 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Select a circle center</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyberte střed kruhu</translation>
     </message>
     <message>
         <source>Edit radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit poloměr</translation>
     </message>
     <message>
         <source>Error</source>
@@ -3528,7 +3536,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Poloměr:</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -3540,23 +3548,23 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>Center of the circle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Střed kruhu:</translation>
     </message>
     <message>
         <source>Tangent point:</source>
@@ -3611,11 +3619,11 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Edit radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit poloměr</translation>
     </message>
     <message>
         <source>Radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Poloměr:</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -3627,19 +3635,19 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>Center of arc:</source>
@@ -3686,15 +3694,15 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>X: vertical point:</source>
@@ -3725,15 +3733,15 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>First arc:</source>
@@ -3804,7 +3812,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Radius of the second circle:</source>
@@ -3812,23 +3820,23 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>Center of the first circle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Střed prvního kruhu:</translation>
     </message>
     <message>
         <source>Center of the second circle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Střed druhého kruhu:</translation>
     </message>
     <message>
         <source>Take:</source>
@@ -3847,23 +3855,23 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>First curve:</source>
-        <translation type="unfinished"></translation>
+        <translation>První křivka:</translation>
     </message>
     <message>
         <source>Second curve:</source>
-        <translation type="unfinished"></translation>
+        <translation>Druhá křivka:</translation>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>Vertical correction:</source>
@@ -3871,11 +3879,11 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Horizontal correction:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vodorovná oprava:</translation>
     </message>
     <message>
         <source>Select second curve</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat druhou křivku</translation>
     </message>
 </context>
 <context>
@@ -3905,7 +3913,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
         <source>Formula wizard</source>
@@ -3914,6 +3922,10 @@ Apply settings anyway?</source>
     <message>
         <source>Value</source>
         <translation>Hodnota</translation>
+    </message>
+    <message>
+        <source>Calulation</source>
+        <translation type="vanished">Výpočet</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -3925,11 +3937,11 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Suffix:</source>
-        <translation type="unfinished"></translation>
+        <translation>Přípona:</translation>
     </message>
     <message>
         <source>Edit angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit úhel</translation>
     </message>
     <message>
         <source>Select origin point</source>
@@ -3941,18 +3953,18 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
 </context>
 <context>
     <name>DialogSaveLAyout</name>
     <message>
         <source>Save Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit rozvržení</translation>
     </message>
     <message>
         <source>File name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Název souboru:</translation>
     </message>
     <message>
         <source>Path:</source>
@@ -3960,15 +3972,19 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>File format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Formát souboru:</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Procházet...</translation>
     </message>
     <message>
         <source>Destination folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Cílová složka</translation>
+    </message>
+    <message>
+        <source>Path to destination folder.</source>
+        <translation type="vanished">Popis umístění cílové složky.</translation>
     </message>
     <message>
         <source>Select path to destination folder</source>
@@ -3995,7 +4011,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Example:</source>
-        <translation type="unfinished"></translation>
+        <translation>Příklad:</translation>
     </message>
     <message>
         <source>Select folder</source>
@@ -4198,7 +4214,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Edit angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit úhel</translation>
     </message>
     <message>
         <source>Edit height</source>
@@ -4305,19 +4321,19 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>First point:</source>
@@ -4368,11 +4384,11 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
 </context>
 <context>
@@ -4431,7 +4447,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
         <source>Second point:</source>
@@ -4456,6 +4472,10 @@ Apply settings anyway?</source>
     <message>
         <source>Value</source>
         <translation>Hodnota</translation>
+    </message>
+    <message>
+        <source>Calulation</source>
+        <translation type="vanished">Výpočet</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -4487,7 +4507,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
 </context>
 <context>
@@ -4538,7 +4558,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Point:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bod:</translation>
     </message>
     <message>
         <source>First control point</source>
@@ -4546,7 +4566,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
         <source>Second control point</source>
@@ -4571,6 +4591,10 @@ Apply settings anyway?</source>
     <message>
         <source>Value</source>
         <translation>Hodnota</translation>
+    </message>
+    <message>
+        <source>Calulation</source>
+        <translation type="vanished">Výpočet</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -4606,7 +4630,7 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
 </context>
 <context>
@@ -4759,15 +4783,15 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>First point of axis:</source>
@@ -4850,11 +4874,11 @@ Apply settings anyway?</source>
     </message>
     <message>
         <source>Unique label</source>
-        <translation type="unfinished"></translation>
+        <translation>Neopakující se popisek</translation>
     </message>
     <message>
         <source>Choose unique label.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvolte neopakující se popisek.</translation>
     </message>
     <message>
         <source>Second new dart point:</source>
@@ -7526,7 +7550,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -7633,7 +7657,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -7657,7 +7681,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
         <source>Pattern label visible</source>
@@ -7767,7 +7791,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Calculation</source>
-        <translation type="unfinished"></translation>
+        <translation>Výpočet</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show full calculation in message box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -7799,7 +7823,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
         <source>Custom</source>
@@ -9205,7 +9229,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Point label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Popisek bodu:</translation>
     </message>
     <message>
         <source>Position:</source>
@@ -9229,7 +9253,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Úhel:</translation>
     </message>
     <message>
         <source>First point:</source>
@@ -9245,7 +9269,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Radius:</source>
-        <translation type="unfinished"></translation>
+        <translation>Poloměr:</translation>
     </message>
     <message>
         <source>First angle:</source>
@@ -9353,11 +9377,11 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Center of the first circle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Střed prvního kruhu:</translation>
     </message>
     <message>
         <source>Center of the second circle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Střed druhého kruhu:</translation>
     </message>
     <message>
         <source>First circle radius:</source>
@@ -9369,11 +9393,11 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>First curve:</source>
-        <translation type="unfinished"></translation>
+        <translation>První křivka:</translation>
     </message>
     <message>
         <source>Second curve:</source>
-        <translation type="unfinished"></translation>
+        <translation>Druhá křivka:</translation>
     </message>
     <message>
         <source>Vertical correction:</source>
@@ -9381,11 +9405,11 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Horizontal correction:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vodorovná oprava:</translation>
     </message>
     <message>
         <source>Center of the circle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Střed kruhu:</translation>
     </message>
     <message>
         <source>Tangent point:</source>
@@ -9429,7 +9453,7 @@ Do you want to save your changes?</source>
     </message>
     <message>
         <source>Suffix:</source>
-        <translation type="unfinished"></translation>
+        <translation>Přípona:</translation>
     </message>
     <message>
         <source>Origin point:</source>
