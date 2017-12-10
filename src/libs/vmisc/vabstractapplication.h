@@ -105,6 +105,10 @@ public:
 
     virtual bool     IsAppInGUIMode()const =0;
 
+#if defined(Q_OS_WIN)
+    static void WinAttachConsole();
+#endif
+
 protected:
     QUndoStack         *undoStack;
 
