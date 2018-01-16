@@ -69,6 +69,7 @@ VToolPin *VToolPin::Create(quint32 _id, quint32 pointId, quint32 pieceId, VAbstr
             return nullptr;// Just ignore
         }
         VPointF *pinPoint = new VPointF(*point);
+        pinPoint->setIdObject(pointId);
         pinPoint->setMode(Draw::Modeling);
         data->UpdateGObject(id, pinPoint);
         if (parse != Document::FullParse)
