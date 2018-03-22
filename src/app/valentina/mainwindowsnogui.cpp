@@ -593,7 +593,7 @@ void MainWindowsNoGUI::SvgFile(const QString &name, int i) const
         generator.setSize(paper->rect().size().toSize());
         generator.setViewBox(paper->rect());
         generator.setTitle("Valentina. Pattern layout");
-        generator.setDescription(doc->GetDescription());
+        generator.setDescription(doc->GetDescription().toHtmlEscaped());
         generator.setResolution(static_cast<int>(PrintDPI));
         QPainter painter;
         painter.begin(&generator);
